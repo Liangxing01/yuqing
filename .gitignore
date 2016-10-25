@@ -1,5 +1,6 @@
 .DS_Store
 
+application/views/template_c/*
 application/cache/*
 !application/cache/index.html
 !application/cache/.htaccess

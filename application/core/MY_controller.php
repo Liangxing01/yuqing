@@ -14,10 +14,11 @@ class MY_controller extends CI_Controller {
         $this->ci_smarty->display($html);
     }
 
-    //共用显示header,sidebar
+    //共用显示header,sidebar,footer
     public function all_display($html){
         $this->ci_smarty->display('head.html');
         $this->ci_smarty->display('sidebar.html');
         $this->ci_smarty->display($html);
+        $this->ci_smarty->display('footer.html');
     }
 }
