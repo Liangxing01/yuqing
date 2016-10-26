@@ -24,4 +24,8 @@ class Welcome extends MY_Controller {
 		//$this->load->view('welcome_message');
 		$this->all_display('index.html');
 	}
+
+	public function wait_to_handle(){
+		$this->all_display('wait_to_handle.html');
+	}
 }
