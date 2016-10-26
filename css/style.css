@@ -61,7 +61,7 @@ a (visited,hover,Activated):	#2A3542 (light Black)
 
 
 
-@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic,800,800italic);
+/*@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic,800,800italic);*/
 
 
 
@@ -73,7 +73,7 @@ a (visited,hover,Activated):	#2A3542 (light Black)
 body {
 	color: #797979;
 	background: #e5e6e6;
-	font-family: 'Open Sans',sans-serif;
+	font-family: '微软雅黑';
 	padding: 0px!important;
 	margin: 0px!important;
 	font-size: 13px;
@@ -141,7 +141,7 @@ a,a:hover,a:focus {
 	font-size: 18px;
 	text-transform: uppercase;
 	font-weight: bold;
-	font-family: 'Open Sans',sans-serif;
+	font-family: '微软雅黑';
 }
 
 .form-signin .checkbox {
@@ -152,7 +152,7 @@ a,a:hover,a:focus {
 	font-weight: normal;
 	color: #b6b6b6;
 	font-weight: 300;
-	font-family: 'Open Sans',sans-serif;
+	font-family: '微软雅黑';
 }
 
 .form-signin .form-control {
@@ -183,7 +183,7 @@ a,a:hover,a:focus {
 	color: #fff;
 	text-transform: uppercase;
 	font-weight: 600;
-	font-family: 'Open Sans',sans-serif;
+	font-family: '微软雅黑';
 	box-shadow: 0 4px #2da5c8;
 	margin-bottom: 20px;
 }

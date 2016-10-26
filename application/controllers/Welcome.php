@@ -26,6 +26,8 @@ class Welcome extends MY_Controller {
 	}
 
 	public function wait_to_handle(){
+		$this->assign("active_title","wait_to_handle");
+		$this->assign("active_parent","handle_parent");
 		$this->all_display('wait_to_handle.html');
 	}
 }

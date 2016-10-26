@@ -4,7 +4,7 @@
     <div id="sidebar" class="nav-collapse">
         <ul class="sidebar-menu" id="nav-accordion">
             <li >
-                <a href="index.html" class="active">
+                <a href="/" class="active">
                     <i class="fa fa-dashboard">
                     </i>
                 <span>
@@ -67,7 +67,7 @@
                 </ul>
             </li>
             <li class="sub-menu">
-                <a href="javascript:;">
+                <a id="handle_parent" href="javascript:;">
                     <i class="fa fa-cogs">
                     </i>
                 <span>
@@ -78,8 +78,8 @@
                 </span>
                 </a>
                 <ul class="sub">
-                    <li>
-                        <a href="grids.html">
+                    <li id="wait_to_handle">
+                        <a href="/welcome/wait_to_handle" >
                             待处理事件
                         </a>
                     </li>
@@ -320,3 +320,13 @@
     </div>
 </aside>
 <!-- END SIDEBAR -->
+
+//添加active class
+<script>
+    $(document).ready(function(){
+        var title = "#{$active_title}";
+        var parent_title = "#{$active_parent}";
+        $(title).addClass('active');
+        $(parent_title).addClass('active');
+    });
+</script>
