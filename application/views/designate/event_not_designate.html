@@ -48,6 +48,8 @@
 <!-- Load Plugin -->
 <script language="javascript" src="/assets/data-tables/jquery.dataTables.min.js"></script>
 <script src="/assets/data-tables/dataTables.bootstrap.min.js"></script>
+<!-- Public Function -->
+<script language="javascript" src="/js/public.js"></script>
 
 <!-- Page Script -->
 <script>
@@ -106,7 +108,10 @@
             {
                 "sTitle": "上报时间",
                 "mData": "start_time",
-                'sClass': "text-center"
+                'sClass': "text-center",
+                "mRender": function (data) {
+                    return timeToDate(data*1000);
+                }
             },
             {
                 "sTitle": "操作",
