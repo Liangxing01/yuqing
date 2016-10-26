@@ -26,9 +26,9 @@
                                     <th>编号</th>
                                     <th>标题</th>
                                     <th>类型</th>
-                                    <th class="hidden-phone">指派时间</th>
-                                    <th>描述</th>
                                     <th>指派人</th>
+                                    <th class="hidden-phone">处理时间</th>
+                                    <th>处理状态</th>
                                     <th>操作</th>
                                 </tr>
                                 </thead>
@@ -65,7 +65,7 @@
         "aaSorting": [[5, "desc"]],          //默认排序 第6列
 
         "bServerSide": true,
-        "sAjaxSource": "/handler/get_unhandle_data",
+        "sAjaxSource": "/handler/get_doing_list",
         "sServerMethod": "POST",
 
 //        "fnServerParams": function (aoData) { //发送额外参数
@@ -92,19 +92,19 @@
                 'orderable': false
             },
             {
-                "sTitle": "指派时间",
-                "mData": "time",
+                "sTitle": "指派人",
+                "mData": "zpname",
                 'sClass': "text-center"
             },
             {
-                "sTitle": "描述",
-                "mData": "description",
+                "sTitle": "处理时间",
+                "mData": "time",
                 'sClass': "text-center",
                 'orderable': false
             },
             {
-                "sTitle": "指派人",
-                "mData": "zpname",
+                "sTitle": "处理状态",
+                "mData": "state",
                 'sClass': "text-center",
                 'orderable': false
             },
