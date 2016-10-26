@@ -38,7 +38,7 @@
                 </ul>
             </li>
             <li class="sub-menu">
-                <a href="javascript:;">
+                <a id="designate_parent" href="javascript:;">
                     <i class="fa fa-book">
                     </i>
                 <span>
@@ -49,8 +49,8 @@
                 </span>
                 </a>
                 <ul class="sub">
-                    <li>
-                        <a href="general.html">
+                    <li id="event_not_designate">
+                        <a href="/designate/event_not_designate">
                             待指派事件
                         </a>
                     </li>
@@ -324,8 +324,8 @@
 //添加active class
 <script>
     $(document).ready(function(){
-        var title = "#{$active_title}";
-        var parent_title = "#{$active_parent}";
+        var title = "#<{$active_title}>";
+        var parent_title = "#<{$active_parent}>";
         $(title).addClass('active');
         $(parent_title).addClass('active');
     });
