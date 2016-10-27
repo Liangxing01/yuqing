@@ -75,15 +75,9 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-<<<<<<< Updated upstream
 	'hostname' => '222.178.152.69',
 	'username' => 'root',
 	'password' => 'masker',
-=======
-	'hostname' => '127.0.0.1',
-	'username' => 'root',
-	'password' => '123456',
->>>>>>> Stashed changes
 	'database' => 'yuqing',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => 'yq_',
