@@ -164,6 +164,13 @@ class Handler extends MY_Controller {
         echo json_encode($data);
     }
 
+    //交互显示事件处理进度
+    public function show_tracer(){
+        $this->assign("active_title","doing_handle");
+        $this->assign("active_parent","handle_parent");
+        $this->all_display("designate/event_tracer.html");
+    }
+
     //展示组织结构
     public function show_structure(){
         $this->assign("active_title", "structure");
