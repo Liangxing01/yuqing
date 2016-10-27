@@ -60,7 +60,7 @@ class Handler extends MY_Controller {
         }
 
         $event_info = $this->handler_model->get_detail_by_id($event_id);
-        var_dump($event_info);
+
         $this->assign("event", $event_info);
         $this->assign("active_title","wait_to_handle");
         $this->assign("active_parent","handle_parent");

@@ -1,3 +1,78 @@
-<{$event['title']}>
-<{$event['start_time']}>
-<{$event['source']}>
+<link href="/assets/fancybox/source/jquery.fancybox.css" rel="stylesheet"><!-- FANCYBOX CSS -->
+<link rel="stylesheet" type="text/css" href="/css/gallery.css"><!-- GALLERY CSS -->
+<style>
+    .inbox-body{
+        background: #FFF;
+    }
+</style>
+<!-- BEGIN MAIN CONTENT -->
+<section id="main-content">
+    <section class="wrapper site-min-height">
+        <div class="inbox-head">
+            <h3>事件详情</h3>
+        </div>
+        <div class="inbox-body">
+            <div class="heading-inbox row">
+                <div class="col-md-8">
+                    <div class="compose-btn">
+                        <a href="#" class="btn btn-sm btn-info"><i class="fa fa-reply"></i> 开始处理</a>
+                        <button class="btn  btn-sm tooltips" data-original-title="Print" type="button" data-toggle="tooltip" data-placement="top" title=""><i class="fa fa-print"></i> </button>
+                        <button class="btn btn-sm tooltips" data-original-title="Trash" data-toggle="tooltip" data-placement="top" title=""><i class="fa fa-trash-o"></i></button>
+                    </div>
+                </div>
+                <div class="col-md-4 text-right">
+                    <p class="date"> <{date("Y-m-d H:i:s",$event['start_time'])}></p>
+                </div>
+                <div class="col-md-12">
+                    <h4>
+                        <{$event['title']}>
+                    </h4>
+                </div>
+            </div>
+            <div class="sender-info">
+                <div class="row">
+                    <div class="col-md-12">
+                        <strong class="">指派人:</strong><span>&nbsp;<{$event['name']}></span>
+                        &nbsp;
+                        <strong>来源:</strong><span>&nbsp;<{$event['source']}></span>
+                        &nbsp;
+                        <strong>链接:</strong><span>&nbsp;<{$event['url']}></span>
+                        &nbsp;
+                        <strong>类型:</strong><span>&nbsp;<{$event['type_name']}></span>
+                    </div>
+                </div>
+            </div>
+            <div class="event-content">
+                <p><{$event['description']}></p>
+            </div>
+            <div class="attachment-mail">
+                <p>
+                    <span><i class="fa fa-paperclip"></i> 2 张截图 <{$event['picture']}></span>
+                </p>
+                <ul>
+                    <li>
+                        <a class="atch-thumb fancybox" data-fancybox-group="group" href="/img/pro-ac-2.png">
+                            <img alt="img" src="/img/pro-ac-2.png">
+                        </a>
+                    </li>
+                    <li>
+                        <a class="atch-thumb fancybox" data-fancybox-group="group" href="/img/pro-ac-1.png">
+                            <img alt="img" src="/img/pro-ac-1.png">
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <input type="hidden" name="event_id" value="<{$event['id']}>">
+    </section>
+</section>
+<!-- END SECTION -->
+
+<script src="/assets/fancybox/source/jquery.fancybox.js" ></script><!-- FANCYBOX JS -->
+<script >
+    $(function() {
+        //    fancybox
+        jQuery(".fancybox").fancybox();
+    });
+
+</script>
