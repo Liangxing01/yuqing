@@ -67,7 +67,7 @@ class Designate extends MY_controller
     public function event_designate()
     {
         $event_id = $this->input->get("id", true);
-        if(!isset($event_id) || $event_id == null || $event_id == ""){
+        if (!isset($event_id) || $event_id == null || $event_id == "") {
             show_404();
         }
 
@@ -77,6 +77,33 @@ class Designate extends MY_controller
         $this->assign("active_title", "designate_parent");
         $this->assign("active_parent", "event_not_designate");
         $this->all_display("designate/event_designate.html");
+    }
+
+
+    /**
+     * 事件指派 表单提交
+     */
+    public function commit_event_designate()
+    {
+        $data = $this->input->post();
+        if (!isset($data["processor"]) || $data["event_id"] == "") {
+            show_404();
+        }
+
+        $this->load->model("Designate_Model", "designate");
+        $result = $this->designate->event_designate($data);
+        if($result){
+            echo "指派成功";
+        }else{
+            echo "指派失败";
+        }
+    }
+
+
+    public function tree()
+    {
+        $this->load->model("Designate_Model", "designate");
+        $this->designate->get_relation_tree();
     }
 
 }

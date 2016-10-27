@@ -62,9 +62,59 @@ class Designate_Model extends CI_Model
     }
 
 
-    public function test()
-    {
-        return $this->db->get("event")->result_array();
+    public function get_relation_tree(){
+        $root = $this->db->query("SELECT lft, rgt FROM yq_relation WHERE name='组织关系'")->first_row('array');
+
+        // 以一个空的$right栈开始
+        $right = array();
+
+        // 获得root节点的所有子节点
+        $sql = "SELECT name, lft, rgt FROM yq_relation WHERE lft BETWEEN ? AND ? ORDER BY lft ASC";
+        $result = $this->db->query($sql, array($root['lft'], $root['rgt']))->result_array();
+
+        // 显示
+        foreach ($result AS $row) {
+            // 检查栈里面有没有元素
+            if (count($right) > 0) {
+                // 检查我们是否需要从栈中删除一个节点
+                while ($right[count($right) - 1] < $row['rgt']) {
+                    array_pop($right);
+                }
+            }
+
+            // 显示缩进的节点标题
+            echo str_repeat('&nbsp;', count($right)) . $row['name'] . "</br>";
+
+            // 把这个节点添加到栈中
+            $right[] = $row['rgt'];
+        }
+    }
+
+
+    /**
+     * 事件指派 插入指派数据
+     * @param $data
+     * @return mixed
+     */
+    public function event_designate($data){
+        $processors = explode(",", $data["processor"]);
+        $insert = array();
+        $time = time();
+        $manager_id = $this->session->userdata("uid");
+        foreach( $processors AS $processor_id ){
+            $insert[] = array(
+                "event_id" => $data["event_id"],
+                "description" => $data["description"],
+                "manager" => $manager_id,
+                "processor" => $processor_id,
+                "time" => $time
+            );
+        }
+
+        //TODO 检测是否重复指派
+        $result = $this->db->where("id", $data["event_id"])->update("event", array("state"=>"已指派"));
+
+        return $this->db->insert_batch("event_designate", $insert);
     }
 
 }
