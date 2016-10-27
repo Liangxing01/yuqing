@@ -15,11 +15,21 @@ class User extends CI_Model {
         $this->load->database();
     }
 
-    public function user_select($username){
-        $sql = "SELECT * FROM yq_user WHERE username = ?";
-        $query = $this->db->query($sql,$username);
-        $row = $query->row();
-        return $row;
+    public function verify_users($username,$password){
+        $pwd = md5($password);
+        $sql ="SELECT *  FROM yq_user WHERE username = ? AND password = ?";
+        $query =  $this->db->query($sql,array($username,$pwd))->row();
+        $flag = false;
+        $val = -1;
+        if($query !== null){
+            $flag = true;
+            $val = $query->id;
+        }
+        $res = array(
+            "flag" => $flag,
+            "id" => $val
+            );
+        return $res;
     }
 
 }

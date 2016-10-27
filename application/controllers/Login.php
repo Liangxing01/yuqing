@@ -6,15 +6,11 @@
  * Time: 14:42
  */
 
-class Login extends CI_Controller {
+class Login extends MY_controller  {
 
     public function __construct()
     {
         parent::__construct();
-    }
-
-    public function login(){
-        $this->load->view('login');
     }
 
     /**
@@ -23,22 +19,28 @@ class Login extends CI_Controller {
 
     public function checkLogin(){
 
-        $this->load->model('user');
-        $user = $this->user->user_select($_POST['username']);
-        if ($user){
-            if ($user->password == $_POST['password']){
-                $this->load->library('session');
-                $arr = array("uid"=>$user->id);
-                $this->session->set_userdata($arr);
-                header("location:/welcome/index");
+        $this->load->library('form_validation');
+        $this->form_validation->set_rules('username', '用户名或密码', 'required');
+        $this->form_validation->set_rules('password', '用户名或密码', 'required');
+        $this->form_validation->set_message('required', '用户名密码不能为空');
+
+        if ($this->form_validation->run() !== false){
+            $this->load->model('user');
+            $res = $this->user->verify_users(
+                $this->input->post('username'),
+                $this->input->post('password')
+            );
+            if($res['flag'] == true){
+                echo $res['id'];
+                $this->session->set_userdata("uid",$res['id']);
+                header("location:/Welcome/index");
+            }else{
+                header("location:/Welcome/login");
+
             }
-            else{
-                echo '用户名或密码不正确';
-            }
-        }else{
-            echo '用户名不存在';
         }
     }
+
 
     public function checkSession(){
         $this->load->library('session');
@@ -53,7 +55,7 @@ class Login extends CI_Controller {
         $this->load->helper('url');
         $this->load->library('session');
         $this->session->unset_userdata('uid');
-        redirect('/welcome/login','refresh');
+        redirect('/Welcome/login','refresh');
     }
 
 }

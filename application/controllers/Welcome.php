@@ -8,10 +8,12 @@ class Welcome extends MY_Controller {
 //		$this->load->view('welcome_message');
 		$this->all_display('index.html');
 //	    $this->load->view("login.html");
+//        $this->load->view("index.html");
 	}
 
 	public function login(){
-        $this->load->view("login.html");
+        $this->load->library('form_validation');
+        $this->load->view("login/login");
     }
 
 	public function wait_to_handle(){
