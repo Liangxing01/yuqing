@@ -56,19 +56,36 @@ LEFT JOIN yq_user AS d on d.id = a.manager LEFT JOIN yq_event_type AS t on b.typ
         $num = $this->db->get_where('event_log',array('event_id'=>$eid,'processor'=>$uid))->result_array();
         if(empty($num)){
             $this->insert_parent_log($eid,$uid);
+        }else{
+            //找出pid为空的那条记录的id，作为pid去查询子日志
+            for($i = 0; $i < count($num) ; $i++){
+                if($num[$i]['pid'] == ''){
+                    $pid = $num[$i]['id'];
+                }
+            }
+
+            //查询所有该pid的日志记录
+            $res = $this->db->get_where('event_log',array('pid'=> $pid))->result_array();
+            return $res;
         }
     }
 
     //开始执行处理任务，向数据库插入一条记录
     public function insert_parent_log($event_id,$uid){
         //根据事件id 查询指派记录id
-        $this->db->select('id');
+        $this->db->select('id,manager');
         $zpID = $this->db->get_where('event_designate',array('event_id' => $event_id,'processor' => $uid))->result_array();
-        $zpID = $zpID[0]['id'];
+        $zpinfo = $zpID[0];
         $arr = array(
             'event_id' => $event_id,
-
+            'designate_id' => $zpinfo['id'],
+            'manager' => $zpinfo['manager'],
+            'processor' => $uid,
+            'description' =>'',
+            'time' => time(),
+            'state' => '处理中'
         );
+        $this->db->insert('event_log',$arr);
     }
 
     //根据用户关键字查询待处理事件

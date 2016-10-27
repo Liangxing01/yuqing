@@ -12,7 +12,8 @@ class Reporter extends MY_controller {
     }
 
     public function wantReport(){
-        $this->load->view('report/want_report',array('error'=>''));
+        $this->all_display("report/want_report2.html");
+        //$this->load->view('report/want_report',array('error'=>''));
     }
 
 

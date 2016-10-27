@@ -75,17 +75,53 @@ class Handler extends MY_Controller {
     //显示处理日志页面
     public function show_handle_log(){
         $event_id = $this->input->get('id');
+        $title = $this->input->get('title');
         /*
          * 点击开始处理后，向event_log表写一条记录，pid为空，后续
          * 日志已该id为pid
          */
-        $this->handler_model->insert_parent_log($event_id);
+        $uid = $this->session->userdata('uid');
 
-        //获取该事件所有的操作记录
-        $res = $this->handler_model->get_all_logs($event_id);
         $this->assign("active_title","doing_handle");
         $this->assign("active_parent","handle_parent");
+        $this->assign("title",$title);
+        $this->assign("eid",$event_id);
         $this->all_display('handler/handle_logs.html');
+    }
+
+    //获取事件日志记录接口
+    public function get_logs(){
+
+        $pData['sEcho'] = $this->input->post('psEcho', true);           //DataTables 用来生成的信息
+        $pData['start'] = $this->input->post('iDisplayStart', true);    //显示的起始索引
+        $pData['length'] = $this->input->post('iDisplayLength', true);  //每页显示的行数
+        $pData['sort_th'] = $this->input->post('iSortCol_0', true);     //排序的列 默认第三列
+        $pData['sort_type'] = $this->input->post('sSortDir_0', true);   //排序的方向 默认 desc
+        $pData['search'] = $this->input->post('sSearch', true);         //全局搜索关键字 默认为空
+
+        $pData['event_id'] = $this->input->post('eid', true);
+        if ($pData['start'] == NULL) {
+            $pData['start'] = 0;
+        }
+        if ($pData['length'] == NULL) {
+            $pData['length'] = 10;
+        }
+        if ($pData["sort_th"] == NULL) {
+            $pData["sort_th"] = 3;
+        }
+        if ($pData['sort_type'] == NULL) {
+            $pData['sort_type'] = "desc";
+        }
+        if ($pData['search'] == NULL) {
+            $pData['search'] = '';
+        }
+
+        $uid = $this->session->userdata('uid');
+        $event_id = $pData['event_id'];
+        //获取该事件所有的操作记录
+        $res = $this->handler_model->get_all_logs($event_id,$uid);
+
+        echo json_encode($res);
     }
 
 
@@ -126,6 +162,13 @@ class Handler extends MY_Controller {
 
         $data = $this->handler_model->get_doing_handle($pData,3);
         echo json_encode($data);
+    }
+
+    //展示组织结构
+    public function show_structure(){
+        $this->assign("active_title", "structure");
+        $this->assign("active_parent", "manage_parent");
+        $this->all_display("designate/show_structure.html");
     }
 
 
