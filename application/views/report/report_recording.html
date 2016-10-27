@@ -30,6 +30,7 @@
                                     <th class="hidden-phone">提交时间</th>
                                     <th>提交人</th>
                                     <th>图片</th>
+                                    <th>操作</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -120,10 +121,10 @@
             },
             {
                 "sTitle": "操作",
-                "mData": "event_id",
+                "mData": "id",
                 'sClass': "text-center",
                 "mRender": function (data) {
-                    return "<a title='查看' href='/report/want_report?id=" + data + " ' class='btn btn-info btn-xs'><i class='fa fa-eye'></i></a>";
+                    return "<a title='查看' href='/reporter/show_detail?id=" + data + " ' class='btn btn-info btn-xs'><i class='fa fa-eye'></i></a>";
                 }
             }
         ],

@@ -50,6 +50,7 @@ class Reporter extends MY_controller {
         $picture = 'test.jpg';
         $data = array('title'=>$title,'source'=>$source,'picture'=>$picture,'url' => $url,'description'=>$description,'uid'=>$uid,'start_time'=>$_SERVER['REQUEST_TIME']);
         $this->report->submit($data);
+        $this->reportRecording();
     }
 
     public function get_report_data(){
@@ -77,10 +78,26 @@ class Reporter extends MY_controller {
         }
 
         $this->load->model('Report_model','report');
-        $data = $this->report->get_all_report($pData);
+        $uid = $this->session->userdata('uid');
+        $data = $this->report->get_all_report($pData,$uid);
+
         $this->output
             ->set_content_type('application/json')
             ->set_output(json_encode($data));
+    }
+
+    public function show_detail(){
+        $event_id = $this->input->get("id");
+        if(!isset($event_id) || $event_id == null || $event_id == ""){
+            show_404();
+        }
+
+        $this->load->model('Report_model','report');
+        $event_info = $this->report->get_detail_by_id($event_id);
+        $this->assign("event", $event_info);
+        $this->assign("active_title", "report_parent");
+        $this->assign("active_parent", "report_recording");
+        $this->all_display("report/show_report_detail.html");
     }
 
 }

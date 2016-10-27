@@ -34,10 +34,11 @@ class Report_model extends CI_Model {
      * @param $pInfo
      * @return mixed
      */
-    public function get_all_report($pInfo){
+    public function get_all_report($pInfo,$uid){
         $data['aaData'] = $this->db->select("event.id,title,url,source,description,user.name As publisher,start_time as time")
             ->from('event')
             ->join('user','user.id = event.publisher','left')
+            ->where(array('user.id'=> (int)$uid))
             ->limit(10,0)
             ->get()->result_array();
 
@@ -54,5 +55,19 @@ class Report_model extends CI_Model {
         $data['iTotalRecords']        = $total;
 
         return $data;
+    }
+
+    public function get_detail_by_id($id){
+        $data = $this->db->select("event.id,title,url,source,picture,description,user.name As publisher,start_time as time")
+            ->from("event")
+            ->join("user","user.id = event.publisher","left")
+            ->where("event.id",(int)$id)
+            ->get()->result_array();
+
+        if(!empty($data)){
+            return $data[0];
+        }else{
+            return false;
+        }
     }
 }
