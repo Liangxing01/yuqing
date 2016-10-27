@@ -38,7 +38,7 @@
             </div>
         </div>
         <!-- SIDEBAR TOGGLE BUTTON  END-->
-        <a href="index.html" class="logo">olive<span>admin</span></a>
+        <a href="../index.html" class="logo">olive<span>admin</span></a>
         <!-- START HEADER  NAV -->
 
         <nav class="nav notify-row" id="top_menu">
@@ -380,7 +380,7 @@
                         <li><a href="#"><i class=" fa fa-suitcase"></i>Profile</a></li>
                         <li><a href="#"><i class="fa fa-cog"></i> Settings</a></li>
                         <li><a href="#"><i class="fa fa-bell-o"></i> Notification</a></li>
-                        <li><a href="login.html"><i class="fa fa-key"></i> Log Out</a></li>
+                        <li><a href="../login/login.html"><i class="fa fa-key"></i> Log Out</a></li>
                     </ul>
                 </li>
             </ul>
@@ -393,7 +393,7 @@
         <div id="sidebar" class="nav-collapse">
             <ul class="sidebar-menu" id="nav-accordion">
                 <li>
-                    <a href="index.html">
+                    <a href="../index.html">
                         <i class="fa fa-dashboard"></i>
                         <span>Dashboard</span>
                     </a>
@@ -522,7 +522,7 @@
                         <li><a href="blank.html">Blank Page</a></li>
                         <li><a href="lock_screen.html">Lock Screen</a></li>
                         <li><a href="profile.html">Profile</a></li>
-                        <li><a href="invoice.html">Invoice</a></li>
+                        <li><a href="../invoice.html">Invoice</a></li>
                         <li><a href="search_result.html">Search Result</a></li>
                         <li><a href="pricing_table.html">Pricing Table</a></li>
                         <li><a href="faq.html">FAQ</a></li>
@@ -532,7 +532,7 @@
                     </ul>
                 </li>
                 <li>
-                    <a href="login.html">
+                    <a href="../login/login.html">
                         <i class="fa fa-user"></i>
                         <span>Login Page</span>
                     </a>
@@ -579,7 +579,7 @@
                             <?php echo $error; ?>
 <!--                            --><?php //$att = array('class'=>'form-horizontal tasi-form','id'=> 'form');
 //                                echo form_open_multipart('/ReportingMan/report',$att);  ?>
-                            <form class="form-horizontal tasi-form" action="/ReportingMan/report" method="post" enctype="multipart/form-data">
+                            <form class="form-horizontal tasi-form" action="/Reporter/report" method="post" enctype="multipart/form-data">
                                 <div class="form-group">
                                     <label class="col-sm-2 col-sm-2 control-label">标题</label>
                                     <div class="col-sm-10">
