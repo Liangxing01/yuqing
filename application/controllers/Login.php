@@ -6,15 +6,11 @@
  * Time: 14:42
  */
 
-class Login extends CI_Controller {
+class Login extends MY_controller  {
 
     public function __construct()
     {
         parent::__construct();
-    }
-
-    public function login(){
-        $this->load->view('login');
     }
 
     /**
@@ -26,10 +22,10 @@ class Login extends CI_Controller {
         $this->load->model('user');
         $user = $this->user->user_select($_POST['username']);
         if ($user){
-            if ($user->password == $_POST['password']){
+            if ($user->password == md5($_POST['password'])){
                 $this->load->library('session');
-                $arr = array("uid"=>$user->id);
-                $this->session->set_userdata($arr);
+                $this->session->set_userdata("uid",$user->id);
+                echo $this->session->userdata('uid');
                 header("location:/welcome/index");
             }
             else{
