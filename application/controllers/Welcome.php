@@ -12,7 +12,8 @@ class Welcome extends MY_Controller {
 	}
 
 	public function login(){
-        $this->load->view("login/login.html");
+        $this->load->library('form_validation');
+        $this->load->view("login/login");
     }
 
 	public function wait_to_handle(){
