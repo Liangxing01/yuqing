@@ -39,7 +39,7 @@
         <div class="login-wrap">
             <input type="text" class="form-control" placeholder="用户名" name="username" autofocus>
             <input type="password" class="form-control" placeholder="密码" name="password">
-            <?php echo form_error('password'); ?>
+
             <!--<label class="checkbox">-->
             <!--<input type="checkbox" value="remember-me" name="remember-me">-->
             <!--记住我-->
@@ -50,6 +50,7 @@
             <!--</span>-->
             <!--</label>-->
         </div>
+
         <!--<div class="registration">-->
         <!--还没有账号吗？-->
         <!--<a class="" href="registration.html">-->

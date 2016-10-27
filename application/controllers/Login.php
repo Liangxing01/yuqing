@@ -22,7 +22,6 @@ class Login extends MY_controller  {
         $this->load->library('form_validation');
         $this->form_validation->set_rules('username', '用户名或密码', 'required');
         $this->form_validation->set_rules('password', '用户名或密码', 'required');
-        $this->form_validation->set_message('required', '用户名密码不能为空');
 
         if ($this->form_validation->run() !== false){
             $this->load->model('user');
@@ -35,9 +34,12 @@ class Login extends MY_controller  {
                 $this->session->set_userdata("uid",$res['id']);
                 header("location:/Welcome/index");
             }else{
+                alert("账号名密码错误");
                 header("location:/Welcome/login");
 
             }
+        }else{
+            $this->load->view('login/login');
         }
     }
 
