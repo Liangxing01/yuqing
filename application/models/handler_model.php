@@ -17,7 +17,7 @@ JOIN yq_user AS d on d.id = a.manager JOIN yq_event_type AS t on b.type = t.id W
 JOIN yq_user AS d on d.id = a.manager JOIN yq_event_type AS t on b.type = t.id WHERE b.state = \"已指派\";";
 
 
-            $data['aaData'] = $this->db->query($sql,array($processorID,0,10))->result_array();
+            $data['aaData'] = $this->db->query($sql,array($processorID,(int)$pInfo['start'],(int)$pInfo['length']))->result_array();
             $total = $this->db->query($sql2,array($processorID))->num_rows();
             $data['sEcho']                = $pInfo['sEcho'];
 
@@ -47,7 +47,7 @@ JOIN yq_event as b on a.event_id = b.id JOIN yq_event_type as t on b.type = t.id
 (SELECT * from  yq_event_log WHERE processor = ? and state ='处理中' and ISNULL(pid)) as a
 JOIN yq_event as b on a.event_id = b.id JOIN yq_event_type as t on b.type = t.id JOIN yq_user as u on a.manager = u.id";
 
-            $data['aaData'] = $this->db->query($sql,array($processorID,0,10))->result_array();
+            $data['aaData'] = $this->db->query($sql,array($processorID,(int)$pInfo['start'],(int)$pInfo['length']))->result_array();
             $total = $this->db->query($sql2,array($processorID))->num_rows();
             $data['sEcho']                = $pInfo['sEcho'];
 
