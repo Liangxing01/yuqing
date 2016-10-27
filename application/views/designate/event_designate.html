@@ -1,10 +1,11 @@
 <link rel="stylesheet" href="/assets/ztree/zTreeStyle/zTreeStyle.css">
 
 <style>
-    .inbox-body{
+    .inbox-body {
         background: #FFF;
     }
-    #event-designate-form{
+
+    #event-designate-form {
         background: #92cf5c;
     }
 </style>
@@ -12,8 +13,8 @@
 <section id="main-content">
     <section class="wrapper site-min-height">
         <div class="inbox-head">
-        <h3>事件详情</h3>
-    </div>
+            <h3>事件详情</h3>
+        </div>
         <div class="inbox-body">
             <div class="heading-inbox row">
                 <div class="col-md-8">
@@ -67,28 +68,87 @@
             <h3>事件指派</h3>
         </div>
         <div class="inbox-body">
-            <ul id="relation-tree" class="ztree"></ul>
+            <div class="row">
+                <div class="col-lg-4">
+                    选择处理人:
+                    <ul id="relation-tree" class="ztree"></ul>
+                </div>
+                <div class="col-lg-6">
+                    <label for="description">指派描述:</label>
+                    <textarea class="form-control" id="description" name="description"></textarea>
+                </div>
+                <div class="col-lg-10">
+                    <button id="event-designate-button" class="btn btn-primary pull-right">确认指派</button>
+                </div>
+            </div>
         </div>
-        <input type="hidden" name="event_id" value="<{$event['id']}>">
+        <input type="hidden" name="event_id" id="event_id" value="<{$event['id']}>">
     </section>
 </section>
 <!-- END SECTION -->
 
-<script src="/assets/ztree/jquery.ztree.core.min.js"></script>
+<script src="/assets/ztree/jquery.ztree.all.min.js"></script>
 
 <!-- Page Script -->
-<SCRIPT LANGUAGE="JavaScript">
+<script language="javascript">
     var zTreeObj;
     // zTree 的参数配置，深入使用请参考 API 文档（setting 配置详解）
-    var setting = {};
+    var setting = {
+        check: {
+            enable: true,
+            autoCheckTrigger: true,
+            chkStyle: "checkbox"
+        }
+    };
     // zTree 的数据属性，深入使用请参考 API 文档（zTreeNode 节点数据详解）
     var zNodes = [
-        {name:"test1", open:true, children:[
-            {name:"test1_1"}, {name:"test1_2"}]},
-        {name:"test2", open:true, children:[
-            {name:"test2_1"}, {name:"test2_2"}]}
+        {
+            name: "组织关系", open: true, children: [
+                {name: "部门A", open: false, children: [
+                    {name: "张三", id:1}
+                ]},
+                {name: "部门B", open: false, children: [
+                    {name: "李四", id:2}
+                ]},
+                {name: "部门C", open: false, children: [
+                    {name: "王五", id:3}
+                ]}
+            ]
+        }
     ];
-    $(document).ready(function(){
+    $(document).ready(function () {
         zTreeObj = $.fn.zTree.init($("#relation-tree"), setting, zNodes);
     });
-</SCRIPT>
+
+    $("#event-designate-button").click(function () {
+        var zTree = $.fn.zTree.getZTreeObj("relation-tree");
+        checkCount = zTree.getCheckedNodes(true);
+
+        var children = "";
+        for(var i=0;i<checkCount.length;i++) {
+            if(typeof(checkCount[i].id) == "undefined"){
+                continue;
+            }
+            children += checkCount[i].id + ",";
+        }
+
+        children = children.substring(0,children.length-1);
+        var event_id = $("#event_id").val();
+        var description = $("#description").val();
+
+        if(children == ""){
+            alert("请至少选择一个事件处理人");
+            return false;
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "/designate/commit_event_designate",
+            data: {"event_id": event_id, "description": description, "processor": children},
+            success: function (data) {
+                alert(data);
+            }
+        });
+    });
+
+</script>
