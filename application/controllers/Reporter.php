@@ -12,15 +12,19 @@ class Reporter extends MY_controller {
     }
 
     public function wantReport(){
-        $this->all_display("report/want_report2.html");
-        //$this->load->view('report/want_report',array('error'=>''));
+        $this->assign("active_title", "report_parent");
+        $this->assign("active_parent", "want_report");
+        $this->all_display("report/want_report.html");
+//        $this->assign("active_title","report_parent");
+//        $this->assign("active_parent", "want_report");
+//        $this->all_display("report/want_report.html");
     }
 
 
     public function reportRecording()
     {
-//        $this->assign("active_title", "designate_parent");
-//        $this->assign("active_parent", "report_recording");
+        $this->assign("active_title", "report_parent");
+        $this->assign("active_parent", "report_recording");
         $this->all_display("report/report_recording.html");
     }
 
@@ -74,7 +78,6 @@ class Reporter extends MY_controller {
 
         $this->load->model('Report_model','report');
         $data = $this->report->get_all_report($pData);
-
         $this->output
             ->set_content_type('application/json')
             ->set_output(json_encode($data));
