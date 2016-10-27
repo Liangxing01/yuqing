@@ -171,5 +171,12 @@ class Handler extends MY_Controller {
         $this->all_display("designate/show_structure.html");
     }
 
+    //显示已完成事件列表
+    public function show_done_list(){
+        $this->assign("active_title","done_list");
+        $this->assign("active_parent","handle_parent");
+        $this->all_display('handler/doing_unhandle.html');
+    }
+
 
 }
