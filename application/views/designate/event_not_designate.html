@@ -110,14 +110,17 @@
                 "mData": "start_time",
                 'sClass': "text-center",
                 "mRender": function (data) {
-                    return timeToDate(data*1000);
+                    return timeToDate(data * 1000);
                 }
             },
             {
                 "sTitle": "操作",
                 "mData": "id",
                 'sClass': "text-center",
-                'orderable': false
+                'orderable': false,
+                "mRender": function (data) {
+                    return "<a title='查看' href='/designate/event_designate?id=" + data + " ' class='btn btn-info btn-xs'><i class='fa fa-eye'></i></a>";
+                }
             }
         ],
 

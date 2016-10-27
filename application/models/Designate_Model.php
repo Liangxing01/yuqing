@@ -11,6 +11,11 @@ class Designate_Model extends CI_Model
     }
 
 
+    /**
+     * 待指派事件 分页数据
+     * @param $pInfo
+     * @return mixed
+     */
     public function event_not_designate_pagination($pInfo)
     {
         $data['aaData'] = $this->db->select("event.id, event.title, event_type.name AS type, source, user.username AS publisher, start_time")
@@ -37,6 +42,23 @@ class Designate_Model extends CI_Model
 
         return $data;
 
+    }
+
+
+    /**
+     * 查询 event(事件) 信息
+     * @param $event_id
+     * @return mixed
+     */
+    public function get_event_info($event_id){
+        $event = $this->db->select("event.id, event.title,  event_type.name AS type, source, user.username AS publisher, start_time")
+            ->from("event")
+            ->join("user", "user.id = event.publisher", "left")
+            ->join("event_type", "event_type.id = event.type", "left")
+            ->where(array("event.id" => $event_id))
+            ->get()->row_array();
+
+        return $event;
     }
 
 
