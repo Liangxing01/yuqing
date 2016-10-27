@@ -5,7 +5,7 @@ class Handler extends MY_Controller {
 
     public function __construct(){
         parent::__construct();
-        $this->load->model('Handler_Model');
+        $this->load->model('Handler_Model',"handler_model");
 
         $this->session->set_userdata("uid",3);
         $this->session->set_userdata('name',"王五");
