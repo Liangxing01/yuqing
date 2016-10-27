@@ -67,7 +67,7 @@ LEFT JOIN yq_user AS d on d.id = a.manager LEFT JOIN yq_event_type AS t on b.typ
             $zpID = $zpID[0]['id'];
             $arr = array(
                 'event_id' => $event_id,
-                ''
+                
             );
         }
 
