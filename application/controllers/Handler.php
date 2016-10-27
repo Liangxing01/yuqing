@@ -81,6 +81,8 @@ class Handler extends MY_Controller {
          */
         $this->handler_model->insert_parent_log($event_id);
 
+        //获取该事件所有的操作记录
+        $res = $this->handler_model->get_all_logs($event_id);
         $this->assign("active_title","doing_handle");
         $this->assign("active_parent","handle_parent");
         $this->all_display('handler/handle_logs.html');
