@@ -32,6 +32,22 @@ JOIN yq_user AS d on d.id = a.manager JOIN yq_event_type AS t on b.type = t.id W
             }
         }
 
+        //根据event_id查询事件内容
+        public function get_detail_by_id($id){
+            $data = $this->db->select("e.id,e.title,t.name as type_name,e.url,e.source,e.picture,e.description,yq_user.name,e.start_time")
+                ->from("event AS e")
+                ->join("event_type as t","t.id = e.type","left")
+                ->join("user","e.manager = yq_user.id","left")
+                ->where(array("e.id",$id))
+                ->get()->result_array();
+
+            if(!empty($data)){
+                return $data[0];
+            }else{
+                return false;
+            }
+        }
+
         //根据用户关键字查询待处理事件
         public function get_unhandle_by_keyword($key){
             $this->db->where('');

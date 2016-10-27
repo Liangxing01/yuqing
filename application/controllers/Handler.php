@@ -52,12 +52,29 @@ class Handler extends MY_Controller {
 
     }
 
+    //显示待处理事件详情信息
+    public function show_detail(){
+        $event_id = $this->input->get("id");
+        if(!isset($event_id) || $event_id == null || $event_id == ""){
+            show_404();
+        }
+
+        $event_info = $this->handler_model->get_detail_by_id($event_id);
+        var_dump($event_info);
+        $this->assign("event", $event_info);
+        $this->assign("active_title","wait_to_handle");
+        $this->assign("active_parent","handle_parent");
+        $this->all_display("handler/show_unhandle_detail.html");
+    }
+
     //显示正在处理的事件表
     public function show_doing_list(){
         $this->assign("active_title","doing_handle");
         $this->assign("active_parent","handle_parent");
         $this->all_display('handler/doing_unhandle.html');
     }
+
+
 
     //获取正在处理数据
     public function get_doing_list(){
