@@ -18,7 +18,7 @@ class Designate_Model extends CI_Model
      */
     public function event_not_designate_pagination($pInfo)
     {
-        $data['aaData'] = $this->db->select("event.id, event.title, event_type.name AS type, source, user.username AS publisher, start_time")
+        $data['aaData'] = $this->db->select("event.id, event.title, event_type.name AS type, source, user.name AS publisher, start_time")
                         ->from("event")
                         ->join("user", "user.id = event.publisher", "left")
                         ->join("event_type", "event_type.id = event.type", "left")
@@ -51,7 +51,7 @@ class Designate_Model extends CI_Model
      * @return mixed
      */
     public function get_event_info($event_id){
-        $event = $this->db->select("event.id, event.title,  event_type.name AS type, source, user.username AS publisher, start_time")
+        $event = $this->db->select("event.id, event.title, event.url, event.description, event.picture, event_type.name AS type, source, user.name AS publisher, start_time")
             ->from("event")
             ->join("user", "user.id = event.publisher", "left")
             ->join("event_type", "event_type.id = event.type", "left")
