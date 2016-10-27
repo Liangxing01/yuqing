@@ -67,6 +67,11 @@ class Handler extends MY_Controller {
         $this->all_display("handler/show_unhandle_detail.html");
     }
 
+    //显示处理日志
+    public function show_handle_log(){
+        
+    }
+
     //显示正在处理的事件表
     public function show_doing_list(){
         $this->assign("active_title","doing_handle");

@@ -8,12 +8,12 @@
         //查询所有待处理事件
         public function get_all_unhandle($pInfo,$processorID){
             //多表联合查询
-            $sql  = "SELECT a.id,b.title,t.name as type_name ,a.time,a.description,d.username as zpname FROM
+            $sql  = "SELECT a.event_id,b.title,t.name as type_name ,a.time,a.description,d.username as zpname FROM
 (SELECT * FROM yq_event_designate  WHERE processor = ? ) as a LEFT JOIN yq_event as b on a.event_id = b.id
 LEFT JOIN yq_user AS d on d.id = a.manager LEFT JOIN yq_event_type AS t on b.type = t.id WHERE b.state = \"已指派\" limit ?,?;";
 
-            $sql2 = "SELECT a.id,b.title,t.name as type_name,a.time,a.description,d.username as zpname FROM
-(SELECT * FROM yq_event_designate  WHERE processor = 3 ) as a LEFT JOIN yq_event as b on a.event_id = b.id
+            $sql2 = "SELECT a.event_id,b.title,t.name as type_name,a.time,a.description,d.username as zpname FROM
+(SELECT * FROM yq_event_designate  WHERE processor = ? ) as a LEFT JOIN yq_event as b on a.event_id = b.id
 LEFT JOIN yq_user AS d on d.id = a.manager LEFT JOIN yq_event_type AS t on b.type = t.id WHERE b.state = \"已指派\";";
 
 
@@ -38,7 +38,8 @@ LEFT JOIN yq_user AS d on d.id = a.manager LEFT JOIN yq_event_type AS t on b.typ
                 ->from("event AS e")
                 ->join("event_type as t","t.id = e.type","left")
                 ->join("user","e.manager = yq_user.id","left")
-                ->where(array("e.id"=>(int)$id))
+                ->where("e.id",(int)$id)
+                ->where("e.state","已指派")
                 ->get()->result_array();
 
             if(!empty($data)){
