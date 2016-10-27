@@ -6,6 +6,9 @@ class Handler extends MY_Controller {
     public function __construct(){
         parent::__construct();
         $this->load->model('handler_model');
+
+        $this->session->set_userdata("uid",3);
+        $this->session->set_userdata('name',"王五");
     }
 
     public function index()
@@ -47,7 +50,9 @@ class Handler extends MY_Controller {
             $pData['search'] = '';
         }
 
-        $data = $this->handler_model->get_all_unhandle($pData,3);
+        $uid = $this->session->userdata('uid');
+
+        $data = $this->handler_model->get_all_unhandle($pData,$uid);
         echo json_encode($data);
 
     }
@@ -67,10 +72,20 @@ class Handler extends MY_Controller {
         $this->all_display("handler/show_unhandle_detail.html");
     }
 
-    //显示处理日志
+    //显示处理日志页面
     public function show_handle_log(){
-        
+        $event_id = $this->input->get('id');
+        /*
+         * 点击开始处理后，向event_log表写一条记录，pid为空，后续
+         * 日志已该id为pid
+         */
+        $this->handler_model->insert_parent_log($event_id);
+
+        $this->assign("active_title","doing_handle");
+        $this->assign("active_parent","handle_parent");
+        $this->all_display('handler/handle_logs.html');
     }
+
 
     //显示正在处理的事件表
     public function show_doing_list(){
