@@ -370,11 +370,7 @@ $config['encryption_key'] = 'liym';
 $config['sess_driver'] = 'files';
 $config['sess_cookie_name'] = 'ci_session';
 $config['sess_expiration'] = 7200;
-<<<<<<< Updated upstream
 $config['sess_save_path'] = $_SERVER['DOCUMENT_ROOT'] . "/ci_session/";
-=======
-$config['sess_save_path'] = '/ci_session';
->>>>>>> Stashed changes
 $config['sess_match_ip'] = FALSE;
 $config['sess_time_to_update'] = 300;
 $config['sess_regenerate_destroy'] = FALSE;
