@@ -1,10 +1,9 @@
-
 <!-- BEGIN SIDEBAR -->
 <aside>
     <div id="sidebar" class="nav-collapse">
         <ul class="sidebar-menu" id="nav-accordion">
-            <li >
-                <a href="/" >
+            <li>
+                <a href="/">
                     <i class="fa fa-dashboard">
                     </i>
                 <span>
@@ -54,13 +53,13 @@
                             待指派事件
                         </a>
                     </li>
-                    <li>
-                        <a href="buttons.html">
-                            已指派执行事件
+                    <li id="event_is_designate">
+                        <a href="/designate/event_is_designate">
+                            已指派事件
                         </a>
                     </li>
-                    <li>
-                        <a href="widget.html">
+                    <li id="event_search">
+                        <a href="/designate/event_search">
                             事件检索
                         </a>
                     </li>
@@ -79,7 +78,7 @@
                 </a>
                 <ul class="sub">
                     <li id="wait_to_handle">
-                        <a href="/handler/wait_to_handle" >
+                        <a href="/handler/wait_to_handle">
                             待处理事件
                         </a>
                     </li>
@@ -323,7 +322,7 @@
 
 //添加active class
 <script>
-    $(document).ready(function(){
+    $(document).ready(function () {
         var title = "#<{$active_title}>";
         var parent_title = "#<{$active_parent}>";
         $(title).addClass('active');

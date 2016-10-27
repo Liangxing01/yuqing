@@ -18,10 +18,9 @@ class Designate_Model extends CI_Model
      */
     public function event_not_designate_pagination($pInfo)
     {
-        $data['aaData'] = $this->db->select("event.id, event.title, event_type.name AS type, source, user.name AS publisher, start_time")
+        $data['aaData'] = $this->db->select("event.id, event.title, source, user.name AS publisher, start_time")
                         ->from("event")
                         ->join("user", "user.id = event.publisher", "left")
-                        ->join("event_type", "event_type.id = event.type", "left")
                         ->where(array("state" => "已上报"))
                         ->limit(10, 0)
                         ->get()->result_array();
@@ -33,6 +32,68 @@ class Designate_Model extends CI_Model
                         ->join("event_type", "event_type.id = event.type", "left")
                         ->where(array("state" => "已上报"))
                         ->get()->num_rows();
+
+        $data['sEcho']                = $pInfo['sEcho'];
+
+        $data['iTotalDisplayRecords'] = $total;
+
+        $data['iTotalRecords']        = $total;
+
+        return $data;
+
+    }
+
+
+    /**
+     * 已指派事件 分页数据
+     * @param $pInfo
+     * @return mixed
+     */
+    public function event_is_designate_pagination($pInfo)
+    {
+        $data['aaData'] = $this->db->select("event.id, event.title, source, event_type.name AS type, publisher.name AS publisher, start_time")
+            ->from("event")
+            ->join("event_type", "event_type.id = event.type", "type")
+            ->join("user publisher", "publisher.id = event.publisher", "left")
+            ->where(array("state" => "已指派", "manager" => 2))
+            ->limit(10, 0)
+            ->get()->result_array();
+
+        //查询总记录条数
+        $total = $this->db->from("event")
+            ->join("user", "user.id = event.publisher", "left")
+            ->join("event_type", "event_type.id = event.type", "left")
+            ->where(array("state" => "已指派"))
+            ->get()->num_rows();
+
+        $data['sEcho']                = $pInfo['sEcho'];
+
+        $data['iTotalDisplayRecords'] = $total;
+
+        $data['iTotalRecords']        = $total;
+
+        return $data;
+
+    }
+
+
+    /**
+     * 事件检索 分页数据
+     * @param $pInfo
+     * @return mixed
+     */
+    public function event_search_pagination($pInfo)
+    {
+        $data['aaData'] = $this->db->select("event.id, event.title, source, event_type.name AS type, publisher.name AS publisher, manager.name AS manager, start_time, state")
+            ->from("event")
+            ->join("event_type", "event_type.id = event.type", "type")
+            ->join("user publisher", "publisher.id = event.publisher", "left")
+            ->join("user manager", "manager.id = event.manager", "left")
+            ->limit(10, 0)
+            ->get()->result_array();
+
+        //查询总记录条数
+        $total = $this->db->from("event")->get()->num_rows();
 
         $data['sEcho']                = $pInfo['sEcho'];
 

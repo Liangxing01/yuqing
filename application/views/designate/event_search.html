@@ -12,7 +12,7 @@
             <div class="col-lg-12">
                 <section class="panel">
                     <header class="panel-heading">
-                        <span class="label label-primary">待指派事件表</span>
+                        <span class="label label-primary">已指派事件表</span>
                            <span class="tools pull-right">
                            <a href="javascript:;" class="fa fa-chevron-down"></a>
                            <a href="javascript:;" class="fa fa-times"></a>
@@ -27,7 +27,9 @@
                                     <th>标题</th>
                                     <th>来源</th>
                                     <th>上报人</th>
-                                    <th class="hidden-phone">上报时间</th>
+                                    <th>指派人</th>
+                                    <th>上报时间</th>
+                                    <th>状态</th>
                                     <th>操作</th>
                                 </tr>
                                 </thead>
@@ -66,7 +68,7 @@
         "aaSorting": [[5, "desc"]],          //默认排序 第6列
 
         "bServerSide": true,
-        "sAjaxSource": "/designate/event_not_designate_data",
+        "sAjaxSource": "/designate/event_search_data",
         "sServerMethod": "POST",
 
 //        "fnServerParams": function (aoData) { //发送额外参数
@@ -99,6 +101,12 @@
                 'orderable': false
             },
             {
+                "sTitle": "指派人",
+                "mData": "manager",
+                'sClass': "text-center",
+                'orderable': false
+            },
+            {
                 "sTitle": "上报时间",
                 "mData": "start_time",
                 'sClass': "text-center",
@@ -107,12 +115,18 @@
                 }
             },
             {
+                "sTitle": "状态",
+                "mData": "state",
+                'sClass': "text-center",
+                'orderable': false
+            },
+            {
                 "sTitle": "操作",
                 "mData": "id",
                 'sClass': "text-center",
                 'orderable': false,
                 "mRender": function (data) {
-                    return "<a title='查看' href='/designate/event_designate?id=" + data + " ' class='btn btn-info btn-xs'>指派</a>";
+                    return "<a title='查看' href='/designate/event_designate?id=" + data + " ' class='btn btn-info btn-xs'>查看详情</a>";
                 }
             }
         ],

@@ -92,11 +92,115 @@ class Designate extends MY_controller
 
         $this->load->model("Designate_Model", "designate");
         $result = $this->designate->event_designate($data);
-        if($result){
+        if ($result) {
             echo "指派成功";
-        }else{
+        } else {
             echo "指派失败";
         }
+    }
+
+
+    /**
+     * 已指派事件列表 视图载入
+     */
+    public function event_is_designate()
+    {
+        $this->assign("active_title", "designate_parent");
+        $this->assign("active_parent", "event_is_designate");
+        $this->all_display("designate/event_is_designate.html");
+    }
+
+
+    /**
+     * 已指派事件列表分页 数据接口
+     */
+    public function event_is_designate_data(){
+        $pData['sEcho'] = $this->input->post('psEcho', true);           //DataTables 用来生成的信息
+        $pData['start'] = $this->input->post('iDisplayStart', true);    //显示的起始索引
+        $pData['length'] = $this->input->post('iDisplayLength', true);  //每页显示的行数
+        $pData['sort_th'] = $this->input->post('iSortCol_0', true);     //排序的列 默认第六列
+        $pData['sort_type'] = $this->input->post('sSortDir_0', true);   //排序的方向 默认 desc
+        $pData['search'] = $this->input->post('sSearch', true);         //全局搜索关键字 默认为空
+
+        if ($pData['start'] == NULL) {
+            $pData['start'] = 0;
+        }
+        if ($pData['length'] == NULL) {
+            $pData['length'] = 10;
+        }
+        if ($pData["sort_th"] == NULL) {
+            $pData["sort_th"] = 5;
+        }
+        if ($pData['sort_type'] == NULL) {
+            $pData['sort_type'] = "desc";
+        }
+        if ($pData['search'] == NULL) {
+            $pData['search'] = '';
+        }
+
+        $this->load->model("Designate_Model", "designate");
+        $data = $this->designate->event_is_designate_pagination($pData);
+
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($data));
+    }
+
+
+    /**
+     * 事件追踪 视图载入
+     */
+    public function event_tracer(){
+        $this->assign("active_title", "designate_parent");
+        $this->assign("active_parent", "event_is_designate");
+        $this->all_display("designate/event_tracer.html");
+    }
+
+
+    /**
+     * 事件检索列表 视图载入
+     */
+    public function event_search()
+    {
+        $this->assign("active_title", "designate_parent");
+        $this->assign("active_parent", "event_search");
+        $this->all_display("designate/event_search.html");
+    }
+
+
+    /**
+     * 事件检索列表分页 数据接口
+     */
+    public function event_search_data(){
+        $pData['sEcho'] = $this->input->post('psEcho', true);           //DataTables 用来生成的信息
+        $pData['start'] = $this->input->post('iDisplayStart', true);    //显示的起始索引
+        $pData['length'] = $this->input->post('iDisplayLength', true);  //每页显示的行数
+        $pData['sort_th'] = $this->input->post('iSortCol_0', true);     //排序的列 默认第六列
+        $pData['sort_type'] = $this->input->post('sSortDir_0', true);   //排序的方向 默认 desc
+        $pData['search'] = $this->input->post('sSearch', true);         //全局搜索关键字 默认为空
+
+        if ($pData['start'] == NULL) {
+            $pData['start'] = 0;
+        }
+        if ($pData['length'] == NULL) {
+            $pData['length'] = 10;
+        }
+        if ($pData["sort_th"] == NULL) {
+            $pData["sort_th"] = 5;
+        }
+        if ($pData['sort_type'] == NULL) {
+            $pData['sort_type'] = "desc";
+        }
+        if ($pData['search'] == NULL) {
+            $pData['search'] = '';
+        }
+
+        $this->load->model("Designate_Model", "designate");
+        $data = $this->designate->event_search_pagination($pData);
+
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($data));
     }
 
 
