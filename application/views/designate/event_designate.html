@@ -1,30 +1,67 @@
+<style>
+    .inbox-body{
+        background: #FFF;
+    }
+</style>
 <!-- BEGIN MAIN CONTENT -->
 <section id="main-content">
     <section class="wrapper site-min-height">
-        <!-- BEGIN ROW  -->
-        <div class="row">
-            <div class="col-lg-12">
-                <section class="panel">
-                    <header class="panel-heading">
-                        <span class="label label-primary">事件指派</span>
-                           <span class="tools pull-right">
-                           <a href="javascript:;" class="fa fa-chevron-down"></a>
-                           <a href="javascript:;" class="fa fa-times"></a>
-                           </span>
-                    </header>
-                    <div class="panel-body">
-                        <{$event['title']}>
-                        <{$event['start_time']}>
-                        <{$event['source']}>
-                        <{$event['url']}>
-                        <{$event['type']}>
-                        <{$event['publisher']}>
-                        <{$event['id']}>
+        <div class="inbox-head">
+            <h3>事件指派</h3>
+        </div>
+        <div class="inbox-body">
+            <div class="heading-inbox row">
+                <div class="col-md-8">
+                    <div class="compose-btn">
+                        <a href="#" class="btn btn-sm btn-info"><i class="fa fa-reply"></i> 指派</a>
+                        <button class="btn  btn-sm tooltips" data-original-title="Print" type="button" data-toggle="tooltip" data-placement="top" title=""><i class="fa fa-print"></i> </button>
+                        <button class="btn btn-sm tooltips" data-original-title="Trash" data-toggle="tooltip" data-placement="top" title=""><i class="fa fa-trash-o"></i></button>
                     </div>
-                </section>
+                </div>
+                <div class="col-md-4 text-right">
+                    <p class="date"> <{date("Y-m-d H:i:s",$event['start_time'])}></p>
+                </div>
+                <div class="col-md-12">
+                    <h4>
+                        <{$event['title']}>
+                    </h4>
+                </div>
+            </div>
+            <div class="sender-info">
+                <div class="row">
+                    <div class="col-md-12">
+                        <strong class="">上报人:</strong><span>&nbsp;<{$event['publisher']}></span>
+                        &nbsp;
+                        <strong>来源:</strong><span>&nbsp;<{$event['source']}></span>
+                        &nbsp;
+                        <strong>链接:</strong><span>&nbsp;<{$event['url']}></span>
+                        &nbsp;
+                        <strong>类型:</strong><span>&nbsp;<{$event['type']}></span>
+                    </div>
+                </div>
+            </div>
+            <div class="event-content">
+                <p><{$event['description']}></p>
+            </div>
+            <div class="attachment-mail">
+                <p>
+                    <span><i class="fa fa-paperclip"></i> 2 张截图 <{$event['picture']}></span>
+                </p>
+                <ul>
+                    <li>
+                        <a class="atch-thumb" href="#">
+                            <img alt="img" src="/img/pro-ac-2.png">
+                        </a>
+                    </li>
+                    <li>
+                        <a class="atch-thumb" href="#">
+                            <img alt="img" src="/img/pro-ac-1.png">
+                        </a>
+                    </li>
+                </ul>
             </div>
         </div>
-        <!-- END ROW  -->
+        <input type="hidden" name="event_id" value="<{$event['id']}>">
     </section>
 </section>
 <!-- END SECTION -->
