@@ -1,0 +1,105 @@
+<link rel="stylesheet" href="/css/common.css">
+<style>
+    .inbox-body {
+        background: #FFF;
+    }
+
+    .form-inbox {
+        border-top: 1px solid #dddddd;
+        padding-top: 10px;
+    }
+</style>
+<!-- BEGIN MAIN CONTENT -->
+<section id="main-content">
+    <section class="wrapper site-min-height">
+        <div class="inbox-head">
+            <h3>信息详情</h3>
+        </div>
+        <div class="inbox-body">
+            <div class="heading-inbox row">
+                <div class="col-md-12">
+                    <h4>
+                        <{$info['title']}>
+                    </h4>
+                </div>
+            </div>
+            <div class="sender-info">
+                <div class="row">
+                    <div class="col-md-12">
+                        <strong class="">上报人:</strong><span>&nbsp;<{$info['publisher']}></span>
+                        &nbsp;
+                        <strong>来源:</strong><span>&nbsp;<{$info['source']}></span>
+                        &nbsp;
+                        <strong>链接:</strong><span>&nbsp;<{$info['url']}></span>
+                        &nbsp;
+                        <strong>时间:</strong><span>&nbsp;<{date("Y-m-d H:i:s",$info['time'])}></span>
+                    </div>
+                </div>
+            </div>
+            <div class="info-content">
+                <p><{$info['description']}></p>
+            </div>
+            <div class="attachment-mail">
+                <p>
+                    <span><i class="fa fa-paperclip"></i> 2 张截图 <{$info['picture']}></span>
+                </p>
+                <ul>
+                    <li>
+                        <a class="atch-thumb" href="#">
+                            <img alt="img" src="/img/pro-ac-2.png">
+                        </a>
+                    </li>
+                    <li>
+                        <a class="atch-thumb" href="#">
+                            <img alt="img" src="/img/pro-ac-1.png">
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="form-inbox row">
+                <div class="shadow-line"></div>
+                <div class="col-md-3">
+                    <label for="type">信息类型:</label>
+                    <select name="type" id="type" class="form-control">
+                        <{foreach $type AS $t}>
+                        <option value="<{$t['id']}>"><{$t['name']}></option>
+                        <{/foreach}>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label>
+                        这条信息重复了?
+                    </label>
+                    <div class="m-t-5">
+                        <input type="radio" name="duplicate" value="0" checked>不是
+                        <input type="radio" name="duplicate" value="1">是
+                    </div>
+                </div>
+                <input type="hidden" name="id" id="info_id" value="<{$info['id']}>">
+                <div class="col-md-3 m-t-20">
+                    <a href="javascript:void(0);" id="commit-info-btn" class="btn btn-sm btn-info"><i class="fa fa-right"></i> 确认</a>
+                    <a href="/" class="btn btn-sm btn-info"><i class="fa fa-reply"></i> 指派</a>
+                </div>
+            </div>
+        </div>
+    </section>
+</section>
+<!-- END SECTION -->
+
+<!-- Page Script -->
+<script language="javascript">
+    $("#commit-info-btn").click(function () {
+        var id = $("#info_id").val();
+        var type = $('select#type option:selected').val();
+        var duplicate = $('input:radio:checked').val();
+
+        $.ajax({
+            type: "POST",
+            data: {"id": id, "type": type, "duplicate": duplicate},
+            url: "/designate/commit_info",
+            success: function (data) {
+                alert(data);
+            }
+        });
+    });
+</script>
