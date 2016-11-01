@@ -37,6 +37,33 @@ class Report_model extends CI_Model {
         $this->db->insert('yq_info',$data);
     }
 
+    public function update($arr){
+        $dup = 0;
+        if ($arr['url'] !== null){
+            $judge = $this->db->select("*")
+                ->from("info")
+                ->where(array('url'=>$arr['url']))
+                ->limit(10,0)
+                ->get()->result_array();
+            if ($judge != null){
+                $dup = 1;
+            }
+        }
+        $data = array(
+            'title' => $arr['title'],
+            'url' => $arr['url'],
+            'source' => $arr['source'],
+            'picture' => $arr['picture'],
+            'description' => $arr['description'],
+            'publisher' => $arr['uid'],
+            'time' => $arr['time'],
+            'state'=> 0,
+            'duplicate'=>$dup
+        );
+        $this->db->where('info.id',$arr['id']);
+        $this->db->update('info',$data);
+    }
+
 
     /**
      * 提交记录 分页数据
@@ -91,5 +118,19 @@ class Report_model extends CI_Model {
         }else{
             echo 1;
         }
+    }
+
+    public function get_state($id){
+        $data = $this->db->select("id,state")
+            ->from('info')
+            ->where('id',(int)$id)
+            ->get()->result_array();
+
+        return $data;
+    }
+
+    public function del($id){
+        $this->db->delete('info',array('id'=>$id));
+        return $nu = $this->db->affected_rows();
     }
 }

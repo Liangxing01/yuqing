@@ -124,7 +124,9 @@
                 "mData": "id",
                 'sClass': "text-center",
                 "mRender": function (data) {
-                    return "<a title='查看' href='/reporter/show_detail?id=" + data + " ' class='btn btn-info btn-xs'><i class='fa fa-eye'></i></a>";
+                    return "<a title='查看' href='/reporter/show_detail?id=" + data + " ' class='btn btn-info btn-xs'><i class='fa fa-eye'></i>" +
+                            "</a><a title='修改' onclick='pre_edit("+ data+ ")' class='btn btn-info btn-xs'><i class='fa fa-eye'></i></a>" +
+                            "</a><a title='删除' onclick='pre_del("+ data +")' class='btn btn-info btn-xs'><i class='fa fa-eye'></i></a>";
                 }
             }
         ],
@@ -145,4 +147,52 @@
         }
 
     });
+
+    function pre_edit(data) {
+        $.ajax({
+            type:"POST",
+            url:"/Reporter/pre_edit",
+            data:{id:data},
+            dataType:"json",
+            success:function (data) {
+                if (data['state'] == 1){
+                    alert("已经被查看，无法修改");
+                }else {
+                    window.location.href = '/Reporter/edit?id='+data['id'];
+                }
+            }
+        });
+    }
+
+    function pre_del(data) {
+        $.ajax({
+            type:"POST",
+            url:"/Reporter/pre_del",
+            data:{id:data},
+            dataType:"json",
+            success:function (data) {
+                if (data['state'] == 1){
+                    alert("已经被查看，无法删除");
+                }else {
+                    delete_report(data['id']);
+                }
+            }
+        });
+    }
+
+
+    function delete_report(data) {
+        $.ajax({
+            type:"POST",
+            url:"/Reporter/delete",
+            data:{id:data},
+            dataType:"json",
+            success:function (data) {
+                if (data['data'] !== 0){
+                    location.reload();
+                }
+            }
+        });
+    }
+
 </script>
