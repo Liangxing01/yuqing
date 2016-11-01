@@ -34,7 +34,6 @@ class Login extends MY_controller  {
                 $this->session->set_userdata("uid",$res['id']);
                 header("location:/Welcome/index");
             }else{
-                alert("账号名密码错误");
                 header("location:/Welcome/login");
 
             }

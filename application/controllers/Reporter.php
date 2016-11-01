@@ -9,6 +9,7 @@ class Reporter extends MY_controller {
         parent::__construct();
         $this->load->helper(array('form','url'));
         $this->load->library('session');
+        $this->load->model('Report_model','report');
     }
 
     public function wantReport(){
@@ -31,7 +32,6 @@ class Reporter extends MY_controller {
 
     public function report()
     {
-        $this->load->model('Report_model','report');
 //        $config['upload_path']      = './uploads/';
 //        $config['allowed_types']    = 'gif|jpg|png|jpeg';
 //        $config['max_size']         = 1000000;
@@ -45,10 +45,13 @@ class Reporter extends MY_controller {
         $title = $_POST['title'];
         $url = $_POST['url'];
         $source = $_POST['source'];
+        if ($source == 'other'){
+            $source = $_POST['other'];
+        }
         $description = $_POST['description'];
         $uid = $this->session->userdata('uid');
         $picture = 'test.jpg';
-        $data = array('title'=>$title,'source'=>$source,'picture'=>$picture,'url' => $url,'description'=>$description,'uid'=>$uid,'start_time'=>$_SERVER['REQUEST_TIME']);
+        $data = array('title'=>$title,'source'=>$source,'picture'=>$picture,'url' => $url,'description'=>$description,'uid'=>$uid,'time'=>$_SERVER['REQUEST_TIME']);
         $this->report->submit($data);
         $this->reportRecording();
     }
@@ -77,7 +80,6 @@ class Reporter extends MY_controller {
             $pData['search'] = '';
         }
 
-        $this->load->model('Report_model','report');
         $uid = $this->session->userdata('uid');
         $data = $this->report->get_all_report($pData,$uid);
 
@@ -92,7 +94,6 @@ class Reporter extends MY_controller {
             show_404();
         }
 
-        $this->load->model('Report_model','report');
         $event_info = $this->report->get_detail_by_id($event_id);
         $this->assign("event", $event_info);
         $this->assign("active_title", "report_parent");
@@ -100,4 +101,13 @@ class Reporter extends MY_controller {
         $this->all_display("report/show_report_detail.html");
     }
 
+    public function judge_url(){
+        $url = $_POST['url'];
+        if ($url == null){
+            echo "-1";
+        }else{
+            $judge = $this->report->judge_url($url);
+            echo $judge;
+        }
+    }
 }
