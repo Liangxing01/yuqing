@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: 黎佑民
- * Date: 2016/10/26
- * Time: 17:32
- */
+
 
 class Report_model extends CI_Model {
 
@@ -16,16 +11,30 @@ class Report_model extends CI_Model {
     }
 
     public function submit($arr){
+        $dup = 0;
+        if ($arr['url'] !== null){
+            $judge = $this->db->select("*")
+                ->from("info")
+                ->where(array('url'=>$arr['url']))
+                ->limit(10,0)
+                ->get()->result_array();
+            if ($judge != null){
+                $dup = 1;
+            }
+        }
+
         $data = array(
             'title' => $arr['title'],
             'url' => $arr['url'],
             'source' => $arr['source'],
             'picture' => $arr['picture'],
+            'description' => $arr['description'],
             'publisher' => $arr['uid'],
-            'start_time' => $arr['start_time'],
-            'description' => $arr['description']
+            'time' => $arr['time'],
+            'state'=> 0,
+            'duplicate'=>$dup
         );
-        $this->db->insert('yq_event',$data);
+        $this->db->insert('yq_info',$data);
     }
 
 
@@ -35,17 +44,17 @@ class Report_model extends CI_Model {
      * @return mixed
      */
     public function get_all_report($pInfo,$uid){
-        $data['aaData'] = $this->db->select("event.id,title,url,source,description,user.name As publisher,start_time as time")
-            ->from('event')
-            ->join('user','user.id = event.publisher','left')
+        $data['aaData'] = $this->db->select("info.id,title,url,source,description,user.name As publisher,time")
+            ->from('info')
+            ->join('user','user.id = info.publisher','left')
             ->where(array('user.id'=> (int)$uid))
             ->limit(10,0)
             ->get()->result_array();
 
         //查询总记录条数
-        $total = $this->db->select("event.id,title,url,source,description,user.name As publisher,start_time as time")
-            ->from('event')
-            ->join('user','user.id = event.publisher','left')
+        $total = $this->db->select("info.id,title,url,source,description,user.name As publisher,time")
+            ->from('info')
+            ->join('user','user.id = info.publisher','left')
             ->get()->num_rows();
 
         $data['sEcho']                = $pInfo['sEcho'];
@@ -58,16 +67,29 @@ class Report_model extends CI_Model {
     }
 
     public function get_detail_by_id($id){
-        $data = $this->db->select("event.id,title,url,source,picture,description,user.name As publisher,start_time as time")
-            ->from("event")
-            ->join("user","user.id = event.publisher","left")
-            ->where("event.id",(int)$id)
+        $data = $this->db->select("info.id,title,url,source,picture,description,user.name As publisher,time")
+            ->from("info")
+            ->join("user","user.id = info.publisher","left")
+            ->where("info.id",(int)$id)
             ->get()->result_array();
 
         if(!empty($data)){
             return $data[0];
         }else{
             return false;
+        }
+    }
+
+    public function judge_url($url){
+        $data = $this->db->select("*")
+            ->from('info')
+            ->where(array('url'=>$url))
+            ->limit(10,0)
+            ->get()->result_array();
+        if ($data == null){
+            echo 0;
+        }else{
+            echo 1;
         }
     }
 }

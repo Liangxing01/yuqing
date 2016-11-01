@@ -17,7 +17,7 @@
                             <div class="form-group">
                                 <label class="col-sm-2 col-sm-2 control-label">URL</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control round-input" name="url">
+                                    <input type="text" class="form-control round-input" name="url" id="url" onblur="judgeUrl()">
                                 </div>
                             </div>
                             <div class="form-group">
@@ -28,7 +28,17 @@
                             <div class="form-group">
                                 <label class="col-sm-2 col-sm-2 control-label">来源</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control round-input" name="source">
+                                    <!--<input type="text" class="form-control round-input" name="source">-->
+                                    <select id="source" name="source" onchange="changeSelect(this)">
+                                        <option value="天涯" selected>天涯</option>
+                                        <option value="大渝网">大渝网</option>
+                                        <option value="问政平台">问政平台</option>
+                                        <option value="看巴南APP">看巴南APP</option>
+                                        <option value="微博">微博</option>
+                                        <option value="微信">微信</option>
+                                        <option value="other">其它</option>
+                                        <input type="text" id="other" name="other" style="display:none">
+                                    </select>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -54,3 +64,31 @@
 
 </section>
 <!-- END SECTION -->
+<script>
+
+    function changeSelect(target) {
+        var $this = document.getElementById('source');
+        if ($this.value == 'other'){
+            document.getElementById("other").style.display = "block";
+        }
+    }
+    function judgeUrl() {
+        $.ajax({
+            type:"POST",
+            url:"/Reporter/judge_url",
+            data:{url:$('#url').val()},
+            datatype:"text",
+            success:function (data) {
+                if (data==1){
+                    alert("该url已经上报过了，请重新输入");
+                    $("#url").focus();
+                }
+                if (data == -1){
+                    alert("url不能为空，请重新输入");
+                    $("#url").focus();
+                }
+            }
+        })
+    }
+
+</script>
