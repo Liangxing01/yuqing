@@ -65,6 +65,7 @@ class Handler extends MY_Controller {
         }
 
         $event_info = $this->handler_model->get_detail_by_id($event_id);
+        var_dump($event_info);
 
         $this->assign("event", $event_info);
         $this->assign("active_title","wait_to_handle");
@@ -72,7 +73,7 @@ class Handler extends MY_Controller {
         $this->all_display("handler/show_unhandle_detail.html");
     }
 
-    //显示处理日志页面
+    //显示处理交互界面
     public function show_handle_log(){
         $event_id = $this->input->get('id');
         $title = $this->input->get('title');
@@ -86,7 +87,7 @@ class Handler extends MY_Controller {
         $this->assign("active_parent","handle_parent");
         $this->assign("title",$title);
         $this->assign("eid",$event_id);
-        $this->all_display('handler/handle_logs.html');
+        $this->all_display('handler/event_tracer.html');
     }
 
     //获取事件日志记录接口
@@ -166,9 +167,11 @@ class Handler extends MY_Controller {
 
     //交互显示事件处理进度
     public function show_tracer(){
+        $event_id = $this->input->get('eid');
         $this->assign("active_title","doing_handle");
         $this->assign("active_parent","handle_parent");
-        $this->all_display("designate/event_tracer.html");
+        $this->handler_model->get_all_logs_by_id($event_id);
+        $this->all_display("handler/event_tracer.html");
     }
 
     //展示组织结构
@@ -183,6 +186,10 @@ class Handler extends MY_Controller {
         $this->assign("active_title","done_list");
         $this->assign("active_parent","handle_parent");
         $this->all_display('handler/doing_unhandle.html');
+    }
+
+    public function test(){
+        phpinfo();
     }
 
 

@@ -26,6 +26,8 @@
                                     <th>编号</th>
                                     <th>标题</th>
                                     <th>类型</th>
+                                    <th>单位事件</th>
+                                    <th>事件等级</th>
                                     <th class="hidden-phone">指派时间</th>
                                     <th>描述</th>
                                     <th>指派人</th>
@@ -75,8 +77,8 @@
 
         "aoColumns": [
             {
-                "sTitle": "事件编号",
-                "mData": "event_id",
+                "sTitle": "编号",
+                "mData": "id",
                 'sClass': "text-center",
                 'orderable': false
             },
@@ -93,8 +95,23 @@
                 'orderable': false
             },
             {
+                "sTitle": "单位事件",
+                "mData": "is_group",
+                'sClass': "text-center",
+                'orderable': false,
+                "mRender" : function (data){
+                    return data == 1 ? "是" : "否";
+                }
+            },
+            {
+                "sTitle": "事件等级",
+                "mData": "rank",
+                'sClass': "text-center",
+                'orderable': false
+            },
+            {
                 "sTitle": "指派时间",
-                "mData": "time",
+                "mData": "zptime",
                 'sClass': "text-center",
                 "mRender" : function (data){
                     return timeToDate(data*1000);
@@ -114,7 +131,7 @@
             },
             {
                 "sTitle": "操作",
-                "mData": "event_id",
+                "mData": "eid",
                 'sClass': "text-center",
                 "mRender": function (data) {
                     return "<a title='查看' href='/handler/show_detail?id=" + data + " ' class='btn btn-info btn-xs'><i class='fa fa-eye'></i>查看</a>";

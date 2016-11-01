@@ -21,7 +21,7 @@
                     </div>
                 </div>
                 <div class="col-md-4 text-right">
-                    <p class="date"> <{date("Y-m-d H:i:s",$event['start_time'])}></p>
+                    <p class="date"> <{date("Y-m-d H:i:s",$event['time'])}></p>
                 </div>
                 <div class="col-md-12">
                     <h4>
@@ -63,7 +63,7 @@
                 </ul>
             </div>
         </div>
-        <input type="hidden" name="event_id" value="<{$event['id']}>">
+        <input type="hidden" name="event_id" value="<{$event['event_id']}>">
     </section>
 </section>
 <!-- END SECTION -->

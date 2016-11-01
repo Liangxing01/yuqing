@@ -8,13 +8,17 @@ class Handler_Model extends CI_Model{
     //查询所有待处理事件
     public function get_all_unhandle($pInfo,$processorID){
         //多表联合查询
-        $sql  = "SELECT a.event_id,b.title,t.name as type_name ,a.time,a.description,d.username as zpname FROM
-(SELECT * FROM yq_event_designate  WHERE processor = ? ) as a LEFT JOIN yq_event as b on a.event_id = b.id
-LEFT JOIN yq_user AS d on d.id = a.manager LEFT JOIN yq_event_type AS t on b.type = t.id WHERE b.state = \"已指派\" limit ?,?;";
+        $sql  = "SELECT a.id,a.time AS zptime,a.is_group,t.name as type_name,a.description,i.title,i.id as info_id,u.username as zpname,
+einfo.event_id as eid,e.rank  FROM (SELECT * FROM `yq_event_designate` WHERE state = '未处理' AND processor = ?) AS a 
+LEFT JOIN yq_event_info as einfo ON einfo.event_id = a.event_id LEFT JOIN yq_info AS i ON i.id = einfo.`info_id` 
+LEFT JOIN yq_user as u on u.id = a.manager LEFT JOIN yq_type as t on t.id = i.type LEFT JOIN yq_event as e ON
+ e.id = a.event_id order by zptime DESC  limit ?,? ;";
 
-        $sql2 = "SELECT a.event_id,b.title,t.name as type_name,a.time,a.description,d.username as zpname FROM
-(SELECT * FROM yq_event_designate  WHERE processor = ? ) as a LEFT JOIN yq_event as b on a.event_id = b.id
-LEFT JOIN yq_user AS d on d.id = a.manager LEFT JOIN yq_event_type AS t on b.type = t.id WHERE b.state = \"已指派\";";
+        $sql2 = "SELECT a.id,a.time AS zptime,a.is_group,t.name as type_name,a.description,i.title,i.id as info_id,u.username as zpname,
+einfo.event_id as eid,e.rank  FROM (SELECT * FROM `yq_event_designate` WHERE state = '未处理' AND processor = ?) AS a 
+LEFT JOIN yq_event_info as einfo ON einfo.event_id = a.event_id LEFT JOIN yq_info AS i ON i.id = einfo.`info_id` 
+LEFT JOIN yq_user as u on u.id = a.manager LEFT JOIN yq_type as t on t.id = i.type LEFT JOIN yq_event as e ON
+ e.id = a.event_id";
 
 
         $data['aaData'] = $this->db->query($sql,array($processorID,(int)$pInfo['start'],(int)$pInfo['length']))->result_array();
@@ -34,11 +38,14 @@ LEFT JOIN yq_user AS d on d.id = a.manager LEFT JOIN yq_event_type AS t on b.typ
 
     //根据event_id查询事件内容
     public function get_detail_by_id($id){
-        $data = $this->db->select("e.id,e.title,t.name as type_name,e.url,e.source,e.picture,e.description,yq_user.name,e.start_time")
-            ->from("event AS e")
-            ->join("event_type as t","t.id = e.type","left")
+        $data = $this->db->select("i.id,einfo.event_id as event_id,i.title,t.name as type_name,i.url,i.source,i.picture,
+        e.description,yq_user.name,i.time")
+            ->from("info AS i")
+            ->join("type as t","t.id = i.type","left")
+            ->join("event_info AS einfo","einfo.event_id = ".(int)$id,"left")
+            ->join("event as e","e.id = ".(int)$id,"left")
             ->join("user","e.manager = yq_user.id","left")
-            ->where("e.id",(int)$id)
+            ->where("i.id = einfo.info_id")
             ->where("e.state","已指派")
             ->get()->result_array();
 
@@ -49,7 +56,112 @@ LEFT JOIN yq_user AS d on d.id = a.manager LEFT JOIN yq_event_type AS t on b.typ
         }
     }
 
-    //获取事件所有操作记录
+
+    //查询正在处理事件
+    public function get_doing_handle($pInfo,$processorID){
+        $sql = "SELECT a.id,a.event_id,b.title,u.username as zpname,a.time,a.state FROM
+(SELECT * from  yq_event_designate WHERE processor = ? and state ='处理中' ) as a
+LEFT JOIN yq_event as b on a.event_id = b.id  LEFT JOIN yq_user as u on a.manager = u.id 
+limit ?,?";
+
+        $sql2 = "SELECT a.id,a.event_id,b.title,u.username as zpname,a.time,a.state FROM
+(SELECT * from  yq_event_designate WHERE processor = ? and state ='处理中' ) as a
+LEFT JOIN yq_event as b on a.event_id = b.id  LEFT JOIN yq_user as u on a.manager = u.id";
+
+        $data['aaData'] = $this->db->query($sql,array($processorID,(int)$pInfo['start'],(int)$pInfo['length']))->result_array();
+        $total = $this->db->query($sql2,array($processorID))->num_rows();
+        $data['sEcho']                = $pInfo['sEcho'];
+
+        $data['iTotalDisplayRecords'] = $total;
+
+        $data['iTotalRecords']        = $total;
+
+        if(!empty($data)){
+            return $data;
+        }else{
+            return false;
+        }
+    }
+
+    //获取时间的所有交互记录，pid为总结性发言
+    public function get_all_logs_by_id($eid){
+        $this->db->select("description,pid,id,time");
+        $data = $this->db->get_where('event_log',array('event_id' => $eid))->result_array();
+        if (empty($data)){
+            return false;
+        }else{
+            $format_words = array();
+            //以总结性的话为开头，子数组为评论组成数组
+            $summary_array = array();
+            $comment_array = array();
+            foreach ($data as $words){
+                //var_dump($words);
+                if($words['pid'] == ""){
+                    //为总结性发言,记录id值
+                    $id =   $words['id'];
+                    $time = $words['time'];
+                    $desc = $words['description'];
+                    $info = array(
+                        'id'    => $id,
+                        'time'  => $time,
+                        'desc'  => $desc,
+                        'comment' => array()
+                    );
+                    array_push($summary_array,$info);
+                }else{
+                    //评论加入评论数组
+                    $com = array(
+                        'id'    => $words['id'],
+                        'time'  => $words['time'],
+                        'desc'  => $words['description'],
+                        'pid'   => $words['pid']
+                    );
+                    array_push($comment_array,$com);
+                }
+            }
+
+            foreach ($comment_array as $words) {
+                    foreach ($summary_array as $k=> $sum) {
+                        if ($words['pid'] == $sum['id']) {
+                            //var_dump($sum);
+                            $info = array(
+                                'id' => $words['id'],
+                                'time' => $words['time'],
+                                'desc' => $words['desc'],
+                                'pid' => $words['pid']
+                            );
+                            array_push($summary_array[$k]['comment'], $info);
+
+                        }
+                    }
+
+
+            }
+
+            /*foreach ($data as $words){
+                if($words['pid'] != ""){
+                    foreach ($summary_array as $sum){
+                        var_dump($summary_array);
+                        if($words['pid'] == $sum['id']){
+                            $info = array(
+                                'id'    => $words['id'],
+                                'time'  => $words['time'],
+                                'desc'  => $words['description'],
+                                'pid'   => $words['pid']
+                            );
+                            array_push($sum['comment'],$info);
+                            //var_dump($sum);
+                        }
+                    }
+                }
+            }*/
+
+            //array_push($format_words,$summary_array);
+            var_dump($summary_array);
+        }
+    }
+
+    //获取事件所有交互记录，pid为总结性发言的id
     public function get_all_logs($eid,$uid){
         //判断是否为第一次处理，则插入一条父类记录
         $this->db->select('id,pid');
@@ -93,30 +205,7 @@ LEFT JOIN yq_user AS d on d.id = a.manager LEFT JOIN yq_event_type AS t on b.typ
         $this->db->where('');
     }
 
-    //查询正在处理事件
-    public function get_doing_handle($pInfo,$processorID){
-        $sql = "SELECT a.id,b.title,t.name as type_name, u.username as zpname,a.time,a.state FROM
-(SELECT * from  yq_event_log WHERE processor = ? and state ='处理中' and ISNULL(pid)) as a
-LEFT JOIN yq_event as b on a.event_id = b.id LEFT JOIN yq_event_type as t on b.type = t.id LEFT JOIN yq_user as u on a.manager = u.id limit ?,?";
 
-        $sql2 = "SELECT a.id,b.title,t.name as type_name, u.username as zpname,a.time,a.state FROM
-(SELECT * from  yq_event_log WHERE processor = ? and state ='处理中' and ISNULL(pid)) as a
-LEFT JOIN yq_event as b on a.event_id = b.id LEFT  JOIN yq_event_type as t on b.type = t.id LEFT JOIN yq_user as u on a.manager = u.id";
-
-        $data['aaData'] = $this->db->query($sql,array($processorID,(int)$pInfo['start'],(int)$pInfo['length']))->result_array();
-        $total = $this->db->query($sql2,array($processorID))->num_rows();
-        $data['sEcho']                = $pInfo['sEcho'];
-
-        $data['iTotalDisplayRecords'] = $total;
-
-        $data['iTotalRecords']        = $total;
-
-        if(!empty($data)){
-            return $data;
-        }else{
-            return false;
-        }
-    }
 
 
 }
