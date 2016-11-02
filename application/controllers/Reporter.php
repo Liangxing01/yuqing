@@ -16,9 +16,6 @@ class Reporter extends MY_controller {
         $this->assign("active_title", "report_parent");
         $this->assign("active_parent", "want_report");
         $this->all_display("report/want_report.html");
-//        $this->assign("active_title","report_parent");
-//        $this->assign("active_parent", "want_report");
-//        $this->all_display("report/want_report.html");
     }
 
 
@@ -89,16 +86,28 @@ class Reporter extends MY_controller {
     }
 
     public function show_detail(){
-        $event_id = $this->input->get("id");
-        if(!isset($event_id) || $event_id == null || $event_id == ""){
+        $info_id = $this->input->get("id");
+        if(!isset($info_id) || $info_id == null || $info_id == ""){
             show_404();
         }
 
-        $event_info = $this->report->get_detail_by_id($event_id);
-        $this->assign("event", $event_info);
+        $info = $this->report->get_detail_by_id($info_id);
+        $this->assign("event", $info);
         $this->assign("active_title", "report_parent");
         $this->assign("active_parent", "report_recording");
         $this->all_display("report/show_report_detail.html");
+    }
+
+    public function edit_judge_url(){
+        $url = $_POST['url'];
+        $id = $_POST['id'];
+        if ($url == null){
+            echo "-1";
+        }else{
+            $judge = $this->report->edit_judge_url($url,$id);
+//            $res = array('data',$judge);
+            echo json_encode($judge);
+        }
     }
 
     public function judge_url(){
@@ -109,5 +118,53 @@ class Reporter extends MY_controller {
             $judge = $this->report->judge_url($url);
             echo $judge;
         }
+    }
+
+    public function pre_edit(){
+        $info_id = $_POST['id'];
+        if(!isset($info_id) || $info_id == null || $info_id == ""){
+            show_404();
+        }
+        $info = array('data'=> $this -> report -> get_state($info_id));
+        echo json_encode($info['data'][0]);
+    }
+
+    public function edit(){
+        $id = $_GET['id'];
+        $info = $this->report->get_detail_by_id($id);
+        $this->assign("info",$info);
+        $this->all_display("report/edit_report.html");
+    }
+
+    public function update(){
+        $id = $_POST['id'];
+        $title = $_POST['title'];
+        $url = $_POST['url'];
+        $source = $_POST['source'];
+        if ($source == 'other'){
+            $source = $_POST['other'];
+        }
+        $description = $_POST['description'];
+        $uid = $this->session->userdata('uid');
+        $picture = 'test.jpg';
+        $data = array('id'=>$id,'title'=>$title,'source'=>$source,'picture'=>$picture,'url' => $url,'description'=>$description,'uid'=>$uid,'time'=>$_SERVER['REQUEST_TIME']);
+        $this->report->update($data);
+        $this->reportRecording();
+    }
+
+    public function pre_del(){
+        $info_id = $_POST['id'];
+        if(!isset($info_id) || $info_id == null || $info_id == ""){
+            show_404();
+        }
+        $info = array('data'=> $this -> report -> get_state($info_id));
+        echo json_encode($info['data'][0]);
+    }
+
+    public function delete(){
+        $id = $this->input->post('id');
+        $res =  $this->report->del($id);
+        $result = array('data'=> $res);
+        echo json_encode($result);
     }
 }

@@ -9,6 +9,7 @@ class Handler extends MY_Controller {
 
         $this->session->set_userdata("uid",3);
         $this->session->set_userdata('name',"王五");
+        $this->session->set_userdata('gid',1);
     }
 
     public function index()
@@ -65,6 +66,7 @@ class Handler extends MY_Controller {
         }
 
         $event_info = $this->handler_model->get_detail_by_id($event_id);
+        var_dump($event_info);
 
         $this->assign("event", $event_info);
         $this->assign("active_title","wait_to_handle");
@@ -72,7 +74,7 @@ class Handler extends MY_Controller {
         $this->all_display("handler/show_unhandle_detail.html");
     }
 
-    //显示处理日志页面
+    //显示处理交互界面
     public function show_handle_log(){
         $event_id = $this->input->get('id');
         $title = $this->input->get('title');
@@ -86,7 +88,7 @@ class Handler extends MY_Controller {
         $this->assign("active_parent","handle_parent");
         $this->assign("title",$title);
         $this->assign("eid",$event_id);
-        $this->all_display('handler/handle_logs.html');
+        $this->all_display('handler/event_tracer.html');
     }
 
     //获取事件日志记录接口
@@ -166,9 +168,47 @@ class Handler extends MY_Controller {
 
     //交互显示事件处理进度
     public function show_tracer(){
+        $gid = $this->session->userdata('gid');
+        $event_id = $this->input->get('eid');
         $this->assign("active_title","doing_handle");
         $this->assign("active_parent","handle_parent");
-        $this->all_display("designate/event_tracer.html");
+        $einfo = $this->handler_model->get_title_by_eid($event_id);
+        $done_btn = $this->handler_model->check_done_btn($gid,$event_id);
+        $this->assign('title',$einfo['title']);
+        $this->assign('rank',$einfo['rank']);
+        $this->assign('can_show_done_btn',$done_btn);
+        $this->all_display("handler/event_tracer.html");
+    }
+
+    /*
+        接口：获取事件进度
+        参数：事件id
+    */
+    public function get_event_logs(){
+        $event_id = $this->input->post('eid');
+        $data = $this->handler_model->get_all_logs_by_id($event_id);
+        echo json_encode($data);
+    }
+
+    /*
+        接口：发表评论
+        参数：事件id，是否为总结性发言标志位，父总结性发言id
+    */
+    public function post_comment(){
+        $event_id = $this->input->post('eid');
+        $pid = $this->input->post('pid');
+        $comment = $this->input->post('comment');
+        $res = $this->handler_model->insert_comment($event_id,$pid,$comment);
+        if($res){
+            $data = array(
+                'res' => 1
+            );
+        }else{
+            $data = array(
+                'res' => 0
+            );
+        }
+        echo json_encode($data);
     }
 
     //展示组织结构
@@ -183,6 +223,10 @@ class Handler extends MY_Controller {
         $this->assign("active_title","done_list");
         $this->assign("active_parent","handle_parent");
         $this->all_display('handler/doing_unhandle.html');
+    }
+
+    public function test(){
+        phpinfo();
     }
 
 
