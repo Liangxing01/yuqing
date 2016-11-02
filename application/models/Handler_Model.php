@@ -85,12 +85,11 @@ LEFT JOIN yq_event as b on a.event_id = b.id  LEFT JOIN yq_user as u on a.manage
 
     //获取时间的所有交互记录，pid为总结性发言
     public function get_all_logs_by_id($eid){
-        $this->db->select("description,pid,id,time");
+        $this->db->select("description,pid,id,time,name");
         $data = $this->db->get_where('event_log',array('event_id' => $eid))->result_array();
         if (empty($data)){
             return false;
         }else{
-            $format_words = array();
             //以总结性的话为开头，子数组为评论组成数组
             $summary_array = array();
             $comment_array = array();
@@ -98,13 +97,11 @@ LEFT JOIN yq_event as b on a.event_id = b.id  LEFT JOIN yq_user as u on a.manage
                 //var_dump($words);
                 if($words['pid'] == ""){
                     //为总结性发言,记录id值
-                    $id =   $words['id'];
-                    $time = $words['time'];
-                    $desc = $words['description'];
                     $info = array(
-                        'id'    => $id,
-                        'time'  => $time,
-                        'desc'  => $desc,
+                        'id'    => $words['id'],
+                        'time'  => $words['time'],
+                        'desc'  => $words['description'],
+                        'name'  => $words['name'],
                         'comment' => array()
                     );
                     array_push($summary_array,$info);
@@ -114,6 +111,7 @@ LEFT JOIN yq_event as b on a.event_id = b.id  LEFT JOIN yq_user as u on a.manage
                         'id'    => $words['id'],
                         'time'  => $words['time'],
                         'desc'  => $words['description'],
+                        'name'  => $words['name'],
                         'pid'   => $words['pid']
                     );
                     array_push($comment_array,$com);
@@ -138,29 +136,27 @@ LEFT JOIN yq_event as b on a.event_id = b.id  LEFT JOIN yq_user as u on a.manage
 
             }
 
-            /*foreach ($data as $words){
-                if($words['pid'] != ""){
-                    foreach ($summary_array as $sum){
-                        var_dump($summary_array);
-                        if($words['pid'] == $sum['id']){
-                            $info = array(
-                                'id'    => $words['id'],
-                                'time'  => $words['time'],
-                                'desc'  => $words['description'],
-                                'pid'   => $words['pid']
-                            );
-                            array_push($sum['comment'],$info);
-                            //var_dump($sum);
-                        }
-                    }
-                }
-            }*/
-
-            //array_push($format_words,$summary_array);
-            var_dump($summary_array);
+            return $summary_array;
         }
     }
 
+    //插入评论
+    public function insert_comment($eid,$pid,$com){
+        $speaker = $this->session->userdata('uid');
+        $name = $this->session->userdata('name');
+        if(empty($pid)){
+            //为总结性评论
+            $data = array(
+                'event_id' => $eid,
+                'pid'      => "",
+                'description' => $com,
+                'speak'    => $speaker,
+                'name'     => $name
+            );
+            $res = $this->db->insert('event_log',$data);
+            return $res;
+        }
+    }
     //获取事件所有交互记录，pid为总结性发言的id
     public function get_all_logs($eid,$uid){
         //判断是否为第一次处理，则插入一条父类记录
