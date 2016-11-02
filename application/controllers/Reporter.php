@@ -105,8 +105,8 @@ class Reporter extends MY_controller {
             echo "-1";
         }else{
             $judge = $this->report->edit_judge_url($url,$id);
-            $res = array('data',$judge);
-            echo json_encode($res);
+//            $res = array('data',$judge);
+            echo json_encode($judge);
         }
     }
 
