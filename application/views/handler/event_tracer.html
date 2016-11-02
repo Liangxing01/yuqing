@@ -477,3 +477,19 @@
     </section>
 </section>
 <!-- END SECTION -->
+
+<script>
+    $.ajax({
+        url : '/handler/get_event_logs',
+        type: 'post',
+        data: 'eid='+'1',
+        cache:false,
+        dataType:'json',
+        success:function(data){
+            console.log(data);
+        },
+        error:function(){
+
+        }
+    });
+</script>

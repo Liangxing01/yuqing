@@ -174,6 +174,27 @@ class Handler extends MY_Controller {
         $this->all_display("handler/event_tracer.html");
     }
 
+    /*
+        接口：获取事件进度
+        参数：事件id
+    */
+    public function get_event_logs(){
+        $event_id = $this->input->post('eid');
+        $data = $this->handler_model->get_all_logs_by_id($event_id);
+        echo json_encode($data);
+    }
+
+    /*
+        接口：发表评论
+        参数：事件id，是否为总结性发言标志位，父总结性发言id
+    */
+    public function post_comment(){
+        $event_id = $this->input->post('eid');
+        $pid = $this->input->post('pid');
+        $comment = $this->input->post('comment');
+        $res = $this->handler_model->insert_comment($event_id,$pid,$comment);
+    }
+
     //展示组织结构
     public function show_structure(){
         $this->assign("active_title", "structure");
