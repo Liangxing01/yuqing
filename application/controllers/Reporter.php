@@ -98,6 +98,18 @@ class Reporter extends MY_controller {
         $this->all_display("report/show_report_detail.html");
     }
 
+    public function edit_judge_url(){
+        $url = $_POST['url'];
+        $id = $_POST['id'];
+        if ($url == null){
+            echo "-1";
+        }else{
+            $judge = $this->report->edit_judge_url($url,$id);
+            $res = array('data',$judge);
+            echo json_encode($res);
+        }
+    }
+
     public function judge_url(){
         $url = $_POST['url'];
         if ($url == null){

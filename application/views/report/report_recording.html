@@ -155,10 +155,10 @@
             data:{id:data},
             dataType:"json",
             success:function (data) {
-                if (data['state'] == 1){
-                    alert("已经被查看，无法修改");
-                }else {
+                if (data['state'] == 0){
                     window.location.href = '/Reporter/edit?id='+data['id'];
+                }else {
+                    alert("已经被查看，无法修改");
                 }
             }
         });
@@ -171,7 +171,7 @@
             data:{id:data},
             dataType:"json",
             success:function (data) {
-                if (data['state'] == 1){
+                if (data['state'] !== 0){
                     alert("已经被查看，无法删除");
                 }else {
                     delete_report(data['id']);

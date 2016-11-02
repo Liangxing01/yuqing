@@ -81,18 +81,19 @@
     function judgeUrl() {
         $.ajax({
             type:"POST",
-            url:"/Reporter/judge_url",
-            data:{url:$('#url').val()},
-            datatype:"text",
+            url:"/Reporter/edit_judge_url",
+            data:{url:$('#url').val(),id:$('#id').val()},
+            datatype:"json",
             success:function (data) {
-                if (data==1){
-                    alert("该url已经上报过了，请重新输入");
-                    $("#url").focus();
-                }
-                if (data == -1){
-                    alert("url不能为空，请重新输入");
-                    $("#url").focus();
-                }
+                console.log(data);
+//                if (data!==null){
+//                    alert("该url已经上报过了，请重新输入");
+//                    $("#url").focus();
+//                }
+//                if (data == -1){
+//                    alert("url不能为空，请重新输入");
+//                    $("#url").focus();
+//                }
             }
         })
     }

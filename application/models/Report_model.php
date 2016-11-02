@@ -107,6 +107,20 @@ class Report_model extends CI_Model {
         }
     }
 
+    public function edit_judge_url($url,$id){
+        $data = $this->db->select("*")
+            ->from('info')
+            ->where(array('url'=>$url,
+                'id!='=>$id))
+            ->limit(10,0)
+            ->get()->result_array();
+        if ($data == null){
+            return 0;
+        }else{
+            return $data[0];
+        }
+    }
+
     public function judge_url($url){
         $data = $this->db->select("*")
             ->from('info')
@@ -114,9 +128,9 @@ class Report_model extends CI_Model {
             ->limit(10,0)
             ->get()->result_array();
         if ($data == null){
-            echo 0;
+            return 0;
         }else{
-            echo 1;
+            return 1;
         }
     }
 
