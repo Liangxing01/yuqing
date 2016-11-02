@@ -83,6 +83,34 @@ LEFT JOIN yq_event as b on a.event_id = b.id  LEFT JOIN yq_user as u on a.manage
         }
     }
 
+    /*
+     * 根据eid获取事件标题
+     * 参数：eid
+     */
+    public function get_title_by_eid($eid){
+        $this->db->select('title,rank');
+        $data = $this->db->get_where('event',array('id'=>$eid))->result_array();
+        if(!empty($data)){
+            return $data[0];
+        }else{
+            return false;
+        }
+    }
+
+    /*
+     * 检查用户是否显示"确定事件完结"按钮
+     * 参数：gid,eid
+     */
+    public function check_done_btn($gid,$eid){
+        $this->db->select('main_processor');
+        $main_id = $this->db->get_where('event',array('id'=>$eid))->row();
+        if($main_id->main_processor == $gid){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     //获取时间的所有交互记录，pid为总结性发言
     public function get_all_logs_by_id($eid){
         $this->db->select("description,pid,id,time,name");
@@ -149,6 +177,17 @@ LEFT JOIN yq_event as b on a.event_id = b.id  LEFT JOIN yq_user as u on a.manage
             $data = array(
                 'event_id' => $eid,
                 'pid'      => "",
+                'description' => $com,
+                'speak'    => $speaker,
+                'name'     => $name
+            );
+            $res = $this->db->insert('event_log',$data);
+            return $res;
+        }else{
+            //子评论
+            $data = array(
+                'event_id' => $eid,
+                'pid'      => $pid,
                 'description' => $com,
                 'speak'    => $speaker,
                 'name'     => $name

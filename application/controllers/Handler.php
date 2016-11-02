@@ -9,6 +9,7 @@ class Handler extends MY_Controller {
 
         $this->session->set_userdata("uid",3);
         $this->session->set_userdata('name',"王五");
+        $this->session->set_userdata('gid',1);
     }
 
     public function index()
@@ -167,10 +168,15 @@ class Handler extends MY_Controller {
 
     //交互显示事件处理进度
     public function show_tracer(){
+        $gid = $this->session->userdata('gid');
         $event_id = $this->input->get('eid');
         $this->assign("active_title","doing_handle");
         $this->assign("active_parent","handle_parent");
-        $this->handler_model->get_all_logs_by_id($event_id);
+        $einfo = $this->handler_model->get_title_by_eid($event_id);
+        $done_btn = $this->handler_model->check_done_btn($gid,$event_id);
+        $this->assign('title',$einfo['title']);
+        $this->assign('rank',$einfo['rank']);
+        $this->assign('can_show_done_btn',$done_btn);
         $this->all_display("handler/event_tracer.html");
     }
 
@@ -193,6 +199,16 @@ class Handler extends MY_Controller {
         $pid = $this->input->post('pid');
         $comment = $this->input->post('comment');
         $res = $this->handler_model->insert_comment($event_id,$pid,$comment);
+        if($res){
+            $data = array(
+                'res' => 1
+            );
+        }else{
+            $data = array(
+                'res' => 0
+            );
+        }
+        echo json_encode($data);
     }
 
     //展示组织结构
