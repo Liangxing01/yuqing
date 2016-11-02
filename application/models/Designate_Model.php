@@ -21,6 +21,7 @@ class Designate_Model extends CI_Model
         $data['aaData'] = $this->db->select("info.id, info.title, source, user.name AS publisher, time")
             ->from("info")
             ->join("user", "user.id = info.publisher", "left")
+            ->where(array("state !=" => 2))
             ->where_not_in("select info_id from yq_event_info")
             ->limit(10, 0)
             ->get()->result_array();
@@ -73,7 +74,7 @@ class Designate_Model extends CI_Model
      */
     public function info_commit($data)
     {
-        return $this->db->set(array("type" => $data["type"], "duplicate" => $data["duplicate"]))
+        return $this->db->set(array("type" => $data["type"], "duplicate" => $data["duplicate"], "state" => 2))
             ->where(array("id" => $data["id"]))
             ->update("info");
     }

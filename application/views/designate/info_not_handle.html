@@ -14,7 +14,7 @@
                         <span class="label label-primary">待处理事件列表</span>
                            <span class="tools pull-right">
                            <a href="javascript:;" class="fa fa-chevron-down"></a>
-                           <a href="javascript:;" class="fa fa-times"></a>
+                           <a href="javascript:;" class="fa fa-refresh"></a>
                            </span>
                     </header>
                     <div class="panel-body">
@@ -132,4 +132,11 @@
         }
 
     });
+
+
+    //刷新表格
+    jQuery(".panel .tools .fa-refresh").click(function () {
+        $("#info_not_handle_table").DataTable().ajax.reload(null, false);
+    });
+
 </script>
