@@ -298,7 +298,7 @@ class Designate extends MY_controller
     public function tree()
     {
         $this->load->model("Designate_Model", "designate");
-        $this->designate->get_relation_tree();
+        echo $this->designate->get_relation_tree();
     }
 
 }

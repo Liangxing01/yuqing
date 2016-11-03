@@ -206,6 +206,10 @@ class Designate_Model extends CI_Model
     }
 
 
+    /**
+     * 生成组织关系树的 Json数据
+     * @return Json
+     */
     public function get_relation_tree()
     {
         $root = $this->db->query("SELECT lft, rgt FROM yq_relation WHERE name='组织关系'")->first_row('array');
@@ -214,25 +218,55 @@ class Designate_Model extends CI_Model
         $right = array();
 
         // 获得root节点的所有子节点
-        $sql = "SELECT name, lft, rgt FROM yq_relation WHERE lft BETWEEN ? AND ? ORDER BY lft ASC";
+        $sql = "SELECT name, lft, rgt, type, uid FROM yq_relation WHERE lft BETWEEN ? AND ? ORDER BY lft ASC";
         $result = $this->db->query($sql, array($root['lft'], $root['rgt']))->result_array();
 
+        $tree_json = "";
         // 显示
         foreach ($result AS $row) {
             // 检查栈里面有没有元素
             if (count($right) > 0) {
+
                 // 检查我们是否需要从栈中删除一个节点
-                while ($right[count($right) - 1] < $row['rgt']) {
+                while ($right[count($right) - 1]["rgt"] < $row['rgt']) {
+                    if($right[count($right) - 1]["rgt"] - $right[count($right) - 1]["lft"] !=1){
+                        $tree_json .= "]},";
+                    }else{
+                        $tree_json .= "},";
+                    }
                     array_pop($right);
+                }
+
+                //判断是否为父节点
+                if($row["rgt"] - $row["lft"] != 1){
+                    $tree_json .= "{name: '".$row["name"]."',id:".$row["uid"].",open:false,children:[";
+                }else{
+                    $tree_json .= "{name: '".$row["name"]."',id:".$row["uid"];
+                }
+
+            } else {
+                $tree_json .= "{name:'" . $row["name"]."'";
+                if($row["rgt"] - $row["lft"] != 1){
+                    $tree_json .= ",open:true,children:[";
                 }
             }
 
-            // 显示缩进的节点标题
-            echo str_repeat('&nbsp;', count($right)) . $row['name'] . "</br>";
-
             // 把这个节点添加到栈中
-            $right[] = $row['rgt'];
+            $right[] = $row;
         }
+
+        //闭合括号
+        while (!empty($right)) {
+            if($right[count($right) - 1]["rgt"] - $right[count($right) - 1]["lft"] !=1){
+                $tree_json .= "]}";
+            }else{
+                $tree_json .= "}";
+            }
+            array_pop($right);
+        }
+
+        $tree_json = str_replace(",]","]",$tree_json);
+        return $tree_json;
     }
 
 
