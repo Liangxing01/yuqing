@@ -30,7 +30,7 @@ class Login extends MY_controller  {
                 $this->input->post('password')
             );
             if($res['flag'] == true){
-                echo $res['id'];
+//                echo $res['id'];
                 $this->session->set_userdata("uid",$res['id']);
                 header("location:/Welcome/index");
             }else{

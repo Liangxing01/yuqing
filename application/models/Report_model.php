@@ -121,16 +121,17 @@ class Report_model extends CI_Model {
         }
     }
 
-    public function judge_url($url){
+    public function judge_url($url,$uid){
         $data = $this->db->select("*")
             ->from('info')
-            ->where(array('url'=>$url))
+            ->where(array('url'=>$url,
+                'publisher'=>$uid))
             ->limit(10,0)
             ->get()->result_array();
         if ($data == null){
-            return 0;
-        }else{
             return 1;
+        }else{
+            return 0;
         }
     }
 
