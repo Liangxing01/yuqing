@@ -41,9 +41,9 @@ class Login extends MY_controller  {
             $session_data = array(
                 'uid' => $tempData['id'],
                 'name' => $tempData['name'],
-                'gid' => $tempData['gid']==null?'无组织id':$tempData['gid'],
-                'gname' => $tempData['gname']==null?'无组织':$tempData['gname'],
-                'qxid' => $tempData['pid']==null?'无权限':$tempData['pid']
+                'gid' => $tempData['gid']==null?'':$tempData['gid'],
+                'gname' => $tempData['gname']==null?'':$tempData['gname'],
+                'qxid' => $tempData['pid']==null?'':$tempData['pid']
             );
 
             if ($res['flag'] == true){
