@@ -32,9 +32,10 @@ class Reporter extends MY_controller {
     }
 
     /**
-     * 添加事件 接口
+     * 添加或更新事件 接口
+     * 如果id为空添加事件，反之更新事件
      */
-    public function report()
+    public function reportOrUpdate()
     {
 //        $config['upload_path']      = './uploads/';
 //        $config['allowed_types']    = 'gif|jpg|png|jpeg';
@@ -47,14 +48,15 @@ class Reporter extends MY_controller {
 //        $this->upload->do_upload('file_name');
 //        $error = array('error' => $this->upload->display_errors());
         $data = $this->input->post('data');
-        $title = $data[0]['value'];
-        $url = $data[1]['value'];
-        $source = $data[2]['value'] == 'other'?$data[3]['value']:$data[2]['value'];
-        $description = $data[4]['value'];
+        $id = $data[0]['value'];
+        $title = $data[1]['value'];
+        $url = $data[2]['value'];
+        $source = $data[3]['value'] == 'other'?$data[4]['value']:$data[3]['value'];
+        $description = $data[5]['value'];
         $picture = 'test.jpg';
         $uid = $this->session->userdata('uid');
-        $data = array('title'=>$title,'source'=>$source,'picture'=>$picture,'url' => $url,'description'=>$description,'uid'=>$uid,'time'=>$_SERVER['REQUEST_TIME']);
-        $nu = $this->report->add($data);
+        $data = array('id'=>$id,'title'=>$title,'source'=>$source,'picture'=>$picture,'url' => $url,'description'=>$description,'uid'=>$uid,'time'=>$_SERVER['REQUEST_TIME']);
+        $nu = $this->report->add_or_update($data);
         $res = array(
             "res"=> $nu
         );
@@ -169,25 +171,7 @@ class Reporter extends MY_controller {
         $this->all_display("report/edit_report.html");
     }
 
-    /**
-     * 更新事件 数据接口
-     */
-    public function update(){
-        $data = $this->input->post('data');
-        $id = $data[0]['value'];
-        $title = $data[1]['value'];
-        $url = $data[2]['value'];
-        $source = $data[3]['value'] == 'other'?$data[4]['value']:$data[3]['value'];
-        $description = $data[5]['value'];
-        $picture = 'test.jpg';
-        $uid = $this->session->userdata('uid');
-        $data = array('id'=>$id,'title'=>$title,'source'=>$source,'picture'=>$picture,'url' => $url,'description'=>$description,'uid'=>$uid,'time'=>$_SERVER['REQUEST_TIME']);
-        $nu = $this->report->update($data);
-        $res = array(
-            'res' => $nu
-        );
-        echo json_encode($res);
-    }
+
 
     /**
      * 删除事件 数据接口

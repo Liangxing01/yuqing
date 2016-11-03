@@ -46,7 +46,7 @@
                                         <option value="微信">微信</option>
                                         <option value="线下">线下</option>
                                         <option value="other">其它</option>
-                                        <input type="text" id="other" name="other" style="display:none">
+                                        <input type="text" id="other" name="other" style="display:none"/>
                                     </select>
                                 </div>
                             </div>
@@ -101,28 +101,11 @@
         })
     }
 
-
-    var str = '<{$info.source}>';
-    $("#source option").each(function (i) {
-
-        var val = $(this).val();
-        if (val == str){
-            $(this).attr("selected",true);
-            return;
-        }
-        if (val == str && i == 7){
-            $(this).attr("selected",true);
-            $("#other").css("display","block");
-            $("#other").val(str);
-        }
-
-    });
-
     $('#submit1').click(function (){
         var formdata = $("#form1").serializeArray();
         $.ajax({
             type:"post",
-            url:"/Reporter/update",
+            url:"/Reporter/reportOrUpdate",
             data:{data:formdata},
             dataType:"JSON",
             success:function (data) {
@@ -135,5 +118,23 @@
             }
         })
     });
+
+    var str = '<{$info.source}>';
+    $("#source option").each(function (i) {
+
+        var val = $(this).val();
+        if (val == str){
+            $(this).attr("selected",true);
+            return;
+        }
+        if (i == 7){
+            $(this).attr("selected",true);
+            $("#other").css("display","block");
+            $("#other").val(str);
+        }
+
+    });
+
+
 
 </script>

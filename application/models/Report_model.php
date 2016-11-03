@@ -10,7 +10,7 @@ class Report_model extends CI_Model {
         $this->load->database();
     }
 
-    public function add($arr){
+    public function add_or_update($arr){
         $dup = 0;
         if ($arr['url'] !== null){
             $judge = $this->db->select("*")
@@ -22,6 +22,7 @@ class Report_model extends CI_Model {
                 $dup = 1;
             }
         }
+        $id = $arr['id'];
 
         $data = array(
             'title' => $arr['title'],
@@ -34,35 +35,12 @@ class Report_model extends CI_Model {
             'state'=> 0,
             'duplicate'=>$dup
         );
-        $this->db->insert('yq_info',$data);
-        return $nu = $this->db->affected_rows();
-    }
-
-    public function update($arr){
-        $dup = 0;
-        if ($arr['url'] !== null){
-            $judge = $this->db->select("*")
-                ->from("info")
-                ->where(array('url'=>$arr['url']))
-                ->limit(10,0)
-                ->get()->result_array();
-            if ($judge != null){
-                $dup = 1;
-            }
+        if ($id == null){
+            $this->db->insert('yq_info',$data);
+        }else{
+            $this->db->where('info.id',$arr['id']);
+            $this->db->update('info',$data);
         }
-        $data = array(
-            'title' => $arr['title'],
-            'url' => $arr['url'],
-            'source' => $arr['source'],
-            'picture' => $arr['picture'],
-            'description' => $arr['description'],
-            'publisher' => $arr['uid'],
-            'time' => $arr['time'],
-            'state'=> 0,
-            'duplicate'=>$dup
-        );
-        $this->db->where('info.id',$arr['id']);
-        $this->db->update('info',$data);
         return $nu = $this->db->affected_rows();
     }
 
@@ -96,6 +74,11 @@ class Report_model extends CI_Model {
         return $data;
     }
 
+    /**
+     * 获取详细记录
+     * @param $id 记录id
+     * @return bool 没有获取到记录
+     */
     public function get_detail_by_id($id){
         $data = $this->db->select("info.id,title,url,source,picture,description,user.name As publisher,time")
             ->from("info")
@@ -103,12 +86,15 @@ class Report_model extends CI_Model {
             ->where("info.id",(int)$id)
             ->get()->result_array();
 
-        if(!empty($data)){
-            return $data[0];
-        }else{
-            return false;
-        }
+        return $data == null?false:$data[0];
     }
+
+    /**
+     * 修改页面url判断
+     * @param $url 输入的url
+     * @param $id 记录id
+     * @return int 有无重复，0表示没有重复，反之取出第一条
+     */
 
     public function edit_judge_url($url,$id){
         $data = $this->db->select("*")
@@ -117,12 +103,15 @@ class Report_model extends CI_Model {
                 'id!='=>$id))
             ->limit(10,0)
             ->get()->result_array();
-        if ($data == null){
-            return 0;
-        }else{
-            return $data[0];
-        }
+        return $data == null? 0:$data[0];
     }
+
+    /**
+     * 提交页面url判断
+     * @param $url 输入的url
+     * @param $uid 自己的id
+     * @return int 有无重复，0表示没有重复
+     */
 
     public function judge_url($url,$uid){
         $data = $this->db->select("*")
@@ -131,12 +120,15 @@ class Report_model extends CI_Model {
                 'publisher'=>$uid))
             ->limit(10,0)
             ->get()->result_array();
-        if ($data == null){
-            return 0;
-        }else{
-            return 1;
-        }
+
+        return $data == null?0:1;
     }
+
+    /**
+     * 获取状态值
+     * @param $id 记录id
+     * @return mixed 返回记录id和其状态值
+     */
 
     public function get_state($id){
         $data = $this->db->select("id,state")
@@ -147,6 +139,11 @@ class Report_model extends CI_Model {
         return $data;
     }
 
+    /**
+     * 删除记录
+     * @param $id  记录id
+     * @return mixed 影响条数
+     */
     public function del($id){
         $this->db->delete('info',array('id'=>$id));
         return $nu = $this->db->affected_rows();
