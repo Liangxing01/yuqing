@@ -21,13 +21,16 @@ class Designate_Model extends CI_Model
         $data['aaData'] = $this->db->select("info.id, info.title, source, user.name AS publisher, time")
             ->from("info")
             ->join("user", "user.id = info.publisher", "left")
-            ->where(array("state !=" => 2))
+            ->where("state != 2 AND (info.id LIKE \"%" . $pInfo["search"] . "%\" ESCAPE \"!\" OR info.source LIKE \"%" . $pInfo['search'] . "%\" ESCAPE \"!\" OR user.name LIKE \"%" . $pInfo["search"] . "%\" ESCAPE \"!\" OR info.title LIKE \"%" . $pInfo["search"] . "%\" ESCAPE \"!\")")
             ->where_not_in("select info_id from yq_event_info")
-            ->limit(10, 0)
+            ->order_by("time", $pInfo["sort_type"])
+            ->limit($pInfo["length"], $pInfo["start"])
             ->get()->result_array();
 
         //查询总记录条数
         $total = $this->db->from("info")
+            ->join("user", "user.id = info.publisher", "left")
+            ->where("state != 2 AND (info.id LIKE \"%" . $pInfo["search"] . "%\" ESCAPE \"!\" OR info.source LIKE \"%" . $pInfo['search'] . "%\" ESCAPE \"!\" OR user.name LIKE \"%" . $pInfo["search"] . "%\" ESCAPE \"!\" OR info.title LIKE \"%" . $pInfo["search"] . "%\" ESCAPE \"!\")")
             ->where_not_in("select info_id from yq_event_info")
             ->get()->num_rows();
 
