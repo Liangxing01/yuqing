@@ -197,10 +197,56 @@ LEFT JOIN yq_event as b on a.event_id = b.id  LEFT JOIN yq_user as u on a.manage
         }
     }
 
+    //确定事件 已完成 功能
+    public function confirm_done($eid,$gid){
+        $check = $this->check_done_btn($gid,$eid);
+        if($check){
+            $data = array(
+                'state' => '未审核'
+            );
+            $this->db->where('id',$eid);
+            $res = $this->db->update('event',$data);
+            if($res){
+                return true;
+            }else{
+                return false;
+            }
+        }else{
+            return false;
+        }
+    }
 
-    //获取 已完成 事件列表
+
+    //获取 已完成 或 未审核 事件列表
     public function get_done_list($pInfo,$processorID){
+        $data['aaData'] = $this->db->select("e.id,e.title,e.description,e.rank,e.state,e.end_time")
+            ->from('event_designate AS ed')
+            ->join('event AS e','ed.event_id = e.id','left')
+            ->join('event_info AS einfo','einfo.event_id = e.id','left')
+            ->join('info','info.id = einfo.info_id','left')
+            ->where('ed.processor',$processorID)
+            ->where('e.state','未审核')
+            ->or_where('e.state','已完成')
+            ->limit($pInfo['length'],$pInfo['start'])
+            ->get()->result_array();
 
+        $total = $this->db->select("e.id,e.title,e.description,e.rank,e.state,e.end_time")
+            ->from('event_designate AS ed')
+            ->join('event AS e','ed.event_id = e.id','left')
+            ->join('event_info AS einfo','einfo.event_id = e.id','left')
+            ->join('info','info.id = einfo.info_id','left')
+            ->where('ed.processor',$processorID)
+            ->where('e.state','未审核')
+            ->or_where('e.state','已完成')
+            ->get()->num_rows();
+
+        $data['sEcho'] = $pInfo['sEcho'];
+
+        $data['iTotalDisplayRecords'] = $total;
+
+        $data['iTotalRecords'] = $total;
+
+        return $data;
     }
 
     //获取事件所有交互记录，pid为总结性发言的id
