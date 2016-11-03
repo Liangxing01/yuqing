@@ -19,6 +19,15 @@ class Handler extends MY_Controller {
         $this->all_display('index.html');
     }
 
+    /*
+     * 主页接口：获取各项任务数统计数字
+     */
+    public function get_tasks_num(){
+        $uid = $this->session->userdata('uid');
+        $res = $this->handler_model->get_tasks_num($uid);
+        echo json_encode($res);
+    }
+
     //展示待处理事件页面
     public function wait_to_handle(){
         $this->assign("active_title","wait_to_handle");
