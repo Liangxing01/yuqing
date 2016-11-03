@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: 黎佑民
- * Date: 2016/10/26
- * Time: 14:47
- */
 
 class User extends CI_Model {
 

@@ -30,15 +30,15 @@
                             </div>
                             <div class="form-group">
                                 <label class="col-sm-2 col-sm-2 control-label">截图</label>
-                                <input type="file" id="file_name" name="file_name" value="{$info.picture}">
+                                <input type="file" id="file_name" name="file_name" value="<{$info.picture}>">
                             </div>
 
                             <div class="form-group">
                                 <label class="col-sm-2 col-sm-2 control-label">来源</label>
                                 <div class="col-sm-10">
                                     <!--<input type="text" class="form-control round-input" name="source">-->
-                                    <select id="source" name="source" onchange="changeSelect(this)">
-                                        <option value="天涯" selected>天涯</option>
+                                    <select id="source" name="source" onchange="changeSelect()">
+                                        <option value="天涯" >天涯</option>
                                         <option value="大渝网">大渝网</option>
                                         <option value="问政平台">问政平台</option>
                                         <option value="看巴南APP">看巴南APP</option>
@@ -72,10 +72,12 @@
 <!-- END SECTION -->
 <script>
 
-    function changeSelect(target) {
-        var $this = document.getElementById('source');
-        if ($this.value == 'other'){
-            document.getElementById("other").style.display = "block";
+    function changeSelect() {
+        if ($("#source").val() == 'other'){
+            $("#other").css("display","block");
+        }else {
+            $("#other").css("display","none");
+
         }
     }
     function judgeUrl() {
@@ -98,4 +100,25 @@
         })
     }
 
+
+    var str = '<{$info.source}>';
+    $("#source option").each(function (i) {
+        var val = $(this).val();
+        $(this).attr("selected",true);
+        if (i == 6){
+            $(this).attr("selected",true);
+            $("#other").css("display","block");
+            $("#other").val(str);
+        }
+
+    });
+
+//    console.log(ops);
+//    for (var i=0 ; i<ops.length;i++){
+//        if (ops[i].value == '<{$info.source}>'){
+//
+//            ops[i].selected = true;
+//        }
+//        alert(ops[i].value);
+//    }
 </script>

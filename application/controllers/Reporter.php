@@ -112,10 +112,11 @@ class Reporter extends MY_controller {
 
     public function judge_url(){
         $url = $_POST['url'];
+        $uid = $this->session->userdata('uid');
         if ($url == null){
             echo "-1";
         }else{
-            $judge = $this->report->judge_url($url);
+            $judge = $this->report->judge_url($url,$uid);
             echo $judge;
         }
     }
