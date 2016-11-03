@@ -15,7 +15,7 @@
                         <span class="label label-primary">提交记录</span>
                         <span class="tools pull-right">
                            <a href="javascript:;" class="fa fa-chevron-down"></a>
-                           <a href="javascript:;" class="fa fa-times"></a>
+                           <a href="javascript:;" class="fa fa-refresh"></a>
                            </span>
                     </header>
                     <div class="panel-body">
@@ -171,10 +171,10 @@
             data:{id:data},
             dataType:"json",
             success:function (data) {
-                if (data['state'] !== 0){
-                    alert("已经被查看，无法删除");
-                }else {
+                if (data['state'] == 0){
                     delete_report(data['id']);
+                }else {
+                    alert("已经被查看，无法删除");
                 }
             }
         });
@@ -188,8 +188,10 @@
             data:{id:data},
             dataType:"json",
             success:function (data) {
-                if (data['data'] !== 0){
-                    location.reload();
+                if (data['data'] != 0){
+                    jQuery(".panel .tools .fa-refresh").click(function () {
+                        $("#report_table").DataTable().ajax.reload(null, false);
+                    });
                 }
             }
         });

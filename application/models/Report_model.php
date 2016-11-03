@@ -10,7 +10,7 @@ class Report_model extends CI_Model {
         $this->load->database();
     }
 
-    public function submit($arr){
+    public function add($arr){
         $dup = 0;
         if ($arr['url'] !== null){
             $judge = $this->db->select("*")
@@ -35,6 +35,7 @@ class Report_model extends CI_Model {
             'duplicate'=>$dup
         );
         $this->db->insert('yq_info',$data);
+        return $nu = $this->db->affected_rows();
     }
 
     public function update($arr){
@@ -75,13 +76,14 @@ class Report_model extends CI_Model {
             ->from('info')
             ->join('user','user.id = info.publisher','left')
             ->where(array('user.id'=> (int)$uid))
-            ->limit(10,0)
+            ->limit($pInfo["length"], $pInfo["start"])
             ->get()->result_array();
 
         //查询总记录条数
         $total = $this->db->select("info.id,title,url,source,description,user.name As publisher,time")
             ->from('info')
             ->join('user','user.id = info.publisher','left')
+            ->where(array('user.id'=> (int)$uid))
             ->get()->num_rows();
 
         $data['sEcho']                = $pInfo['sEcho'];
@@ -129,9 +131,9 @@ class Report_model extends CI_Model {
             ->limit(10,0)
             ->get()->result_array();
         if ($data == null){
-            return 1;
-        }else{
             return 0;
+        }else{
+            return 1;
         }
     }
 
