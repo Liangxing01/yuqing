@@ -10,19 +10,18 @@ class User extends CI_Model {
     }
 
     public function verify_users($username,$password){
-        $pwd = md5($password);
-        $sql ="SELECT *  FROM yq_user WHERE username = ? AND password = ?";
-        $query =  $this->db->query($sql,array($username,$pwd))->row();
-        $flag = false;
-        $val = -1;
-        if($query !== null){
-            $flag = true;
-            $val = $query->id;
+        $res['data'] = $this->db->select("user.id,user.name,group_id as gid,group.name as gname,user_privilege.pid")
+            ->from('user')
+            ->join('group',"group.id = user.group_id","left")
+            ->join('user_privilege',"user.id = user_privilege.uid","left")
+            ->where(array('username'=>$username,
+                'password'=>md5($password)))
+            ->limit(1,0)
+            ->get()->result_array();
+        $res['flag'] = false;
+        if($res['data'] !== null){
+            $res['flag'] = true;
         }
-        $res = array(
-            "flag" => $flag,
-            "id" => $val
-            );
         return $res;
     }
 
