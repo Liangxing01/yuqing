@@ -151,7 +151,7 @@
     function pre_edit(data) {
         $.ajax({
             type:"POST",
-            url:"/Reporter/pre_edit",
+            url:"/Reporter/pre_state",
             data:{id:data},
             dataType:"json",
             success:function (data) {
@@ -167,7 +167,7 @@
     function pre_del(data) {
         $.ajax({
             type:"POST",
-            url:"/Reporter/pre_del",
+            url:"/Reporter/pre_state",
             data:{id:data},
             dataType:"json",
             success:function (data) {

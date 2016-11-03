@@ -14,7 +14,7 @@
                            </span>
                     </header>
                     <div class="panel-body">
-                        <form class="form-horizontal tasi-form" action="/Reporter/update" method="post" enctype="multipart/form-data">
+                        <form id="form1" class="form-horizontal tasi-form" enctype="multipart/form-data">
                             <input type="hidden" value="<{$info.id}>" name="id" id="id"/>
                             <div class="form-group">
                                 <label class="col-sm-2 col-sm-2 control-label">标题</label>
@@ -56,10 +56,10 @@
                                     <input type="text" class="form-control round-input" name="description" value="<{$info.description}>">
                                 </div>
                             </div>
-                            <div class="text-center ">
-                                <input class="btn btn-success btn-lg" type="submit"/>
-                            </div>
                         </form>
+                        <div class="text-center ">
+                            <button class="btn btn-success btn-lg" id="submit1">提交</button>
+                        </div>
                     </div>
                 </section>
             </div>
@@ -116,6 +116,24 @@
             $("#other").val(str);
         }
 
+    });
+
+    $('#submit1').click(function (){
+        var formdata = $("#form1").serializeArray();
+        $.ajax({
+            type:"post",
+            url:"/Reporter/update",
+            data:{data:formdata},
+            dataType:"JSON",
+            success:function (data) {
+                if (data.res == 1){
+                    alert('修改成功！');
+                }else{
+                    alert('修改失败！');
+                }
+                window.location = "/Reporter/reportRecording";
+            }
+        })
     });
 
 </script>

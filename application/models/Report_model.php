@@ -63,6 +63,7 @@ class Report_model extends CI_Model {
         );
         $this->db->where('info.id',$arr['id']);
         $this->db->update('info',$data);
+        return $nu = $this->db->affected_rows();
     }
 
 
