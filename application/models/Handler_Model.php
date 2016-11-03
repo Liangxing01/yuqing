@@ -5,20 +5,50 @@ class Handler_Model extends CI_Model{
         $this->load->database();
     }
 
+    /*
+     * 获取主页所有任务数 统计
+     */
+    public function get_tasks_num($uid){
+        $unread_num = $this->db->select('id')
+            ->from('event_designate')
+            ->where('processor',$uid)
+            ->where('state','待处理')->get()->num_rows();
+        $doing_num = $this->db->select('id')
+            ->from('event_designate')
+            ->where('processor',$uid)
+            ->where('state','处理中')->get()->num_rows();
+        $done_num = $this->db->select('e.id')->from('event_designate AS ed')
+            ->join('event AS e','e.id = ed.event_id','left')
+            ->where('ed.processor',$uid)
+            ->group_start()
+            ->where('e.state','未审核')
+            ->or_where('e.state','已完成')
+            ->group_end()
+            ->get()->num_rows();
+        $num_arr = array(
+            'unread_num' => $unread_num,
+            'doing_num'  => $doing_num,
+            'done_num'   => $done_num
+        );
+        return $num_arr;
+    }
+
     //查询所有待处理事件
     public function get_all_unhandle($pInfo,$processorID){
         //多表联合查询
         $sql  = "SELECT a.id,a.time AS zptime,a.is_group,t.name as type_name,a.description,i.title,i.id as info_id,u.username as zpname,
 einfo.event_id as eid,e.rank  FROM (SELECT * FROM `yq_event_designate` WHERE state = '未处理' AND processor = ?) AS a 
 LEFT JOIN yq_event_info as einfo ON einfo.event_id = a.event_id LEFT JOIN yq_info AS i ON i.id = einfo.`info_id` 
-LEFT JOIN yq_user as u on u.id = a.manager LEFT JOIN yq_type as t on t.id = i.type LEFT JOIN yq_event as e ON
- e.id = a.event_id order by zptime DESC  limit ?,? ;";
+LEFT JOIN yq_user as u on u.id = a.manager LEFT JOIN yq_type as t on t.id = i.type LEFT JOIN yq_event as e ON e.id = a.event_id
+WHERE i.title LIKE '%".$pInfo['search']."%'
+order by zptime DESC  limit ?,? ;";
 
         $sql2 = "SELECT a.id,a.time AS zptime,a.is_group,t.name as type_name,a.description,i.title,i.id as info_id,u.username as zpname,
 einfo.event_id as eid,e.rank  FROM (SELECT * FROM `yq_event_designate` WHERE state = '未处理' AND processor = ?) AS a 
 LEFT JOIN yq_event_info as einfo ON einfo.event_id = a.event_id LEFT JOIN yq_info AS i ON i.id = einfo.`info_id` 
 LEFT JOIN yq_user as u on u.id = a.manager LEFT JOIN yq_type as t on t.id = i.type LEFT JOIN yq_event as e ON
- e.id = a.event_id";
+ e.id = a.event_id 
+ WHERE i.title LIKE '%".$pInfo['search']."%'";
 
 
         $data['aaData'] = $this->db->query($sql,array($processorID,(int)$pInfo['start'],(int)$pInfo['length']))->result_array();
@@ -62,11 +92,13 @@ LEFT JOIN yq_user as u on u.id = a.manager LEFT JOIN yq_type as t on t.id = i.ty
         $sql = "SELECT a.id,a.event_id,b.title,u.username as zpname,a.time,a.state FROM
 (SELECT * from  yq_event_designate WHERE processor = ? and state ='处理中' ) as a
 LEFT JOIN yq_event as b on a.event_id = b.id  LEFT JOIN yq_user as u on a.manager = u.id 
-limit ?,?";
+WHERE b.title LIKE '%".$pInfo['search']."%' ESCAPE '!'
+ORDER BY a.time DESC limit ?,?";
 
         $sql2 = "SELECT a.id,a.event_id,b.title,u.username as zpname,a.time,a.state FROM
 (SELECT * from  yq_event_designate WHERE processor = ? and state ='处理中' ) as a
-LEFT JOIN yq_event as b on a.event_id = b.id  LEFT JOIN yq_user as u on a.manager = u.id";
+LEFT JOIN yq_event as b on a.event_id = b.id  LEFT JOIN yq_user as u on a.manager = u.id
+WHERE b.title LIKE '%".$pInfo['search']."%' ESCAPE '!'";
 
         $data['aaData'] = $this->db->query($sql,array($processorID,(int)$pInfo['start'],(int)$pInfo['length']))->result_array();
         $total = $this->db->query($sql2,array($processorID))->num_rows();
@@ -225,8 +257,13 @@ LEFT JOIN yq_event as b on a.event_id = b.id  LEFT JOIN yq_user as u on a.manage
             ->join('event_info AS einfo','einfo.event_id = e.id','left')
             ->join('info','info.id = einfo.info_id','left')
             ->where('ed.processor',$processorID)
+            ->group_start()
+            ->like('e.title',$pInfo['search'])
+            ->or_like('e.rank',$pInfo['search'])
+            ->group_end()
             ->where('e.state','未审核')
             ->or_where('e.state','已完成')
+            ->order_by('e.end_time','DESC')
             ->limit($pInfo['length'],$pInfo['start'])
             ->get()->result_array();
 
@@ -236,6 +273,10 @@ LEFT JOIN yq_event as b on a.event_id = b.id  LEFT JOIN yq_user as u on a.manage
             ->join('event_info AS einfo','einfo.event_id = e.id','left')
             ->join('info','info.id = einfo.info_id','left')
             ->where('ed.processor',$processorID)
+            ->group_start()
+            ->like('e.title',$pInfo['search'])
+            ->or_like('e.rank',$pInfo['search'])
+            ->group_end()
             ->where('e.state','未审核')
             ->or_where('e.state','已完成')
             ->get()->num_rows();

@@ -15,12 +15,12 @@
                         <span class="label label-primary">已完成事件表</span>
                         <span class="tools pull-right">
                            <a href="javascript:;" class="fa fa-chevron-down"></a>
-                           <a href="javascript:;" class="fa fa-times"></a>
+                           <a href="javascript:;" class="fa fa-refresh"></a>
                            </span>
                     </header>
                     <div class="panel-body">
                         <div class="adv-table">
-                            <table class="display table table-bordered table-striped" id="unhandle_table">
+                            <table class="display table table-bordered table-striped" id="done_table">
                                 <thead>
                                 <tr>
                                     <th>编号</th>
@@ -52,7 +52,7 @@
 
 <!-- Page Script -->
 <script>
-    $('#unhandle_table').dataTable({
+    $('#done_table').dataTable({
 
         "bPaginate": true,
         "bProcessing": false,                //是否显示正在处理提示信息。
@@ -137,5 +137,10 @@
             "sSearch": "搜索:"
         }
 
+    });
+
+    //刷新表格
+    jQuery(".panel .tools .fa-refresh").click(function () {
+        $("#done_table").DataTable().ajax.reload(null, false);
     });
 </script>
