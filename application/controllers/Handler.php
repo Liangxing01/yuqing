@@ -161,8 +161,8 @@ class Handler extends MY_Controller {
             $pData['search'] = '';
         }
 
-
-        $data = $this->handler_model->get_doing_handle($pData,3);
+        $uid = $this->session->userdata('uid');
+        $data = $this->handler_model->get_doing_handle($pData,$uid);
         echo json_encode($data);
     }
 
@@ -176,6 +176,7 @@ class Handler extends MY_Controller {
         $done_btn = $this->handler_model->check_done_btn($gid,$event_id);
         $this->assign('title',$einfo['title']);
         $this->assign('rank',$einfo['rank']);
+        $this->assign('eid',$event_id);
         $this->assign('can_show_done_btn',$done_btn);
         $this->all_display("handler/event_tracer.html");
     }
@@ -211,6 +212,47 @@ class Handler extends MY_Controller {
         echo json_encode($data);
     }
 
+    /*
+     * 显示用户已完成事件的列表
+     */
+    public function show_done_list(){
+        $this->assign("active_title","done_list");
+        $this->assign("active_parent","handle_parent");
+        $this->all_display('handler/doing_unhandle.html');
+    }
+
+    /*
+     * 接口：获取用户已完成事件列表
+     */
+    public function get_all_done_list(){
+        $pData['sEcho'] = $this->input->post('psEcho', true);           //DataTables 用来生成的信息
+        $pData['start'] = $this->input->post('iDisplayStart', true);    //显示的起始索引
+        $pData['length'] = $this->input->post('iDisplayLength', true);  //每页显示的行数
+        $pData['sort_th'] = $this->input->post('iSortCol_0', true);     //排序的列 默认第三列
+        $pData['sort_type'] = $this->input->post('sSortDir_0', true);   //排序的方向 默认 desc
+        $pData['search'] = $this->input->post('sSearch', true);         //全局搜索关键字 默认为空
+
+        if ($pData['start'] == NULL) {
+            $pData['start'] = 0;
+        }
+        if ($pData['length'] == NULL) {
+            $pData['length'] = 10;
+        }
+        if ($pData["sort_th"] == NULL) {
+            $pData["sort_th"] = 2;
+        }
+        if ($pData['sort_type'] == NULL) {
+            $pData['sort_type'] = "desc";
+        }
+        if ($pData['search'] == NULL) {
+            $pData['search'] = '';
+        }
+
+        $uid = $this->session->userdata('uid');
+        $data = $this->handler_model->get_done_list($pData,$uid);
+        echo json_encode($data);
+    }
+
     //展示组织结构
     public function show_structure(){
         $this->assign("active_title", "structure");
@@ -218,12 +260,7 @@ class Handler extends MY_Controller {
         $this->all_display("designate/show_structure.html");
     }
 
-    //显示已完成事件列表
-    public function show_done_list(){
-        $this->assign("active_title","done_list");
-        $this->assign("active_parent","handle_parent");
-        $this->all_display('handler/doing_unhandle.html');
-    }
+
 
     public function test(){
         phpinfo();
