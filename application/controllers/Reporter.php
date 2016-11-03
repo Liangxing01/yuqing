@@ -39,18 +39,19 @@ class Reporter extends MY_controller {
 //        $this->load->library('upload', $config);
 //        $this->upload->do_upload('file_name');
 //        $error = array('error' => $this->upload->display_errors());
-        $title = $_POST['title'];
-        $url = $_POST['url'];
-        $source = $_POST['source'];
-        if ($source == 'other'){
-            $source = $_POST['other'];
-        }
-        $description = $_POST['description'];
-        $uid = $this->session->userdata('uid');
+        $data = $this->input->post('data');
+        $title = $data[0]['value'];
+        $url = $data[1]['value'];
+        $source = $data[2]['value'] == 'other'?$data[3]['value']:$data[2]['value'];
+        $description = $data[4]['value'];
         $picture = 'test.jpg';
+        $uid = $this->session->userdata('uid');
         $data = array('title'=>$title,'source'=>$source,'picture'=>$picture,'url' => $url,'description'=>$description,'uid'=>$uid,'time'=>$_SERVER['REQUEST_TIME']);
-        $this->report->submit($data);
-        $this->reportRecording();
+        $nu = $this->report->add($data);
+        $res = array(
+            "res"=> $nu
+        );
+        echo json_encode($res);
     }
 
     public function get_report_data(){

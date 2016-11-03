@@ -14,7 +14,7 @@
                            </span>
                     </header>
                     <div class="panel-body">
-                        <form class="form-horizontal tasi-form" action="/Reporter/report" method="post" enctype="multipart/form-data">
+                        <form id="form1" class="form-horizontal tasi-form" enctype="multipart/form-data">
                             <div class="form-group">
                                 <label class="col-sm-2 col-sm-2 control-label">标题</label>
                                 <div class="col-sm-10">
@@ -55,10 +55,11 @@
                                     <input type="text" class="form-control round-input" name="description">
                                 </div>
                             </div>
-                            <div class="text-center ">
-                                <input class="btn btn-success btn-lg" type="submit"/>
-                            </div>
+
                         </form>
+                        <div class="text-center ">
+                            <button id="submit1" class="btn btn-success btn-lg">提交9</button>
+                        </div>
                     </div>
                 </section>
             </div>
@@ -83,7 +84,7 @@
             type:"POST",
             url:"/Reporter/judge_url",
             data:{url:$('#url').val()},
-            datatype:"text",
+            dataType:"text",
             success:function (data) {
                 if (data==1){
                     alert("该url已经上报过了，请重新输入");
@@ -96,6 +97,23 @@
             }
         })
     }
+    $('#submit1').click(function (){
+        var formdata = $("#form1").serializeArray();
+        $.ajax({
+            type:"post",
+            url:"/Reporter/report",
+            data:{data:formdata},
+            dataType:"JSON",
+            success:function (data) {
+                if (data.res == 1){
+                    alert('上报成功！');
+                }else{
+                    alert('上报失败！');
+                }
+                window.location = "/Reporter/reportRecording";
+            }
+        })
+    });
 
 
 </script>

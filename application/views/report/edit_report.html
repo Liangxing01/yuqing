@@ -44,6 +44,7 @@
                                         <option value="看巴南APP">看巴南APP</option>
                                         <option value="微博">微博</option>
                                         <option value="微信">微信</option>
+                                        <option value="线下">线下</option>
                                         <option value="other">其它</option>
                                         <input type="text" id="other" name="other" style="display:none">
                                     </select>
@@ -103,9 +104,13 @@
 
     var str = '<{$info.source}>';
     $("#source option").each(function (i) {
+
         var val = $(this).val();
-        $(this).attr("selected",true);
-        if (i == 6){
+        if (val == str){
+            $(this).attr("selected",true);
+            return;
+        }
+        if (val == str && i == 7){
             $(this).attr("selected",true);
             $("#other").css("display","block");
             $("#other").val(str);
@@ -113,12 +118,4 @@
 
     });
 
-//    console.log(ops);
-//    for (var i=0 ; i<ops.length;i++){
-//        if (ops[i].value == '<{$info.source}>'){
-//
-//            ops[i].selected = true;
-//        }
-//        alert(ops[i].value);
-//    }
 </script>

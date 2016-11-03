@@ -23,22 +23,37 @@ class Login extends MY_controller  {
         $this->form_validation->set_rules('username', '用户名或密码', 'required');
         $this->form_validation->set_rules('password', '用户名或密码', 'required');
 
-        if ($this->form_validation->run() !== false){
+        if ($this -> form_validation->run() != false){
             $this->load->model('user');
             $res = $this->user->verify_users(
                 $this->input->post('username'),
                 $this->input->post('password')
             );
-            if($res['flag'] == true){
-//                echo $res['id'];
-                $this->session->set_userdata("uid",$res['id']);
+            $tempData = $res['data'][0];
+
+            /**
+             * uid 用户id
+             * name 用户名
+             * gid 用户组织id
+             * gname 用户组织名
+             * qxid 用户权限id
+             */
+            $session_data = array(
+                'uid' => $tempData['id'],
+                'name' => $tempData['name'],
+                'gid' => $tempData['gid']==null?'':$tempData['gid'],
+                'gname' => $tempData['gname']==null?'':$tempData['gname'],
+                'qxid' => $tempData['pid']==null?'':$tempData['pid']
+            );
+
+            if ($res['flag'] == true){
+                $this->session->set_userdata($session_data);
                 header("location:/Welcome/index");
             }else{
                 header("location:/Welcome/login");
-
             }
         }else{
-            $this->load->view('login/login');
+            $this->load->view("login/login");
         }
     }
 

@@ -213,12 +213,32 @@ class Handler extends MY_Controller {
     }
 
     /*
+     * 接口 : 确定事件已完成接口
+     */
+    public function confirm_done(){
+        $eid = $this->input->post('eid');
+        $gid = $this->session->userdata('gid');
+        $res = $this->handler_model->confirm_done($eid,$gid);
+        if($res){
+            $data = array(
+                'res' => 1
+            );
+        }else{
+            $data = array(
+                'res' => 0
+            );
+        }
+        echo json_encode($data);
+    }
+
+
+    /*
      * 显示用户已完成事件的列表
      */
     public function show_done_list(){
         $this->assign("active_title","done_list");
         $this->assign("active_parent","handle_parent");
-        $this->all_display('handler/doing_unhandle.html');
+        $this->all_display('handler/done_list.html');
     }
 
     /*
