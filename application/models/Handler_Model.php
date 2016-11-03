@@ -196,6 +196,13 @@ LEFT JOIN yq_event as b on a.event_id = b.id  LEFT JOIN yq_user as u on a.manage
             return $res;
         }
     }
+
+
+    //获取 已完成 事件列表
+    public function get_done_list($pInfo,$processorID){
+
+    }
+
     //获取事件所有交互记录，pid为总结性发言的id
     public function get_all_logs($eid,$uid){
         //判断是否为第一次处理，则插入一条父类记录
