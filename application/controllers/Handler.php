@@ -28,6 +28,24 @@ class Handler extends MY_Controller {
         echo json_encode($res);
     }
 
+    /*
+     * 主页接口：获取任务列表，3个待处理，3个正在处理
+     */
+    public function get_tasks_list(){
+        $uid = $this->session->userdata('uid');
+        $res = $this->handler_model->get_tasks_list($uid);
+        echo json_encode($res);
+    }
+
+    /*
+     * 主页接口：获取用户最近登录的5条记录
+     */
+    public function login_list(){
+        $uid = $this->session->userdata('uid');
+        $res = $this->get_login_list($uid,3);
+        echo json_encode($res);
+    }
+
     //展示待处理事件页面
     public function wait_to_handle(){
         $this->assign("active_title","wait_to_handle");
