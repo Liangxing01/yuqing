@@ -15,39 +15,39 @@
             <div class="heading-inbox row">
                 <div class="col-md-8">
                     <div class="compose-btn">
-                        <a href="/handler/show_tracer?id=<{$event['id']}>&title=<{$event['title']}>" class="btn btn-sm btn-info"><i class="fa fa-reply"></i> 开始处理</a>
+                        <a href="/handler/show_tracer?id=<{$eid}>" class="btn btn-sm btn-info"><i class="fa fa-reply"></i> 开始处理</a>
                         <button class="btn  btn-sm tooltips" data-original-title="Print" type="button" data-toggle="tooltip" data-placement="top" title=""><i class="fa fa-print"></i> </button>
                         <button class="btn btn-sm tooltips" data-original-title="Trash" data-toggle="tooltip" data-placement="top" title=""><i class="fa fa-trash-o"></i></button>
                     </div>
                 </div>
                 <div class="col-md-4 text-right">
-                    <p class="date"> <{date("Y-m-d H:i:s",$event['time'])}></p>
+                    <p class="date"> 12312</p>
                 </div>
                 <div class="col-md-12">
                     <h4>
-                        <{$event['title']}>
+                        123123
                     </h4>
                 </div>
             </div>
             <div class="sender-info">
                 <div class="row">
                     <div class="col-md-12">
-                        <strong class="">指派人:</strong><span>&nbsp;<{$event['name']}></span>
+                        <strong class="">指派人:</strong><span>&nbsp;11</span>
                         &nbsp;
-                        <strong>来源:</strong><span>&nbsp;<{$event['source']}></span>
+                        <strong>来源:</strong><span>23</span>
                         &nbsp;
-                        <strong>链接:</strong><span>&nbsp;<{$event['url']}></span>
+                        <strong>链接:</strong><span>&nbsp;123</span>
                         &nbsp;
-                        <strong>类型:</strong><span>&nbsp;<{$event['type_name']}></span>
+                        <strong>类型:</strong><span>&nbsp;123</span>
                     </div>
                 </div>
             </div>
             <div class="event-content">
-                <p><{$event['description']}></p>
+                <p>啊啊啊啊啊啊</p>
             </div>
             <div class="attachment-mail">
                 <p>
-                    <span><i class="fa fa-paperclip"></i> 2 张截图 <{$event['picture']}></span>
+                    <span><i class="fa fa-paperclip"></i> 2 张截图123</span>
                 </p>
                 <ul>
                     <li>
@@ -63,7 +63,7 @@
                 </ul>
             </div>
         </div>
-        <input type="hidden" name="event_id" value="<{$event['event_id']}>">
+        <input type="hidden" name="eid" value="<{$eid}>">
     </section>
 </section>
 <!-- END SECTION -->

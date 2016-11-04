@@ -94,20 +94,18 @@ LEFT JOIN yq_user as u on u.id = a.manager LEFT JOIN yq_type as t on t.id = i.ty
     }
 
     //根据event_id查询事件内容
-    public function get_detail_by_id($id){
-        $data = $this->db->select("i.id,einfo.event_id as event_id,i.title,t.name as type_name,i.url,i.source,i.picture,
-        e.description,yq_user.name,i.time")
-            ->from("info AS i")
-            ->join("type as t","t.id = i.type","left")
-            ->join("event_info AS einfo","einfo.event_id = ".(int)$id,"left")
-            ->join("event as e","e.id = ".(int)$id,"left")
-            ->join("user","e.manager = yq_user.id","left")
-            ->where("i.id = einfo.info_id")
-            ->where("e.state","已指派")
+    public function get_detail_by_id($id,$uid){
+        $data = $this->db->select("einfo.info_id,info.title,t.name,info.url,info.source,info.picture,info.description,info.time")
+            ->from("event_info AS einfo")
+            ->join("event_designate AS ed","einfo.event_id = ed.event_id","left")
+            ->join("info","info.id = einfo.info_id","left")
+            ->join("type as t","t.id=info.type","left")
+            ->where("ed.processor",$uid)
+            ->where("einfo.event_id",$id)
             ->get()->result_array();
 
         if(!empty($data)){
-            return $data[0];
+            return $data;
         }else{
             return false;
         }
@@ -171,9 +169,12 @@ WHERE b.title LIKE '%".$pInfo['search']."%' ESCAPE '!'";
     }
 
     //获取时间的所有交互记录，pid为总结性发言
-    public function get_all_logs_by_id($eid){
-        $this->db->select("description,pid,id,time,name");
-        $data = $this->db->from('event_log')->where('event_id',$eid)
+    public function get_all_logs_by_id($eid,$uid){
+        $data = $this->db->select("l.description,l.pid,l.id,l.time,l.name")
+            ->from('event_log AS l')
+            ->join('event_designate as ed','ed.event_id = '.$eid,'left')
+            ->where('l.event_id',$eid)
+            ->where('ed.processor',$uid)
             ->order_by('time','DESC')->get()
             ->result_array();
         if (empty($data)){

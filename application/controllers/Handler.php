@@ -5,6 +5,7 @@ class Handler extends MY_Controller {
 
     public function __construct(){
         parent::__construct();
+        header('Access-Control-Allow-Origin:*');
         $this->load->model('Handler_Model',"handler_model");
 
         $this->session->set_userdata("uid",3);
@@ -92,13 +93,21 @@ class Handler extends MY_Controller {
             show_404();
         }
 
-        $event_info = $this->handler_model->get_detail_by_id($event_id);
-        var_dump($event_info);
-
-        $this->assign("event", $event_info);
+        $this->assign('eid',$event_id);
         $this->assign("active_title","wait_to_handle");
         $this->assign("active_parent","handle_parent");
         $this->all_display("handler/show_unhandle_detail.html");
+    }
+
+    /*
+     * 接口：获取待处理事件 详细信息
+     * 参数：eid
+     */
+    public function get_detail(){
+        $event_id = $this->input->post('eid');
+        $uid = $this->session->userdata('uid');
+        $event_info = $this->handler_model->get_detail_by_id($event_id,$uid);
+        echo json_encode($event_info);
     }
 
     //显示处理交互界面
@@ -214,7 +223,8 @@ class Handler extends MY_Controller {
     */
     public function get_event_logs(){
         $event_id = $this->input->post('eid');
-        $data = $this->handler_model->get_all_logs_by_id($event_id);
+        $uid = $this->session->userdata('uid');
+        $data = $this->handler_model->get_all_logs_by_id($event_id,$uid);
         echo json_encode($data);
     }
 
