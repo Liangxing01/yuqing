@@ -2,6 +2,7 @@
 //处理人模型
 class Handler_Model extends CI_Model{
     public function __construct(){
+        parent::__construct();
         $this->load->database();
     }
 
@@ -31,6 +32,32 @@ class Handler_Model extends CI_Model{
             'done_num'   => $done_num
         );
         return $num_arr;
+    }
+
+    /*
+     * 获取主页下方任务列表
+     */
+    public function get_tasks_list($uid){
+        $wait_list = $this->db->select('ed.event_id,e.title')->from('event_designate AS ed')
+            ->join('event AS e','e.id = ed.event_id','left')
+            ->where('ed.processor',$uid)
+            ->where('ed.state','未处理')
+            ->order_by('ed.time','DESC')
+            ->limit(3)
+            ->get()->result_array();
+
+        $doing_list = $this->db->select('ed.event_id,e.title')->from('event_designate AS ed')
+            ->join('event AS e','e.id = ed.event_id','left')
+            ->where('ed.processor',$uid)
+            ->where('ed.state','处理中')
+            ->order_by('ed.time','DESC')
+            ->limit(3)
+            ->get()->result_array();
+        $data = array(
+            'wait_list'  => $wait_list,
+            'doing_list' => $doing_list
+        );
+        return $data;
     }
 
     //查询所有待处理事件
