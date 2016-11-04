@@ -173,7 +173,9 @@ WHERE b.title LIKE '%".$pInfo['search']."%' ESCAPE '!'";
     //获取时间的所有交互记录，pid为总结性发言
     public function get_all_logs_by_id($eid){
         $this->db->select("description,pid,id,time,name");
-        $data = $this->db->get_where('event_log',array('event_id' => $eid))->result_array();
+        $data = $this->db->from('event_log')->where('event_id',$eid)
+            ->order_by('time','DESC')->get()
+            ->result_array();
         if (empty($data)){
             return false;
         }else{
