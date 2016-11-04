@@ -214,6 +214,7 @@ WHERE b.title LIKE '%".$pInfo['search']."%' ESCAPE '!'";
                             $info = array(
                                 'id' => $words['id'],
                                 'time' => $words['time'],
+                                'name' => $words['name'],
                                 'desc' => $words['desc'],
                                 'pid' => $words['pid']
                             );
