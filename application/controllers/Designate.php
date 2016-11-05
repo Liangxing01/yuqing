@@ -14,7 +14,7 @@ class Designate extends MY_controller
 
 
     /**
-     * 未处理信息 视图载入
+     * 未确认信息 视图载入
      */
     public function info_not_handle()
     {
@@ -25,7 +25,7 @@ class Designate extends MY_controller
 
 
     /**
-     * 未处理信息列表分页 数据接口
+     * 未确认信息列表分页 数据接口
      */
     public function info_not_handle_data()
     {
@@ -101,6 +101,78 @@ class Designate extends MY_controller
 
 
     /**
+     * 事件指派 视图载入
+     */
+    public function event_designate()
+    {
+//        $event_id = $this->input->get("id", true);
+//        if (!isset($event_id) || $event_id == null || $event_id == "") {
+//            show_404();
+//        }
+
+//        $this->load->model("Designate_Model", "designate");
+//        $event_info = $this->designate->get_event_info($event_id);
+//        $this->assign("event", $event_info);
+        $this->assign("active_title", "designate_parent");
+        $this->assign("active_parent", "event_designate");
+        $this->all_display("designate/event_designate.html");
+    }
+
+
+    /**
+     * 已确认信息列表分页 数据接口
+     */
+    public function info_is_handle_data()
+    {
+        $pData['sEcho'] = $this->input->post('psEcho', true);           //DataTables 用来生成的信息
+        $pData['start'] = $this->input->post('iDisplayStart', true);    //显示的起始索引
+        $pData['length'] = $this->input->post('iDisplayLength', true);  //每页显示的行数
+        $pData['sort_type'] = $this->input->post('sSortDir_0', true);   //排序的方向 默认 desc
+        $pData['search'] = $this->input->post('sSearch', true);         //全局搜索关键字 默认为空
+
+        if ($pData['start'] == NULL) {
+            $pData['start'] = 0;
+        }
+        if ($pData['length'] == NULL) {
+            $pData['length'] = 5;
+        }
+        if ($pData['sort_type'] == NULL) {
+            $pData['sort_type'] = "desc";
+        }
+        if ($pData['search'] == NULL) {
+            $pData['search'] = '';
+        }
+
+        $this->load->model("Designate_Model", "designate");
+        $data = $this->designate->info_is_handle_pagination($pData);
+
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($data));
+    }
+
+
+    /**
+     * 事件指派 表单提交
+     */
+    public function commit_event_designate()
+    {
+        $data = $this->input->post();
+        if (!isset($data["processor"]) || $data["event_id"] == "") {
+            show_404();
+        }
+
+        $this->load->model("Designate_Model", "designate");
+        $result = $this->designate->event_designate($data);
+        if ($result) {
+            echo "指派成功";
+        } else {
+            echo "指派失败";
+        }
+    }
+
+
+    /**
      * 待指派事件列表 视图载入
      */
     public function event_not_designate()
@@ -145,45 +217,6 @@ class Designate extends MY_controller
         $this->output
             ->set_content_type('application/json')
             ->set_output(json_encode($data));
-    }
-
-
-    /**
-     * 事件指派 视图载入
-     */
-    public function event_designate()
-    {
-        $event_id = $this->input->get("id", true);
-        if (!isset($event_id) || $event_id == null || $event_id == "") {
-            show_404();
-        }
-
-        $this->load->model("Designate_Model", "designate");
-        $event_info = $this->designate->get_event_info($event_id);
-        $this->assign("event", $event_info);
-        $this->assign("active_title", "designate_parent");
-        $this->assign("active_parent", "event_not_designate");
-        $this->all_display("designate/event_designate.html");
-    }
-
-
-    /**
-     * 事件指派 表单提交
-     */
-    public function commit_event_designate()
-    {
-        $data = $this->input->post();
-        if (!isset($data["processor"]) || $data["event_id"] == "") {
-            show_404();
-        }
-
-        $this->load->model("Designate_Model", "designate");
-        $result = $this->designate->event_designate($data);
-        if ($result) {
-            echo "指派成功";
-        } else {
-            echo "指派失败";
-        }
     }
 
 
@@ -287,6 +320,62 @@ class Designate extends MY_controller
 
         $this->load->model("Designate_Model", "designate");
         $data = $this->designate->event_search_pagination($pData);
+
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($data));
+    }
+
+
+    /**
+     * 上报信息检索 视图载入
+     */
+    public function info_search()
+    {
+        $this->assign("active_title", "designate_parent");
+        $this->assign("active_parent", "info_search");
+        $this->all_display("designate/info_search.html");
+    }
+
+
+    /**
+     * 上报信息检索列表分页 数据接口
+     */
+    public function info_search_data()
+    {
+        $pData['sEcho'] = $this->input->post('psEcho', true);           //DataTables 用来生成的信息
+        $pData['start'] = $this->input->post('iDisplayStart', true);    //显示的起始索引
+        $pData['length'] = $this->input->post('iDisplayLength', true);  //每页显示的行数
+        $pData['sort_th'] = $this->input->post('iSortCol_0', true);     //排序的列 默认第六列
+        $pData['sort_type'] = $this->input->post('sSortDir_0', true);   //排序的方向 默认 desc
+        $pData['search'] = $this->input->post('sSearch', true);         //全局搜索关键字 默认为空
+        $pData["start_time"] = $this->input->post('start_time', true);  //查询起始时间 默认为0
+        $pData["end_time"] = $this->input->post('end_time', true);      //查询截止时间 默认为0
+
+        if ($pData['start'] == NULL) {
+            $pData['start'] = 0;
+        }
+        if ($pData['length'] == NULL) {
+            $pData['length'] = 10;
+        }
+        if ($pData["sort_th"] == NULL) {
+            $pData["sort_th"] = 5;
+        }
+        if ($pData['sort_type'] == NULL) {
+            $pData['sort_type'] = "desc";
+        }
+        if ($pData['search'] == NULL) {
+            $pData['search'] = '';
+        }
+        if ($pData['start_time'] == NULL) {
+            $pData['start_time'] = 0;
+        }
+        if ($pData['end_time'] == NULL) {
+            $pData['end_time'] = 0;
+        }
+
+        $this->load->model("Designate_Model", "designate");
+        $data = $this->designate->info_search_pagination($pData);
 
         $this->output
             ->set_content_type('application/json')

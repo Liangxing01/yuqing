@@ -25,3 +25,20 @@ function timeToDate(time) {
 
     return clock;
 }
+
+
+/**
+ * 获取 Unix 时间戳
+ * @param dateStr
+ * @return string
+ */
+function dateToTime(dateStr) {
+    if(dateStr == ""){
+        return "";
+    }
+    dateStr = dateStr.toString();
+    var newstr = dateStr.replace(/[年,月,日]/g, '/');
+    var date = new Date(newstr);
+    var time_str = date.getTime().toString();
+    return time_str.substr(0, 10);
+}

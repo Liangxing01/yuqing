@@ -12,7 +12,7 @@ class Designate_Model extends CI_Model
 
 
     /**
-     * 待处理信息 分页数据
+     * 未确认信息 分页数据
      * @param $pInfo
      * @return array
      */
@@ -21,8 +21,13 @@ class Designate_Model extends CI_Model
         $data['aaData'] = $this->db->select("info.id, info.title, source, user.name AS publisher, time")
             ->from("info")
             ->join("user", "user.id = info.publisher", "left")
-            ->where("state != 2 AND (info.id LIKE \"%" . $pInfo["search"] . "%\" ESCAPE \"!\" OR info.source LIKE \"%" . $pInfo['search'] . "%\" ESCAPE \"!\" OR user.name LIKE \"%" . $pInfo["search"] . "%\" ESCAPE \"!\" OR info.title LIKE \"%" . $pInfo["search"] . "%\" ESCAPE \"!\")")
-            ->where_not_in("select info_id from yq_event_info")
+            ->where("state !=", 2)
+            ->group_start()
+            ->like("info.id", $pInfo["search"])
+            ->or_like("info.source", $pInfo["search"])
+            ->or_like("user.name", $pInfo["search"])
+            ->or_like("info.title", $pInfo["search"])
+            ->group_end()
             ->order_by("time", $pInfo["sort_type"])
             ->limit($pInfo["length"], $pInfo["start"])
             ->get()->result_array();
@@ -30,8 +35,13 @@ class Designate_Model extends CI_Model
         //查询总记录条数
         $total = $this->db->from("info")
             ->join("user", "user.id = info.publisher", "left")
-            ->where("state != 2 AND (info.id LIKE \"%" . $pInfo["search"] . "%\" ESCAPE \"!\" OR info.source LIKE \"%" . $pInfo['search'] . "%\" ESCAPE \"!\" OR user.name LIKE \"%" . $pInfo["search"] . "%\" ESCAPE \"!\" OR info.title LIKE \"%" . $pInfo["search"] . "%\" ESCAPE \"!\")")
-            ->where_not_in("select info_id from yq_event_info")
+            ->where("state !=", 2)
+            ->group_start()
+            ->like("info.id", $pInfo["search"])
+            ->or_like("info.source", $pInfo["search"])
+            ->or_like("user.name", $pInfo["search"])
+            ->or_like("info.title", $pInfo["search"])
+            ->group_end()
             ->get()->num_rows();
 
         $data['sEcho'] = $pInfo['sEcho'];
@@ -45,7 +55,54 @@ class Designate_Model extends CI_Model
 
 
     /**
-     * 查询 舆情信息 详情
+     * 已确认信息 分页数据
+     * @param $pInfo
+     * @return array
+     */
+    public function info_is_handle_pagination($pInfo)
+    {
+        $data['aaData'] = $this->db->select("info.id, info.title, source, type.name AS type, user.name AS publisher, time")
+            ->from("info")
+            ->join("user", "user.id = info.publisher", "left")
+            ->join("type", "type.id = info.type", "left")
+            ->where("state = 2 AND info.id NOT IN (SELECT info_id FROM yq_event_info)")
+            ->group_start()
+            ->like("info.id", $pInfo["search"])
+            ->or_like("info.source", $pInfo["search"])
+            ->or_like("type.name", $pInfo["search"])
+            ->or_like("user.name", $pInfo["search"])
+            ->or_like("info.title", $pInfo["search"])
+            ->group_end()
+            ->order_by("time", $pInfo["sort_type"])
+            ->limit($pInfo["length"], $pInfo["start"])
+            ->get()->result_array();
+
+        //查询总记录条数
+        $total = $this->db->from("info")
+            ->join("user", "user.id = info.publisher", "left")
+            ->join("type", "type.id = info.type", "left")
+            ->where("state = 2 AND info.id NOT IN (SELECT info_id FROM yq_event_info)")
+            ->group_start()
+            ->like("info.id", $pInfo["search"])
+            ->or_like("info.source", $pInfo["search"])
+            ->or_like("type.name", $pInfo["search"])
+            ->or_like("user.name", $pInfo["search"])
+            ->or_like("info.title", $pInfo["search"])
+            ->group_end()
+            ->get()->num_rows();
+
+        $data['sEcho'] = $pInfo['sEcho'];
+
+        $data['iTotalDisplayRecords'] = $total;
+
+        $data['iTotalRecords'] = $total;
+
+        return $data;
+    }
+
+
+    /**
+     * 查询 上报信息 详情
      * @param $info_id
      * @return array
      */
@@ -60,7 +117,7 @@ class Designate_Model extends CI_Model
 
 
     /**
-     * 设置 舆情信息 为已看状态
+     * 设置 上报信息 为已看状态
      * @param $info_id
      * @return bool
      */
@@ -71,7 +128,7 @@ class Designate_Model extends CI_Model
 
 
     /**
-     * 舆情信息 确认
+     * 上报信息 确认
      * @param $data
      * @return bool
      */
@@ -84,7 +141,7 @@ class Designate_Model extends CI_Model
 
 
     /**
-     * 获取 信息类型
+     * 获取 信息类型 列表
      * @return array
      */
     public function get_info_type()
@@ -189,6 +246,105 @@ class Designate_Model extends CI_Model
 
 
     /**
+     * 上报信息检索 分页数据
+     * @param $pInfo
+     * @return array
+     */
+    public function info_search_pagination($pInfo)
+    {
+        $dataQuery = $this->db->select("info.id, info.title, source, type.name AS type, user.name AS publisher, time, duplicate, state")
+            ->from("info")
+            ->join("user", "user.id = info.publisher", "left")
+            ->join("type", "type.id = info.type", "left")
+            ->group_start()
+            ->like("info.id", $pInfo["search"])
+            ->or_like("info.source", $pInfo["search"])
+            ->or_like("type.name", $pInfo["search"])
+            ->or_like("user.name", $pInfo["search"])
+            ->or_like("info.title", $pInfo["search"])
+            ->group_end()
+            ->order_by("time", $pInfo["sort_type"])
+            ->limit($pInfo["length"], $pInfo["start"]);
+
+        if ($pInfo["start_time"] != 0 && $pInfo["end_time"] != 0) {
+            $data['aaData'] = $dataQuery->where(array("time >" => $pInfo["start_time"], "time <" => $pInfo["end_time"] + 86400))
+                ->get()->result_array();
+
+            //查询总记录条数
+            $total = $this->db->select("info.id")->from("info")
+                ->join("user", "user.id = info.publisher", "left")
+                ->join("type", "type.id = info.type", "left")
+                ->where(array("time >=" => $pInfo["start_time"], "time <" => $pInfo["end_time"] + 86400))
+                ->group_start()
+                ->like("info.id", $pInfo["search"])
+                ->or_like("info.source", $pInfo["search"])
+                ->or_like("type.name", $pInfo["search"])
+                ->or_like("user.name", $pInfo["search"])
+                ->or_like("info.title", $pInfo["search"])
+                ->group_end()
+                ->get()->num_rows();
+        } else if ($pInfo["start_time"] != 0 && $pInfo["end_time"] == 0) {
+            $data['aaData'] = $dataQuery->where(array("time >=" => $pInfo["start_time"]))
+                ->get()->result_array();
+
+            //查询总记录条数
+            $total = $this->db->select("info.id")->from("info")
+                ->join("user", "user.id = info.publisher", "left")
+                ->join("type", "type.id = info.type", "left")
+                ->where(array("time >=" => $pInfo["start_time"]))
+                ->group_start()
+                ->like("info.id", $pInfo["search"])
+                ->or_like("info.source", $pInfo["search"])
+                ->or_like("type.name", $pInfo["search"])
+                ->or_like("user.name", $pInfo["search"])
+                ->or_like("info.title", $pInfo["search"])
+                ->group_end()
+                ->get()->num_rows();
+        } else if ($pInfo["start_time"] == 0 && $pInfo["end_time"] != 0) {
+            $data['aaData'] = $dataQuery->where(array("time <" => $pInfo["end_time"] + 86400))
+                ->get()->result_array();
+
+            //查询总记录条数
+            $total = $this->db->select("info.id")->from("info")
+                ->join("user", "user.id = info.publisher", "left")
+                ->join("type", "type.id = info.type", "left")
+                ->where(array("time <" => $pInfo["end_time"] + 86400))
+                ->group_start()
+                ->like("info.id", $pInfo["search"])
+                ->or_like("info.source", $pInfo["search"])
+                ->or_like("type.name", $pInfo["search"])
+                ->or_like("user.name", $pInfo["search"])
+                ->or_like("info.title", $pInfo["search"])
+                ->group_end()
+                ->get()->num_rows();
+        } else {
+            $data['aaData'] = $dataQuery->get()->result_array();
+
+            //查询总记录条数
+            $total = $this->db->select("info.id")->from("info")
+                ->join("user", "user.id = info.publisher", "left")
+                ->join("type", "type.id = info.type", "left")
+                ->group_start()
+                ->like("info.id", $pInfo["search"])
+                ->or_like("info.source", $pInfo["search"])
+                ->or_like("type.name", $pInfo["search"])
+                ->or_like("user.name", $pInfo["search"])
+                ->or_like("info.title", $pInfo["search"])
+                ->group_end()
+                ->get()->num_rows();
+        }
+
+        $data['sEcho'] = $pInfo['sEcho'];
+
+        $data['iTotalDisplayRecords'] = $total;
+
+        $data['iTotalRecords'] = $total;
+
+        return $data;
+    }
+
+
+    /**
      * 查询 event(事件) 信息
      * @param $event_id
      * @return mixed
@@ -229,24 +385,24 @@ class Designate_Model extends CI_Model
 
                 // 检查我们是否需要从栈中删除一个节点
                 while ($right[count($right) - 1]["rgt"] < $row['rgt']) {
-                    if($right[count($right) - 1]["rgt"] - $right[count($right) - 1]["lft"] !=1){
+                    if ($right[count($right) - 1]["rgt"] - $right[count($right) - 1]["lft"] != 1) {
                         $tree_json .= "]},";
-                    }else{
+                    } else {
                         $tree_json .= "},";
                     }
                     array_pop($right);
                 }
 
                 //判断是否为父节点
-                if($row["rgt"] - $row["lft"] != 1){
-                    $tree_json .= "{name: '".$row["name"]."',id:".$row["uid"].",open:false,children:[";
-                }else{
-                    $tree_json .= "{name: '".$row["name"]."',id:".$row["uid"];
+                if ($row["rgt"] - $row["lft"] != 1) {
+                    $tree_json .= "{name: '" . $row["name"] . "',id:" . $row["uid"] . ",open:false,children:[";
+                } else {
+                    $tree_json .= "{name: '" . $row["name"] . "',id:" . $row["uid"];
                 }
 
             } else {
-                $tree_json .= "{name:'" . $row["name"]."'";
-                if($row["rgt"] - $row["lft"] != 1){
+                $tree_json .= "{name:'" . $row["name"] . "'";
+                if ($row["rgt"] - $row["lft"] != 1) {
                     $tree_json .= ",open:true,children:[";
                 }
             }
@@ -257,15 +413,15 @@ class Designate_Model extends CI_Model
 
         //闭合括号
         while (!empty($right)) {
-            if($right[count($right) - 1]["rgt"] - $right[count($right) - 1]["lft"] !=1){
+            if ($right[count($right) - 1]["rgt"] - $right[count($right) - 1]["lft"] != 1) {
                 $tree_json .= "]}";
-            }else{
+            } else {
                 $tree_json .= "}";
             }
             array_pop($right);
         }
 
-        $tree_json = str_replace(",]","]",$tree_json);
+        $tree_json = str_replace(",]", "]", $tree_json);
         return $tree_json;
     }
 
