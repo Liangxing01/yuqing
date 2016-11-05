@@ -10,6 +10,11 @@ class Report_model extends CI_Model {
         $this->load->database();
     }
 
+    /**
+     * 添加事件或更新
+     * @param $arr 事件相关数据
+     * @return mixed 影响条数
+     */
     public function add_or_update($arr){
         $dup = 0;
         if ($arr['url'] !== null){
