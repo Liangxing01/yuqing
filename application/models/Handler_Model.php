@@ -242,7 +242,8 @@ WHERE b.title LIKE '%".$pInfo['search']."%' ESCAPE '!'";
                 'pid'      => "",
                 'description' => $com,
                 'speaker'    => $speaker,
-                'name'     => $name
+                'name'     => $name,
+                'time'     => time()
             );
             $res = $this->db->insert('event_log',$data);
             return $res;
@@ -253,7 +254,8 @@ WHERE b.title LIKE '%".$pInfo['search']."%' ESCAPE '!'";
                 'pid'      => $pid,
                 'description' => $com,
                 'speaker'    => $speaker,
-                'name'     => $name
+                'name'     => $name,
+                'time'     => time()
             );
             $res = $this->db->insert('event_log',$data);
             return $res;
