@@ -5,6 +5,9 @@
 <!-- DATATABLE CSS -->
 <link rel="stylesheet" href="/assets/data-tables/DT_bootstrap.css">
 
+<!-- Common CSS -->
+<link rel="stylesheet" href="/css/common.css">
+
 <!-- BEGIN MAIN CONTENT -->
 <section id="main-content">
     <section class="wrapper site-min-height">
@@ -28,6 +31,34 @@
                                     <span class="input-group-addon">到</span>
                                     <input type="text" id="end" class="input-sm form-control" name="end"/>
                                 </div>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="info_type">类别:</label>
+                                <select class="form-control" name="type" id="info_type">
+                                    <option value="">&nbsp;</option>
+                                    <{foreach $type_list AS $type}>
+                                    <option value="<{$type['id']}>"><{$type['name']}></option>
+                                    <{/foreach}>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="info_state">状态:</label>
+                                <select class="form-control" name="state" id="info_state">
+                                    <option value="">&nbsp;</option>
+                                    <option value="已确认">已确认</option>
+                                    <option value="未确认">未确认</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="info_duplicate">是否重复:</label>
+                                <select class="form-control" name="duplicate" id="info_duplicate">
+                                    <option value="">&nbsp;</option>
+                                    <option value="重复">是</option>
+                                    <option value="不重复">否</option>
+                                </select>
+                            </div>
+                            <div class="col-md-1 m-t-24">
+                                <button title="搜索" class="btn btn-info" id="search-button"><i class="fa fa-search"></i></button>
                             </div>
                         </div>
 
@@ -86,6 +117,11 @@
         $("#info_search_table").DataTable().ajax.reload(null, false);
     });
 
+    //查询按钮 监听
+    $("#search-button").on("click", function(){
+        $("#info_search_table").DataTable().ajax.reload(null, false);
+    });
+
     $('#info_search_table').dataTable({
 
         "bPaginate": true,
@@ -107,6 +143,9 @@
         "fnServerParams": function (aoData) { //发送额外参数
             aoData.push({"name": "start_time", "value": dateToTime($("#start").val())});
             aoData.push({"name": "end_time", "value": dateToTime($("#end").val())});
+            aoData.push({"name": "type", "value": $("#info_type").val()});
+            aoData.push({"name": "state", "value": $("#info_state").val()});
+            aoData.push({"name": "duplicate", "value": $("#info_duplicate").val()});
         },
 
         "aoColumns": [
@@ -204,7 +243,7 @@
                 "sLast": "尾页"
             },
             "sZeroRecords": "暂无数据",
-            "sSearch": "搜索:"
+            "sSearch": "关键字:"
         }
 
     });

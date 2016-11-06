@@ -252,46 +252,52 @@ class Designate_Model extends CI_Model
      */
     public function info_search_pagination($pInfo)
     {
-        $dataQuery = $this->db->select("info.id, info.title, source, type.name AS type, user.name AS publisher, time, duplicate, state")
-            ->from("info")
-            ->join("user", "user.id = info.publisher", "left")
-            ->join("type", "type.id = info.type", "left")
-            ->group_start()
-            ->like("info.id", $pInfo["search"])
-            ->or_like("info.source", $pInfo["search"])
-            ->or_like("type.name", $pInfo["search"])
-            ->or_like("user.name", $pInfo["search"])
-            ->or_like("info.title", $pInfo["search"])
-            ->group_end()
-            ->order_by("time", $pInfo["sort_type"])
-            ->limit($pInfo["length"], $pInfo["start"]);
+        //查询条件构造
+        $condition = array();
 
+        // 时间条件
         if ($pInfo["start_time"] != 0 && $pInfo["end_time"] != 0) {
-            $data['aaData'] = $dataQuery->where(array("time >" => $pInfo["start_time"], "time <" => $pInfo["end_time"] + 86400))
-                ->get()->result_array();
-
-            //查询总记录条数
-            $total = $this->db->select("info.id")->from("info")
-                ->join("user", "user.id = info.publisher", "left")
-                ->join("type", "type.id = info.type", "left")
-                ->where(array("time >=" => $pInfo["start_time"], "time <" => $pInfo["end_time"] + 86400))
-                ->group_start()
-                ->like("info.id", $pInfo["search"])
-                ->or_like("info.source", $pInfo["search"])
-                ->or_like("type.name", $pInfo["search"])
-                ->or_like("user.name", $pInfo["search"])
-                ->or_like("info.title", $pInfo["search"])
-                ->group_end()
-                ->get()->num_rows();
+            $condition[] = "time > " . $pInfo["start_time"] . " AND time < " . ($pInfo["end_time"] + 86400);
         } else if ($pInfo["start_time"] != 0 && $pInfo["end_time"] == 0) {
-            $data['aaData'] = $dataQuery->where(array("time >=" => $pInfo["start_time"]))
-                ->get()->result_array();
+            $condition[] = "time >= " . $pInfo["start_time"];
+        } else if ($pInfo["start_time"] == 0 && $pInfo["end_time"] != 0) {
+            $condition[] = "time < " . ($pInfo["end_time"] + 86400);
+        }
 
-            //查询总记录条数
-            $total = $this->db->select("info.id")->from("info")
+        // 状态条件
+        if ($pInfo["state"] == "已确认") {
+            $condition[] = "info.state = 2 ";
+        } else if ($pInfo["state"] == "未确认") {
+            $condition[] = "info.state < 2 ";
+        }
+
+        // 类型条件
+        if ($pInfo["type"]) {
+            $condition[] = "info.type = " . $pInfo["type"];
+        }
+
+        // 重复条件
+        if ($pInfo["duplicate"] == "重复") {
+            $condition[] = "info.duplicate = 1";
+        }else if($pInfo["duplicate"] == "不重复"){
+            $condition[] = "info.duplicate = 0";
+        }
+
+        $where = "";
+        foreach($condition AS $c){
+            if($condition){
+                $where .= $c . " AND ";
+            }
+        }
+        $where = substr($where, 0, strlen($where) - 4);
+
+        //执行查询语句
+        if ($where) {
+            $data['aaData'] = $this->db->select("info.id, info.title, source, type.name AS type, user.name AS publisher, time, duplicate, state")
+                ->from("info")
                 ->join("user", "user.id = info.publisher", "left")
                 ->join("type", "type.id = info.type", "left")
-                ->where(array("time >=" => $pInfo["start_time"]))
+                ->where($where)
                 ->group_start()
                 ->like("info.id", $pInfo["search"])
                 ->or_like("info.source", $pInfo["search"])
@@ -299,16 +305,15 @@ class Designate_Model extends CI_Model
                 ->or_like("user.name", $pInfo["search"])
                 ->or_like("info.title", $pInfo["search"])
                 ->group_end()
-                ->get()->num_rows();
-        } else if ($pInfo["start_time"] == 0 && $pInfo["end_time"] != 0) {
-            $data['aaData'] = $dataQuery->where(array("time <" => $pInfo["end_time"] + 86400))
+                ->order_by("time", $pInfo["sort_type"])
+                ->limit($pInfo["length"], $pInfo["start"])
                 ->get()->result_array();
 
             //查询总记录条数
             $total = $this->db->select("info.id")->from("info")
                 ->join("user", "user.id = info.publisher", "left")
                 ->join("type", "type.id = info.type", "left")
-                ->where(array("time <" => $pInfo["end_time"] + 86400))
+                ->where($where)
                 ->group_start()
                 ->like("info.id", $pInfo["search"])
                 ->or_like("info.source", $pInfo["search"])
@@ -318,7 +323,20 @@ class Designate_Model extends CI_Model
                 ->group_end()
                 ->get()->num_rows();
         } else {
-            $data['aaData'] = $dataQuery->get()->result_array();
+            $data['aaData'] = $this->db->select("info.id, info.title, source, type.name AS type, user.name AS publisher, time, duplicate, state")
+                ->from("info")
+                ->join("user", "user.id = info.publisher", "left")
+                ->join("type", "type.id = info.type", "left")
+                ->group_start()
+                ->like("info.id", $pInfo["search"])
+                ->or_like("info.source", $pInfo["search"])
+                ->or_like("type.name", $pInfo["search"])
+                ->or_like("user.name", $pInfo["search"])
+                ->or_like("info.title", $pInfo["search"])
+                ->group_end()
+                ->order_by("time", $pInfo["sort_type"])
+                ->limit($pInfo["length"], $pInfo["start"])
+                ->get()->result_array();
 
             //查询总记录条数
             $total = $this->db->select("info.id")->from("info")
