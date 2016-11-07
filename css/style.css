@@ -6674,3 +6674,16 @@ a.guest-on i {
 .lobby {
 	padding: 0 !important;
 }
+
+
+
+
+
+
+.input-btn{
+	padding: 5px;
+	border-radius: 4px;
+	margin:5px;
+	background:#8175c7;
+	color: white;
+}
