@@ -298,9 +298,17 @@ class Designate extends MY_controller
         $pData['sEcho'] = $this->input->post('psEcho', true);           //DataTables 用来生成的信息
         $pData['start'] = $this->input->post('iDisplayStart', true);    //显示的起始索引
         $pData['length'] = $this->input->post('iDisplayLength', true);  //每页显示的行数
-        $pData['sort_th'] = $this->input->post('iSortCol_0', true);     //排序的列 默认第六列
-        $pData['sort_type'] = $this->input->post('sSortDir_0', true);   //排序的方向 默认 desc
+        $pData['sort_start'] = $this->input->post('sSortDir_0', true);  //开始时间排序的方向 默认 desc
+        $pData['sort_end'] = $this->input->post('sSortDir_1', true);    //结束时间排序的方向 默认 desc
+
+        //高级查询 关键字
         $pData['search'] = $this->input->post('sSearch', true);         //全局搜索关键字 默认为空
+        $pData['rank'] = $this->input->post('rank', true);              //查询事件等级 默认为空
+        $pData['state'] = $this->input->post('state', true);            //查询事件状态 默认为空
+        $pData['start_start'] = $this->input->post('start_start', true);//查询事件开始时间 起始范围 默认为0
+        $pData['start_end'] = $this->input->post('start_end', true);    //查询事件开始时间 结束范围 默认为0
+        $pData['end_start'] = $this->input->post('end_start', true);    //查询事件结束时间 起始范围 默认为0
+        $pData['end_end'] = $this->input->post('end_end', true);        //查询事件结束时间 结束范围 默认为0
 
         if ($pData['start'] == NULL) {
             $pData['start'] = 0;
@@ -308,14 +316,32 @@ class Designate extends MY_controller
         if ($pData['length'] == NULL) {
             $pData['length'] = 10;
         }
-        if ($pData["sort_th"] == NULL) {
-            $pData["sort_th"] = 5;
+        if ($pData['sort_start'] == NULL) {
+            $pData['sort_start'] = "desc";
         }
-        if ($pData['sort_type'] == NULL) {
-            $pData['sort_type'] = "desc";
+        if ($pData['sort_end'] == NULL) {
+            $pData['sort_end'] = "desc";
         }
         if ($pData['search'] == NULL) {
             $pData['search'] = '';
+        }
+        if ($pData['rank'] == NULL) {
+            $pData['rank'] = '';
+        }
+        if ($pData['state'] == NULL) {
+            $pData['state'] = '';
+        }
+        if ($pData['start_start'] == NULL) {
+            $pData['sort_start'] = 0;
+        }
+        if ($pData['start_end'] == NULL) {
+            $pData['start_end'] = 0;
+        }
+        if ($pData['end_start'] == NULL) {
+            $pData['end_start'] = 0;
+        }
+        if ($pData['end_end'] == NULL) {
+            $pData['end_end'] = 0;
         }
 
         $this->load->model("Designate_Model", "designate");
@@ -334,7 +360,6 @@ class Designate extends MY_controller
     {
         $this->load->model("Designate_Model", "designate");
         $type_list = $this->designate->get_info_type();  //获取类别列表
-        $this->assign("type_list", $type_list);
         $this->assign("active_title", "designate_parent");
         $this->assign("active_parent", "info_search");
         $this->assign("type_list", $type_list);

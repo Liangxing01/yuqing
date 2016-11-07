@@ -223,16 +223,114 @@ class Designate_Model extends CI_Model
      */
     public function event_search_pagination($pInfo)
     {
-        $data['aaData'] = $this->db->select("event.id, event.title, source, event_type.name AS type, publisher.name AS publisher, manager.name AS manager, start_time, state")
-            ->from("event")
-            ->join("event_type", "event_type.id = event.type", "type")
-            ->join("user publisher", "publisher.id = event.publisher", "left")
-            ->join("user manager", "manager.id = event.manager", "left")
-            ->limit(10, 0)
-            ->get()->result_array();
+        //查询条件构造
+        $condition = array();
 
-        //查询总记录条数
-        $total = $this->db->from("event")->get()->num_rows();
+        // 开始时间条件
+        if ($pInfo["start_start"] != 0 && $pInfo["start_end"] != 0) {
+            $condition[] = "start_time > " . $pInfo["start_start"] . " AND start_time < " . ($pInfo["start_end"] + 86400);
+        } else if ($pInfo["start_start"] != 0 && $pInfo["start_end"] == 0) {
+            $condition[] = "start_time >= " . $pInfo["start_start"];
+        } else if ($pInfo["start_start"] == 0 && $pInfo["start_end"] != 0) {
+            $condition[] = "start_time < " . ($pInfo["start_end"] + 86400);
+        }
+
+        // 完成时间条件
+        if ($pInfo["end_start"] != 0 && $pInfo["end_end"] != 0) {
+            $condition[] = "end_time > " . $pInfo["end_start"] . " AND end_time < " . ($pInfo["end_end"] + 86400);
+        } else if ($pInfo["end_start"] != 0 && $pInfo["end_end"] == 0) {
+            $condition[] = "end_time >= " . $pInfo["end_start"];
+        } else if ($pInfo["end_start"] == 0 && $pInfo["end_end"] != 0) {
+            $condition[] = "end_time < " . ($pInfo["end_end"] + 86400);
+        }
+
+        // 状态条件
+        if ($pInfo["state"]) {
+            $condition[] = "event.state = " . $pInfo["state"];
+        }
+
+        // 等级条件
+        if ($pInfo["rank"]) {
+            $condition[] = "event.rank = " . $pInfo["rank"];
+        }
+
+        $where = "";
+        foreach($condition AS $c){
+            if($condition){
+                $where .= $c . " AND ";
+            }
+        }
+        $where = substr($where, 0, strlen($where) - 4);
+
+        //执行查询语句
+
+        if($where){
+            $data['aaData'] = $this->db->select("event.id, event.title, A.name AS manager, B.name AS main_processor, C.name AS main_group, event.rank, event.state, event.start_time, event.end_time")
+                ->from("event")
+                ->join("user A", "A.id = event.manager", "left")
+                ->join("user B", "B.id = event.main_processor", "left")
+                ->join("group C", "C.id = event.group", "left")
+                ->where($where)
+                ->group_start()
+                ->like("event.id", $pInfo["search"])
+                ->or_like("A.name", $pInfo["search"])
+                ->or_like("B.name", $pInfo["search"])
+                ->or_like("C.name", $pInfo["search"])
+                ->or_like("event.title", $pInfo["search"])
+                ->group_end()
+                ->order_by("start_time", $pInfo["sort_start"])
+                ->order_by("end_time", $pInfo["sort_end"])
+                ->limit($pInfo["length"], $pInfo["start"])
+                ->get()->result_array();
+
+            //查询总记录条数
+            $total = $this->db->select("event.id")
+                ->from("event")
+                ->join("user A", "A.id = event.manager", "left")
+                ->join("user B", "B.id = event.main_processor", "left")
+                ->join("group C", "C.id = event.group", "left")
+                ->where($where)
+                ->group_start()
+                ->like("event.id", $pInfo["search"])
+                ->or_like("A.name", $pInfo["search"])
+                ->or_like("B.name", $pInfo["search"])
+                ->or_like("C.name", $pInfo["search"])
+                ->or_like("event.title", $pInfo["search"])
+                ->group_end()
+                ->get()->num_rows();
+        }else{
+            $data['aaData'] = $this->db->select("event.id, event.title, A.name AS manager, B.name AS main_processor, C.name AS main_group, event.rank, event.state, event.start_time, event.end_time")
+                ->from("event")
+                ->join("user A", "A.id = event.manager", "left")
+                ->join("user B", "B.id = event.main_processor", "left")
+                ->join("group C", "C.id = event.group", "left")
+                ->group_start()
+                ->like("event.id", $pInfo["search"])
+                ->or_like("A.name", $pInfo["search"])
+                ->or_like("B.name", $pInfo["search"])
+                ->or_like("C.name", $pInfo["search"])
+                ->or_like("event.title", $pInfo["search"])
+                ->group_end()
+                ->order_by("start_time", $pInfo["sort_start"])
+                ->order_by("end_time", $pInfo["sort_end"])
+                ->limit($pInfo["length"], $pInfo["start"])
+                ->get()->result_array();
+
+            //查询总记录条数
+            $total = $this->db->select("event.id")
+                ->from("event")
+                ->join("user A", "A.id = event.manager", "left")
+                ->join("user B", "B.id = event.main_processor", "left")
+                ->join("group C", "C.id = event.group", "left")
+                ->group_start()
+                ->like("event.id", $pInfo["search"])
+                ->or_like("A.name", $pInfo["search"])
+                ->or_like("B.name", $pInfo["search"])
+                ->or_like("C.name", $pInfo["search"])
+                ->or_like("event.title", $pInfo["search"])
+                ->group_end()
+                ->get()->num_rows();
+        }
 
         $data['sEcho'] = $pInfo['sEcho'];
 

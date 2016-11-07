@@ -1,8 +1,12 @@
 <link href="/assets/advanced-datatable/media/css/demo_page.css" rel="stylesheet">
 <link href="/assets/advanced-datatable/media/css/demo_table.css" rel="stylesheet">
+<!-- BOOTSTRAP DATEPICKER PLUGIN CSS -->
+<link rel="stylesheet" type="text/css" href="/assets/bootstrap-datepicker-r/css/bootstrap-datepicker.css">
 <!-- DATATABLE CSS -->
 <link rel="stylesheet" href="/assets/data-tables/DT_bootstrap.css">
-<!--<link rel="stylesheet" href="/assets/data-tables/dataTables.bootstrap.min.css">-->
+
+<!-- Common CSS -->
+<link rel="stylesheet" href="/css/common.css">
 
 <!-- BEGIN MAIN CONTENT -->
 <section id="main-content">
@@ -12,23 +16,66 @@
             <div class="col-lg-12">
                 <section class="panel">
                     <header class="panel-heading">
-                        <span class="label label-primary">已指派事件表</span>
+                        <span class="label label-primary">事件检索</span>
                            <span class="tools pull-right">
-                           <a href="javascript:;" class="fa fa-chevron-down"></a>
-                           <a href="javascript:;" class="fa fa-times"></a>
+                           <a href="javascript:;" title="刷新" class="fa fa-refresh"></a>
                            </span>
                     </header>
                     <div class="panel-body">
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label>开始时间范围:</label>
+                                <div class="input-daterange input-group" id="start-date-range">
+                                    <input type="text" id="start-start" class="input-sm form-control" name="start"/>
+                                    <span class="input-group-addon">到</span>
+                                    <input type="text" id="start-end" class="input-sm form-control" name="end"/>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <label>结束时间范围:</label>
+                                <div class="input-daterange input-group" id="end-date-range">
+                                    <input type="text" id="end-start" class="input-sm form-control" name="start"/>
+                                    <span class="input-group-addon">到</span>
+                                    <input type="text" id="end-end" class="input-sm form-control" name="end"/>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="event_rank">等级:</label>
+                                <select class="form-control" name="type" id="event_rank">
+                                    <option value="">&nbsp;</option>
+                                    <option value="一般">一般</option>
+                                    <option value="重要">重要</option>
+                                    <option value="紧急">紧急</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="event_state">状态:</label>
+                                <select class="form-control" name="state" id="event_state">
+                                    <option value="">&nbsp;</option>
+                                    <option value="已确认">已指派</option>
+                                    <option value="未确认">未指派</option>
+                                    <option value="未确认">未审核</option>
+                                    <option value="未确认">已完成</option>
+                                </select>
+                            </div>
+                            <div class="col-md-1 m-t-24">
+                                <button title="搜索" class="btn btn-info" id="search-button"><i class="fa fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+
                         <div class="adv-table">
-                            <table class="display table table-bordered table-striped" id="event_not_designate_table">
+                            <table class="display table table-bordered table-striped" id="event_search_table">
                                 <thead>
                                 <tr>
                                     <th>编号</th>
                                     <th>标题</th>
-                                    <th>来源</th>
-                                    <th>上报人</th>
-                                    <th>指派人</th>
-                                    <th>上报时间</th>
+                                    <th>首派人</th>
+                                    <th>等级</th>
+                                    <th>牵头人(单位)</th>
+                                    <th>开始时间</th>
+                                    <th>结束时间</th>
                                     <th>状态</th>
                                     <th>操作</th>
                                 </tr>
@@ -46,15 +93,33 @@
 </section>
 <!-- END SECTION -->
 
-<!-- Load Plugin -->
+<!-- BOOTSTRAP DATEPICKER JS  -->
+<script src="/assets/bootstrap-datepicker-r/js/bootstrap-datepicker.js"></script>
+<script charset="utf-8"
+        src="/assets/bootstrap-datepicker-r/locales/bootstrap-datepicker.zh-CN.min.js"></script><!-- BOOTSTRAP DATEPICKER JS  -->
+<!-- DataTables -->
 <script language="javascript" src="/assets/data-tables/jquery.dataTables.min.js"></script>
 <script src="/assets/data-tables/dataTables.bootstrap.min.js"></script>
 <!-- Public Function -->
 <script language="javascript" src="/js/public.js"></script>
 
 <!-- Page Script -->
-<script>
-    $('#event_not_designate_table').dataTable({
+<script language="javascript">
+
+    $('#start-date-range').datepicker({
+        language: "zh-CN"
+    });
+
+    $('#end-date-range').datepicker({
+        language: "zh-CN"
+    });
+
+    //查询按钮 监听
+    $("#search-button").on("click", function () {
+        $("#event_search_table").DataTable().ajax.reload(null, false);
+    });
+
+    $('#event_search_table').dataTable({
 
         "bPaginate": true,
         "bProcessing": false,                //是否显示正在处理提示信息。
@@ -65,15 +130,21 @@
         "bAutoWidth": false,
         "bStateSave": true,
         "iDisplayLength": 10,                //每页显示10条数据
-        "aaSorting": [[5, "desc"]],          //默认排序 第6列
+        "aLengthMenu": [10, 25, 50, 100],
+        "aaSorting": [[5, "desc"], [6, "desc"]],          //默认排序 第6,7列
 
         "bServerSide": true,
         "sAjaxSource": "/designate/event_search_data",
         "sServerMethod": "POST",
 
-//        "fnServerParams": function (aoData) { //发送额外参数
-//            aoData.push({"name": "ip", "value": "<?php //echo $ip;?>//"});
-//        },
+        "fnServerParams": function (aoData) { //发送额外参数
+            aoData.push({"name": "start_start", "value": dateToTime($("#start-start").val())});
+            aoData.push({"name": "start_end", "value": dateToTime($("#start-end").val())});
+            aoData.push({"name": "end_start", "value": dateToTime($("#end-start").val())});
+            aoData.push({"name": "end_end", "value": dateToTime($("#end-end").val())});
+            aoData.push({"name": "rank", "value": $("#event_rank").val()});
+            aoData.push({"name": "state", "value": $("#event_state").val()});
+        },
 
         "aoColumns": [
             {
@@ -89,29 +160,47 @@
                 'orderable': false
             },
             {
-                "sTitle": "来源",
-                "mData": "source",
-                'sClass': "text-center",
-                'orderable': false
-            },
-            {
-                "sTitle": "上报人",
-                "mData": "publisher",
-                'sClass': "text-center",
-                'orderable': false
-            },
-            {
-                "sTitle": "指派人",
+                "sTitle": "首派人",
                 "mData": "manager",
                 'sClass': "text-center",
                 'orderable': false
             },
             {
-                "sTitle": "上报时间",
+                "sTitle": "等级",
+                "mData": "rank",
+                'sClass': "text-center",
+                'orderable': false
+            },
+            {
+                "sTitle": "牵头人(单位)",
+                "mData": "main_processor",
+                'sClass': "text-center",
+                'orderable': false,
+                "mRender": function (data, type, full) {
+                    if (data == null) {
+                        return full.main_group;
+                    }
+                    return data;
+                }
+            },
+            {
+                "sTitle": "开始时间",
                 "mData": "start_time",
                 'sClass': "text-center",
                 "mRender": function (data) {
                     return timeToDate(data * 1000);
+                }
+            },
+            {
+                "sTitle": "结束时间",
+                "mData": "end_time",
+                'sClass': "text-center",
+                "mRender": function (data) {
+                    if (data == null) {
+                        return "";
+                    } else {
+                        return timeToDate(data * 1000);
+                    }
                 }
             },
             {
@@ -126,7 +215,7 @@
                 'sClass': "text-center",
                 'orderable': false,
                 "mRender": function (data) {
-                    return "<a title='查看' href='/designate/event_designate?id=" + data + " ' class='btn btn-info btn-xs'>查看详情</a>";
+                    return "<a title='查看' href='/designate/info_detail?id=" + data + " ' class='btn btn-info btn-xs'>查看</a>";
                 }
             }
         ],
@@ -143,8 +232,14 @@
                 "sLast": "尾页"
             },
             "sZeroRecords": "暂无数据",
-            "sSearch": "搜索:"
+            "sSearch": "关键字:"
         }
 
+    });
+
+
+    //刷新表格
+    jQuery(".panel .tools .fa-refresh").click(function () {
+        $("#event_search_table").DataTable().ajax.reload(null, false);
     });
 </script>
