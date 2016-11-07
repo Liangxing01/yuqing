@@ -166,11 +166,11 @@
             },
             {
                 "sTitle": "单位事件",
-                "mData": "is_group",
+                "mData": "group",
                 'sClass': "text-center",
                 'orderable': false,
                 "mRender" : function (data){
-                    return data == 1 ? "是" : "否";
+                    return data == null ? "否" : "是";
                 }
             },
             {

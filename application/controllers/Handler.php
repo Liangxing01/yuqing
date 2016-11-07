@@ -10,7 +10,7 @@ class Handler extends MY_Controller {
 
         $this->session->set_userdata("uid",3);
         $this->session->set_userdata('name',"王五");
-        $this->session->set_userdata('gid',1);
+        $this->session->set_userdata('gid',3);
     }
 
     public function index()

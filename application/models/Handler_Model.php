@@ -79,11 +79,11 @@ class Handler_Model extends CI_Model{
 
 
         //单位事件条件
-        if(!empty($pInfo['is_group'])){
+        if(($pInfo['is_group']) != ''){
             if($pInfo['is_group'] == 1){
-                $condition[] = "a.is_group = 1";
+                $condition[] = "a.group !=''";
             }else{
-                $condition[] = "a.is_group = 0";
+                $condition[] = "a.group";
             }
         }
 
@@ -117,12 +117,15 @@ LEFT JOIN yq_event_info as einfo ON einfo.event_id = a.event_id LEFT JOIN yq_inf
 LEFT JOIN yq_user as u on u.id = a.manager LEFT JOIN yq_type as t on t.id = i.type LEFT JOIN yq_event as e ON
  e.id = a.event_id
 WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
-
+        $gid = $this->session->userdata('gid');
         if($where){
-            $data['aaData'] = $this->db->select('a.id,a.time AS zptime,a.is_group,t.name as type_name,a.description,
+            $data['aaData'] = $this->db->select('a.id,a.time AS zptime,a.group,t.name as type_name,a.description,
         i.title,i.id as info_id,u.username as zpname,einfo.event_id as eid,e.rank')->from('event_designate AS a')
                 ->where('a.state','未处理')
+                ->group_start()
                 ->where('a.processor',$processorID)
+                ->or_where('a.group',$gid)
+                ->group_end()
                 ->where($where)
                 ->join('event_info as einfo','einfo.event_id = a.event_id','left')
                 ->join('info as i','i.id = einfo.`info_id`','left')
@@ -139,10 +142,13 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
             //$data['aaData'] = $this->db->query($sql,array($processorID,(int)$pInfo['start'],(int)$pInfo['length']))->result_array();
             //$total = $this->db->query($sql2,array($processorID))->num_rows();
 
-            $total = $this->db->select('a.id,a.time AS zptime,a.is_group,t.name as type_name,a.description,
+            $total = $this->db->select('a.id,a.time AS zptime,a.group,t.name as type_name,a.description,
         i.title,i.id as info_id,u.username as zpname,einfo.event_id as eid,e.rank')->from('event_designate AS a')
                 ->where('a.state','未处理')
+                ->group_start()
                 ->where('a.processor',$processorID)
+                ->or_where('a.group',$gid)
+                ->group_end()
                 ->where($where)
                 ->join('event_info as einfo','einfo.event_id = a.event_id','left')
                 ->join('info as i','i.id = einfo.`info_id`','left')
@@ -165,10 +171,13 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
                 return false;
             }
         }else{
-            $data['aaData'] = $this->db->select('a.id,a.time AS zptime,a.is_group,t.name as type_name,a.description,
+            $data['aaData'] = $this->db->select('a.id,a.time AS zptime,a.group,t.name as type_name,a.description,
         i.title,i.id as info_id,u.username as zpname,einfo.event_id as eid,e.rank')->from('event_designate AS a')
                 ->where('a.state','未处理')
+                ->group_start()
                 ->where('a.processor',$processorID)
+                ->or_where('a.group',$gid)
+                ->group_end()
                 ->join('event_info as einfo','einfo.event_id = a.event_id','left')
                 ->join('info as i','i.id = einfo.`info_id`','left')
                 ->join('user as u','u.id = a.manager','left')
@@ -181,13 +190,13 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
                 ->limit($pInfo['length'],$pInfo['start'])
                 ->get()->result_array();
 
-            //$data['aaData'] = $this->db->query($sql,array($processorID,(int)$pInfo['start'],(int)$pInfo['length']))->result_array();
-            //$total = $this->db->query($sql2,array($processorID))->num_rows();
-
-            $total = $this->db->select('a.id,a.time AS zptime,a.is_group,t.name as type_name,a.description,
+            $total = $this->db->select('a.id,a.time AS zptime,a.group,t.name as type_name,a.description,
         i.title,i.id as info_id,u.username as zpname,einfo.event_id as eid,e.rank')->from('event_designate AS a')
                 ->where('a.state','未处理')
+                ->group_start()
                 ->where('a.processor',$processorID)
+                ->or_where('a.group',$gid)
+                ->group_end()
                 ->join('event_info as einfo','einfo.event_id = a.event_id','left')
                 ->join('info as i','i.id = einfo.`info_id`','left')
                 ->join('user as u','u.id = a.manager','left')
@@ -233,19 +242,30 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
 
     //查询正在处理事件
     public function get_doing_handle($pInfo,$processorID){
-        $sql = "SELECT a.id,a.event_id,b.title,u.username as zpname,a.time,a.state FROM
-(SELECT * from  yq_event_designate WHERE processor = ? and state ='处理中' ) as a
-LEFT JOIN yq_event as b on a.event_id = b.id  LEFT JOIN yq_user as u on a.manager = u.id 
-WHERE b.title LIKE '%".$pInfo['search']."%' ESCAPE '!'
-ORDER BY a.time DESC limit ?,?";
+        $data['aaData'] = $this->db->select('a.id,a.event_id,b.title,u.username as zpname,a.time,a.state,b.rank')
+            ->from('event_designate as a')
+            ->where('a.processor',$processorID)
+            ->where('a.state','处理中')
+            ->join('event as b','a.event_id = b.id','left')
+            ->join('user as u','a.manager = u.id','left')
+            ->group_start()
+            ->like('b.title',$pInfo['search'])
+            ->group_end()
+            ->order_by('a.time','DESC')
+            ->limit($pInfo['length'],$pInfo['start'])
+            ->get()->result_array();
 
-        $sql2 = "SELECT a.id,a.event_id,b.title,u.username as zpname,a.time,a.state FROM
-(SELECT * from  yq_event_designate WHERE processor = ? and state ='处理中' ) as a
-LEFT JOIN yq_event as b on a.event_id = b.id  LEFT JOIN yq_user as u on a.manager = u.id
-WHERE b.title LIKE '%".$pInfo['search']."%' ESCAPE '!'";
+        $total = $this->db->select('a.id,a.event_id,b.title,u.username as zpname,a.time,a.state,b.rank')
+            ->from('event_designate as a')
+            ->where('a.processor',$processorID)
+            ->where('a.state','处理中')
+            ->join('event as b','a.event_id = b.id','left')
+            ->join('user as u','a.manager = u.id','left')
+            ->group_start()
+            ->like('b.title',$pInfo['search'])
+            ->group_end()
+            ->get()->num_rows();
 
-        $data['aaData'] = $this->db->query($sql,array($processorID,(int)$pInfo['start'],(int)$pInfo['length']))->result_array();
-        $total = $this->db->query($sql2,array($processorID))->num_rows();
         $data['sEcho']                = $pInfo['sEcho'];
 
         $data['iTotalDisplayRecords'] = $total;
@@ -278,9 +298,9 @@ WHERE b.title LIKE '%".$pInfo['search']."%' ESCAPE '!'";
      * 参数：gid,eid
      */
     public function check_done_btn($gid,$eid){
-        $this->db->select('main_processor');
+        $this->db->select('main_processor,group');
         $main_id = $this->db->get_where('event',array('id'=>$eid))->row();
-        if($main_id->main_processor == $gid){
+        if($main_id->group == $gid || $main_id->main_processor == $this->session->userdata('uid')){
             return true;
         }else{
             return false;
