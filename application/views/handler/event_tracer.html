@@ -280,30 +280,35 @@
 		}				
 	}
     
-  
-	$("input[name='sjwc']").click(function(){
-		
-		var eid=document.getElementById('eid').value;
-		$.ajax({
+   	$(document).ready(function(){
+   		$("#wc").hide();
+   		$.ajax({
 		    	url:'http://202.202.2.42:82/handler/confirm_done',
 		    	type :'post',
-		    	data : 'eid='+eid,			    
+		    	data : 'eid='+1,			    
 		    	dataType:'json',
-		    	success:function(data){
-		    		alert(data.res);
+		    	success:function(data){		    		
+		    		console.log(data.res);
 		    		if(data.res==1){
-		    			document.getElementById("sjwc").style.display="block";
+		    			document.getElementById("sjwc").style.display="";
+		    			$("input[name='sjwc']").click(function(){				
+							$("#wc").show();
+							$('input').attr("readonly","readonly");
+							
+						});
+		    			
 		    		}else{
-		    			document.getElementById("sjwc").style.display="none";;
+		    			document.getElementById("sjwc").style.display="none";
 		    		}
 		    	},
-//		    	Complete:function(){
-//			    	$("#wc").show();
-//			    },
 		    	error:function(){
 		    		
 		    	}
-		    });
-	});
+		});
+   		
+   	});
+   		
+   	
+	
 	
 </script>

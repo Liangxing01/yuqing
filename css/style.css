@@ -6680,6 +6680,15 @@ a.guest-on i {
 
 
 
+#sjwc{
+	padding: 5px 10px;
+	border-radius: 4px;
+	background-color: #59ace2;
+	font-size: 1.2rem;
+	font-weight: bold;
+	border: none;
+	color: white;
+}
 .input-btn{
 	padding: 5px;
 	border-radius: 4px;
