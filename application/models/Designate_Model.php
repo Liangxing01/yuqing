@@ -246,12 +246,12 @@ class Designate_Model extends CI_Model
 
         // 状态条件
         if ($pInfo["state"]) {
-            $condition[] = "event.state = " . $pInfo["state"];
+            $condition[] = "event.state = '" . $pInfo["state"] . "'";
         }
 
         // 等级条件
         if ($pInfo["rank"]) {
-            $condition[] = "event.rank = " . $pInfo["rank"];
+            $condition[] = "event.rank = '" . $pInfo["rank"] . "'";
         }
 
         $where = "";

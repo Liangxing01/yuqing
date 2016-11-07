@@ -53,14 +53,18 @@
                                 <label for="event_state">状态:</label>
                                 <select class="form-control" name="state" id="event_state">
                                     <option value="">&nbsp;</option>
-                                    <option value="已确认">已指派</option>
-                                    <option value="未确认">未指派</option>
-                                    <option value="未确认">未审核</option>
-                                    <option value="未确认">已完成</option>
+                                    <option value="已指派">已指派</option>
+                                    <option value="未指派">未指派</option>
+                                    <option value="未审核">未审核</option>
+                                    <option value="已完成">已完成</option>
                                 </select>
                             </div>
                             <div class="col-md-1 m-t-24">
                                 <button title="搜索" class="btn btn-info" id="search-button"><i class="fa fa-search"></i>
+                                </button>
+                            </div>
+                            <div class="col-md-1 m-t-24">
+                                <button title="清空" class="btn btn-info" id="reset-button">清空
                                 </button>
                             </div>
                         </div>
@@ -116,6 +120,17 @@
 
     //查询按钮 监听
     $("#search-button").on("click", function () {
+        $("#event_search_table").DataTable().ajax.reload(null, false);
+    });
+
+    //清空按钮 监听
+    $("#reset-button").on("click", function () {
+        $("#start-start").val("");
+        $("#start-end").val("");
+        $("#end-start").val("");
+        $("#end-end").val("");
+        $("#event_rank").val("");
+        $("#event_state").val("");
         $("#event_search_table").DataTable().ajax.reload(null, false);
     });
 
