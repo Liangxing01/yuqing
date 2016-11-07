@@ -225,6 +225,8 @@ class Handler extends MY_Controller {
         }
         if(!empty($einfo['end_time'])){
             $this->assign('end_time',$einfo['end_time']);
+        }else{
+            $this->assign('end_time',"");
         }
         $this->assign('done_state',$done_state);
         $this->assign('eid',$event_id);
