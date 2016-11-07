@@ -6,10 +6,11 @@
                 <section class="panel">
                     <header class="panel-heading">
                         <i class="fa fa-hand-o-down"></i>
-                        <span class="label label-primary">事件追踪</span>
+                        <span class="label label-primary" >事件追踪</span>
+                        <input type="button" value="事件完成" name="sjwc" id="sjwc"/>
                     </header>
                     <div class="panel-body" style="display: block;">
-                        <ul class="timeline">
+                        <ul id="comment" class="timeline">
                             <li class="centering-line"></li>
                             <!-- BEGIN TIME CAT-->
                             <li class="center-timeline-cat">
@@ -26,318 +27,7 @@
                             <!-- END CENTERING LINE -->
 
 
-                            <!-- BEGIN ITEM TIMELINE -->
-                            <li class="item-timeline">
-                                <div class="buletan"></div>
-                                <div class="inner-content">
-                                    <!-- BEGIN HEADING TIMELINE -->
-                                    <div class="heading-timeline">
-                                        <img alt="Avatar" class="avatar" src="/img/avatar/avatar-1.jpg">
-                                        <div class="user-timeline-info">
-                                            <p>
-                                                Paris Hawker
-                                                <small>2016年3月11日</small>
-                                            </p>
-                                        </div>
-                                        <!-- /.user-timeline-info -->
-                                    </div>
-                                    <!-- /.heading-timeline -->
-                                    <!-- END HEADING TIMELINE -->
-                                    <p>
-                                        这件事情要尽快处理，涉及到的部门要追查到人，每天向我汇报情况
-                                    </p>
-                                    <!-- BEGIN FOOTER TIMELINE -->
-                                    <div class="footer-timeline">
-                                        <ul class="timeline-option">
-                                            <li class="option-row">
-                                                <div class="row">
-                                                    <div class="col-xs-6">
-                                                        <ol>
-                                                            <li><a class="label label-info">评论</a></li>
-                                                        </ol>
-                                                    </div>
-                                                    <!-- /.col-xs-6 -->
-                                                    <div class="col-xs-6 text-right">
-                                                        <ol>
-                                                            <li><a class="btn btn-white"> <span class="text"> <i
-                                                                    class="fa fa-thumbs-up text-success"></i> 25 </span></a>
-                                                            </li>
-                                                            <li><a class="btn btn-white"> <span class="text"> <i
-                                                                    class="fa fa-comments text-info"></i> 3 </span></a>
-                                                            </li>
-                                                        </ol>
-                                                    </div>
-                                                    <!-- /.col-xs-6 -->
-                                                </div>
-                                                <!-- /.row -->
-                                            </li>
-                                            <li class="option-row">
-                                                <img alt="Avatar" class="avatar" src="/img/avatar/avatar-1.jpg">
-                                                <div class="reply">
-                                                    <form role="form">
-                                                        <input type="text" placeholder="填写你的反馈..."
-                                                               class="form-control input-sm">
-                                                    </form>
-                                                </div>
-                                                <!-- /.reply -->
-                                            </li>
-                                            <li class="option-row">
-                                                <img alt="Avatar" class="avatar" src="/img/avatar/avatar-2.jpg">
-                                                <div class="reply">
-                                                    <p><strong><a class="label bg-success m-l-xs">小李子</a></strong>
-                                                        好的。<br>
-                                                        我会尽快去处理这件事情
-                                                    </p>
-                                                    <p class="text-muted reply-time">3 小时前</p>
-                                                </div>
-                                                <!-- /.reply -->
-                                            </li>
-                                            <li class="option-row">
-                                                <img alt="Avatar" class="avatar" src="/img/avatar/avatar-3.jpg">
-                                                <div class="reply">
-                                                    <p>
-                                                        <strong><a class="label bg-success m-l-xs">小王</a></strong>
-                                                        此事我已经转交给交通部去处理了。
-                                                    </p>
-                                                    <p class="text-muted reply-time">4 小时前</p>
-                                                </div>
-                                                <!-- /.reply -->
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <!-- /.footer-timeline -->
-                                    <!-- END FOOTER TIMELINE -->
-                                </div>
-                                <!-- /.inner-content -->
-                            </li>
-                            <!-- END ITEM TIMELINE -->
-                            <!-- BEGIN ITEM TIMELINE -->
-                            <li class="item-timeline">
-                                <div class="buletan"></div>
-                                <div class="inner-content">
-                                    <!-- BEGIN HEADING TIMELINE -->
-                                    <div class="heading-timeline">
-                                        <img alt="Avatar" class="avatar" src="/img/avatar/avatar-1.jpg">
-                                        <div class="user-timeline-info">
-                                            <p>
-                                                领导
-                                                <small>2016年3月22日</small>
-                                            </p>
-                                        </div>
-                                        <!-- /.user-timeline-info -->
-                                    </div>
-                                    <!-- /.heading-timeline -->
-                                    <!-- BEGIN HEADING TIMELINE -->
-                                    <blockquote>
-                                        上面印发下来了新的文件，请及时查收
-                                        <small>by <cite title="Someone">领导A</cite></small>
-                                    </blockquote>
-                                    <!-- BEGIN FOOTER TIMELINE -->
-                                    <div class="footer-timeline">
-                                        <ul class="timeline-option">
-                                            <li class="option-row">
-                                                <div class="row">
-                                                    <div class="col-xs-6">
-                                                        <ol>
 
-                                                            <li><a class="label label-info">回复</a></li>
-                                                        </ol>
-                                                    </div>
-                                                    <!-- /.col-xs-6 -->
-                                                    <div class="col-xs-6 text-right">
-                                                        <ol>
-                                                            <li><a class="btn btn-white"> <span class="text"> <i
-                                                                    class="fa fa-thumbs-up text-success"></i> 254 </span></a>
-                                                            </li>
-                                                        </ol>
-                                                    </div>
-                                                    <!-- /.col-xs-6 -->
-                                                </div>
-                                                <!-- /.row -->
-                                            </li>
-                                            <li class="option-row">
-                                                <img alt="Avatar" class="avatar" src="/img/avatar/avatar-1.jpg">
-                                                <div class="reply">
-                                                    <form role="form">
-                                                        <input type="text" placeholder="填写你的反馈...."
-                                                               class="form-control input-sm">
-                                                    </form>
-                                                </div>
-                                                <!-- /.reply -->
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <!-- /.footer-timeline -->
-                                    <!-- END FOOTER TIMELINE -->
-                                </div>
-                                <!-- /.inner-content -->
-                            </li>
-                            <!-- END ITEM TIMELINE -->
-                            <!-- BEGIN ITEM TIMELINE -->
-                            <li class="item-timeline">
-                                <div class="buletan"></div>
-                                <div class="inner-content">
-                                    <!-- BEGIN HEADING TIMELINE -->
-                                    <div class="heading-timeline">
-                                        <img alt="Avatar" class="avatar" src="/img/avatar/avatar-1.jpg">
-                                        <div class="user-timeline-info">
-                                            <p>
-                                                指派人1
-                                                <small>2016年3月26日</small>
-                                            </p>
-                                        </div>
-                                        <!-- /.user-timeline-info -->
-                                    </div>
-                                    <!-- /.heading-timeline -->
-                                    <!-- END HEADING TIMELINE -->
-                                    <h4>巴南区房屋改造工程</h4>
-                                    <p>
-                                        市政府印发的白皮书，注意查看。
-                                    </p>
-                                    <!-- BEGIN FOOTER TIMELINE -->
-                                    <div class="footer-timeline">
-                                        <ul class="timeline-option">
-                                            <li class="option-row">
-                                                <div class="row">
-                                                    <div class="col-xs-6">
-                                                        <ol>
-
-                                                            <li><a class="label label-info">回复</a></li>
-                                                        </ol>
-                                                    </div>
-                                                    <!-- /.col-xs-6 -->
-                                                    <div class="col-xs-6 text-right">
-                                                        <ol>
-                                                            <li><a class="btn btn-white"> <span class="text"> <i
-                                                                    class="fa fa-thumbs-up text-success"></i> 2 </span></a>
-                                                            </li>
-                                                            <li><a class="btn btn-white"> <span class="text"> <i
-                                                                    class="fa fa-comments text-info"></i> 1 </span></a>
-                                                            </li>
-                                                        </ol>
-                                                    </div>
-                                                    <!-- /.col-xs-6 -->
-                                                </div>
-                                                <!-- /.row -->
-                                            </li>
-                                            <li class="option-row">
-                                                <strong><a class="label bg-success m-l-xs">小王</a></strong> 和
-                                                <strong><a class="label bg-success m-l-xs">小李</a></strong>
-                                                执行
-                                            </li>
-                                            <li class="option-row">
-                                                <img alt="Avatar" class="avatar" src="/img/avatar/avatar-1.jpg">
-                                                <div class="reply">
-                                                    <form role="form">
-                                                        <input type="text" placeholder="填写你的反馈..."
-                                                               class="form-control input-sm">
-                                                    </form>
-                                                </div>
-                                                <!-- /.reply -->
-                                            </li>
-                                            <li class="option-row">
-                                                <img alt="Avatar" class="avatar" src="/img/avatar/avatar-4.jpg">
-                                                <div class="reply">
-                                                    <p><strong><a class="label bg-success m-l-xs">张三</a></strong>
-                                                        已经查看了邮件</p>
-                                                    <p class="text-muted reply-time">昨天  01:47 PM</p>
-                                                </div>
-                                                <!-- /.reply -->
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <!-- /.footer-timeline -->
-                                    <!-- END FOOTER TIMELINE -->
-                                </div>
-                                <!-- /.inner-content -->
-                            </li>
-                            <!-- END ITEM TIMELINE -->
-
-                            <!-- BEGIN ITEM TIMELINE -->
-                            <li class="item-timeline">
-                                <div class="buletan"></div>
-                                <div class="inner-content">
-                                    <!-- BEGIN HEADING TIMELINE -->
-                                    <div class="heading-timeline">
-                                        <img alt="Avatar" class="avatar" src="/img/avatar/avatar-1.jpg">
-                                        <div class="user-timeline-info">
-                                            <p>
-                                                Paris Hawkerqqqq
-                                                <small>2016年3月19日</small>
-                                            </p>
-                                        </div>
-                                        <!-- /.user-timeline-info -->
-                                    </div>
-                                    <!-- /.heading-timeline -->
-                                    <!-- END HEADING TIMELINE -->
-                                    <p>
-                                        这件事情要尽快处理，涉及到的部门要追查到人，每天向我汇报情况
-                                    </p>
-                                    <!-- BEGIN FOOTER TIMELINE -->
-                                    <div class="footer-timeline">
-                                        <ul class="timeline-option">
-                                            <li class="option-row">
-                                                <div class="row">
-                                                    <div class="col-xs-6">
-                                                        <ol>
-                                                            <li><a class="label label-info">评论</a></li>
-                                                        </ol>
-                                                    </div>
-                                                    <!-- /.col-xs-6 -->
-                                                    <div class="col-xs-6 text-right">
-                                                        <ol>
-                                                            <li><a class="btn btn-white"> <span class="text"> <i
-                                                                    class="fa fa-thumbs-up text-success"></i> 25 </span></a>
-                                                            </li>
-                                                            <li><a class="btn btn-white"> <span class="text"> <i
-                                                                    class="fa fa-comments text-info"></i> 3 </span></a>
-                                                            </li>
-                                                        </ol>
-                                                    </div>
-                                                    <!-- /.col-xs-6 -->
-                                                </div>
-                                                <!-- /.row -->
-                                            </li>
-                                            <li class="option-row">
-                                                <img alt="Avatar" class="avatar" src="/img/avatar/avatar-1.jpg">
-                                                <div class="reply">
-                                                    <form role="form">
-                                                        <input type="text" placeholder="填写你的反馈..."
-                                                               class="form-control input-sm">
-                                                    </form>
-                                                </div>
-                                                <!-- /.reply -->
-                                            </li>
-                                            <li class="option-row">
-                                                <img alt="Avatar" class="avatar" src="/img/avatar/avatar-2.jpg">
-                                                <div class="reply">
-                                                    <p><strong><a class="label bg-success m-l-xs">小李子</a></strong>
-                                                        好的。<br>
-                                                        我会尽快去处理这件事情
-                                                    </p>
-                                                    <p class="text-muted reply-time">3 小时前</p>
-                                                </div>
-                                                <!-- /.reply -->
-                                            </li>
-                                            <li class="option-row">
-                                                <img alt="Avatar" class="avatar" src="/img/avatar/avatar-3.jpg">
-                                                <div class="reply">
-                                                    <p>
-                                                        <strong><a class="label bg-success m-l-xs">小王</a></strong>
-                                                        此事我已经转交给交通部去处理了。
-                                                    </p>
-                                                    <p class="text-muted reply-time">4 小时前</p>
-                                                </div>
-                                                <!-- /.reply -->
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <!-- /.footer-timeline -->
-                                    <!-- END FOOTER TIMELINE -->
-                                </div>
-                                <!-- /.inner-content -->
-                            </li>
-                            <!-- END ITEM TIMELINE -->
 
                             <!-- BEGIN TIME CAT-->
                             <li class="center-timeline-cat">
@@ -457,7 +147,7 @@
 
 
                             <!-- BEGIN HIGHLIGHT TIMELINE MOMENT -->
-                            <li class="item-timeline highlight text-center">
+                            <li class="item-timeline highlight text-center" id="wc">
                                 <div class="buletan"></div>
                                 <div class="inner-content">
                                     <h2 class="text-info"><i class="fa fa-flag-checkered"></i></h2>
@@ -470,29 +160,148 @@
                             
                         </ul>
                     </div>
+                   
                 </section>
             </div>
         </div>
         <!-- END ROW  -->
     </section>
 </section>
+<!-- <div id="one1"></div>-->
 <!-- END SECTION -->
 <input type="hidden" name="title" value="<{$title}>">
-<input type="hidden" name="can_show_done_btn" value="<{$can_show_done_btn}>">
-<input type="hidden" name="eid" value="<{$eid}>">
+<input type="hidden" name="can_show_done_btn" value="<{$can_show_done_btn}>" id="cs">
+<input type="hidden" name="eid" value="<{$eid}>" id="eid">
 
 <script>
     $.ajax({
         url : '/handler/get_event_logs',
         type: 'post',
-        data: 'eid='+'1',
+        data: 'eid='+1,
         cache:false,
         dataType:'json',
         success:function(data){
-            console.log(data);
+           $.each(data,function(i,value){
+        	   var str1="<li class='item-timeline'>  <div class='buletan'></div><div class='inner-content'>";
+        	   var str2="<div class='heading-timeline'><img alt='Avatar' class='avatar' src='/img/avatar/avatar-1.jpg'>";
+        	   var str3="<div class='user-timeline-info'><p> "+value.name+" <small>"+value.time+"</small></p></div></div>" 
+               var str4="<p>"+value.desc+"</p>"
+               var str5="<div class='footer-timeline'><ul class='timeline-option'><li class='option-row'><div class='row'>" 
+               var str6="<div class='col-xs-6'><ol> <li><a class='label label-info'>评论</a></li></ol></div>" 
+               var str7="<div class='col-xs-6 text-right'><ol><li><a class='btn btn-white'> <span class='text'>" 
+               var str8="<i class='fa fa-thumbs-up text-success'></i> 25 </span></a></li>"
+               var str9="<li><a class='btn btn-white'> <span class='text'><i class='fa fa-comments text-info'></i> 3 </span></a>"        
+               var str10="</li></ol></div></div> </li>" 
+               var str11="<li class='option-row'><img alt='Avatar' class='avatar' src='/img/avatar/avatar-1.jpg'>"
+               var str12="<div class='reply'><form role='form'><input type='text' placeholder='填写你的反馈...' class='form-control input-sm' id=comment"+value.id+ ">"                  
+               var str13="<input  type='button' value='发表' id='fb' class='input-btn' onclick=addComment("+value.id+",1) /><input  type='button' value='总结' id='zj' class='input-btn' onclick=addComment("+value.id+",2) /></form></div></li>" 
+               var str14="";
+               $.each(value.comment,function(i,child){
+               		//console.log(child);               	   
+            	  	var child1=" <li class='option-row'> <img alt='Avatar' class='avatar' src='/img/avatar/avatar-2.jpg'>"
+            	  	var child2=" <div class='reply'><p><strong><a class='label bg-success m-l-xs'>"+child.name+"</a></strong>" 
+                  	var child3=child.desc+"</p>   <p class='text-muted reply-time'>"+child.time+" 小时前</p></div> </li>"
+                  	str14=str14+child1+child2+child3;
+               });                   
+                var str15="</ul> </div></div></li>"                
+                var str=str1+str2+str3+str4+str5+str6+str7+str8+str9+str10+str11+str12+str13+str14+str15;                     
+                $("#comment").append(str);                        
+           });
         },
         error:function(){
 
         }
-    });
+    });	
+    
+	
+	
+	function addComment(value,type){
+		//父亲节点ID获取到了
+		var id="";
+		if(type==1){
+		 id=value;
+		 var comment = $("#comment"+id).val();
+			if(comment.length>200){ 
+				alert("字数不能超过200！");
+				return;
+			}
+			var eid=document.getElementById('eid').value;
+			console.log(comment);
+		    $.ajax({
+		    	url:'http://202.202.2.42:82/handler/post_comment',
+		    	type:'post',
+		    	data :
+			        {"pid" : id,
+			        "comment" : comment,
+			        "eid" :eid
+			      },			    
+		    	dataType:'json',
+		    	success:function(data){
+		    		if(data.res == 1){
+		    			alert('发表成功！')
+		    		}else{
+		    			alert('评论失败！');
+		    		}		    			    		
+		    	},
+		    	error:function(){
+		    		
+		    	}
+		    });
+		}else{
+			id=value;
+			var comment = $("#comment"+id).val();
+			if(comment.length>200){ 
+				alert("字数不能超过200！");
+				return;
+			}
+			var eid=document.getElementById('eid').value;
+		    $.ajax({
+		    	url:'http://202.202.2.42:82/handler/post_comment',
+		    	type:'post',
+		    	data :
+			        {"pid" : '',
+			        "comment" : comment,
+			        "eid" : 1 
+			      },			    
+		    	dataType:'json',
+		    	success:function(data){
+		    		if(data.res == 1){
+		    			alert('发表成功！')
+		    		}else{
+		    			alert('评论失败！');
+		    		}		    			    		
+		    	},
+		    	error:function(){
+		    		
+		    	}
+		    });
+		}				
+	}
+    
+  
+	$("input[name='sjwc']").click(function(){
+		
+		var eid=document.getElementById('eid').value;
+		$.ajax({
+		    	url:'http://202.202.2.42:82/handler/confirm_done',
+		    	type :'post',
+		    	data : 'eid='+eid,			    
+		    	dataType:'json',
+		    	success:function(data){
+		    		alert(data.res);
+		    		if(data.res==1){
+		    			document.getElementById("sjwc").style.display="block";
+		    		}else{
+		    			document.getElementById("sjwc").style.display="none";;
+		    		}
+		    	},
+//		    	Complete:function(){
+//			    	$("#wc").show();
+//			    },
+		    	error:function(){
+		    		
+		    	}
+		    });
+	});
+	
 </script>
