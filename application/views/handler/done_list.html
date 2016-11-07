@@ -96,7 +96,21 @@
                 "sTitle": "事件等级",
                 "mData": "rank",
                 'sClass': "text-center",
-                'orderable': false
+                'orderable': false,
+                "mRender": function (data) {
+                    switch (data){
+                        case '一般':
+                            return "<button class='btn btn-primary btn-xs'>一般</button>";
+                            break;
+                        case '重要':
+                            return "<button class='btn btn-warning btn-xs'>重要</button>";
+                            break;
+                        case '紧急':
+                            return "<button class='btn btn-danger btn-xs'>紧急</button>";
+                            break;
+                    }
+
+                }
             },
             {
                 "sTitle": "结束时间",

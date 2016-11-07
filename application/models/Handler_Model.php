@@ -242,29 +242,72 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
 
     //查询正在处理事件
     public function get_doing_handle($pInfo,$processorID){
-        $data['aaData'] = $this->db->select('a.id,a.event_id,b.title,u.username as zpname,a.time,a.state,b.rank')
-            ->from('event_designate as a')
-            ->where('a.processor',$processorID)
-            ->where('a.state','处理中')
-            ->join('event as b','a.event_id = b.id','left')
-            ->join('user as u','a.manager = u.id','left')
-            ->group_start()
-            ->like('b.title',$pInfo['search'])
-            ->group_end()
-            ->order_by('a.time','DESC')
-            ->limit($pInfo['length'],$pInfo['start'])
-            ->get()->result_array();
+        //查询条件构造
+        $condition = array();
+        //事件等级
+        if(!empty($pInfo['rank'])){
+            $condition[] = "b.rank = '".$pInfo['rank']."'";
+        }
 
-        $total = $this->db->select('a.id,a.event_id,b.title,u.username as zpname,a.time,a.state,b.rank')
-            ->from('event_designate as a')
-            ->where('a.processor',$processorID)
-            ->where('a.state','处理中')
-            ->join('event as b','a.event_id = b.id','left')
-            ->join('user as u','a.manager = u.id','left')
-            ->group_start()
-            ->like('b.title',$pInfo['search'])
-            ->group_end()
-            ->get()->num_rows();
+        $where = "";
+        foreach($condition AS $c){
+            if($condition){
+                $where .= $c . " AND ";
+            }
+        }
+        $where = substr($where, 0, strlen($where) - 4);
+        if($where){
+            $data['aaData'] = $this->db->select('a.id,a.event_id,b.title,u.username as zpname,a.time,a.state,b.rank')
+                ->from('event_designate as a')
+                ->where('a.processor',$processorID)
+                ->where('a.state','处理中')
+                ->where($where)
+                ->join('event as b','a.event_id = b.id','left')
+                ->join('user as u','a.manager = u.id','left')
+                ->group_start()
+                ->like('b.title',$pInfo['search'])
+                ->group_end()
+                ->order_by('a.time','DESC')
+                ->limit($pInfo['length'],$pInfo['start'])
+                ->get()->result_array();
+
+            $total = $this->db->select('a.id,a.event_id,b.title,u.username as zpname,a.time,a.state,b.rank')
+                ->from('event_designate as a')
+                ->where('a.processor',$processorID)
+                ->where('a.state','处理中')
+                ->where($where)
+                ->join('event as b','a.event_id = b.id','left')
+                ->join('user as u','a.manager = u.id','left')
+                ->group_start()
+                ->like('b.title',$pInfo['search'])
+                ->group_end()
+                ->get()->num_rows();
+        }else{
+            $data['aaData'] = $this->db->select('a.id,a.event_id,b.title,u.username as zpname,a.time,a.state,b.rank')
+                ->from('event_designate as a')
+                ->where('a.processor',$processorID)
+                ->where('a.state','处理中')
+                ->join('event as b','a.event_id = b.id','left')
+                ->join('user as u','a.manager = u.id','left')
+                ->group_start()
+                ->like('b.title',$pInfo['search'])
+                ->group_end()
+                ->order_by('a.time','DESC')
+                ->limit($pInfo['length'],$pInfo['start'])
+                ->get()->result_array();
+
+            $total = $this->db->select('a.id,a.event_id,b.title,u.username as zpname,a.time,a.state,b.rank')
+                ->from('event_designate as a')
+                ->where('a.processor',$processorID)
+                ->where('a.state','处理中')
+                ->join('event as b','a.event_id = b.id','left')
+                ->join('user as u','a.manager = u.id','left')
+                ->group_start()
+                ->like('b.title',$pInfo['search'])
+                ->group_end()
+                ->get()->num_rows();
+        }
+
 
         $data['sEcho']                = $pInfo['sEcho'];
 
@@ -480,6 +523,119 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
             $res = $this->db->get_where('event_log',array('pid'=> $pid))->result_array();
             return $res;
         }
+    }
+
+    //获取所有的事件
+    public function get_all_events($pInfo,$processorID,$gid){
+        //高级条件检索
+
+        //查询条件构造
+        $condition = array();
+        // 时间条件
+        if(!empty($pInfo['start_time'])){
+            if ($pInfo["start_time"] != 0 && $pInfo["end_time"] != 0) {
+                $condition[] = "ed.time > " . $pInfo["start_time"] . " AND ed.time < " . ($pInfo["end_time"] + 86400);
+            } else if ($pInfo["start_time"] != 0 && $pInfo["end_time"] == 0) {
+                $condition[] = "ed.time >= " . $pInfo["start_time"];
+            } else if ($pInfo["start_time"] == 0 && $pInfo["end_time"] != 0) {
+                $condition[] = "ed.time < " . ($pInfo["end_time"] + 86400);
+            }
+        }
+
+
+        //单位事件条件
+        if(($pInfo['is_group']) != ''){
+            if($pInfo['is_group'] == 1){
+                $condition[] = "ed.group !=''";
+            }else{
+                $condition[] = "ed.group";
+            }
+        }
+
+
+        //事件等级
+        if(!empty($pInfo['rank'])){
+            $condition[] = "e.rank = '".$pInfo['rank']."'";
+        }
+
+        $where = "";
+        foreach($condition AS $c){
+            if($condition){
+                $where .= $c . " AND ";
+            }
+        }
+
+        $where = substr($where, 0, strlen($where) - 4);
+
+        if($where){
+            $data['aaData'] = $this->db->select("ed.event_id,e.title,e.rank,ed.time,ed.group,u.name,e.state,ed.description")
+                ->from("event_designate as ed")
+                ->join('event as e','e.id = ed.event_id','left')
+                ->join('user as u','u.id = ed.manager','left')
+                ->group_start()
+                ->where('ed.processor',$processorID)
+                ->or_where('ed.group',$gid)
+                ->group_end()
+                ->where($where)
+                ->group_start()
+                ->like('e.title',$pInfo['search'])
+                ->group_end()
+                ->limit($pInfo['length'],$pInfo['start'])
+                ->order_by('ed.time','DESC')
+                ->get()->result_array();
+
+            $total = $this->db->select("ed.event_id,e.title,e.rank,ed.time,ed.group,u.name,e.state,ed.description")
+                ->from("event_designate as ed")
+                ->join('event as e','e.id = ed.event_id','left')
+                ->join('user as u','u.id = ed.manager','left')
+                ->group_start()
+                ->where('ed.processor',$processorID)
+                ->or_where('ed.group',$gid)
+                ->group_end()
+                ->where($where)
+                ->group_start()
+                ->like('e.title',$pInfo['search'])
+                ->group_end()
+                ->get()->num_rows();
+
+        }else{
+            $data['aaData'] = $this->db->select("ed.event_id,e.title,e.rank,ed.time,ed.group,u.name,e.state,ed.description")
+                ->from("event_designate as ed")
+                ->join('event as e','e.id = ed.event_id','left')
+                ->join('user as u','u.id = ed.manager','left')
+                ->group_start()
+                ->where('ed.processor',$processorID)
+                ->or_where('ed.group',$gid)
+                ->group_end()
+                ->group_start()
+                ->like('e.title',$pInfo['search'])
+                ->group_end()
+                ->limit($pInfo['length'],$pInfo['start'])
+                ->order_by('ed.time','DESC')
+                ->get()->result_array();
+
+            $total = $this->db->select("ed.event_id,e.title,e.rank,ed.time,ed.group,u.name,e.state,ed.description")
+                ->from("event_designate as ed")
+                ->join('event as e','e.id = ed.event_id','left')
+                ->join('user as u','u.id = ed.manager','left')
+                ->group_start()
+                ->where('ed.processor',$processorID)
+                ->or_where('ed.group',$gid)
+                ->group_end()
+                ->group_start()
+                ->like('e.title',$pInfo['search'])
+                ->group_end()
+                ->get()->num_rows();
+        }
+
+        $data['sEcho'] = $pInfo['sEcho'];
+
+        $data['iTotalDisplayRecords'] = $total;
+
+        $data['iTotalRecords'] = $total;
+
+        return $data;
+
     }
 
     //开始执行处理任务，向数据库插入一条记录
