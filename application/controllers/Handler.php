@@ -63,6 +63,12 @@ class Handler extends MY_Controller {
         $pData['sort_type'] = $this->input->post('sSortDir_0', true);   //排序的方向 默认 desc
         $pData['search'] = $this->input->post('sSearch', true);         //全局搜索关键字 默认为空
 
+        //高级查询 关键字
+        $pData["start_time"] = $this->input->post('start_time', true);  //查询起始时间 默认为0
+        $pData["end_time"] = $this->input->post('end_time', true);      //查询截止时间 默认为0
+        $pData['is_group'] = $this->input->post('is_group');
+        $pData['rank']     = $this->input->post('rank');
+
         if ($pData['start'] == NULL) {
             $pData['start'] = 0;
         }
@@ -212,6 +218,15 @@ class Handler extends MY_Controller {
         $done_btn = $this->handler_model->check_done_btn($gid,$event_id);
         $this->assign('title',$einfo['title']);
         $this->assign('rank',$einfo['rank']);
+        if($einfo['state'] == "已完成"){
+            $done_state = 1;
+        }else{
+            $done_state = 0;
+        }
+        if(!empty($einfo['end_time'])){
+            $this->assign('end_time',$einfo['end_time']);
+        }
+        $this->assign('done_state',$done_state);
         $this->assign('eid',$event_id);
         $this->assign('can_show_done_btn',$done_btn);
         $this->all_display("handler/event_tracer.html");
