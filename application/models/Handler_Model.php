@@ -239,7 +239,6 @@ WHERE b.title LIKE '%".$pInfo['search']."%' ESCAPE '!'";
             //为总结性评论
             $data = array(
                 'event_id' => $eid,
-                'pid'      => "",
                 'description' => $com,
                 'speaker'    => $speaker,
                 'name'     => $name,
