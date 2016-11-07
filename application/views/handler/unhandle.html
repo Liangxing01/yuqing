@@ -1,7 +1,12 @@
 <link href="/assets/advanced-datatable/media/css/demo_page.css" rel="stylesheet">
 <link href="/assets/advanced-datatable/media/css/demo_table.css" rel="stylesheet">
+<!-- BOOTSTRAP DATEPICKER PLUGIN CSS -->
+<link rel="stylesheet" type="text/css" href="/assets/bootstrap-datepicker-r/css/bootstrap-datepicker.css">
 <!-- DATATABLE CSS -->
 <link rel="stylesheet" href="/assets/data-tables/DT_bootstrap.css">
+
+<!-- Common CSS -->
+<link rel="stylesheet" href="/css/common.css">
 
 
 <!-- BEGIN MAIN CONTENT -->
@@ -19,6 +24,43 @@
                            </span>
                     </header>
                     <div class="panel-body">
+                        <!-- 检索内容选择框 -->
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label>时间范围:</label>
+                                <div class="input-daterange input-group" id="datepicker">
+                                    <input type="text" id="start" class="input-sm form-control" name="start"/>
+                                    <span class="input-group-addon">到</span>
+                                    <input type="text" id="end" class="input-sm form-control" name="end"/>
+                                </div>
+                            </div>
+
+                            <div class="col-md-2">
+                                <label for="is_group">是否为单位事件:</label>
+                                <select class="form-control" name="is_group" id="is_group">
+                                    <option value="">&nbsp;</option>
+                                    <option value="1">是</option>
+                                    <option value="0">否</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-2">
+                                <label for="rank">事件等级:</label>
+                                <select class="form-control" name="rank" id="rank">
+                                    <option value="">&nbsp;</option>
+                                    <option value="一般">一般</option>
+                                    <option value="重要">重要</option>
+                                    <option value="紧急">紧急</option>
+                                </select>
+                            </div>
+
+
+
+                            <div class="col-md-1 m-t-24">
+                                <button title="搜索" class="btn btn-info" id="search-button"><i class="fa fa-search"></i></button>
+                            </div>
+                        </div>
+
                         <div class="adv-table">
                             <table class="display table table-bordered table-striped" id="unhandle_table">
                                 <thead>
@@ -47,13 +89,38 @@
 </section>
 <!-- END SECTION -->
 
+
 <!-- Load Plugin -->
+<!-- BOOTSTRAP DATEPICKER JS  -->
+<script src="/assets/bootstrap-datepicker-r/js/bootstrap-datepicker.js"></script>
+<script charset="utf-8"
+        src="/assets/bootstrap-datepicker-r/locales/bootstrap-datepicker.zh-CN.min.js"></script><!-- BOOTSTRAP DATEPICKER JS  -->
 <script language="javascript" src="/assets/data-tables/jquery.dataTables.min.js"></script>
 <script src="/assets/data-tables/dataTables.bootstrap.min.js"></script>
 <script src="/js/public.js"></script>
 
 <!-- Page Script -->
 <script>
+
+    $('.input-daterange').datepicker({
+        language: "zh-CN"
+    });
+
+    //查询起始时间 监听
+    $("#start").on("changeDate", function (ev) {
+        $("#unhandle_table").DataTable().ajax.reload(null, false);
+    });
+
+    //查询截止时间 监听
+    $("#end").on("changeDate", function (ev) {
+        $("#unhandle_table").DataTable().ajax.reload(null, false);
+    });
+
+    //查询按钮 监听
+    $("#search-button").on("click", function(){
+        $("#unhandle_table").DataTable().ajax.reload(null, false);
+    });
+
     $('#unhandle_table').dataTable({
 
         "bPaginate": true,
@@ -71,9 +138,12 @@
         "sAjaxSource": "/handler/get_unhandle_data",
         "sServerMethod": "POST",
 
-//        "fnServerParams": function (aoData) { //发送额外参数
-//            aoData.push({"name": "ip", "value": "<?php //echo $ip;?>//"});
-//        },
+        "fnServerParams": function (aoData) { //发送额外参数
+            aoData.push({"name": "start_time", "value": dateToTime($("#start").val())});
+            aoData.push({"name": "end_time", "value": dateToTime($("#end").val())});
+            aoData.push({"name": "is_group", "value": $("#is_group").val()});
+            aoData.push({"name": "rank", "value": $("#rank").val()});
+        },
 
         "aoColumns": [
             {
@@ -96,18 +166,32 @@
             },
             {
                 "sTitle": "单位事件",
-                "mData": "is_group",
+                "mData": "group",
                 'sClass': "text-center",
                 'orderable': false,
                 "mRender" : function (data){
-                    return data == 1 ? "是" : "否";
+                    return data == null ? "否" : "是";
                 }
             },
             {
                 "sTitle": "事件等级",
                 "mData": "rank",
                 'sClass': "text-center",
-                'orderable': false
+                'orderable': false,
+                "mRender": function (data) {
+                    switch (data){
+                        case '一般':
+                            return "<button class='btn btn-primary btn-xs'>一般</button>";
+                            break;
+                        case '重要':
+                            return "<button class='btn btn-warning btn-xs'>重要</button>";
+                            break;
+                        case '紧急':
+                            return "<button class='btn btn-danger btn-xs'>紧急</button>";
+                            break;
+                    }
+
+                }
             },
             {
                 "sTitle": "指派时间",
