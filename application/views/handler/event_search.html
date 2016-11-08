@@ -59,6 +59,11 @@
                             <div class="col-md-1 m-t-24">
                                 <button title="搜索" class="btn btn-info" id="search-button"><i class="fa fa-search"></i></button>
                             </div>
+
+                            <div class="col-md-1 m-t-24">
+                                <button title="清空" class="btn btn-info" id="reset-button">清空
+                                </button>
+                            </div>
                         </div>
 
                         <div class="adv-table">
@@ -121,6 +126,15 @@
         $("#event_search_table").DataTable().ajax.reload(null, false);
     });
 
+    //清空按钮 监听
+    $("#reset-button").on("click", function () {
+        $("#start").val("");
+        $("#end").val("");
+        $("#rank").val("");
+        $("#is_group").val("");
+        $("#event_search_table").DataTable().ajax.reload(null, false);
+    });
+
     $('#event_search_table').dataTable({
 
         "bPaginate": true,
@@ -164,7 +178,8 @@
                 'sClass': "text-center",
                 'orderable': false,
                 "mRender" : function (data){
-                    return data == null ? "否" : "是";
+                    return data == null ? "<button class='btn btn-success btn-xs'>否</button>" :
+                            "<button class='btn btn-info btn-xs'>是</button>";
                 }
             },
             {

@@ -1,7 +1,7 @@
 <!-- BEGIN MAIN CONTENT -->
 <section id="main-content">
     <!-- BEGIN WRAPPER  -->
-    <section class="wrapper">
+    <section class="wrapper site-min-height">
         <!-- BEGIN ROW  -->
         <div class="row">
             <div class="col-lg-12">
@@ -14,18 +14,18 @@
                            </span>
                     </header>
                     <div class="panel-body">
-                        <form id="form1" class="form-horizontal tasi-form" enctype="multipart/form-data">
+                        <form id="form1" class="form-horizontal tasi-form layui-form" enctype="multipart/form-data">
                             <input type="hidden" id="id" name="id"/>
                             <div class="form-group">
                                 <label class="col-sm-2 col-sm-2 control-label">标题</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control round-input" name="title">
+                                    <input type="text" name="title" id="title" required lay-verify="required" placeholder="请输入标题" autocomplete="off" class="form-control layui-input">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="col-sm-2 col-sm-2 control-label">URL</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control round-input" name="url" id="url" onblur="judgeUrl()">
+                                    <input type="text" name="url" id="url" required lay-verify="required" placeholder="请输入事件来源的网址" autocomplete="off" class="form-control layui-input" onblur="active.judgeUrl()">
                                 </div>
                             </div>
                             <div class="form-group">
@@ -36,8 +36,8 @@
                             <div class="form-group">
                                 <label class="col-sm-2 col-sm-2 control-label">来源</label>
                                 <div class="col-sm-10">
-                                    <!--<input type="text" class="form-control round-input" name="source">-->
-                                    <select id="source" name="source" onchange="changeSelect(this)">
+                                    <select name="city" lay-verify="" id="source" name="source" onchange="active.changeSelect(this)">
+                                        <option value="">请选择一个上报来源</option>
                                         <option value="天涯">天涯</option>
                                         <option value="大渝网">大渝网</option>
                                         <option value="问政平台">问政平台</option>
@@ -53,13 +53,13 @@
                             <div class="form-group">
                                 <label class="col-sm-2 col-sm-2 control-label">描述</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control round-input" name="description">
+                                    <input type="text" name="description" id="description" required lay-verify="required" placeholder="请输入事件描述" autocomplete="off" class="form-control layui-input">
                                 </div>
                             </div>
 
                         </form>
                         <div class="text-center ">
-                            <button id="submit1" class="btn btn-success btn-lg">提交</button>
+                            <button id="submit1" class="btn btn-success btn-lg" onclick="active.setTop()">提交</button>
                         </div>
                     </div>
                 </section>
@@ -71,50 +71,71 @@
     <!-- END MAIN CONTENT -->
 
 </section>
-<!-- END SECTION -->
 <script>
 
-    function changeSelect(target) {
-        var $this = document.getElementById('source');
-        if ($this.value == 'other'){
-            document.getElementById("other").style.display = "block";
-        }
-    }
-    function judgeUrl() {
-        $.ajax({
-            type:"POST",
-            url:"/Reporter/judge_url",
-            data:{url:$('#url').val()},
-            dataType:"text",
-            success:function (data) {
+    var active = {
+        setTop : function () {
+            var title = $("#title").val();
+            var desc = $("#description").val();
+            if(title.length < 5){
+                layer.tips('标题必须大于5个字','#title',{
+                    tips:[2,'#78BA32']
+                });
+                return;
+            }
+            if(desc.length > 200){
+                layer.tips('描述过长，请不要超过200个字','#description',{
+                    tips:[2,'#78BA32']
+                });
+                return;
+            }
+            layer.open({
+                type:1
+                ,title:false
+                ,closeBtn:false
+                ,area:'300px;'
+                ,shade:0.8
+                ,id:'submit'
+                ,content:'<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">您确定要提交吗？</div>'
+                ,btn:['确认提交','取消提交']
+                ,moveType:1
+                ,yes:function () {
+                    var formdata = $('#form1').serializeArray();
+                    $.post('/Reporter/reportOrUpdate',{data:formdata},function (data) {
+                        if (data.res == 1){
+                            layer.msg('上传成功!');
+                        }else {
+                            layer.msg('上报失败！',{anim:6});
+                        }
+                        window.location = "/Reporter/reportRecording";
+                    },"json");
+                }
+                ,btn2:function () {
+                    layer.close();
+                }
+            })
+        },
+
+        judgeUrl : function () {
+            $.post('/Reporter/judge_url',{url:$('#url').val()},function () {
                 if (data==1){
-                    alert("该url已经上报过了，请重新输入");
-                    $("#url").focus();
+                    layer.tips('该url已经上报过了，请重新输入','#url',{
+                        tips:[2,'#78BA32']
+                    });
                 }
                 if (data == -1){
-                    alert("url不能为空，请重新输入");
-                    $("#url").focus();
+                    layer.tips('url不能为空，请重新输入','#url',{
+                        tips:[2,'#78BA32']
+                    });
                 }
-            }
-        })
-    }
-    $('#submit1').click(function (){
-        var formdata = $("#form1").serializeArray();
-        $.ajax({
-            type:"post",
-            url:"/Reporter/reportOrUpdate",
-            data:{data:formdata},
-            dataType:"JSON",
-            success:function (data) {
-                if (data.res == 1){
-                    alert('上报成功！');
-                }else{
-                    alert('上报失败！');
-                }
-                window.location = "/Reporter/reportRecording";
-            }
-        })
-    });
+            },"text");
 
+        },
+
+
+        changeSelect :function(){
+            $("#source").val() == 'other'?$("#other").css("display","block"):$("#other").css("display","none");
+        }
+    }
 
 </script>
