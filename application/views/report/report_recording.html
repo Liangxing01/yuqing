@@ -158,7 +158,7 @@
                 if (data['state'] == 0){
                     window.location.href = '/Reporter/edit?id='+data['id'];
                 }else {
-                    alert("已经被查看，无法修改");
+                    layer.msg("已经被查看，无法修改",{anim:6});
                 }
             }
         });

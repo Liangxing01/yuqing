@@ -19,6 +19,7 @@ class Reporter extends MY_controller {
         $this->assign("active_title", "report_parent");
         $this->assign("active_parent", "want_report");
         $this->all_display("report/want_report.html");
+//        $this->all_display("report/little.html");
     }
 
     /**
@@ -138,6 +139,8 @@ class Reporter extends MY_controller {
     public function judge_url(){
         $url = $this->input->post('url');
         $uid = $this->session->userdata('uid');
+        $search =  '~^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?~i';
+        $url = trim($url);
         if ($url == null){
             echo "-1";
         }else{
