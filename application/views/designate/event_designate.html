@@ -2,6 +2,25 @@
 <link href="/assets/advanced-datatable/media/css/demo_table.css" rel="stylesheet">
 <!-- DATATABLE CSS -->
 <link rel="stylesheet" href="/assets/data-tables/DT_bootstrap.css">
+<!-- Jquery Tags Input CSS -->
+<link rel="stylesheet" href="/assets/jquery-tags-input/jquery.tagsinput.min.css">
+<!-- JQUERY STEPY WIZARD CSS -->
+<!--<link href="/css/jquery.stepy.css" rel="stylesheet">-->
+
+<!-- Common CSS -->
+<link rel="stylesheet" href="/css/common.css">
+
+<style>
+    #top_tabby {
+        display: table;
+        margin: 0 auto;
+    }
+
+    .error {
+        font-size: 0.9em;
+        color: #FF4500;
+    }
+</style>
 
 <!-- BEGIN MAIN CONTENT -->
 <section id="main-content">
@@ -13,11 +32,11 @@
                     <header class="panel-heading">
                         <span class="label label-primary">已确认信息列表</span>
                            <span class="tools pull-right">
-                           <a href="javascript:;" title="收起" class="fa fa-chevron-down"></a>
+                           <a href="javascript:;" title="收起" class="fa fa-chevron-up"></a>
                            <a href="javascript:;" title="刷新" class="fa fa-refresh"></a>
                            </span>
                     </header>
-                    <div class="panel-body">
+                    <div class="panel-body" style="display: none">
                         <div class="adv-table">
                             <table class="display table table-bordered table-striped" id="info_is_handle_table">
                                 <thead>
@@ -40,18 +59,136 @@
             </div>
         </div>
         <!-- END ROW  -->
+        <!-- BEGIN ROW  -->
+        <div class="row">
+            <div class="col-md-12">
+                <section class="panel">
+                    <header class="panel-heading">
+                        <span class="label label-primary">事件指派</span>
+                           <span class="tools pull-right">
+                           <a href="javascript:;" class="fa fa-chevron-down"></a>
+                           </span>
+                    </header>
+                    <div class="panel-body">
+                        <div class="box-widget">
+                            <div class="widget-head clearfix">
+                                <div id="top_tabby" class="block-tabby ">
+                                </div>
+                            </div>
+                            <div class="widget-container m-t-20">
+                                <div class="widget-block">
+                                    <div class="widget-content box-padding">
+                                        <form id="designate-form" class=" form-horizontal left-align form-well">
+                                            <fieldset title="事件信息">
+                                                <legend>description one</legend>
+                                                <div class="form-group">
+                                                    <label class="col-md-2 col-sm-2 control-label">标题</label>
+                                                    <div class="col-md-6 col-sm-6">
+                                                        <input class="form-control" name="title" type="text">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-md-2 col-sm-2 control-label">事件信息:</br>
+                                                        (从上方的表格中添加)</label>
+                                                    <div class="col-md-6 col-sm-6">
+                                                        <input type='text' id="info_id" class='tags' name="info_id">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-md-2 col-sm-2 control-label">事件描述</label>
+                                                    <div class="col-md-6 col-sm-6">
+                                                        <textarea name="description" id="description" cols="60"
+                                                                  rows="10"></textarea>
+                                                    </div>
+                                                </div>
+                                            </fieldset>
+                                            <fieldset title="事件设置">
+                                                <legend>description two</legend>
+                                                <div class="form-group">
+                                                    <label class="col-md-2 col-sm-2 control-label">First Name</label>
+                                                    <div class="col-md-6 col-sm-6">
+                                                        <input type="text" placeholder="First Name"
+                                                               class="form-control">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-md-2 col-sm-2 control-label">Last Name</label>
+                                                    <div class="col-md-6 col-sm-6">
+                                                        <input type="text" placeholder="Last Name" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </fieldset>
+                                            <fieldset title="选择处理人">
+                                                <legend>description three</legend>
+                                                <div class="form-group">
+                                                    <label class="col-md-2 col-sm-2 control-label">Text Input</label>
+                                                    <div class="col-md-6 col-sm-6">
+                                                        <input type="text" placeholder="Text Input"
+                                                               class="form-control">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-md-2 col-sm-2 control-label">Checkbox</label>
+                                                    <div class="col-md-6 col-sm-6">
+                                                        <label class="checkbox">
+                                                            <input type="checkbox" value="">
+                                                            Option one is this and that—be sure to include why it's
+                                                            great </label>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-md-2 col-sm-2 control-label">Radio</label>
+                                                    <div class="col-md-6 col-sm-6">
+                                                        <label class="radio">
+                                                            <input type="radio" name="optionsRadios" value="option1"
+                                                                   checked>
+                                                            Option one is this and that—be sure to include why it's
+                                                            great </label>
+                                                    </div>
+                                                </div>
+                                            </fieldset>
+                                            <button type="submit" class="finish btn btn-info btn-extend">完成</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+        <!-- END ROW  -->
     </section>
 </section>
 <!-- END SECTION -->
 
-<!-- Load Plugin -->
+<!-- DataTable -->
 <script language="javascript" src="/assets/data-tables/jquery.dataTables.min.js"></script>
 <script src="/assets/data-tables/dataTables.bootstrap.min.js"></script>
+<!-- From Wizard -->
+<script src="/js/jquery.stepy.js"></script><!-- JQUERY STEPY WIZARD JS  -->
+<script src="/js/jquery.validate.min.js"></script><!-- VALIDATE JS  -->
+<!-- Tags Input -->
+<script src="/assets/jquery-tags-input/jquery.tagsinput.min.js"></script>
 <!-- Public Function -->
 <script language="javascript" src="/js/public.js"></script>
 
 <!-- Page Script -->
 <script language="javascript">
+
+    //默认收起 确认信息列表 panel
+    jQuery('.panel .tools .fa-chevron-up').click(function () {
+        var el = jQuery(this).parents(".panel").children(".panel-body");
+        if (jQuery(this).hasClass("fa-chevron-down")) {
+            jQuery(this).removeClass("fa-chevron-down").addClass("fa-chevron-up");
+            el.slideUp(200);
+        } else {
+            jQuery(this).removeClass("fa-chevron-up").addClass("fa-chevron-down");
+            el.slideDown(200);
+        }
+    });
+
+    //DataTable 表格
     $('#info_is_handle_table').dataTable({
 
         "bPaginate": true,
@@ -69,10 +206,6 @@
         "bServerSide": true,
         "sAjaxSource": "/designate/info_is_handle_data",
         "sServerMethod": "POST",
-
-//        "fnServerParams": function (aoData) { //发送额外参数
-//            aoData.push({"name": "ip", "value": "<?php //echo $ip;?>//"});
-//        },
 
         "aoColumns": [
             {
@@ -118,8 +251,9 @@
                 "mData": "id",
                 'sClass': "text-center",
                 'orderable': false,
-                "mRender": function (data) {
-                    return "<a title='查看' href='/designate/info_detail?id=" + data + " ' class='btn btn-info btn-xs'>查看</a>";
+                "mRender": function (data, type, all) {
+                    return "<a title='查看' href='/designate/info_detail?id=" + data + " ' class='btn btn-info btn-xs'>查看</a>&nbsp;" +
+                            "<a title='添加' href='javascript:;' onclick='add_event_info(" + all.id + ",\"" + all.title + "\")' class='btn btn-success btn-xs'>添加</a>";
                 }
             }
         ],
@@ -141,9 +275,52 @@
 
     });
 
-
     //刷新表格
     jQuery(".panel .tools .fa-refresh").click(function () {
         $("#info_is_handle_table").DataTable().ajax.reload(null, false);
     });
+
+    //事件指派 表单
+    $(function () {
+        $('#designate-form').stepy({
+            backLabel: '上一步',
+            nextLabel: '下一步',
+            errorImage: false,
+            block: true,
+            description: false,
+            legend: false,
+            titleClick: true,
+            titleTarget: '#top_tabby',
+            validate: true
+        });
+        $('#designate-form').validate({
+            rules: {
+                'title': 'required',
+                'info_id': 'required'
+            },
+            messages: {
+                'title': {
+                    required: '请填写标题'
+                },
+                'info_id': {
+                    required: '请添加事件信息'
+                }
+            }
+        });
+
+        // tags input 插件
+        $('#info_id').tagsInput({
+            width: 'auto',
+            defaultText: "",
+            interactive: false
+        });
+    });
+
+    //添加事件信息
+    function add_event_info(id, title) {
+        var tag = "#" + id + "-" + title;
+        if (!$("#info_id").tagExist(tag)) {
+            $("#info_id").addTag(tag);
+        }
+    }
 </script>

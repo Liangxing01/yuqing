@@ -108,7 +108,7 @@ class Designate_Model extends CI_Model
      */
     public function get_info($info_id)
     {
-        return $this->db->select("info.id, info.title, info.description, info.type, info.url, info.picture, info.source, user.name AS publisher, info.time")
+        return $this->db->select("info.id, info.title, info.description, info.type, info.url, info.state, info.picture, info.source, user.name AS publisher, info.time")
             ->from("info")
             ->join("user", "user.id = info.publisher", "left")
             ->where(array("info.id" => $info_id))
@@ -123,7 +123,7 @@ class Designate_Model extends CI_Model
      */
     public function set_info_seen($info_id)
     {
-        return $this->db->set(array("state" => 1))->where("id", $info_id)->update("info");
+        return $this->db->set(array("state" => 1))->where(array("info.id" => $info_id, "state" => 0))->update("info");
     }
 
 
@@ -134,7 +134,7 @@ class Designate_Model extends CI_Model
      */
     public function info_commit($data)
     {
-        return $this->db->set(array("type" => $data["type"], "duplicate" => $data["duplicate"], "state" => 2))
+        return $this->db->set(array("type" => $data["type"], "duplicate" => $data["duplicate"], "state" => 2, "source" => $data["source"]))
             ->where(array("id" => $data["id"]))
             ->update("info");
     }
