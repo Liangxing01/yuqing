@@ -124,7 +124,18 @@
                 "sTitle": "状态",
                 "mData": "state",
                 'sClass': "text-center",
-                'orderable': false
+                'orderable': false,
+                "mRender": function (data) {
+                    switch (data){
+                        case '未审核':
+                            return "<span class='label label-warning'>未审核</span>";
+                            break;
+                        case '已完成':
+                            return "<span class='label label-success'>已完成</span>";
+                            break;
+                    }
+
+                }
             },
             {
                 "sTitle": "操作",

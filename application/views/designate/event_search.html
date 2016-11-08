@@ -184,7 +184,21 @@
                 "sTitle": "等级",
                 "mData": "rank",
                 'sClass': "text-center",
-                'orderable': false
+                'orderable': false,
+                "mRender": function (data) {
+                    switch (data){
+                        case '一般':
+                            return "<button class='btn btn-primary btn-xs'>一般</button>";
+                            break;
+                        case '重要':
+                            return "<button class='btn btn-warning btn-xs'>重要</button>";
+                            break;
+                        case '紧急':
+                            return "<button class='btn btn-danger btn-xs'>紧急</button>";
+                            break;
+                    }
+
+                }
             },
             {
                 "sTitle": "牵头人(单位)",
@@ -222,7 +236,24 @@
                 "sTitle": "状态",
                 "mData": "state",
                 'sClass': "text-center",
-                'orderable': false
+                'orderable': false,
+                "mRender": function (data) {
+                    switch (data){
+                        case '未指派':
+                            return "<button class='btn btn-info btn-xs'>未指派</button>";
+                            break;
+                        case '已指派':
+                            return "<button class='btn btn-primary btn-xs'>已指派</button>";
+                            break;
+                        case '未审核':
+                            return "<button class='btn btn-warning btn-xs'>未审核</button>";
+                            break;
+                        case '已完成':
+                            return "<button class='btn btn-success btn-xs'>已完成</button>";
+                            break;
+                    }
+
+                }
             },
             {
                 "sTitle": "操作",

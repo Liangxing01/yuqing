@@ -408,7 +408,6 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
 
 
             }
-
             return $summary_array;
         }
     }

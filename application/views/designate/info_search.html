@@ -195,10 +195,10 @@
                 "mRender": function (data) {
                     switch (data) {
                         case "0":
-                            return "否";
+                            return "<button class='btn btn-success btn-xs'>否</button>";
                             break;
                         case "1":
-                            return "是";
+                            return "<button class='btn btn-danger btn-xs'>是</button>";
                             break;
                     }
                 }
@@ -212,10 +212,10 @@
                     switch (data) {
                         case "0":
                         case "1":
-                            return "未确认";
+                            return "<button class='btn btn-warning btn-xs'>未确认</button>";
                             break;
                         case "2":
-                            return "已确认";
+                            return "<button class='btn btn-success btn-xs'>已确认</button>";
                             break;
                     }
                 }
