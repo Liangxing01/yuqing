@@ -178,7 +178,8 @@
                 'sClass': "text-center",
                 'orderable': false,
                 "mRender" : function (data){
-                    return data == null ? "否" : "是";
+                    return data == null ? "<button class='btn btn-success btn-xs'>否</button>" :
+                            "<button class='btn btn-info btn-xs'>是</button>";
                 }
             },
             {

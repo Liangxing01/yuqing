@@ -1,7 +1,7 @@
 <!-- BEGIN MAIN CONTENT -->
 <section id="main-content">
     <!-- BEGIN WRAPPER  -->
-    <section class="wrapper">
+    <section class="wrapper site-min-height">
         <!-- BEGIN ROW  -->
         <div class="row">
             <div class="col-lg-12">
@@ -71,7 +71,7 @@
     <!-- END MAIN CONTENT -->
 
 </section>
-<!-- END SECTION -->
+
 <script>
 
     function changeSelect(target) {
@@ -107,7 +107,8 @@
             dataType:"JSON",
             success:function (data) {
                 if (data.res == 1){
-                    alert('上报成功！');
+
+                    layer.msg('上传成功！');
                 }else{
                     alert('上报失败！');
                 }
