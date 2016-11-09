@@ -60,6 +60,36 @@ class Handler_Model extends CI_Model{
         return $data;
     }
 
+    /*
+     * 获取 事件报警 提示
+     */
+    public function get_alert($uid){
+        $data = $this->db->select('ea.title,ed.event_id,ea.time')->from('event_alert as ea')
+            ->join('event_designate as ed','ea.designate_id = ed.id')
+            ->where('ed.processor',$uid)
+            ->where('ea.time - unix_timestamp(now()) < 300')// 时间小于5分钟开始报警
+            ->where('ea.state',1)
+            ->limit(6)
+            ->get()->result_array();
+        return $data;
+    }
+
+    //取消 事件报警 状态
+    public function cancel_alarm_state($eid,$uid){
+        $belong = $this->db->select('ed.id')->from('event_designate as ed')
+            ->join('event_alert as ea','ed.id = ea.designate_id')
+            ->where('event_id',$eid)
+            ->where('processor',$uid)
+            ->get()->result_array();
+        if(!empty($belong)){
+            $data = array(
+                'state' => 0
+            );
+            $this->db->where('id',$belong[0]['id']);
+            $this->db->update('event_alert',$data);
+        }
+    }
+
     //查询所有待处理事件
     public function get_all_unhandle($pInfo,$processorID){
         //高级条件检索
@@ -409,6 +439,19 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
 
             }
             return $summary_array;
+        }
+    }
+
+    //获取事件 参考文档
+    public function get_attachment_by_id($eid,$uid){
+        $data = $this->db->select('e.attachment')->from('event as e')
+            ->join('event_designate as ed','ed.processor = '.$uid.' and ed.event_id = '.$eid,'left')
+            ->where('e.id',$eid)
+            ->get()->result_array();
+        if(!empty($data)){
+            return $data[0];
+        }else{
+            return false;
         }
     }
 
