@@ -43,7 +43,17 @@ class Handler extends MY_Controller {
      */
     public function login_list(){
         $uid = $this->session->userdata('uid');
-        $res = $this->get_login_list($uid,3);
+        //MY_controller 方法
+        $res = $this->get_login_list($uid,6);
+        echo json_encode($res);
+    }
+
+    /*
+     * 主页接口：获取警告事件
+     */
+    public function get_event_alert(){
+        $uid = $this->session->userdata('uid');
+        $res = $this->handler_model->get_alert($uid);
         echo json_encode($res);
     }
 
@@ -113,6 +123,7 @@ class Handler extends MY_Controller {
         $event_id = $this->input->post('eid');
         $uid = $this->session->userdata('uid');
         $event_info = $this->handler_model->get_detail_by_id($event_id,$uid);
+        $this->handler_model->cancel_alarm_state($event_id,$uid);
         echo json_encode($event_info);
     }
 
@@ -293,6 +304,17 @@ class Handler extends MY_Controller {
     }
 
     /*
+     * 接口：返回事件 参考文献
+     * 参数：事件id
+     */
+    public function get_attachment(){
+        $event_id = $this->input->post('eid');
+        $uid = $this->session->userdata('uid');
+        $data = $this->handler_model->get_attachment_by_id($event_id,$uid);
+        echo json_encode($data);
+    }
+
+    /*
         接口：发表评论
         参数：事件id，是否为总结性发言标志位，父总结性发言id
     */
@@ -384,7 +406,8 @@ class Handler extends MY_Controller {
 
 
     public function test(){
-        phpinfo();
+        //phpinfo();
+        $this->handler_model->cancel_alarm_state(1,3);
     }
 
 
