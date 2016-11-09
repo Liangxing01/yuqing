@@ -1,3 +1,22 @@
+<style type="text/css">
+    .buletan_icon{
+        background: #2a7489 none repeat scroll 0 0;
+        border: 3px solid #2a7489;
+        border-radius: 5px;
+        height: 15px;
+        left: -7px;
+        position: absolute;
+        top: 55px;
+        width: 15px;
+    }
+    /*ul.timeline li.item-timeline,ul.timeline li.item-timeline:nth-child(2n) {
+        clear: left;
+        float: left;
+    }*/
+    ul.timeline li.item-timeline:nth-child(2n)::before {
+        top: 5px;
+    }
+</style>
 <section id="main-content">
     <section class="wrapper site-min-height">
         <!-- BEGIN ROW  -->
@@ -15,7 +34,7 @@
                     </form>
                     <div class="panel-body" style="display: block;">
                         <ul id="comment" class="timeline">
-                            
+
                         </ul>
                         <ul class="timeline">
                             <!-- BEGIN CENTERING LINE -->
@@ -43,6 +62,64 @@
         <!-- END ROW  -->
     </section>
 </section>
+<script type="text/template" id="li_item">
+    <li class="item-timeline item-timeline-{id}" style="">
+        <div class="buletan_icon" style="{buletan}"></div>
+        <div class="inner-content">
+            <div class="heading-timeline">
+                <img alt="Avatar" class="avatar"  src="/img/avatar/avatar-1.jpg">
+                <div class="user-timeline-info">
+                    <p> {name} <small id="DataTime_{id}">{daytime}</small>
+                    </p>
+                </div>
+            </div>
+            <p>{desc}</p>
+
+            <div class="footer-timeline">
+                <ul class="timeline-option">
+                    <li class="option-row">
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <ol>
+                                    <li><a class="label label-info">评论</a></li>
+                                </ol>
+                            </div>
+                            <div class="col-xs-6 text-right">
+                                <ol>
+                                    <li>
+                                        <a class="btn btn-white"><span class="text"><i class="fa fa-comments text-info"></i>{commentnum}</span></a>
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="option-row" id="option-row{id}">
+                        <img alt="Avatar" class="avatar"  src="/img/avatar/avatar-1.jpg">
+                        <div class="reply">
+                            <form role="form">
+                                <input placeholder="填写你的反馈..." class="form-control input-sm" id="comment{id}" type="text">
+                                <input value="发表" id="fb" class="input-btn" onclick="addComment({id},1)" type="button"></form>
+                        </div>
+                    </li>
+                    {commenthtml}
+                </ul>
+            </div>
+        </div>
+    </li>
+</script>
+<script type="text/template" id="comment_item">
+    <li class="option-row">
+        <img alt="Avatar" class="avatar" src="/img/avatar/avatar-2.jpg">
+        <div class="reply">
+            <p>
+                <strong><a class="label bg-success m-l-xs">{name}</a></strong>
+                {desc}
+            </p>
+            <p class="text-muted reply-time">{daytime}小时前</p>
+        </div>
+    </li>
+</script>
+
 <!-- <div id="one1"></div>-->
 <!-- END SECTION -->
 <input type="hidden" name="title" value="<{$title}>">
@@ -50,12 +127,14 @@
 <input type="hidden" name="eid" value="<{$eid}>" id="eid">
 <input type="hidden" name="eid" value="<{$done_state}>" id="done_state">
 <input type="hidden" name="eid" value="<{$end_time}>" id="end_time">
+<!--需要得到当前用户名与用户头像地址以及用户类型权限-->
+<input type="hidden" name="username" value="<{$username}>" id="username"/>
+<input type="hidden" name="useracter" value="<{$username}>" id="useracter"/>
+<input type="hidden" name="usertype" value="<{$usertype}>" id="usertype"/>
 
 <script>
-
-
-
-	var eid=document.getElementById('eid').value;	
+	var eid=document.getElementById('eid').value,
+         history_daytime="";//用来存时间抽上最上面的时间，用来判断总结性评论是新添加，还是在下面插入
 	$("input[name='zj_buttom']").click(function(){
 		var zjk=document.getElementById('zjk').value;
 		add();
@@ -64,8 +143,20 @@
 	function getLocalTime(nS) {     
     	return new Date(parseInt(nS) * 1000).toLocaleString().replace(/:\d{1,2}$/,' ');
     }
+    //模板替换工具
+    function formatTemplate(dta, tmpl) {
+        var format = {
+            name: function(x) {
+                return x
+            }
+        };
+        return tmpl.replace(/{(\w+)}/g, function(m1, m2) {
+            if (!m2)
+                return "";
+            return (format && format[m2]) ? format[m2](dta[m2]) : dta[m2];
+        });
+    }
 
-	
 	function loadData(){		
 		$.ajax({
         url : 'http://202.202.2.42:82/handler/get_event_logs',
@@ -74,38 +165,56 @@
         cache:false,
         dataType:'json',
         success:function(data){
+            //console.log(data)
+            var cur_day="";//当前天数，用来判断哪一天
             $.each(data,function(i,value){
-            	var myDate = new Date(value.time*1000);  
-            	var year= myDate.getFullYear();
-            	var month= myDate.getMonth()+1; 
-        	    var str1="<li class='centering-line'></li><li class='center-timeline-cat'><div class='inner'>"+year+"年"+month+"月</div></li><li class='item-timeline'>  <div class='buletan'></div><div class='inner-content'>";
-        	    var str2="<div class='heading-timeline'><img alt='Avatar' class='avatar' src='/img/avatar/avatar-1.jpg'>";
-        	    var time=getLocalTime(value.time)
-        	    var str3="<div class='user-timeline-info'><p> "+value.name+" <small id='DateTime'>"+time+"</small></p></div></div>" 
-                var str4="<p>"+value.desc+"</p>"
-                var str5="<div class='footer-timeline'><ul class='timeline-option'><li class='option-row'><div class='row'>" 
-                var str6="<div class='col-xs-6'><ol> <li><a class='label label-info'>评论</a></li></ol></div>" 
-                var str7="<div class='col-xs-6 text-right'><ol><li><a class='btn btn-white'> <span class='text'>" 
-                var str8="<i class='fa fa-thumbs-up text-success'></i> 25 </span></a></li>"
-                var str9="<li><a class='btn btn-white'> <span class='text'><i class='fa fa-comments text-info'></i> 3 </span></a>"        
-                var str10="</li></ol></div></div> </li>" 
-                var str11="<li class='option-row'><img alt='Avatar' class='avatar' src='/img/avatar/avatar-1.jpg'>"
-                var str12="<div class='reply'><form role='form'><input type='text' placeholder='填写你的反馈...' class='form-control input-sm' id=comment"+value.id+ ">"                  
-                var str13="<input  type='button' value='发表' id='fb' class='input-btn' onclick=addComment("+value.id+",1) /></form></div></li>" 
-                var str14="";
-                $.each(value.comment,function(i,child){
-               		//console.log(child);               	   
-            	  	var child1=" <li class='option-row'> <img alt='Avatar' class='avatar' src='/img/avatar/avatar-2.jpg'>"
-            	  	
-            	  	var child2=" <div class='reply'><p><strong><a class='label bg-success m-l-xs'>"+child.name+"</a></strong>"
-            	  	var nowtime= new Date().getTime();
-            	  	var beforetime=parseInt((nowtime-child.time*1000)/3600000);
-                  	var child3=child.desc+"</p>   <p class='text-muted reply-time'>"+beforetime+" 小时前</p></div> </li>"
-                  	str14=str14+child1+child2+child3;
-                });                   
-                var str15="</ul> </div></div></li>"                
-                var str=str1+str2+str3+str4+str5+str6+str7+str8+str9+str10+str11+str12+str13+str14+str15;                     
-                $("#comment").append(str);                        
+            	var myDate = new Date(value.time*1000),
+            	     iyear= myDate.getFullYear(),
+            	     imonth= myDate.getMonth()+ 1,
+                    iday =myDate.getDate(), //得到当前天数
+                    commnetlength=value.comment.length,//评论数,
+                    htmlstr="";
+                    if(cur_day==''||cur_day!=iday){//第一天，按天分开
+                        htmlstr+='<li class="center-timeline-cat"><div class="inner">'+iyear+'年'+imonth+'月'+iday+'日</div></li>'
+                        if(cur_day==''){ //最上面那部分时间
+                            history_daytime=iyear+'-'+imonth+'-'+iday;
+                            htmlstr+='<li class="centering-line top-center-line"></li>'
+                        }else{
+                            htmlstr+='<li class="centering-line"></li>'
+                        }
+                        cur_day=iday
+                    }
+                    var comment_item_tpl=$('script[id="comment_item"]').html();
+                    var comment_arr = [];
+                    //对数据进行遍历
+                    $.each(value.comment, function(i, o) {
+                        var nowtime= new Date().getTime();
+                        var beforetime=parseInt((nowtime-o.time*1000)/3600000);
+                        o.daytime=beforetime;
+                        comment_arr.push(formatTemplate(o, comment_item_tpl));
+                    });
+                    //console.log(comment_arr.join(""));
+                var li_item_tpl = $('script[id="li_item"]').html();
+                value.daytime=getLocalTime(value.time);
+                value.commentnum=commnetlength;
+                if(!value.desc) value.desc="";
+                value.commenthtml=comment_arr.join("");
+                if(i==3||i==0||i==20){//如果是领导把主评论放在右边,第一个与第四个为右
+                    value.buletan="";//如果在右边不为空
+                    htmlstr+=formatTemplate(value, li_item_tpl);//加载模板
+                    htmlstr+='<li class="item-timeline item-timeline-'+value.id+'-flag"></li>';
+                }else{
+                    value.buletan="right:-7px; left: auto";
+                    //htmlstr+='<li class="centering-line"></li>';
+                    htmlstr+='<li class="item-timeline item-timeline-'+value.id+'-flag"></li>';
+                    htmlstr+=formatTemplate(value, li_item_tpl);//加载模板
+                }
+                $("#comment").append(htmlstr);
+                $(".item-timeline-"+value.id+"").height($(".item-timeline-"+value.id+"").height())//解决动态加载文档流问题
+                $(".item-timeline-"+value.id+"-flag").height($(".item-timeline-"+value.id+"").height());
+
+               // console.log("valueid="+$(".item-timeline-"+value.id+"").height());
+               // console.log("valueidflag="+$(".item-timeline-"+value.id+"-flag").height());
            });
 
 
@@ -116,10 +225,15 @@
     });	
 	}
 	loadData();
-	
+	//总结性评论处理
 	function add(){
 		var zjk=document.getElementById('zjk').value;
-		console.log(zjk)
+        var myDate = new Date(),
+            iyear= myDate.getFullYear(),
+            imonth= myDate.getMonth()+ 1,
+            iday =myDate.getDate(),//得到当前天数
+            li_item_tpl=$('script[id="li_item"]').html();
+        var cur_daytime=iyear+'-'+imonth+'-'+iday;
 		$.ajax({
 		    	url:'http://202.202.2.42:82/handler/post_comment',
 		    	type:'post',
@@ -130,11 +244,37 @@
 			      },			    
 		    	dataType:'json',
 		    	success:function(data){
-					console.log(data);		    		
-		    		if(data.res == 1){
-		    			alert('发表成功！')
-		    			loadData();
-		    		}else{
+                    if(data.res == 1){
+                        var li_obj=new Object();
+                        li_obj.name=$("#username").val();
+                        li_obj.daytime=new Date().toLocaleString().replace(/:\d{1,2}$/,' ');
+                        li_obj.desc=zjk;
+                        li_obj.commentnum=0;
+                        li_obj.commenthtml="";
+                        li_obj.id= 'new'+Math.round(Math.random()*200);
+                        var htmlstr='';
+                        if($("#usertype").val()==1){//如果是领导把主评论放在右边,第一个与第四个为右
+                            li_obj.buletan="";//如果在右边不为空
+                            htmlstr+=formatTemplate(li_obj, li_item_tpl);//加载模板
+                            htmlstr+='<li class="item-timeline item-timeline-'+li_obj.id+'-flag"></li>';
+                        }else{
+                            li_obj.buletan="right:-7px; left: auto";
+                            //htmlstr+='<li class="centering-line"></li>';
+                            htmlstr+='<li class="item-timeline item-timeline-'+li_obj.id+'-flag"></li>';
+                            htmlstr+=formatTemplate(li_obj, li_item_tpl);//加载模板
+                        }
+                        if(cur_daytime==history_daytime){
+                            $(".top-center-line").eq(0).after(htmlstr)
+                        }else{
+                            history_daytime=cur_daytime
+                            htmlstr='<li class="center-timeline-cat"><div class="inner">'+iyear+'年'+imonth+'月'+iday+'日</div></li>'+htmlstr;
+                            htmlstr='<li class="centering-line top-center-line" ></li>'+htmlstr;
+                            $("#comment").prepend(htmlstr);
+                        }
+                        $(".item-timeline-"+li_obj.id+"").height($(".item-timeline-"+li_obj.id+"").height())//解决动态加载文档流问题
+                        $(".item-timeline-"+li_obj.id+"-flag").height($(".item-timeline-"+li_obj.id+"").height());
+                        $("#zjk").val('');
+                    }else{
 		    			alert('评论失败！');
 		    		}
 		    		
@@ -142,16 +282,14 @@
 		    	error:function(){
 		    		
 		    	}
-		});	
+		});
 	}
 
-
-
-	
+    //添加小评论
 	function addComment(value,type){
 		//父亲节点ID获取到了
 		var id="";
-		if(type==1){
+		if(type==1){//添加小评论
 		 id=value;
 		 var comment = $("#comment"+id).val();
 			if(comment.length>200){ 
@@ -170,10 +308,16 @@
 			      },			    
 		    	dataType:'json',
 		    	success:function(data){
-		    		
-		    		
+                    var comment_item_tpl=$('script[id="comment_item"]').html();//得到评论模板
 		    		if(data.res == 1){
-		    			alert('发表成功！')
+                        var commnetObj=new Object();
+                        commnetObj.daytime=0;
+                        commnetObj.name=$("#username").val();
+                        commnetObj.desc=comment;
+                        var strhtml=formatTemplate(commnetObj, comment_item_tpl);//得到当前字符串
+                        $("#option-row"+id).after(strhtml);
+                        $("#comment"+id).val('');
+		    			//alert('发表成功！')
 		    		}else{
 		    			alert('评论失败！');
 		    		}		    			    		
@@ -182,36 +326,7 @@
 		    		
 		    	}
 		    });
-		}else{
-			id=value;
-			var comment = $("#comment"+id).val();
-			if(comment.length>200){ 
-				alert("字数不能超过200！");
-				return;
-			}
-			var eid=document.getElementById('eid').value;
-		    $.ajax({
-		    	url:'http://202.202.2.42:82/handler/post_comment',
-		    	type:'post',
-		    	data :
-			        {"pid" : '',
-			        "comment" : comment,
-			        "eid" : 1 
-			      },			    
-		    	dataType:'json',
-		    	success:function(data){
-		    		
-		    		if(data.res == 1){
-		    			alert('发表成功！')
-		    		}else{
-		    			alert('评论失败！');
-		    		}		    			    		
-		    	},
-		    	error:function(){
-		    		
-		    	}
-		    });
-		}				
+		}
 	}
 
 
@@ -245,22 +360,6 @@
 	}  	
 	tagier();
 	
-//  function gettasK(){
-//  	$.ajax({
-//  		url:'http://202.202.2.42:82/hanlder/get_tasks_num',
-//  		type:'get',
-//  		dataType:'json',
-//  		success:function(data){
-//  			if(data!=null){
-//	    			alert(JSON.stringify(data));
-//	    			var untask=data.unread_num;// 未处理事件数
-//	    			var dotask=data.doing_num;//正在处理数
-//	    			var completetask=data.done_num;//已完成事件数
-//  			}
-//  		}
-//  	});
-//  }
-//  gettasK();
 	
     
 </script>
