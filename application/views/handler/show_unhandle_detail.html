@@ -11,7 +11,7 @@
         <div class="inbox-head">
             <h3>事件详情</h3>
         </div>
-        <div class="inbox-body">
+        <div class="inbox-body" id="inbox-body">
             <div class="heading-inbox row">
                 <div class="col-md-8">
                     <div class="compose-btn">
@@ -29,7 +29,7 @@
                     </h4>
                 </div>
             </div>
-            <div class="sender-info">
+            <!--<div class="sender-info">
                 <div class="row">
                     <div class="col-md-12">
                         <strong class="">指派人:</strong><span>&nbsp;11</span>
@@ -61,7 +61,7 @@
                         </a>
                     </li>
                 </ul>
-            </div>
+            </div>-->
         </div>
         <input type="hidden" name="eid" value="<{$eid}>">
     </section>
@@ -75,4 +75,35 @@
         jQuery(".fancybox").fancybox();
     });
 
+	function detail(){
+		$.ajax({
+			type:"get",
+			url:"http://202.202.2.42:82/handler/get_detail",
+			async:true,
+			success:function(data){
+				var info_id=data.info_id;
+				var title = data.title;
+				var name=data.name;
+				var url=data.url;
+				var source=data.source;
+				var picture=data.picture;
+				var description=data.description;
+				var time=data.time;
+				$(data,function(i,value){            	
+	        	    var str1="<div class='sender-info'><div class='row'><div class='col-md-12'><strong class=''>指派人:</strong><span>"+name+"</span><strong>来源:</strong><span>"+source+"</span><strong>链接:</strong><span>123</span><strong>类型:</strong><span>123</span></div></div></div>";
+	        	    var str2="<div class='event-content'><p>啊啊啊啊啊啊</p></div>";       	    
+	        	    var str3="<div class='attachment-mail'><p> <span><i class='fa fa-paperclip'></i> 2 张截图123</span></p><ul>"
+	        	    var str4="<li><a class='atch-thumb fancybox' data-fancybox-group='group' href='/img/pro-ac-2.png'><img alt='img' src='/img/pro-ac-2.png'></a></li>"
+	                var str5="</ul></div>"
+	                var str=str1+str2+str3+str4+str5;
+	                $("#inbox-body").append(str);                        
+           });
+				
+			},
+			error:function(){
+				
+			}
+		});
+	}
+	detail();
 </script>
