@@ -332,7 +332,7 @@ class Designate extends MY_controller
             $pData['state'] = '';
         }
         if ($pData['start_start'] == NULL) {
-            $pData['sort_start'] = 0;
+            $pData['start_start'] = 0;
         }
         if ($pData['start_end'] == NULL) {
             $pData['start_end'] = 0;

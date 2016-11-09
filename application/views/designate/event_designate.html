@@ -33,7 +33,7 @@
                         <span class="label label-primary">已确认信息列表</span>
                            <span class="tools pull-right">
                            <a href="javascript:;" title="收起" class="fa fa-chevron-up"></a>
-                           <a href="javascript:;" title="刷新" class="fa fa-refresh"></a>
+                           <a href="javascript:;" title="刷新" class="fa fa-refresh" id="info_table_refresh"></a>
                            </span>
                     </header>
                     <div class="panel-body" style="display: none">
@@ -47,6 +47,42 @@
                                     <th>类别</th>
                                     <th>上报人</th>
                                     <th class="hidden-phone">上报时间</th>
+                                    <th>操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+        <!-- END ROW  -->
+        <!-- BEGIN ROW  -->
+        <div class="row">
+            <div class="col-lg-12">
+                <section class="panel">
+                    <header class="panel-heading">
+                        <span class="label label-primary">已完结事件列表</span>
+                           <span class="tools pull-right">
+                           <a href="javascript:;" title="收起" class="fa fa-chevron-up"></a>
+                           <a href="javascript:;" title="刷新" class="fa fa-refresh" id="event_table_refresh"></a>
+                           </span>
+                    </header>
+                    <div class="panel-body" style="display: none">
+                        <div class="adv-table">
+                            <table class="display table table-bordered table-striped" id="event_table">
+                                <thead>
+                                <tr>
+                                    <th>编号</th>
+                                    <th>标题</th>
+                                    <th>首派人</th>
+                                    <th>等级</th>
+                                    <th>牵头人(单位)</th>
+                                    <th>开始时间</th>
+                                    <th>结束时间</th>
+                                    <th>状态</th>
                                     <th>操作</th>
                                 </tr>
                                 </thead>
@@ -80,7 +116,6 @@
                                     <div class="widget-content box-padding">
                                         <form id="designate-form" class=" form-horizontal left-align form-well">
                                             <fieldset title="事件信息">
-                                                <legend>description one</legend>
                                                 <div class="form-group">
                                                     <label class="col-md-2 col-sm-2 control-label">标题</label>
                                                     <div class="col-md-6 col-sm-6">
@@ -103,18 +138,53 @@
                                                 </div>
                                             </fieldset>
                                             <fieldset title="事件设置">
-                                                <legend>description two</legend>
                                                 <div class="form-group">
-                                                    <label class="col-md-2 col-sm-2 control-label">First Name</label>
-                                                    <div class="col-md-6 col-sm-6">
-                                                        <input type="text" placeholder="First Name"
-                                                               class="form-control">
+                                                    <label class="col-md-2 col-sm-2 control-label">事件等级:</label>
+                                                    <div class="col-md-2 col-sm-2">
+                                                        <select type="text" class="form-control" id="rank" name="rank">
+                                                            <option value="一般">一般</option>
+                                                            <option value="重要">重要</option>
+                                                            <option value="紧急">紧急</option>
+                                                        </select>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label class="col-md-2 col-sm-2 control-label">Last Name</label>
+                                                    <label class="col-md-2 col-sm-2 control-label">首回时间:</label>
+                                                    <div class="col-md-2">
+                                                        <div id="reply_time">
+                                                            <div class="input-group input-small">
+                                                                <input type="text"
+                                                                       class="spinner-input form-control"
+                                                                       maxlength="3">
+                                                                <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                                    <button type="button"
+                                                                            class="btn spinner-up btn-xs btn-default">
+                                                                        <i class="fa fa-angle-up">
+                                                                        </i>
+                                                                    </button>
+                                                                    <button type="button"
+                                                                            class="btn spinner-down btn-xs btn-default">
+                                                                        <i class="fa fa-angle-down">
+                                                                        </i>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-md-2 col-sm-2 control-label">关联事件:</br>
+                                                        (从上方的表格中添加)</label>
                                                     <div class="col-md-6 col-sm-6">
-                                                        <input type="text" placeholder="Last Name" class="form-control">
+                                                        <input type='text' id="relate_event" class='tags'
+                                                               name="relate_event">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-md-2 col-sm-2 control-label">参考文件上传:</label>
+                                                    <div class="col-md-2 col-sm-2">
+                                                        <input type="file" name="attachment"
+                                                               formenctype="multipart/form-data">
                                                     </div>
                                                 </div>
                                             </fieldset>
@@ -170,6 +240,8 @@
 <script src="/js/jquery.validate.min.js"></script><!-- VALIDATE JS  -->
 <!-- Tags Input -->
 <script src="/assets/jquery-tags-input/jquery.tagsinput.min.js"></script>
+<!-- Spinner -->
+<script src="/assets/fuelux/js/spinner.min.js"></script><!-- FUELUX JS  -->
 <!-- Public Function -->
 <script language="javascript" src="/js/public.js"></script>
 
@@ -177,7 +249,7 @@
 <script language="javascript">
 
     //默认收起 确认信息列表 panel
-    jQuery('.panel .tools .fa-chevron-up').click(function () {
+    $('.panel .tools .fa-chevron-up').click(function () {
         var el = jQuery(this).parents(".panel").children(".panel-body");
         if (jQuery(this).hasClass("fa-chevron-down")) {
             jQuery(this).removeClass("fa-chevron-down").addClass("fa-chevron-up");
@@ -190,7 +262,6 @@
 
     //DataTable 表格
     $('#info_is_handle_table').dataTable({
-
         "bPaginate": true,
         "bProcessing": false,                //是否显示正在处理提示信息。
         "bLengthChange": true,
@@ -200,7 +271,7 @@
         "bAutoWidth": false,
         "bStateSave": true,
         "iDisplayLength": 5,                //每页显示5条数据
-        "aLengthMenu": [5, 10, 25, 50],
+        "aLengthMenu": [5, 10, 15, 20],
         "aaSorting": [[6, "desc"]],          //默认排序 第6列
 
         "bServerSide": true,
@@ -274,9 +345,156 @@
         }
 
     });
+    $("#event_table").dataTable({
+
+        "bPaginate": true,
+        "bProcessing": false,                //是否显示正在处理提示信息。
+        "bLengthChange": true,
+        "bFilter": true,                     //是否使用内置的过滤功能。
+        "bSort": true,
+        "bInfo": true,
+        "bAutoWidth": false,
+        "bStateSave": true,
+        "iDisplayLength": 5,                //每页显示10条数据
+        "aLengthMenu": [5, 10, 15, 20],
+        "aaSorting": [[5, "desc"], [6, "desc"]],          //默认排序 第6,7列
+
+        "bServerSide": true,
+        "sAjaxSource": "/designate/event_search_data",
+        "sServerMethod": "POST",
+
+        "fnServerParams": function (aoData) { //发送额外参数
+            aoData.push({"name": "state", "value": "已完成"});
+        },
+
+        "aoColumns": [
+            {
+                "sTitle": "编号",
+                "mData": "id",
+                'sClass': "text-center",
+                'orderable': false
+            },
+            {
+                "sTitle": "标题",
+                "mData": "title",
+                'sClass': "text-center",
+                'orderable': false
+            },
+            {
+                "sTitle": "首派人",
+                "mData": "manager",
+                'sClass': "text-center",
+                'orderable': false
+            },
+            {
+                "sTitle": "等级",
+                "mData": "rank",
+                'sClass': "text-center",
+                'orderable': false,
+                "mRender": function (data) {
+                    switch (data) {
+                        case '一般':
+                            return "<button class='btn btn-primary btn-xs'>一般</button>";
+                            break;
+                        case '重要':
+                            return "<button class='btn btn-warning btn-xs'>重要</button>";
+                            break;
+                        case '紧急':
+                            return "<button class='btn btn-danger btn-xs'>紧急</button>";
+                            break;
+                    }
+
+                }
+            },
+            {
+                "sTitle": "牵头人(单位)",
+                "mData": "main_processor",
+                'sClass': "text-center",
+                'orderable': false,
+                "mRender": function (data, type, full) {
+                    if (data == null) {
+                        return full.main_group;
+                    }
+                    return data;
+                }
+            },
+            {
+                "sTitle": "开始时间",
+                "mData": "start_time",
+                'sClass': "text-center",
+                "mRender": function (data) {
+                    return timeToDate(data * 1000);
+                }
+            },
+            {
+                "sTitle": "结束时间",
+                "mData": "end_time",
+                'sClass': "text-center",
+                "mRender": function (data) {
+                    if (data == null) {
+                        return "";
+                    } else {
+                        return timeToDate(data * 1000);
+                    }
+                }
+            },
+            {
+                "sTitle": "状态",
+                "mData": "state",
+                'sClass': "text-center",
+                'orderable': false,
+                "mRender": function (data) {
+                    switch (data) {
+                        case '未指派':
+                            return "<button class='btn btn-info btn-xs'>未指派</button>";
+                            break;
+                        case '已指派':
+                            return "<button class='btn btn-primary btn-xs'>已指派</button>";
+                            break;
+                        case '未审核':
+                            return "<button class='btn btn-warning btn-xs'>未审核</button>";
+                            break;
+                        case '已完成':
+                            return "<button class='btn btn-success btn-xs'>已完成</button>";
+                            break;
+                    }
+
+                }
+            },
+            {
+                "sTitle": "操作",
+                "mData": "id",
+                'sClass': "text-center",
+                'orderable': false,
+                "mRender": function (data, type, all) {
+                    return "<a title='查看' href='/designate/info_detail?id=" + data + " ' class='btn btn-info btn-xs'>查看</a>&nbsp;"
+                            +"<a title='添加' href='javascript:;' onclick='add_relate_event(" + all.id + ",\"" + all.title + "\")' class='btn btn-success btn-xs'>添加</a>";
+                }
+            }
+        ],
+
+        "oLanguage": {
+            "sLengthMenu": "每页显示 _MENU_ 条记录",
+            "sInfo": "从 _START_ 到 _END_ /共 _TOTAL_ 条数据",
+            "sInfoEmpty": "没有数据",
+            "sInfoFiltered": "(从 _MAX_ 条数据中检索)",
+            "oPaginate": {
+                "sFirst": "首页",
+                "sPrevious": "前一页",
+                "sNext": "后一页",
+                "sLast": "尾页"
+            },
+            "sZeroRecords": "暂无数据",
+            "sSearch": "关键字:"
+        }
+
+    });
 
     //刷新表格
-    jQuery(".panel .tools .fa-refresh").click(function () {
+    $("#info_table_refresh").click(function () {
+        $("#info_is_handle_table").DataTable().ajax.reload(null, false);
+    });
+    $("#event_table_refresh").click(function () {
         $("#info_is_handle_table").DataTable().ajax.reload(null, false);
     });
 
@@ -295,8 +513,8 @@
         });
         $('#designate-form').validate({
             rules: {
-                'title': 'required',
-                'info_id': 'required'
+//                'title': 'required',
+//                'info_id': 'required'
             },
             messages: {
                 'title': {
@@ -309,11 +527,26 @@
         });
 
         // tags input 插件
+
+        // 事件信息ID
         $('#info_id').tagsInput({
             width: 'auto',
             defaultText: "",
+            delimiter: "_",
             interactive: false
         });
+        // 关联事件ID
+        $('#relate_event').tagsInput({
+            width: 'auto',
+            defaultText: "",
+            delimiter: "_",
+            interactive: false
+        });
+
+        // spinner 插件
+        $('#reply_time').spinner({
+            value: ""
+        })
     });
 
     //添加事件信息
@@ -323,4 +556,43 @@
             $("#info_id").addTag(tag);
         }
     }
+
+    //添加关联事件
+    function add_relate_event(id, title) {
+        var tag = "#" + id + "-" + title;
+        if (!$("#relate_event").tagExist(tag)) {
+            $("#relate_event").addTag(tag);
+        }
+    }
+
+    /**
+     * 获取info_id
+     * @return string
+     */
+    function get_info_id(){
+        var info_id = $("#info_id").val();
+        var tag_arr = info_id.split("_");
+        var id = [];
+        for(i in tag_arr){
+            var id_reg = /^#(\d+)/.exec(tag_arr[i]);
+            id.push(id_reg[1]);
+        }
+        return id.join(",");
+    }
+
+    /**
+     * 获取relate_event
+     * @return string
+     */
+    function get_relate_event(){
+        var info_id = $("#relate_event").val();
+        var tag_arr = info_id.split("_");
+        var id = [];
+        for(i in tag_arr){
+            var id_reg = /^#(\d+)/.exec(tag_arr[i]);
+            id.push(id_reg[1]);
+        }
+        return id.join(",");
+    }
+
 </script>
