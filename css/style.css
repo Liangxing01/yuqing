@@ -155,7 +155,7 @@ a,a:hover,a:focus {
 	font-family: '微软雅黑';
 }
 
-.form-signin .form-control {
+.form-signin .auto {
 	position: relative;
 	font-size: 16px;
 	height: auto;
@@ -165,7 +165,7 @@ a,a:hover,a:focus {
 	box-sizing: border-box;
 }
 
-.form-signin .form-control:focus {
+.form-signin .auto:focus {
 	z-index: 2;
 }
 
@@ -456,7 +456,7 @@ a.logo:hover,a.logo:focus {
 }
 
 a.logo span {
-	color: #3a97b2;
+	color: white;
 }
 
 #top_menu .nav>li,ul.top-menu>li {
@@ -6680,15 +6680,79 @@ a.guest-on i {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.search::-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+    color:white; opacity:1; 
+}
+
+.search::-moz-placeholder { /* Mozilla Firefox 19+ */
+    color: white;opacity:1;
+}
+
+.search::-ms-input-placeholder{
+    color: white;opacity:1;
+}
+
+.search::-webkit-input-placeholder{
+    color: white;opacity:1;
+}
 #sjwc{
-	padding: 5px 10px;
+	padding: 5px 20px;
 	border-radius: 4px;
-	background-color: #59ace2;
-	font-size: 1.2rem;
+	background-color: #A9D86E;
+	font-size: 1.4rem;
 	font-weight: bold;
 	border: none;
 	color: white;
+	float: right;
+	margin-right: 8%;
 }
+.zj{
+	margin-left:10%;
+	margin-top: 20px;
+	height: 80px;
+	
+}
+.zjk{
+	width: 80%;
+	height: 80px;
+	line-height: 20px;	
+	float: left;
+	border-right: none;
+	border-color: #72d0eb;
+}
+.zj_button{
+	height: 80px;
+	width: 10%;
+	line-height: 80px;
+	float: right;
+	margin-right: 10%;
+	background: #72d0eb;
+	font-size: 1.6em;
+	color: white;
+	border: none;
+	
+}
+
 .input-btn{
 	padding: 5px;
 	border-radius: 4px;
