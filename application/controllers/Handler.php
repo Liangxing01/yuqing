@@ -403,11 +403,45 @@ class Handler extends MY_Controller {
         $this->all_display("designate/show_structure.html");
     }
 
+    /*
+     * 接口：获取用户个人信息
+     */
+    public function my_info(){
+        $this->get_my_info();
+    }
+
+    /*
+     * 接口：修改用户个人信息
+     */
+    public function update_my_info(){
+        $name = $this->input->post('name');
+        $sex  = $this->input->post('sex');
+        $update_data = array(
+            'name' => $name,
+            'sex'  => $sex
+        );
+        $uid = $this->session->userdata('uid');
+        $res = $this->update_info($update_data,$uid);
+        if($res){
+            echo json_encode(
+                array(
+                    'res' => 1
+                )
+            );
+        }else{
+            echo json_encode(
+                array(
+                    'res' => 0
+                )
+            );
+        }
+    }
 
 
     public function test(){
         //phpinfo();
-        $this->handler_model->cancel_alarm_state(1,3);
+        //$this->handler_model->cancel_alarm_state(1,3);
+        $this->get_my_info();
     }
 
 

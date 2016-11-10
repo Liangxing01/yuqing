@@ -23,5 +23,23 @@ class MY_Model extends CI_Model {
 
     }
 
+    //获取用户个人信息
+    public function get_user_info($uid){
+        $data = $this->db->select('u.group_id,u.username,u.name,u.sex,u.avatar,p.keyword,group.name')->from('user AS u')
+            ->join('group','group.id = u.group_id','left')
+            ->join('user_privilege as up','up.uid = '.$uid,'left')
+            ->join('privilege as p','p.id = up.pid','left')
+            ->where('u.id',$uid)
+            ->get()->result_array();
+        return $data;
+    }
+
+    //修改个人信息接口
+    public function update_info($data,$uid){
+        $this->db->where('id',$uid);
+        $res = $this->db->update('user',$data);
+        return $res;
+    }
+
 
 }
