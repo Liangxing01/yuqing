@@ -3,22 +3,26 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Welcome extends MY_Controller {
 
-	public function index()
-	{
-//		$this->load->view('welcome_message');
-		$this->all_display('index.html');
-//	    $this->load->view("login.html");
-//        $this->load->view("index.html");
-	}
-
-	public function login(){
-        $this->load->library('form_validation');
-        $this->load->view("login/login");
+    public function __construct()
+    {
+        parent::__construct();
+        $this->identity->is_authentic();
     }
 
-	public function wait_to_handle(){
-		$this->assign("active_title","wait_to_handle");
-		$this->assign("active_parent","handle_parent");
-		$this->all_display('wait_to_handle.html');
+
+    /**
+     * 首页视图 载入
+     */
+	public function index()
+	{
+		$this->all_display('index.html');
 	}
+
+
+    /**
+     * 用户登出 接口
+     */
+    public function logout(){
+        $this->identity->destroy();
+    }
 }

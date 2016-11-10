@@ -42,3 +42,20 @@ function dateToTime(dateStr) {
     var time_str = date.getTime().toString();
     return time_str.substr(0, 10);
 }
+
+
+/**
+ * 刷新当前页面
+ */
+function refresh() {
+    window.location.reload();
+}
+
+
+/**
+ * 跳转到url
+ * @param url
+ */
+function forward(url) {
+    window.location.href = url;
+}

@@ -170,7 +170,7 @@ a,a:hover,a:focus {
 }
 
 .form-signin input[type="text"],.form-signin input[type="password"] {
-	margin-bottom: 15px;
+	margin-bottom: 10px;
 	border-radius: 5px;
 	-webkit-border-radius: 5px;
 	border: 1px solid #eaeaea;
@@ -182,10 +182,9 @@ a,a:hover,a:focus {
 	background: #3ac2e9;
 	color: #fff;
 	text-transform: uppercase;
-	font-weight: 600;
+	font-weight: 500;
 	font-family: '微软雅黑';
-	box-shadow: 0 4px #2da5c8;
-	margin-bottom: 20px;
+	/*box-shadow: 0 4px #2da5c8;*/
 }
 
 .form-signin p {

@@ -60,6 +60,36 @@ class Handler_Model extends CI_Model{
         return $data;
     }
 
+    /*
+     * 获取 事件报警 提示
+     */
+    public function get_alert($uid){
+        $data = $this->db->select('ea.title,ed.event_id,ea.time')->from('event_alert as ea')
+            ->join('event_designate as ed','ea.designate_id = ed.id')
+            ->where('ed.processor',$uid)
+            ->where('ea.time - unix_timestamp(now()) < 300')// 时间小于5分钟开始报警
+            ->where('ea.state',1)
+            ->limit(6)
+            ->get()->result_array();
+        return $data;
+    }
+
+    //取消 事件报警 状态
+    public function cancel_alarm_state($eid,$uid){
+        $belong = $this->db->select('ed.id')->from('event_designate as ed')
+            ->join('event_alert as ea','ed.id = ea.designate_id')
+            ->where('event_id',$eid)
+            ->where('processor',$uid)
+            ->get()->result_array();
+        if(!empty($belong)){
+            $data = array(
+                'state' => 0
+            );
+            $this->db->where('id',$belong[0]['id']);
+            $this->db->update('event_alert',$data);
+        }
+    }
+
     //查询所有待处理事件
     public function get_all_unhandle($pInfo,$processorID){
         //高级条件检索
@@ -135,7 +165,7 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
                 ->group_start()
                 ->like('i.title',$pInfo['search'])
                 ->group_end()
-                ->order_by('zptime','DESC')
+                ->order_by('zptime',$pInfo['sort_type'])
                 ->limit($pInfo['length'],$pInfo['start'])
                 ->get()->result_array();
 
@@ -186,7 +216,7 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
                 ->group_start()
                 ->like('i.title',$pInfo['search'])
                 ->group_end()
-                ->order_by('zptime','DESC')
+                ->order_by('zptime',$pInfo['sort_type'])
                 ->limit($pInfo['length'],$pInfo['start'])
                 ->get()->result_array();
 
@@ -267,7 +297,7 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
                 ->group_start()
                 ->like('b.title',$pInfo['search'])
                 ->group_end()
-                ->order_by('a.time','DESC')
+                ->order_by('a.time',$pInfo['sort_type'])
                 ->limit($pInfo['length'],$pInfo['start'])
                 ->get()->result_array();
 
@@ -292,7 +322,7 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
                 ->group_start()
                 ->like('b.title',$pInfo['search'])
                 ->group_end()
-                ->order_by('a.time','DESC')
+                ->order_by('a.time',$pInfo['sort_type'])
                 ->limit($pInfo['length'],$pInfo['start'])
                 ->get()->result_array();
 
@@ -412,6 +442,19 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
         }
     }
 
+    //获取事件 参考文档
+    public function get_attachment_by_id($eid,$uid){
+        $data = $this->db->select('e.attachment')->from('event as e')
+            ->join('event_designate as ed','ed.processor = '.$uid.' and ed.event_id = '.$eid,'left')
+            ->where('e.id',$eid)
+            ->get()->result_array();
+        if(!empty($data)){
+            return $data[0];
+        }else{
+            return false;
+        }
+    }
+
     //插入评论
     public function insert_comment($eid,$pid,$com){
         $speaker = $this->session->userdata('uid');
@@ -476,7 +519,7 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
             ->group_end()
             ->where('e.state','未审核')
             ->or_where('e.state','已完成')
-            ->order_by('e.end_time','DESC')
+            ->order_by('e.end_time',$pInfo['sort_type'])
             ->limit($pInfo['length'],$pInfo['start'])
             ->get()->result_array();
 
@@ -580,7 +623,7 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
                 ->like('e.title',$pInfo['search'])
                 ->group_end()
                 ->limit($pInfo['length'],$pInfo['start'])
-                ->order_by('ed.time','DESC')
+                ->order_by('ed.time',$pInfo['sort_type'])
                 ->get()->result_array();
 
             $total = $this->db->select("ed.event_id,e.title,e.rank,ed.time,ed.group,u.name,e.state,ed.description")
@@ -610,7 +653,7 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
                 ->like('e.title',$pInfo['search'])
                 ->group_end()
                 ->limit($pInfo['length'],$pInfo['start'])
-                ->order_by('ed.time','DESC')
+                ->order_by('ed.time',$pInfo['sort_type'])
                 ->get()->result_array();
 
             $total = $this->db->select("ed.event_id,e.title,e.rank,ed.time,ed.group,u.name,e.state,ed.description")

@@ -155,14 +155,28 @@ class Designate extends MY_controller
 
 
     /**
+     * TODO
      * 事件指派 表单提交
      */
     public function commit_event_designate()
     {
-        $data = $this->input->post();
-        if (!isset($data["processor"]) || $data["event_id"] == "") {
-            show_404();
-        }
+//        $data = $this->input->post();
+//        if (!isset($data["processor"]) || $data["event_id"] == "") {
+//            show_404();
+//        }
+
+        $data["title"] = $this->input->post("title");                   //标题
+        $data["description"] = $this->input->post("description");       //描述
+        $data["info_id"] = $this->input->post("info_id");               //事件信息ID
+        $data["rank"] = $this->input->post("rank");                     //事件等级
+        $data["reply_time"] = $this->input->post("reply_time");         //首回时间
+        $data["relate_event"] = $this->input->post("relate_event");     //相关事件
+        $data["processor"] = $this->input->post("processor");           //处理人(单位)
+        $data["main_processor"] = $this->input->post("main_processor"); //牵头人(单位)
+        $data["watcher"] = $this->input->post("watcher");               //督办人
+        $data["attachment"] = $this->input->post("attachment");         //附件
+
+        //文件上传
 
         $this->load->model("Designate_Model", "designate");
         $result = $this->designate->event_designate($data);
