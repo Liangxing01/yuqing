@@ -176,8 +176,6 @@ class Designate extends MY_controller
         $data["watcher"] = $this->input->post("watcher");               //督办人
         $data["attachment"] = $this->input->post("attachment");         //附件
 
-        //文件上传
-
         $this->load->model("Designate_Model", "designate");
         $result = $this->designate->event_designate($data);
         if ($result) {
@@ -185,6 +183,15 @@ class Designate extends MY_controller
         } else {
             echo "指派失败";
         }
+    }
+
+
+    /**
+     * 事件指派 附件上传
+     */
+    public function attachment_upload()
+    {
+
     }
 
 
