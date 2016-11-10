@@ -21,6 +21,9 @@ class Welcome extends MY_Controller {
 	}
 
 
+	
+
+
     /**
      * 用户登出 接口
      */

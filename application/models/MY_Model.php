@@ -41,5 +41,35 @@ class MY_Model extends CI_Model {
         return $res;
     }
 
+    //检查 原密码是否正确
+    public function check_old_pass($old,$uid){
+        $pass = $this->db->select('password')->from('user')
+            ->where('id',$uid)
+            ->get()->result_array();
+        if(empty($pass)){
+            return false;
+        }else{
+            if(md5($old) == $pass[0]['password']){
+                return true;
+            }else{
+                return false;
+            }
+        }
+    }
+
+    //更新密码
+    public function update_psw($new,$uid){
+        $data = array(
+          'password' => md5($new)
+        );
+        $this->db->where('id',$uid);
+        $res = $this->db->update('user',$data);
+        if($res){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
 
 }
