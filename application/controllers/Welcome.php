@@ -15,6 +15,8 @@ class Welcome extends MY_Controller {
      */
 	public function index()
 	{
+        $this->assign("active_title", "home_page");
+        $this->assign("active_parent", "home_parent");
 		$this->all_display('index.html');
 	}
 
