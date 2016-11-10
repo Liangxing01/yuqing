@@ -444,6 +444,30 @@ class Handler extends MY_Controller {
         }
     }
 
+    /*
+     * 接口：修改 密码
+     */
+    public function update_psw()
+    {
+        $old = $this->input->post('old_pass');
+        $new = $this->input->post('new_pass');
+        $uid = $this->session->userdata('uid');
+        $res = $this->change_psw($old,$new,$uid);
+        if($res){
+            echo json_encode(
+                array(
+                    'res' => 1
+                )
+            );
+        }else{
+            echo json_encode(
+                array(
+                    'res' => 0
+                )
+            );
+        }
+    }
+
 
     public function test(){
         //phpinfo();
