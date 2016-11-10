@@ -50,55 +50,5 @@ class MY_Controller extends CI_Controller
         $this->ci_smarty->display('footer.html');
     }
 
-    /*
-     * 主页接口：获取用户最近登录的N条记录
-     * 参数：uid,num
-     */
-    public function get_login_list($uid, $num)
-    {
-        $this->load->model('MY_Model', "my_model");
-        $res = $this->my_model->get_login_list($uid, $num);
-        return $res;
-    }
 
-    /*
-     * 个人信息查看接口
-     */
-    public function get_my_info()
-    {
-        $this->load->model('MY_Model', "my_model");
-        $uid = $this->session->userdata('uid');
-        $res = $this->my_model->get_user_info($uid);
-        echo json_encode($res);
-    }
-
-    /*
-     * 个人信息修改接口
-     */
-    public function update_info($data, $uid)
-    {
-        $this->load->model('MY_Model', "my_model");
-        $res = $this->my_model->update_info($data, $uid);
-        return $res;
-    }
-
-    /*
-     * 修改密码接口
-     */
-
-    public function change_psw($old,$new,$uid){
-        $this->load->model('MY_Model',"my_model");
-        $check = $this->my_model->check_old_pass($old);
-        if($check){
-            $res = $this->my_model->update_psw($new,$uid);
-            if($res){
-                return true;
-            }else{
-                return false;
-            }
-        }else{
-            return false;
-        }
-
-    }
 }

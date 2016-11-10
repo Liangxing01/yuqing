@@ -12,6 +12,67 @@ class MY_Model extends CI_Model {
         $this->load->database();
     }
 
+    //获取用户权限组
+    public function get_privileges($uid){
+        $res = $this->db->select('up.pid')->from('user_privilege as up')
+            ->where('uid',$uid)
+            ->get()->result_array();
+        return $res;
+    }
+
+    //获取指派任务数
+    public function get_zp_tasks($uid){
+        $unread_info_num = $this->db->select('id')
+            ->from('info')
+            ->where('state',0)->get()->num_rows();
+        $designate_num = $this->db->select('id')
+            ->from('event')
+            ->where('state','已指派')->get()->num_rows();
+        $un_confirm_num = $this->db->select('id')
+            ->from('event')
+            ->where('state','未审核')
+            ->get()->num_rows();
+        $done_num = $this->db->select('id')
+            ->from('event')
+            ->where('state','已完成')
+            ->get()->num_rows();
+
+        $num_arr = array(
+            'unread_info_num' => $unread_info_num,
+            'designate_num'  => $designate_num,
+            'un_confirm_num'   => $un_confirm_num,
+            'done_num'    => $done_num
+        );
+        return $num_arr;
+    }
+
+    //获取处理任务数
+    public function get_handler_num($uid){
+        $unread_num = $this->db->select('id')
+            ->from('event_designate')
+            ->where('processor',$uid)
+            ->where('state','待处理')->get()->num_rows();
+        $doing_num = $this->db->select('id')
+            ->from('event_designate')
+            ->where('processor',$uid)
+            ->where('state','处理中')->get()->num_rows();
+        $done_num = $this->db->select('e.id')->from('event_designate AS ed')
+            ->join('event AS e','e.id = ed.event_id','left')
+            ->where('ed.processor',$uid)
+            ->group_start()
+            ->where('e.state','未审核')
+            ->or_where('e.state','已完成')
+            ->group_end()
+            ->get()->num_rows();
+        $num_arr = array(
+            'unread_num' => $unread_num,
+            'doing_num'  => $doing_num,
+            'done_num'   => $done_num,
+            'all_num'    => $unread_num+$doing_num+$done_num
+        );
+        return $num_arr;
+    }
+
     //获取用户登录记录最新的6条
     public function get_login_list($uid,$num){
         $res = $this->db->select('ip,time')->from('login_log')
