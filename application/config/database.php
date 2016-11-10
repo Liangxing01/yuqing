@@ -75,7 +75,7 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => '27.8.44.8',
+	'hostname' => '27.8.44.5',
 	'username' => 'root',
 	'password' => 'masker',
 	'database' => 'yuqing',
