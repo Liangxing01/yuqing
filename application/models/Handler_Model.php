@@ -165,7 +165,7 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
                 ->group_start()
                 ->like('i.title',$pInfo['search'])
                 ->group_end()
-                ->order_by('zptime','DESC')
+                ->order_by('zptime',$pInfo['sort_type'])
                 ->limit($pInfo['length'],$pInfo['start'])
                 ->get()->result_array();
 
@@ -216,7 +216,7 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
                 ->group_start()
                 ->like('i.title',$pInfo['search'])
                 ->group_end()
-                ->order_by('zptime','DESC')
+                ->order_by('zptime',$pInfo['sort_type'])
                 ->limit($pInfo['length'],$pInfo['start'])
                 ->get()->result_array();
 
@@ -297,7 +297,7 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
                 ->group_start()
                 ->like('b.title',$pInfo['search'])
                 ->group_end()
-                ->order_by('a.time','DESC')
+                ->order_by('a.time',$pInfo['sort_type'])
                 ->limit($pInfo['length'],$pInfo['start'])
                 ->get()->result_array();
 
@@ -322,7 +322,7 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
                 ->group_start()
                 ->like('b.title',$pInfo['search'])
                 ->group_end()
-                ->order_by('a.time','DESC')
+                ->order_by('a.time',$pInfo['sort_type'])
                 ->limit($pInfo['length'],$pInfo['start'])
                 ->get()->result_array();
 
@@ -519,7 +519,7 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
             ->group_end()
             ->where('e.state','未审核')
             ->or_where('e.state','已完成')
-            ->order_by('e.end_time','DESC')
+            ->order_by('e.end_time',$pInfo['sort_type'])
             ->limit($pInfo['length'],$pInfo['start'])
             ->get()->result_array();
 
@@ -623,7 +623,7 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
                 ->like('e.title',$pInfo['search'])
                 ->group_end()
                 ->limit($pInfo['length'],$pInfo['start'])
-                ->order_by('ed.time','DESC')
+                ->order_by('ed.time',$pInfo['sort_type'])
                 ->get()->result_array();
 
             $total = $this->db->select("ed.event_id,e.title,e.rank,ed.time,ed.group,u.name,e.state,ed.description")
@@ -653,7 +653,7 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
                 ->like('e.title',$pInfo['search'])
                 ->group_end()
                 ->limit($pInfo['length'],$pInfo['start'])
-                ->order_by('ed.time','DESC')
+                ->order_by('ed.time',$pInfo['sort_type'])
                 ->get()->result_array();
 
             $total = $this->db->select("ed.event_id,e.title,e.rank,ed.time,ed.group,u.name,e.state,ed.description")
