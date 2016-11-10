@@ -26,83 +26,89 @@
     <script src="/js/respond.min.js">
     </script>
     <![endif]-->
+    <style>
+        .error{
+            font-size: 0.9em;
+            color: #FF4500;
+        }
+        #login_error{
+            display: none;
+        }
+    </style>
     <!-- END STYLESHEET-->
 </head>
 <body class="login-screen">
+
 <!-- BEGIN SECTION -->
 <div class="container">
-    <form class="form-signin" action="/Login/checkLogin" method="post">
+    <form class="form-signin" id="login-form">
         <h2 class="form-signin-heading">
-            登录
+            舆情工作平台
         </h2>
         <!-- LOGIN WRAPPER  -->
         <div class="login-wrap">
-            <input type="text" class="form-control" placeholder="用户名" name="username" autofocus>
-            <input type="password" class="form-control" placeholder="密码" name="password">
-
-            <!--<label class="checkbox">-->
-            <!--<input type="checkbox" value="remember-me" name="remember-me">-->
-            <!--记住我-->
-            <!--<span class="pull-right">-->
-            <!--<a data-toggle="modal" href="#myModal">-->
-            <!--忘记密码-->
-            <!--</a>-->
-            <!--</span>-->
-            <!--</label>-->
+            <input type="text" class="form-control" placeholder="用户名" name="username" id="username" autofocus>
+            <input type="password" class="form-control" placeholder="密码" name="password" id="password">
+            <span class="error" id="login_error" style="display: none"></span>
+            <input class="btn btn-lg btn-login btn-block" type="submit" value="登&nbsp;&nbsp;录"/>
         </div>
-
-        <!--<div class="registration">-->
-        <!--还没有账号吗？-->
-        <!--<a class="" href="registration.html">-->
-        <!--创建一个账号-->
-        <!--</a>-->
-        <!--</div>-->
-        <button class="btn btn-lg btn-login btn-block" type="submit">
-            登录
-        </button>
+        <!-- END LOGIN WRAPPER -->
     </form>
+</div>
+<!-- END SECTION -->
 
+<!-- BEGIN JS -->
+<script src="/js/jquery-2.1.1.min.js"></script><!-- BASIC JQUERY LIB. JS -->
+<script src="/js/bootstrap.min.js"></script><!-- BOOTSTRAP JS -->
+<script src="/js/jquery.validate.min.js"></script>
+<script src="/js/public.js"></script>
+<!-- END JS -->
 
+<!-- Page Script -->
+<script>
 
+    // jq validate 插件初始化
+    $.validator.setDefaults({
+        submitHandler: function () {
+            login_commit();
+        }
+    });
+    $().ready(function () {
+        $("#login-form").validate({
+            rules: {
+                username: {required: true},
+                password: {required: true}
+            },
+            messages: {
+                username: {required: "请输入用户名"},
+                password: {required: "请输入密码"}
+            }
+        });
+    });
 
-    <!-- END LOGIN WRAPPER -->
-    <!-- MODAL -->
-    <!--<div  id="myModal" class="modal fade">-->
-    <!--<div class="modal-dialog">-->
-    <!--<div class="modal-content">-->
-    <!--<div class="modal-header">-->
-    <!--<button type="button" class="close" data-dismiss="modal" aria-hidden="true">-->
-    <!--&times;-->
-    <!--</button>-->
-    <!--<h4 class="modal-title">-->
-    <!--Forgot Password ?-->
-    <!--</h4>-->
-    <!--</div>-->
-    <!--<div class="modal-body">-->
-    <!--<p>-->
-    <!--Enter your e-mail address below to reset your password.-->
-    <!--</p>-->
-    <!--<input type="text" name="email" placeholder="Email" autocomplete="off" class="form-control placeholder-no-fix">-->
-    <!--</div>-->
-    <!--<div class="modal-footer">-->
-    <!--<button data-dismiss="modal" class="btn btn-default" type="button">-->
-    <!--Cancel-->
-    <!--</button>-->
-    <!--<button class="btn btn-success" type="button">-->
-    <!--Submit-->
-    <!--</button>-->
-    <!--</div>-->
-    <!--</div>-->
-    <!--</div>-->
-    <!--</div>-->
-    <!-- END MODAL -->
+    //登陆表单提交
+    function login_commit(){
+        var username = $("#username").val();
+        var password = $("#password").val();
 
-    <!--</div>-->
-    <!-- END SECTION -->
-    <!-- BEGIN JS -->
-    <script src="/js/jquery.js" ></script><!-- BASIC JQUERY LIB. JS -->
-    <script src="/js/bootstrap.min.js" ></script><!-- BOOTSTRAP JS -->
-    <!-- END JS -->
+        $.ajax({
+            url: "/login/check/",
+            method: "post",
+            data: {
+                "username": username,
+                "password": password
+            },
+            success: function (data) {
+                if(data.code == "0"){
+                    forward("/welcome/index");
+                }else {
+                    $("#login_error").html(data.message).show();
+                }
+            }
+        });
+    }
+</script>
+
 </body>
 </html>
 
