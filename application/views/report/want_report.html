@@ -1,3 +1,28 @@
+<style type="text/css">
+
+@media only screen and (min-width:768px ) {
+	#title,#url,#description{ border:none !important; text-indent: inherit !important; padding-left: 0px !important;}
+	.col-sm-11{ padding-left: 0px;}
+	.col-xs-9{padding-left: 0px;}
+	select{border: solid 1px #d9d9d9; border-radius: 6px;  padding:5px 10px; }
+	select::-ms-expand { display: none; }
+	textarea{  height: 50% !important; padding-left: 0px !important;}
+}
+@media only screen and (min-width: 320px) and (max-width: 768px) {
+	.sidebar-toggle-box{ padding-right: 5px !important;}
+	a.logo{font-size: 1.2em; margin-top: 22px;}
+	.top-nav ul.top-menu > li > a{ padding: 2px !important; margin-top: 5px; font-size: 0.8em;}
+	.form-horizontal.tasi-form .form-group{padding-bottom: 8px !important; margin-bottom: 5px !important;}
+	.col-xs-3{padding-right: 0px; font-weight: bold; color: #000000;}
+	.col-xs-9{padding-left: 0px;}
+	#file_name{ padding-top: 7px;}
+	select{ margin-top: 7px;}
+}
+#title,#url,#description{ border:none !important; padding-left: 0 !important;}	
+.col-sm-11{ padding-left: 0px;}
+#submit1{ background: #72d0eb; border: none !important;  border-radius: inherit;}
+</style>
+	
 <!-- BEGIN MAIN CONTENT -->
 <section id="main-content">
     <!-- BEGIN WRAPPER  -->
@@ -7,7 +32,7 @@
             <div class="col-lg-12">
                 <section class="panel">
                     <header class="panel-heading">
-                        <span class="label label-primary">我要提交</span>
+                        <span class=""><strong>我要提交</strong></span>
                         <span class="tools pull-right">
                            <a href="javascript:;" class="fa fa-chevron-down"></a>
                            <a href="javascript:;" class="fa fa-times"></a>
@@ -17,25 +42,25 @@
                         <form id="form1" class="form-horizontal tasi-form layui-form" enctype="multipart/form-data">
                             <input type="hidden" id="id" name="id"/>
                             <div class="form-group">
-                                <label class="col-sm-2 col-sm-2 control-label">标题</label>
-                                <div class="col-sm-10">
+                                <label class="col-xs-3 col-sm-1 control-label">标题</label>
+                                <div class="col-xs-9 col-sm-11">
                                     <input type="text" name="title" id="title" required lay-verify="required" placeholder="请输入标题" autocomplete="off" class="form-control layui-input">
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-sm-2 col-sm-2 control-label">URL</label>
-                                <div class="col-sm-10">
+                                <label class="col-xs-3 col-sm-1 control-label">URL</label>
+                                <div class="col-xs-9 col-sm-11">
                                     <input type="text" name="url" id="url" required lay-verify="required" placeholder="请输入事件来源的网址" autocomplete="off" class="form-control layui-input" onblur="active.judgeUrl()">
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-sm-2 col-sm-2 control-label">截图</label>
-                                <input type="file" id="file_name" name="file_name" >
+                                <label class="col-xs-3 col-sm-1 control-label">截图</label>
+                                <input class="col-xs-9" type="file" id="file_name" name="file_name">
                             </div>
 
                             <div class="form-group">
-                                <label class="col-sm-2 col-sm-2 control-label">来源</label>
-                                <div class="col-sm-10">
+                                <label class="col-xs-3 col-sm-1 control-label">来源</label>
+                                <div class="col-xs-9 col-sm-11">
                                     <select name="city" lay-verify="" id="source" name="source" onchange="active.changeSelect(this)">
                                         <option value="天涯">天涯</option>
                                         <option value="大渝网">大渝网</option>
@@ -50,18 +75,20 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-sm-2 col-sm-2 control-label">描述</label>
-                                <div class="col-sm-10">
-                                    <input type="text" name="description" id="description" required lay-verify="required" placeholder="请输入事件描述" autocomplete="off" class="form-control layui-input">
+                                <label class="col-xs-3 col-sm-1 control-label">描述</label>
+                                <div class="col-sm-11 col-xs-9">
+                                    <textarea rows="15"  type="text" name="description" id="description" required lay-verify="required" placeholder="请输入事件描述" autocomplete="off" class="form-control layui-input"></textarea>
                                 </div>
                             </div>
-
+							<div class="text-center " style="margin-top: 10%;">
+                            	<button id="submit1" class="btn btn-success btn-lg col-sm-12" onclick="active.setTop()">提交</button>
+                        	</div>
                         </form>
-                        <div class="text-center ">
-                            <button id="submit1" class="btn btn-success btn-lg" onclick="active.setTop()">提交</button>
-                        </div>
+                        
                     </div>
+                    
                 </section>
+                
             </div>
         </div>
         </div>
