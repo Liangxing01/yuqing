@@ -85,12 +85,7 @@ class MY_Controller extends CI_Controller
     /*
      * 修改密码接口
      */
-<<<<<<< HEAD
-    public function change_psw($old, $new, $uid)
-    {
 
-
-=======
     public function change_psw($old,$new,$uid){
         $this->load->model('MY_Model',"my_model");
         $check = $this->my_model->check_old_pass($old);
@@ -104,6 +99,6 @@ class MY_Controller extends CI_Controller
         }else{
             return false;
         }
->>>>>>> develop
+
     }
 }
