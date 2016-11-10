@@ -403,6 +403,13 @@ class Handler extends MY_Controller {
         $this->all_display("designate/show_structure.html");
     }
 
+    //展示个人信息
+    public function show_my_info(){
+        $this->assign("active_title", "my_info");
+        $this->assign("active_parent", "manage_parent");
+        $this->all_display("handler/user_info.html");
+    }
+
     /*
      * 接口：获取用户个人信息
      */
