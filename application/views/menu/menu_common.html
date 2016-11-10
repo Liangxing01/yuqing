@@ -1,0 +1,50 @@
+<!-- 用户信息 -->
+<li class="sub-menu" >
+    <a href="javascript:;" id="manage_parent">
+        <i class="fa fa-cogs">
+        </i>
+                <span>
+                  设置
+                </span>
+
+    </a>
+    <ul class="sub">
+        <li id="my_info">
+            <a href="/handler/show_my_info">
+                个人信息
+            </a>
+        </li>
+        <li>
+            <a href="#">
+                修改密码
+            </a>
+        </li>
+
+    </ul>
+</li>
+
+<!-- 用户注销 -->
+<li>
+    <a href="/welcome/logout">
+        <i class="fa fa-power-off">
+        </i>
+                <span>
+                  注销
+                </span>
+    </a>
+</li>
+
+</ul>
+</div>
+</aside>
+<!-- END SIDEBAR -->
+
+<!-- 添加active class -->
+<script>
+    $(document).ready(function () {
+        var title = "#<{$active_title}>";
+        var parent_title = "#<{$active_parent}>";
+        $(title).addClass('active');
+        $(parent_title).addClass('active');
+    });
+</script>

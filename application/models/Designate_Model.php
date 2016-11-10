@@ -485,6 +485,10 @@ class Designate_Model extends CI_Model
      */
     public function event_designate($data)
     {
+        //添加事件信息
+//        $event_info = array();
+//        foreach($data AS $key ){}
+
         $processors = explode(",", $data["processor"]);
         $insert = array();
         $time = time();
