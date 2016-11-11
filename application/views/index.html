@@ -1,4 +1,16 @@
-﻿
+﻿<style type="text/css">
+	.zhipai{background: url(../../img/zp.png) no-repeat; display: block; width: 119px; height: 34px; text-align: center; line-height: 34px; font-size: 16px; color: white; margin-bottom: 10px;}
+	.chuli{background: url(../../img/cl.png) no-repeat; display: block; width: 119px; height: 34px; text-align: center; line-height: 34px; font-size: 16px; color: white; margin-bottom: 10px;}
+	.tq{ background: #72d0eb; border-top-left-radius: 4px; border-top-right-radius: 4px; text-align: center;}
+	.tq span{ font-size: 1.4em; color: white; line-height: 88px;}
+	.tq span b{ font-size: 3.4em; font-weight: normal;}
+	.tq span sup{ font-size: 2.0em;}
+	.tq p{ font-size: 1.4em;  color: white; margin: 0px;}
+	.tq1{ background: #FFFFFF; border-bottom-left-radius: 4px; border-bottom-right-radius: 4px; text-align: center;}
+	.tq1 span{ font-size: 1.4em; color: #72d0eb; line-height: 88px;}
+	.tq1 span b{ font-size: 3.4em; font-weight: normal;}
+	.tq1 p{ font-size: 1.4em;  color: #72d0eb; margin: 0px;}
+</style>
       <!-- BEGIN MAIN CONTENT -->
       <link href="/css/tasks.css" rel="stylesheet"><!-- TASK CSS-->
       
@@ -6,6 +18,7 @@
 	  <!-- BEGIN WRAPPER  -->
         <section class="wrapper site-min-height">
 		  <!-- BEGIN ROW  -->
+		  	<div class="zhipai">指派任务数</div>
           <div class="row state-overview">
             <div class="col-lg-3 col-sm-6">
               <section class="panel">
@@ -73,186 +86,102 @@
             </div>
           </div>
 		   <!-- END ROW  -->
+		   <!--处理工作数 -->
+		   <div class="chuli">处理任务数</div>
+          <div class="row state-overview">
+            <div class="col-lg-3 col-sm-6">
+              <section class="panel">
+                <div class="symbol">
+                  <i class="fa fa-tags blue">
+                  </i>
+                </div>
+                <div class="value">
+                  <h1 class="count">
+                    0
+                  </h1>
+                  <p>
+                    未完成事件
+                  </p>
+                </div>
+              </section>
+            </div>
+            <div class="col-lg-3 col-sm-6">
+              <section class="panel">
+                <div class="symbol">
+                  <i class="fa fa-wrench red">
+                  </i>
+                </div>
+                <div class="value">
+                  <h1 class=" count2">
+                    0
+                  </h1>
+                  <p>
+                    正在处理事件
+                  </p>
+                </div>
+              </section>
+            </div>
+            <div class="col-lg-3 col-sm-6">
+              <section class="panel">
+                <div class="symbol">
+                  <i class="fa fa-check-square yellow">
+                  </i>
+                </div>
+                <div class="value">
+                  <h1 class=" count3">
+                    0
+                  </h1>
+                  <p>
+                    已完成事件
+                  </p>
+                </div>
+              </section>
+            </div>
+            <div class="col-lg-3 col-sm-6">
+              <section class="panel">
+                <div class="symbol">
+                  <i class="fa fa-bookmark-o purple">
+                  </i>
+                </div>
+                <div class="value">
+                  <h1 class=" count4">
+                    0
+                  </h1>
+                  <p>
+                    总任务数
+                  </p>
+                </div>
+              </section>
+            </div>
+          </div>
+		   <!--处理工作数-->
+		   <div class="row">
           <div class="col-md-6">
           <!-- START PANEL -->
           <section class="panel tasks-widget">
-            <header class="panel-heading">
-              任务列表
-            </header>
-            <div class="panel-body">
-              <div class="task-content">
-                <ul class="task-list">
-                  <li>
-                    <div class="task-checkbox">
-                      <input type="checkbox" class="list-child" value="">
-                    </div>
-                    <div class="task-title">
-                          <span class="task-title-sp">
-                            中央发布白皮书文件
-                          </span>
-                          <span class="badge badge-sm label-success">
-                            2 天前
-                          </span>
-                      <div class="pull-right hidden-phone">
-                        <button class="btn btn-success btn-xs">
-                          <i class=" fa fa-check">
-                          </i>
-                        </button>
-                        <button class="btn btn-primary btn-xs">
-                          <i class="fa fa-pencil">
-                          </i>
-                        </button>
-                        <button class="btn btn-danger btn-xs">
-                          <i class="fa fa-trash-o ">
-                          </i>
-                        </button>
-                      </div>
-                    </div>
-                  </li>
-                  <li>
-                    <div class="task-checkbox">
-                      <input type="checkbox" class="list-child" value="">
-                    </div>
-                    <div class="task-title">
-                          <span class="task-title-sp">
-                            巴南房屋改造计划
-                          </span>
-                          <span class="badge badge-sm label-danger">
-                            已完成
-                          </span>
-                      <div class="pull-right hidden-phone">
-                        <button class="btn btn-success btn-xs">
-                          <i class=" fa fa-check">
-                          </i>
-                        </button>
-                        <button class="btn btn-primary btn-xs">
-                          <i class="fa fa-pencil">
-                          </i>
-                        </button>
-                        <button class="btn btn-danger btn-xs">
-                          <i class="fa fa-trash-o ">
-                          </i>
-                        </button>
-                      </div>
-                    </div>
-                  </li>
-                  <li>
-                    <div class="task-checkbox">
-                      <input type="checkbox" class="list-child" value="">
-                    </div>
-                    <div class="task-title">
-                          <span class="task-title-sp">
-                            中午12点会议室开会
-                          </span>
-                          <span class="badge badge-sm label-warning">
-                            正在执行
-                          </span>
-                      <div class="pull-right hidden-phone">
-                        <button class="btn btn-success btn-xs">
-                          <i class=" fa fa-check">
-                          </i>
-                        </button>
-                        <button class="btn btn-primary btn-xs">
-                          <i class="fa fa-pencil">
-                          </i>
-                        </button>
-                        <button class="btn btn-danger btn-xs">
-                          <i class="fa fa-trash-o ">
-                          </i>
-                        </button>
-                      </div>
-                    </div>
-                  </li>
-                  <li>
-                    <div class="task-checkbox">
-                      <input type="checkbox" class="list-child" value="">
-                    </div>
-                    <div class="task-title">
-                          <span class="task-title-sp">
-                            工作周总结
-                          </span>
-                          <span class="badge badge-sm label-primary">
-                            3 天前
-                          </span>
-                      <div class="pull-right hidden-phone">
-                        <button class="btn btn-success btn-xs">
-                          <i class=" fa fa-check">
-                          </i>
-                        </button>
-                        <button class="btn btn-primary btn-xs">
-                          <i class="fa fa-pencil">
-                          </i>
-                        </button>
-                        <button class="btn btn-danger btn-xs">
-                          <i class="fa fa-trash-o ">
-                          </i>
-                        </button>
-                      </div>
-                    </div>
-                  </li>
-                  <li>
-                    <div class="task-checkbox">
-                      <input type="checkbox" class="list-child" value="">
-                    </div>
-                    <div class="task-title">
-                          <span class="task-title-sp">
-                            区政府下发学习手册
-                          </span>
-                          <span class="badge badge-sm label-inverse">
-                            现在
-                          </span>
-                      <div class="pull-right">
-                        <button class="btn btn-success btn-xs">
-                          <i class=" fa fa-check">
-                          </i>
-                        </button>
-                        <button class="btn btn-primary btn-xs">
-                          <i class="fa fa-pencil">
-                          </i>
-                        </button>
-                        <button class="btn btn-danger btn-xs">
-                          <i class="fa fa-trash-o ">
-                          </i>
-                        </button>
-                      </div>
-                    </div>
-                  </li>
-                  <li>
-                    <div class="task-checkbox">
-                      <input type="checkbox" class="list-child" value="">
-                    </div>
-                    <div class="task-title">
-                          <span class="task-title-sp">
-                            上传工作报告
-                          </span>
-                          <span class="badge badge-sm label-success">
-                            2 天前
-                          </span>
-                      <div class="pull-right hidden-phone">
-                        <button class="btn btn-success btn-xs">
-                          <i class=" fa fa-check">
-                          </i>
-                        </button>
-                        <button class="btn btn-primary btn-xs">
-                          <i class="fa fa-pencil">
-                          </i>
-                        </button>
-                        <button class="btn btn-danger btn-xs">
-                          <i class="fa fa-trash-o ">
-                          </i>
-                        </button>
-                      </div>
-                    </div>
-                  </li>
-
-                </ul>
-              </div>
-              <div class=" add-task-row">
-
-                <a class="btn btn-success btn-sm pull-right" href="#">
-                  查看所有任务
-                </a>
-              </div>
+            <div class="panel-body tq">
+            	<div class="col-md-6 ">
+            		<span><img src="../../img/tq.png"></span>
+            		<p>重庆·巴南</p>
+            		<p>ChongQing·BanNan</p>
+            	</div>
+            	<div class="col-md-6 ">
+            		<span><b>17</b><sup>℃</sup></span>
+            		<p>温度</p>
+            		<p>Temperature</p>
+            	</div>             
+            </div>
+            <div class="panel-body tq1">
+            	<div class="col-md-6 ">
+            		<span><b>87</b>%</span>
+            		<p>湿度</p>
+            		<p>Humidity</p>
+            	</div>
+            	<div class="col-md-6 ">
+            		<span><img src="../../img/f.png"></span>
+            		<p>西南风·四级</p>
+            		<p>Southwest Wind  Four</p>
+            	</div>             
             </div>
           </section>
           <!-- END PANEL -->
@@ -358,7 +287,7 @@
 			 &lt;!&ndash; END ROW  &ndash;&gt;
           </div>-->
 		   <!-- BEGIN ROW  -->
-          <div class="row">
+          
             <div class="col-lg-6">
               <section class="panel">
                 <div class="panel-body">
