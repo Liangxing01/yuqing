@@ -182,9 +182,7 @@
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-md-2 col-sm-2 control-label">参考文件上传:</label>
-                                                    <div class="col-md-2 col-sm-2">
-                                                        <input type="file" name="attachment"
-                                                               formenctype="multipart/form-data">
+                                                    <div class="col-md-2 col-sm-2 zyupload" id="attachment">
                                                     </div>
                                                 </div>
                                             </fieldset>
@@ -241,7 +239,7 @@
 <!-- Tags Input -->
 <script src="/assets/jquery-tags-input/jquery.tagsinput.min.js"></script>
 <!-- Spinner -->
-<script src="/assets/fuelux/js/spinner.min.js"></script><!-- FUELUX JS  -->
+<script src="/assets/fuelux/js/spinner.min.js"></script>
 <!-- Public Function -->
 <script language="javascript" src="/js/public.js"></script>
 
@@ -468,7 +466,7 @@
                 'orderable': false,
                 "mRender": function (data, type, all) {
                     return "<a title='查看' target='_blank' href='/sss/info_detail?id=" + data + " ' class='btn btn-info btn-xs'>查看</a>&nbsp;"
-                            +"<a title='添加' href='javascript:;' onclick='add_relate_event(" + all.id + ",\"" + all.title + "\")' class='btn btn-success btn-xs'>添加</a>";
+                            + "<a title='添加' href='javascript:;' onclick='add_relate_event(" + all.id + ",\"" + all.title + "\")' class='btn btn-success btn-xs'>添加</a>";
                 }
             }
         ],
@@ -569,11 +567,11 @@
      * 获取info_id
      * @return string
      */
-    function get_info_id(){
+    function get_info_id() {
         var info_id = $("#info_id").val();
         var tag_arr = info_id.split("_");
         var id = [];
-        for(i in tag_arr){
+        for (i in tag_arr) {
             var id_reg = /^#(\d+)/.exec(tag_arr[i]);
             id.push(id_reg[1]);
         }
@@ -584,11 +582,11 @@
      * 获取relate_event
      * @return string
      */
-    function get_relate_event(){
+    function get_relate_event() {
         var info_id = $("#relate_event").val();
         var tag_arr = info_id.split("_");
         var id = [];
-        for(i in tag_arr){
+        for (i in tag_arr) {
             var id_reg = /^#(\d+)/.exec(tag_arr[i]);
             id.push(id_reg[1]);
         }
