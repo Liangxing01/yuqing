@@ -199,7 +199,7 @@
                 value.commentnum=commnetlength;
                 if(!value.desc) value.desc="";
                 value.commenthtml=comment_arr.join("");
-                if(i==3||i==0||i==20){//如果是领导把主评论放在右边,第一个与第四个为右
+                if(value.usertype==1){//如果是领导把主评论放在右边,第一个与第四个为右
                     value.buletan="";//如果在右边不为空
                     htmlstr+=formatTemplate(value, li_item_tpl);//加载模板
                     htmlstr+='<li class="item-timeline item-timeline-'+value.id+'-flag"></li>';

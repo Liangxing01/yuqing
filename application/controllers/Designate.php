@@ -7,9 +7,6 @@ class Designate extends MY_controller
     public function __construct()
     {
         parent::__construct();
-        //TODO 登陆验证权限控制
-        $this->session->set_userdata("uid", 2);
-        $this->session->set_userdata("name", "李四");
     }
 
 

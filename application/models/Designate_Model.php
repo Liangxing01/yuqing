@@ -190,8 +190,8 @@ class Designate_Model extends CI_Model
         }
 
         $where = "";
-        foreach($condition AS $c){
-            if($condition){
+        foreach ($condition AS $c) {
+            if ($condition) {
                 $where .= $c . " AND ";
             }
         }
@@ -199,7 +199,7 @@ class Designate_Model extends CI_Model
 
         //执行查询语句
 
-        if($where){
+        if ($where) {
             $data['aaData'] = $this->db->select("event.id, event.title, A.name AS manager, B.name AS main_processor, C.name AS main_group, event.rank, event.state, event.start_time, event.end_time")
                 ->from("event")
                 ->join("user A", "A.id = event.manager", "left")
@@ -233,7 +233,7 @@ class Designate_Model extends CI_Model
                 ->or_like("event.title", $pInfo["search"])
                 ->group_end()
                 ->get()->num_rows();
-        }else{
+        } else {
             $data['aaData'] = $this->db->select("event.id, event.title, A.name AS manager, B.name AS main_processor, C.name AS main_group, event.rank, event.state, event.start_time, event.end_time")
                 ->from("event")
                 ->join("user A", "A.id = event.manager", "left")
@@ -312,13 +312,13 @@ class Designate_Model extends CI_Model
         // 重复条件
         if ($pInfo["duplicate"] == "重复") {
             $condition[] = "info.duplicate = 1";
-        }else if($pInfo["duplicate"] == "不重复"){
+        } else if ($pInfo["duplicate"] == "不重复") {
             $condition[] = "info.duplicate = 0";
         }
 
         $where = "";
-        foreach($condition AS $c){
-            if($condition){
+        foreach ($condition AS $c) {
+            if ($condition) {
                 $where .= $c . " AND ";
             }
         }
@@ -446,15 +446,15 @@ class Designate_Model extends CI_Model
 
                 //判断是否为父节点
                 if ($row["rgt"] - $row["lft"] != 1) {
-                    $tree_json .= "{name: '" . $row["name"] . "',id:" . $row["uid"] . ",open:false,children:[";
+                    $tree_json .= "{name: '" . $row["name"] . "',id:" . $row["uid"] . ",isdepartment:" . $row["type"] . ",open:false,children:[";
                 } else {
-                    $tree_json .= "{name: '" . $row["name"] . "',id:" . $row["uid"];
+                    $tree_json .= "{name: '" . $row["name"] . "',id:" . $row["uid"] . ",isdepartment:" . $row["type"];
                 }
 
             } else {
                 $tree_json .= "{name:'" . $row["name"] . "'";
                 if ($row["rgt"] - $row["lft"] != 1) {
-                    $tree_json .= ",open:true,children:[";
+                    $tree_json .= ",id:0,open:true,children:[";
                 }
             }
 
