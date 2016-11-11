@@ -6,6 +6,7 @@ class Welcome extends MY_Controller {
     public function __construct()
     {
         parent::__construct();
+        $this->load->model('MY_Model','my_model');
         $this->identity->is_authentic();
     }
 
@@ -25,14 +26,13 @@ class Welcome extends MY_Controller {
 	 * 主页接口：获取指派工作和处理工作任务数接口
 	 */
 	public function get_all_tasks_num(){
-        $this->load->model('MY_Model','my_model');
         $uid = $this->session->userdata('uid');
-        $pri = $this->my_model->get_privileges($uid);
-
+        //$pri = $this->my_model->get_privileges($uid);
+        $pri = explode(",",$this->session->userdata('privilege'));
         $all_num_arr = array();
         if(!empty($pri)){
             foreach ($pri as $one){
-                switch ($one['pid']){
+                switch ($one){
                     case 2 :
                         $zp_tasks_num_arr = $this->my_model->get_zp_tasks($uid);
                         break;
@@ -58,11 +58,39 @@ class Welcome extends MY_Controller {
      * 主页接口：获取用户最近登录的N条记录
      * 参数：uid,num
      */
-    public function get_login_list($uid, $num)
+    public function get_login_list()
     {
-        $this->load->model('MY_Model', "my_model");
+        $uid = $this->session->userdata('uid');
+        $num = 5;
         $res = $this->my_model->get_login_list($uid, $num);
         return $res;
+    }
+
+    /*
+     * 主页接口：获取警告事件
+     * 根据权限判断 来返回 警告事件
+     */
+    public function get_event_alert(){
+        $uid = $this->session->userdata('uid');
+        $pri = explode(",",$this->session->userdata('privilege'));
+        $alarm_arr = array(
+            'zp_alarm' => array(),
+            'processor_alarm' => array()
+        );
+        foreach ($pri as $one){
+            switch ($one){
+                case 2 :
+                    $zp_alarm = $this->my_model->get_desi_alert($uid);
+                    array_push($alarm_arr['zp_alarm'],$zp_alarm);
+                    break;
+                case 3 :
+                    $processor_alarm = $this->my_model->get_processor_alert($uid);
+                    array_push($alarm_arr['processor_alarm'],$processor_alarm);
+                    break;
+            }
+        }
+
+        echo json_encode($alarm_arr);
     }
 
     /*
@@ -70,28 +98,50 @@ class Welcome extends MY_Controller {
      */
     public function get_my_info()
     {
-        $this->load->model('MY_Model', "my_model");
         $uid = $this->session->userdata('uid');
         $res = $this->my_model->get_user_info($uid);
+        $res[0]['privilege'] = $this->session->userdata('privilege');
         echo json_encode($res);
     }
 
     /*
      * 个人信息修改接口
      */
-    public function update_info($data, $uid)
+    public function update_info()
     {
-        $this->load->model('MY_Model', "my_model");
-        $res = $this->my_model->update_info($data, $uid);
-        return $res;
+        $name = $this->input->post('name');
+        $sex  = $this->input->post('sex');
+        $update_data = array(
+            'name' => $name,
+            'sex'  => $sex
+        );
+        $uid = $this->session->userdata('uid');
+        $res = $this->my_model->update_info($update_data, $uid);
+        if($res){
+            echo json_encode(
+                array(
+                    'res' => 1
+                )
+            );
+        }else{
+            echo json_encode(
+                array(
+                    'res' => 0
+                )
+            );
+        }
+
+
     }
 
     /*
      * 修改密码接口
      */
 
-    public function change_psw($old,$new,$uid){
-        $this->load->model('MY_Model',"my_model");
+    public function change_psw(){
+        $old = $this->input->post('old_pass');
+        $new = $this->input->post('new_pass');
+        $uid = $this->session->userdata('uid');
         $check = $this->my_model->check_old_pass($old);
         if($check){
             $res = $this->my_model->update_psw($new,$uid);
