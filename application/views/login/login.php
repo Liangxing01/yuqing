@@ -34,29 +34,47 @@
         #login_error{
             display: none;
         }
+        
+
+        .login_bg{  width: 100%; height: 100% ; position: absolute; z-index: -1;}
+         #box{ width: 309px; height: 328px; background: #000; filter:alpha(opacity=60); opacity: 0.6; position: absolute; right: 15%;}
+        .meih{ width: 250px; color: #ffffff; margin: auto;  padding-top: 10px; padding-bottom: 10px;}
+        .meih input{ border-radius: 4px; box-shadow: none; width: 200px; background: white; border: none; line-height: 30px;}
+        .meih a{ color: white; text-align: left !important;}
+        .an{ width: 250px !important; background: #5cc8f1 !important; border: none; border-radius: 8px !important; line-height: 40px !important; color: white !important; font-size: 1.8em;}
     </style>
     <!-- END STYLESHEET-->
 </head>
-<body class="login-screen">
+<body>
 
-<!-- BEGIN SECTION -->
-<div class="container">
-    <form class="form-signin" id="login-form">
-        <h2 class="form-signin-heading">
-            舆情工作平台
-        </h2>
-        <!-- LOGIN WRAPPER  -->
-        <div class="login-wrap">
-            <input type="text" class="form-control" placeholder="用户名" name="username" id="username" autofocus>
-            <input type="password" class="form-control" placeholder="密码" name="password" id="password">
-            <span class="error" id="login_error" style="display: none"></span>
-            <input class="btn btn-lg btn-login btn-block" type="submit" value="登&nbsp;&nbsp;录"/>
-        </div>
-        <!-- END LOGIN WRAPPER -->
-    </form>
+
+<div class="login_bg">
+	<img src="../../../img/login_bg.png" width="100%" height="100%">
 </div>
-<!-- END SECTION -->
+<div id="box">
+	<form>
+		<div class="meih" style="text-align: center;"><h2>账号登录</h2></div>
+		<div class="meih">账号：<input /></div>
+		<div class="meih">密码：<input /></div>
+		<div class="meih"><a href="">忘记密码？</a></div>
+		<div class="meih"><input type="button" value="登录" class="an"></div>
+	</form>
+</div>
 
+<!-- BEGIN FOOTER -->
+<footer class="site-footer" style="position: absolute; bottom: 0px; width: 100%;">
+    <div class="text-center">
+        2016 &copy;重庆·巴南
+        <a href="" target="_blank">
+            网络舆情工作平台
+        </a>
+        <a href="/" class="go-top">
+            <i class="fa fa-angle-up">
+            </i>
+        </a>
+    </div>
+</footer>
+<!-- END  FOOTER -->
 <!-- BEGIN JS -->
 <script src="/js/jquery-2.1.1.min.js"></script><!-- BASIC JQUERY LIB. JS -->
 <script src="/js/bootstrap.min.js"></script><!-- BOOTSTRAP JS -->
@@ -66,6 +84,23 @@
 
 <!-- Page Script -->
 <script>
+			window.onload = function(){
+			    function box(){
+			    var oBox = document.getElementById('box');
+			    var L1 = oBox.offsetWidth;
+			    var H1 = oBox.offsetHeight;
+//			    var Left = (document.documentElement.clientWidth-L1)/2;
+			    var top = (document.documentElement.clientHeight-H1)/2;
+//			    oBox.style.left = Left+'px';
+			    oBox.style.top = top+'px';
+			    }
+			    box();
+			    window.onresize = function(){
+			        box();
+			    } 
+			}
+
+
 
     // jq validate 插件初始化
     $.validator.setDefaults({
