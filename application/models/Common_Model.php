@@ -41,7 +41,6 @@ class Common_Model extends CI_Model {
                         'time'  => $words['time'],
                         'desc'  => $words['description'],
                         'name'  => $words['name'],
-                        'type'  => $this
                         'comment' => array()
                     );
                     array_push($summary_array,$info);
