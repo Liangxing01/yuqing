@@ -84,12 +84,38 @@ class MY_Model extends CI_Model {
 
     }
 
+    /*
+     * 获取 处理人事件报警 提示
+     */
+    public function get_processor_alert($uid){
+        $data = $this->db->select('ea.title,ed.event_id,ea.time')->from('event_alert as ea')
+            ->join('event_designate as ed','ea.designate_id = ed.id')
+            ->where('ed.processor',$uid)
+            ->where('ea.time - unix_timestamp(now()) < 300')// 时间小于5分钟开始报警
+            ->where('ea.state',1)
+            ->limit(6)
+            ->get()->result_array();
+        return $data;
+    }
+
+    /*
+     * 获取 指派人事件报警 超时报警
+     */
+    public function get_desi_alert($uid){
+        $data = $this->db->select('ea.title,ed.event_id,ea.time')->from('event_alert as ea')
+            ->join('event_designate as ed','ea.designate_id = ed.id')
+            ->where('ed.manager',$uid)
+            ->where('unix_timestamp(now()) > ea.time')// 超时开始报警
+            ->where('ea.state',1)
+            ->limit(6)
+            ->get()->result_array();
+        return $data;
+    }
+
     //获取用户个人信息
     public function get_user_info($uid){
-        $data = $this->db->select('u.group_id,u.username,u.name,u.sex,u.avatar,p.keyword,group.name')->from('user AS u')
+        $data = $this->db->select('u.group_id,u.username,u.name,u.sex,u.avatar,group.name as group_name')->from('user AS u')
             ->join('group','group.id = u.group_id','left')
-            ->join('user_privilege as up','up.uid = '.$uid,'left')
-            ->join('privilege as p','p.id = up.pid','left')
             ->where('u.id',$uid)
             ->get()->result_array();
         return $data;
