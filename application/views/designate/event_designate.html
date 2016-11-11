@@ -323,7 +323,7 @@
                 'sClass': "text-center",
                 'orderable': false,
                 "mRender": function (data, type, all) {
-                    return "<a title='查看' href='/designate/info_detail?id=" + data + " ' class='btn btn-info btn-xs'>查看</a>&nbsp;" +
+                    return "<a title='查看' target='_blank' href='/designate/info_detail?id=" + data + " ' class='btn btn-info btn-xs'>查看</a>&nbsp;" +
                             "<a title='添加' href='javascript:;' onclick='add_event_info(" + all.id + ",\"" + all.title + "\")' class='btn btn-success btn-xs'>添加</a>";
                 }
             }
@@ -467,7 +467,7 @@
                 'sClass': "text-center",
                 'orderable': false,
                 "mRender": function (data, type, all) {
-                    return "<a title='查看' href='/designate/info_detail?id=" + data + " ' class='btn btn-info btn-xs'>查看</a>&nbsp;"
+                    return "<a title='查看' target='_blank' href='/sss/info_detail?id=" + data + " ' class='btn btn-info btn-xs'>查看</a>&nbsp;"
                             +"<a title='添加' href='javascript:;' onclick='add_relate_event(" + all.id + ",\"" + all.title + "\")' class='btn btn-success btn-xs'>添加</a>";
                 }
             }

@@ -4055,7 +4055,7 @@ table.sliders tr td {
 	border-radius: 4px;
 	background-color: #2293b4;
 	color: #ffffff;
-	cursor: pointer;
+	/*cursor: pointer;*/
 	margin-right: 5px;
 	margin-bottom: 5px;
 	overflow: hidden;
@@ -4073,18 +4073,18 @@ table.sliders tr td {
 	-webkit-backface-visibility: hidden;
 }
 
-.tagsinput .tag:hover {
-	background-color: #1c809d;
-	color: #ffffff;
-	padding-left: 12px;
-	padding-right: 20px;
-}
+/*.tagsinput .tag:hover {*/
+	/*background-color: #1c809d;*/
+	/*color: #ffffff;*/
+	/*padding-left: 12px;*/
+	/*padding-right: 20px;*/
+/*}*/
 
-.tagsinput .tag:hover .tagsinput-remove-link {
-	color: #ffffff;
-	opacity: 1;
-	display: block\9;
-}
+/*.tagsinput .tag:hover .tagsinput-remove-link {*/
+	/*color: #ffffff;*/
+	/*opacity: 1;*/
+	/*display: block\9;*/
+/*}*/
 
 .tagsinput input {
 	background: transparent;
