@@ -39,7 +39,7 @@
         .login_bg{  width: 100%; height: 100% ; position: absolute; z-index: -1;}
          #box{ width: 309px; height: 328px; background: #000; filter:alpha(opacity=60); opacity: 0.6; position: absolute; right: 15%;}
         .meih{ width: 250px; color: #ffffff; margin: auto;  padding-top: 10px; padding-bottom: 10px;}
-        .meih input{ border-radius: 4px; box-shadow: none; width: 200px; background: white; border: none; line-height: 30px;}
+        .meih input{ border-radius: 4px; box-shadow: none; width: 200px; background: white; border: none; line-height: 30px; text-indent: 20px;}
         .meih a{ color: white; text-align: left !important;}
         .an{ width: 250px !important; background: #5cc8f1 !important; border: none; border-radius: 8px !important; line-height: 40px !important; color: white !important; font-size: 1.8em;}
     </style>
@@ -54,8 +54,8 @@
 <div id="box">
 	<form>
 		<div class="meih" style="text-align: center;"><h2>账号登录</h2></div>
-		<div class="meih">账号：<input /></div>
-		<div class="meih">密码：<input /></div>
+		<div class="meih">账号：<input type="text" placeholder="输入账号" /></div>
+		<div class="meih">密码：<input type="password" placeholder="输入密码"/></div>
 		<div class="meih"><a href="">忘记密码？</a></div>
 		<div class="meih"><input type="button" value="登录" class="an"></div>
 	</form>
