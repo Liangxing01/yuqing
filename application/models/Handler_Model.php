@@ -380,66 +380,11 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
         }
     }
 
-    //获取时间的所有交互记录，pid为总结性发言
-    public function get_all_logs_by_id($eid,$uid){
-        $data = $this->db->select("l.description,l.pid,l.id,l.time,l.name")
-            ->from('event_log AS l')
-            ->join('event_designate as ed','ed.event_id = '.$eid,'left')
-            ->where('l.event_id',$eid)
-            ->where('ed.processor',$uid)
-            ->order_by('time','DESC')->get()
-            ->result_array();
-        if (empty($data)){
-            return false;
-        }else{
-            //以总结性的话为开头，子数组为评论组成数组
-            $summary_array = array();
-            $comment_array = array();
-            foreach ($data as $words){
-                //var_dump($words);
-                if($words['pid'] == ""){
-                    //为总结性发言,记录id值
-                    $info = array(
-                        'id'    => $words['id'],
-                        'time'  => $words['time'],
-                        'desc'  => $words['description'],
-                        'name'  => $words['name'],
-                        'comment' => array()
-                    );
-                    array_push($summary_array,$info);
-                }else{
-                    //评论加入评论数组
-                    $com = array(
-                        'id'    => $words['id'],
-                        'time'  => $words['time'],
-                        'desc'  => $words['description'],
-                        'name'  => $words['name'],
-                        'pid'   => $words['pid']
-                    );
-                    array_push($comment_array,$com);
-                }
-            }
-
-            foreach ($comment_array as $words) {
-                    foreach ($summary_array as $k=> $sum) {
-                        if ($words['pid'] == $sum['id']) {
-                            //var_dump($sum);
-                            $info = array(
-                                'id' => $words['id'],
-                                'time' => $words['time'],
-                                'name' => $words['name'],
-                                'desc' => $words['desc'],
-                                'pid' => $words['pid']
-                            );
-                            array_push($summary_array[$k]['comment'], $info);
-
-                        }
-                    }
 
 
-            }
-            return $summary_array;
-        }
+    //判断用户是否为督察组
+    public function check_is_watcher($uid){
+
     }
 
     //获取事件 参考文档

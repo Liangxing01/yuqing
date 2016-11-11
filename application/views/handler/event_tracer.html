@@ -125,11 +125,11 @@
 <input type="hidden" name="title" value="<{$title}>">
 <input type="hidden" name="can_show_done_btn" value="<{$can_show_done_btn}>" id="cs">
 <input type="hidden" name="eid" value="<{$eid}>" id="eid">
-<input type="hidden" name="eid" value="<{$done_state}>" id="done_state">
-<input type="hidden" name="eid" value="<{$end_time}>" id="end_time">
+<input type="hidden" name="done_state" value="<{$done_state}>" id="done_state">
+<input type="hidden" name="end_time" value="<{$end_time}>" id="end_time">
 <!--需要得到当前用户名与用户头像地址以及用户类型权限-->
 <input type="hidden" name="username" value="<{$username}>" id="username"/>
-<input type="hidden" name="useracter" value="<{$username}>" id="useracter"/>
+<input type="hidden" name="useracter" value="<{$useracter}>" id="useracter"/>
 <input type="hidden" name="usertype" value="<{$usertype}>" id="usertype"/>
 
 <script>
@@ -159,7 +159,7 @@
 
 	function loadData(){		
 		$.ajax({
-        url : 'http://202.202.2.42:82/handler/get_event_logs',
+        url : '/handler/get_event_logs',
         type: 'post',
         data: 'eid='+eid,
         cache:false,
@@ -199,7 +199,7 @@
                 value.commentnum=commnetlength;
                 if(!value.desc) value.desc="";
                 value.commenthtml=comment_arr.join("");
-                if(i==3||i==0||i==20){//如果是领导把主评论放在右边,第一个与第四个为右
+                if(value.usertype==1){//如果是领导把主评论放在右边,第一个与第四个为右
                     value.buletan="";//如果在右边不为空
                     htmlstr+=formatTemplate(value, li_item_tpl);//加载模板
                     htmlstr+='<li class="item-timeline item-timeline-'+value.id+'-flag"></li>';

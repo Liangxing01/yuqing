@@ -48,14 +48,7 @@ class Handler extends MY_Controller {
         echo json_encode($res);
     }
 
-    /*
-     * 主页接口：获取警告事件
-     */
-    public function get_event_alert(){
-        $uid = $this->session->userdata('uid');
-        $res = $this->handler_model->get_alert($uid);
-        echo json_encode($res);
-    }
+
 
     //展示待处理事件页面
     public function wait_to_handle(){
@@ -224,6 +217,16 @@ class Handler extends MY_Controller {
     //交互显示事件处理进度
     public function show_tracer(){
         $gid = $this->session->userdata('gid');
+        $uid = $this->session->userdata('uid');
+        //判断有无督办权限
+        $pri = explode(",",$this->session->userdata('privilege'));
+        foreach ($pri as $one){
+            if($one == 4){
+                $usertype = 1;
+            }else{
+                $usertype = 0;
+            }
+        }
         $event_id = $this->input->get('eid');
         $this->assign("active_title","doing_handle");
         $this->assign("active_parent","handle_parent");
@@ -244,6 +247,13 @@ class Handler extends MY_Controller {
         $this->assign('done_state',$done_state);
         $this->assign('eid',$event_id);
         $this->assign('can_show_done_btn',$done_btn);
+
+        //个人信息
+        $this->load->model('MY_Model','my_model');
+        $user_info = $this->my_model->get_user_info($uid);
+        $this->assign('username',$user_info[0]['name']);
+        $this->assign('useracter',$user_info[0]['avatar']);
+        $this->assign('usertype',$usertype);
         $this->all_display("handler/event_tracer.html");
     }
 
@@ -410,63 +420,6 @@ class Handler extends MY_Controller {
         $this->all_display("handler/user_info.html");
     }
 
-    /*
-     * 接口：获取用户个人信息
-     */
-    public function my_info(){
-        $this->get_my_info();
-    }
-
-    /*
-     * 接口：修改用户个人信息
-     */
-    public function update_my_info(){
-        $name = $this->input->post('name');
-        $sex  = $this->input->post('sex');
-        $update_data = array(
-            'name' => $name,
-            'sex'  => $sex
-        );
-        $uid = $this->session->userdata('uid');
-        $res = $this->update_info($update_data,$uid);
-        if($res){
-            echo json_encode(
-                array(
-                    'res' => 1
-                )
-            );
-        }else{
-            echo json_encode(
-                array(
-                    'res' => 0
-                )
-            );
-        }
-    }
-
-    /*
-     * 接口：修改 密码
-     */
-    public function update_psw()
-    {
-        $old = $this->input->post('old_pass');
-        $new = $this->input->post('new_pass');
-        $uid = $this->session->userdata('uid');
-        $res = $this->change_psw($old,$new,$uid);
-        if($res){
-            echo json_encode(
-                array(
-                    'res' => 1
-                )
-            );
-        }else{
-            echo json_encode(
-                array(
-                    'res' => 0
-                )
-            );
-        }
-    }
 
 
     public function test(){
