@@ -163,6 +163,12 @@ textarea{ resize: none;}
 
         judgeUrl : function () {
             var this_url = $('#url').val();
+            if(this_url.length == 0){
+                layer.tips('请输入一个url地址','#url',{
+                    tips: [2,'#78BA32']
+                });
+                return false;
+            }
             var result = active.repeatUrl(this_url);
             if (result==false){
                 layer.tips('您输入的不是一个正确的url地址','#url',{
