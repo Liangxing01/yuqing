@@ -25,6 +25,9 @@ application/views/upload_success.php
 #-------------------------
 /nbproject/
 .idea/*
+.settings
+.project
+.buildpath
 
 ## Sublime Text cache files
 *.tmlanguage.cache

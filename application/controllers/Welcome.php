@@ -187,7 +187,9 @@ class Welcome extends MY_Controller {
         $this->all_display("change_psw.html");
     }
 
-
+	function test() {
+		$this->load->view('test');
+	}
 
 
     /**
