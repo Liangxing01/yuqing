@@ -299,7 +299,7 @@
 			var eid=document.getElementById('eid').value;
 			console.log(comment);
 		    $.ajax({
-		    	url:'http://202.202.2.42:82/handler/post_comment',
+		    	url:'/handler/post_comment',
 		    	type:'post',
 		    	data :
 			        {"pid" : id,
@@ -338,7 +338,7 @@
 			$("#sjwc").click(function(){
 				var eid= document.getElementById("eid").value;
 				$.ajax({
-			    	url:'http://202.202.2.42:82/handler/confirm_done',
+			    	url:'/handler/confirm_done',
 			    	type :'post',
 			    	data : 'eid='+eid,			    
 			    	dataType:'json',

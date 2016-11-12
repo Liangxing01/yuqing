@@ -434,7 +434,15 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
             );
             $this->db->where('id',$eid);
             $res = $this->db->update('event',$data);
-            if($res){
+
+            //更改 指派表 状态为已完成
+            $data1 = array(
+                'state' => '已完成'
+            );
+            $this->db->where('event_id',$eid);
+            $res1 = $this->db->update('event_designate',$data1);
+
+            if($res && $res1){
                 return true;
             }else{
                 return false;
