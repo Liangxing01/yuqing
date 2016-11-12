@@ -56,7 +56,7 @@ textarea{ resize: none;}
                             </div>
                             <div class="form-group">
                                 <label class="col-xs-3 col-sm-1 control-label">截图</label>
-                                <input class="col-xs-9" type="file" id="file_name" name="file_name">
+                                <input class="col-xs-9" type="file" id="file_name" name="screenshot">
 
                             </div>
 
@@ -99,6 +99,12 @@ textarea{ resize: none;}
     <!-- END MAIN CONTENT -->
 
 </section>
+
+<form method="post"action="/reporter/upload_video" enctype="multipart/form-data">
+    <input class="col-xs-9" type="file" id="" name="video">
+    <input type="submit" value="上传文件" id="submitBtn" />
+</form>
+
 <script>
 
     var active = {
