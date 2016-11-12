@@ -21,7 +21,8 @@ class MY_Controller extends CI_Controller
     public function all_display($html)
     {
         $privilege = explode(",", $this->session->privilege);
-
+        $name = $this->session->userdata('name');
+        $this->assign('name',$name);
         $this->ci_smarty->display('head.html');
         $this->ci_smarty->display('menu/menu_home.html');
 

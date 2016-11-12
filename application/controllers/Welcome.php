@@ -183,7 +183,7 @@ class Welcome extends MY_Controller {
 
     //修改头像接口
     public function change_avatar(){
-        $config['upload_path']      = './uploads/temp/';
+        $config['upload_path']      = './uploads/avatar/';
         $config['allowed_types']    = 'jpg|png|jpeg';
         $config['max_size']     = 10000;
         $config['max_width']        = 0;

@@ -225,7 +225,7 @@ class Reporter extends MY_controller {
 
     public function upload_video(){
         $config['upload_path']      = './uploads/temp/';
-        $config['allowed_types']    = 'mp4|flv|avi|mpeg';
+        $config['allowed_types']    = 'mp4|flv|avi|rmvb|mpeg';
         $config['max_size']         = 0;
         $config['max_width']        = 0;
         $config['max_height']       = 0;
