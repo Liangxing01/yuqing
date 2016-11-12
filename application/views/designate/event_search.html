@@ -218,7 +218,7 @@
                 'sClass': "text-center",
                 'orderable': false,
                 "mRender": function (data) {
-                    switch (data){
+                    switch (data) {
                         case '一般':
                             return "<button class='btn btn-primary btn-xs'>一般</button>";
                             break;
@@ -238,7 +238,7 @@
                 'sClass': "text-center",
                 'orderable': false,
                 "mRender": function (data) {
-                    switch (data){
+                    switch (data) {
                         case '未指派':
                             return "<button class='btn btn-info btn-xs'>未指派</button>";
                             break;
@@ -260,8 +260,23 @@
                 "mData": "id",
                 'sClass': "text-center",
                 'orderable': false,
-                "mRender": function (data) {
-                    return "<a title='查看' href='/designate/info_detail?id=" + data + " ' class='btn btn-info btn-xs'>查看</a>";
+                "mRender": function (data, type, all) {
+                    var state = all.state;
+                    var button = "<a title='查看' href='/designate/info_detail?id=" + data + " ' class='btn btn-info btn-xs'>查看</a>&nbsp;";
+
+                    switch (state) {
+                        case "已指派":
+                            button += "<a title='追踪' href='/designate/event_tracer?eid=" + data + " ' class='btn btn-info btn-xs'>追踪</a>&nbsp;";
+                            break;
+                        case "未审核":
+                            button += "<a title='审核' href='/designate/event_tracer?eid=" + data + " ' class='btn btn-info btn-xs'>审核</a>&nbsp;";
+                            break;
+                        case "已完成":
+                            button += "<a title='回溯' href='/designate/event_tracer?eid=" + data + " ' class='btn btn-info btn-xs'>回溯</a>&nbsp;";
+                            button += "<a title='重启事件' href='/designate/restart?id=" + data + " ' class='btn btn-info btn-xs'>重启</a>&nbsp;";
+                            break;
+                    }
+                    return button;
                 }
             }
         ],

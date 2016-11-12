@@ -12,7 +12,11 @@ class Common_Model extends CI_Model {
         $this->load->database();
     }
 
-    //权限判断：用户是否有权限查看这件事
+    /**
+     * 用户是否有权限查看这件事
+     * @param $eid
+     * @return bool
+     */
     public function check_can_see($eid){
         $uid = $this->session->userdata('uid');
         $pri = explode(",",$this->session->userdata('privilege'));
@@ -44,7 +48,7 @@ class Common_Model extends CI_Model {
                     break;
             }
         }
-
+        return false;
     }
 
     //权限:判断处理人是否能查看
