@@ -44,14 +44,23 @@ class Reporter extends MY_controller {
         $url = $data['url'];
         $source = $data['source'] == 'other'?$data['other']:$data['source'];
         $description = $data['description'];
-        $picture = 'test.jpg';
+        $attachment = $data['attachment'];
         $uid = $this->session->userdata('uid');
-        $data = array('id'=>$id,'title'=>$title,'source'=>$source,'picture'=>$picture,'url' => $url,'description'=>$description,'uid'=>$uid,'time'=>$_SERVER['REQUEST_TIME']);
+        $data = array('id'=>$id,'title'=>$title,'source'=>$source,'url' => $url,'description'=>$description,'uid'=>$uid,'time'=>$_SERVER['REQUEST_TIME']);
         $nu = $this->report->add_or_update($data);
+        //插入附件信息
+        $this->insert_attachment($attachment,$nu['id']);
         $res = array(
-            "res"=> $nu
+            "res"=> $nu['nu']
         );
         echo json_encode($res);
+    }
+
+    /**
+     * @param $att
+     */
+    public function insert_attachment($att,$info_id){
+        $this->report->insert_att_info($att,$info_id);
     }
 
     /**
@@ -251,5 +260,9 @@ class Reporter extends MY_controller {
             echo json_encode($res);
 
         }
+    }
+
+    public function test(){
+        echo $_SERVER['DOCUMENT_ROOT'];
     }
 }
