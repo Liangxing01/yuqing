@@ -38,22 +38,12 @@ class Reporter extends MY_controller {
      */
     public function reportOrUpdate()
     {
-//        $config['upload_path']      = './uploads/';
-//        $config['allowed_types']    = 'gif|jpg|png|jpeg';
-//        $config['max_size']         = 1000000;
-//        $config['max_width']        = 102400;
-//        $config['max_height']       = 76800;
-//        $config['file_name']  = time();
-//        var_dump($_FILES);
-//        $this->load->library('upload', $config);
-//        $this->upload->do_upload('file_name');
-//        $error = array('error' => $this->upload->display_errors());
-        $data = $this->input->post('data');
-        $id = $data[0]['value'];
-        $title = $data[1]['value'];
-        $url = $data[2]['value'];
-        $source = $data[3]['value'] == 'other'?$data[4]['value']:$data[3]['value'];
-        $description = $data[5]['value'];
+        $data = $this->input->post();
+        $id = $data['id'];
+        $title = $data['title'];
+        $url = $data['url'];
+        $source = $data['source'] == 'other'?$data['other']:$data['source'];
+        $description = $data['description'];
         $picture = 'test.jpg';
         $uid = $this->session->userdata('uid');
         $data = array('id'=>$id,'title'=>$title,'source'=>$source,'picture'=>$picture,'url' => $url,'description'=>$description,'uid'=>$uid,'time'=>$_SERVER['REQUEST_TIME']);
@@ -145,7 +135,12 @@ class Reporter extends MY_controller {
             echo "-1";
         }else{
             $judge = $this->report->judge_url($url,$uid);
-            echo $judge;
+            //echo $judge;
+            if($judge){
+                echo 'false';
+            }else{
+                echo 'true';
+            }
         }
     }
 
