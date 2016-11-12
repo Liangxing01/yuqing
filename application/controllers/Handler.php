@@ -307,9 +307,9 @@ class Handler extends MY_Controller {
         参数：事件id
     */
     public function get_event_logs(){
+        $this->load->model('Common_Model','common_model');
         $event_id = $this->input->post('eid');
-        $uid = $this->session->userdata('uid');
-        $data = $this->handler_model->get_all_logs_by_id($event_id,$uid);
+        $data = $this->common_model->get_all_logs_by_id($event_id);
         echo json_encode($data);
     }
 
@@ -419,6 +419,8 @@ class Handler extends MY_Controller {
         $this->assign("active_parent", "manage_parent");
         $this->all_display("handler/user_info.html");
     }
+
+
 
 
 

@@ -156,6 +156,37 @@ class Welcome extends MY_Controller {
 
     }
 
+    //修改头像接口
+    public function change_avatar(){
+        $config['upload_path']      = '/uploads/avatar/';
+        $config['allowed_types']    = 'jpg|png|jpeg';
+        $config['max_size']     = 2048;
+        $config['max_width']        = 1024;
+        $config['max_height']       = 768;
+
+        $this->load->library('upload', $config);
+
+        if ( ! $this->upload->do_upload('avatar'))
+        {
+            $error = array('error' => $this->upload->display_errors());
+
+            $this->load->view('upload_form', $error);
+        }
+        else
+        {
+            $data = array('upload_data' => $this->upload->data());
+
+            $this->load->view('upload_success', $data);
+        }
+    }
+
+    //展示修改密码界面
+    public function show_change_psw(){
+        $this->assign("active_title", "change_psw");
+        $this->assign("active_parent", "manage_parent");
+        $this->all_display("change_psw.html");
+    }
+
 
 
 

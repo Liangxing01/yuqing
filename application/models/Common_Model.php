@@ -13,13 +13,73 @@ class Common_Model extends CI_Model {
     }
 
     //权限判断：用户是否有权限查看这件事
-    public function check_can_see($eid,$uid){
-        
+    public function check_can_see($eid){
+        $uid = $this->session->userdata('uid');
+        $pri = explode(",",$this->session->userdata('privilege'));
+        foreach ($pri as $one){
+            switch ($one){
+                case 2 :
+                    return true;
+                break;
+                case 3 :
+                    $res = $this->check_processor_see($eid,$uid);
+                    if($res){
+                        return true;
+                    }else{
+                        return false;
+                    }
+                break;
+                case 4 :
+                    $res = $this->check_watcker_see($eid,$uid);
+                    if($res){
+                        return true;
+                    }else{
+                        return false;
+                    }
+                break;
+                case 5 :
+                    return true;
+                break;
+                default :
+                    break;
+            }
+        }
+
+    }
+
+    //权限:判断处理人是否能查看
+    public function check_processor_see($eid,$uid){
+        $res = $this->db->select('id')->from('event_designate')
+            ->where('event_id',$eid)
+            ->where('processor',$uid)
+            ->get()->result_array();
+        if(!empty($res)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    //权限：判断 督查者是否能看
+    public function check_watcker_see($eid,$uid){
+        $res = $this->db->select('id')->from('event_watch')
+            ->where('event_id',$eid)
+            ->where('watcher',$uid)
+            ->get()->result_array();
+        if(!empty($res)){
+            return true;
+        }else{
+            return false;
+        }
     }
 
     //获取事件的所有交互记录，pid为总结性发言
     public function get_all_logs_by_id($eid){
-
+        //检查权限
+        $check = $this->check_can_see($eid);
+        if(!$check){
+            return false;
+        }
         $data = $this->db->select("l.description,l.pid,l.id,l.time,l.name,l.speaker")
             ->from('event_log AS l')
             ->join('event_designate as ed','ed.event_id = '.$eid,'left')
@@ -41,6 +101,7 @@ class Common_Model extends CI_Model {
                         'time'  => $words['time'],
                         'desc'  => $words['description'],
                         'name'  => $words['name'],
+                        'usertype' => $this->check_is_watcher($eid,$words['speaker']) ? 1 : 0,
                         'comment' => array()
                     );
                     array_push($summary_array,$info);
@@ -78,4 +139,24 @@ class Common_Model extends CI_Model {
             return $summary_array;
         }
     }
+
+    //判断用户是否为督察组
+    public function check_is_watcher($eid,$uid){
+        $res = $this->db->select('watcher')->from('event_watch')
+            ->where('event_id',$eid)
+            ->get()->result_array();
+        if(!empty($res)){
+            if($res[0]['watcher'] == $uid){
+                return 1;
+            }else{
+                return 0;
+            }
+        }else{
+            return false;
+        }
+
+    }
+
+
+
 }

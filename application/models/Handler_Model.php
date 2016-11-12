@@ -382,11 +382,6 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
 
 
 
-    //判断用户是否为督察组
-    public function check_is_watcher($uid){
-
-    }
-
     //获取事件 参考文档
     public function get_attachment_by_id($eid,$uid){
         $data = $this->db->select('e.attachment')->from('event as e')
