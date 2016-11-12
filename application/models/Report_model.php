@@ -33,7 +33,6 @@ class Report_model extends CI_Model {
             'title' => $arr['title'],
             'url' => $arr['url'],
             'source' => $arr['source'],
-            'picture' => $arr['picture'],
             'description' => $arr['description'],
             'publisher' => $arr['uid'],
             'time' => $arr['time'],
@@ -41,12 +40,61 @@ class Report_model extends CI_Model {
             'duplicate'=>$dup
         );
         if ($id == null){
-            $this->db->insert('yq_info',$data);
+            $res = $this->db->insert('yq_info',$data);
+            $id = $this->db->insert_id();
         }else{
             $this->db->where('info.id',$arr['id']);
             $this->db->update('info',$data);
         }
-        return $nu = $this->db->affected_rows();
+        if($res){
+            $res = array(
+                'nu' => 1,
+                'id' => $id
+            );
+        }
+        return $res;
+    }
+
+    /**
+     * 插入附件信息
+     * @param $att
+     * @param $info_id
+     * @return bool
+     */
+    public function insert_att_info($att,$info_id){
+        $res = false;
+        foreach ($att as $one){
+            if($one['isPic'] == 1){
+                $data = array(
+                    'info_id' => $info_id,
+                    'name'    => $one['name'],
+                    'url'     => $one['url'],
+                    'type'    => "pic"
+                );
+                $res = $this->db->insert('info_attachment',$data);
+                //移动文件
+                copy($_SERVER['DOCUMENT_ROOT']."/uploads/temp/".$one['new_name'],$_SERVER['DOCUMENT_ROOT']."/uploads/pic/".$one['new_name']);
+                unlink($_SERVER['DOCUMENT_ROOT']."/uploads/temp/".$one['new_name']);
+                if(!$res){
+                    break;
+                }
+            }else{
+                $data = array(
+                    'info_id' => $info_id,
+                    'name'    => $one['name'],
+                    'url'     => $one['url'],
+                    'type'    => "video"
+                );
+                $res = $this->db->insert('info_attachment',$data);
+                //移动文件
+                copy($_SERVER['DOCUMENT_ROOT']."/uploads/temp/".$one['new_name'],$_SERVER['DOCUMENT_ROOT']."/uploads/video/".$one['new_name']);
+                unlink($_SERVER['DOCUMENT_ROOT']."/uploads/temp/".$one['new_name']);
+                if(!$res){
+                    break;
+                }
+            }
+        }
+        return $res;
     }
 
 

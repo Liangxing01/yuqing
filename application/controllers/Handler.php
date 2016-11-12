@@ -85,7 +85,6 @@ class Handler extends MY_Controller {
         }
 
         $uid = $this->session->userdata('uid');
-
         $data = $this->handler_model->get_all_unhandle($pData,$uid);
         echo json_encode($data);
 

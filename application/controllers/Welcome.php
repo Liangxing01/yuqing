@@ -224,25 +224,36 @@ class Welcome extends MY_Controller {
 
     //修改头像接口
     public function change_avatar(){
-        $config['upload_path']      = '/uploads/avatar/';
+        $config['upload_path']      = './uploads/avatar/';
         $config['allowed_types']    = 'jpg|png|jpeg';
-        $config['max_size']     = 2048;
-        $config['max_width']        = 1024;
-        $config['max_height']       = 768;
+        $config['max_size']     = 10000;
+        $config['max_width']        = 0;
+        $config['max_height']       = 0;
+        $config['encrypt_name']     = true;
 
         $this->load->library('upload', $config);
 
-        if ( ! $this->upload->do_upload('avatar'))
+        if ( ! $this->upload->do_upload('screenshot'))
         {
-            $error = array('error' => $this->upload->display_errors());
-
-            $this->load->view('upload_form', $error);
+            $error =$this->upload->display_errors();
+            $res=['res'=>0,'info'=>$error];
+            echo json_encode($res);
         }
         else
         {
             $data = array('upload_data' => $this->upload->data());
+            $upload_data = $data['upload_data'];
+            $res = array(
+                'res'  => 1,
+                'info' => array(
+                    'name'     => $upload_data['orig_name'],
+                    'url'      => '/uploads/avatar/'.$upload_data['file_name'],
+                    'new_name' => $upload_data['file_name'],
+                    'type'     => $upload_data['image_type']
+                )
+            );
+            echo json_encode($res);
 
-            $this->load->view('upload_success', $data);
         }
     }
 
@@ -253,7 +264,9 @@ class Welcome extends MY_Controller {
         $this->all_display("change_psw.html");
     }
 
-
+	function test() {
+		$this->load->view('test');
+	}
 
 
     /**

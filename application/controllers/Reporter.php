@@ -38,30 +38,29 @@ class Reporter extends MY_controller {
      */
     public function reportOrUpdate()
     {
-//        $config['upload_path']      = './uploads/';
-//        $config['allowed_types']    = 'gif|jpg|png|jpeg';
-//        $config['max_size']         = 1000000;
-//        $config['max_width']        = 102400;
-//        $config['max_height']       = 76800;
-//        $config['file_name']  = time();
-//        var_dump($_FILES);
-//        $this->load->library('upload', $config);
-//        $this->upload->do_upload('file_name');
-//        $error = array('error' => $this->upload->display_errors());
-        $data = $this->input->post('data');
-        $id = $data[0]['value'];
-        $title = $data[1]['value'];
-        $url = $data[2]['value'];
-        $source = $data[3]['value'] == 'other'?$data[4]['value']:$data[3]['value'];
-        $description = $data[5]['value'];
-        $picture = 'test.jpg';
+        $data = $this->input->post();
+        $id = $data['id'];
+        $title = $data['title'];
+        $url = $data['url'];
+        $source = $data['source'] == 'other'?$data['other']:$data['source'];
+        $description = $data['description'];
+        $attachment = $data['attachment'];
         $uid = $this->session->userdata('uid');
-        $data = array('id'=>$id,'title'=>$title,'source'=>$source,'picture'=>$picture,'url' => $url,'description'=>$description,'uid'=>$uid,'time'=>$_SERVER['REQUEST_TIME']);
+        $data = array('id'=>$id,'title'=>$title,'source'=>$source,'url' => $url,'description'=>$description,'uid'=>$uid,'time'=>$_SERVER['REQUEST_TIME']);
         $nu = $this->report->add_or_update($data);
+        //插入附件信息
+        $this->insert_attachment($attachment,$nu['id']);
         $res = array(
-            "res"=> $nu
+            "res"=> $nu['nu']
         );
         echo json_encode($res);
+    }
+
+    /**
+     * @param $att
+     */
+    public function insert_attachment($att,$info_id){
+        $this->report->insert_att_info($att,$info_id);
     }
 
     /**
@@ -145,7 +144,12 @@ class Reporter extends MY_controller {
             echo "-1";
         }else{
             $judge = $this->report->judge_url($url,$uid);
-            echo $judge;
+            //echo $judge;
+            if($judge){
+                echo 'false';
+            }else{
+                echo 'true';
+            }
         }
     }
 
@@ -185,5 +189,80 @@ class Reporter extends MY_controller {
         $res =  $this->report->del($id);
         $result = array('data'=> $res);
         echo json_encode($result);
+    }
+
+    /**
+     * 上传截图接口
+     */
+    public function upload_pic(){
+        $config['upload_path']      = './uploads/temp/';
+        $config['allowed_types']    = 'jpg|png|jpeg';
+        $config['max_size']     = 10000;
+        $config['max_width']        = 0;
+        $config['max_height']       = 0;
+        $config['encrypt_name']     = true;
+
+        $this->load->library('upload', $config);
+
+        if ( ! $this->upload->do_upload('file'))
+        {
+            $error =$this->upload->display_errors();
+            $res=['res'=>0,'info'=>$error];
+            echo json_encode($res);
+        }
+        else
+        {
+            $data = array('upload_data' => $this->upload->data());
+            $upload_data = $data['upload_data'];
+            $res = array(
+                'res'  => 1,
+                'info' => array(
+                    'name'     => $upload_data['orig_name'],
+                    'url'      => '/uploads/pic/'.$upload_data['file_name'],
+                    'new_name' => $upload_data['file_name'],
+                    'type'     => $upload_data['image_type']
+                )
+            );
+            echo json_encode($res);
+
+        }
+    }
+
+    public function upload_video(){
+        $config['upload_path']      = './uploads/temp/';
+        $config['allowed_types']    = 'mp4|flv|avi|rmvb|mpeg';
+        $config['max_size']         = 0;
+        $config['max_width']        = 0;
+        $config['max_height']       = 0;
+        $config['encrypt_name']     = true;
+
+        $this->load->library('upload', $config);
+
+        if ( ! $this->upload->do_upload('file'))
+        {
+            $error =$this->upload->display_errors();
+            $res=['res'=>0,'info'=>$error];
+            echo json_encode($res);
+        }
+        else
+        {
+            $data = array('upload_data' => $this->upload->data());
+            $upload_data = $data['upload_data'];
+            $res = array(
+                'res'  => 1,
+                'info' => array(
+                    'name' => $upload_data['client_name'],
+                    'url'  => '/uploads/video/'.$upload_data['file_name'],
+                    'new_name' => $upload_data['file_name'],
+                    'type' => $upload_data['file_type']
+                )
+            );
+            echo json_encode($res);
+
+        }
+    }
+
+    public function test(){
+        echo $_SERVER['DOCUMENT_ROOT'];
     }
 }

@@ -22,6 +22,11 @@
 .col-sm-11{ padding-left: 0px;}
 #submit1{ background: #72d0eb; border: none !important;  border-radius: inherit;}
 textarea{ resize: none;}
+
+.error {
+    font-size: 0.9em;
+    color: #FF4500;
+}
 </style>
 	
 <!-- BEGIN MAIN CONTENT -->
@@ -51,13 +56,18 @@ textarea{ resize: none;}
                             <div class="form-group">
                                 <label class="col-xs-3 col-sm-1 control-label">URL</label>
                                 <div class="col-xs-9 col-sm-11">
-                                    <input type="text" name="url" id="url" required lay-verify="required" placeholder="请输入事件来源的网址" autocomplete="off" class="form-control layui-input" onblur="active.judgeUrl()">
+                                    <input type="text" name="url" id="url" required  placeholder="请输入事件来源的网址" autocomplete="off" class="form-control layui-input" >
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="col-xs-3 col-sm-1 control-label">截图</label>
-                                <input class="col-xs-9" type="file" id="file_name" name="file_name">
-
+                                <input name="file" class="fileinput-button" type="file" id="pic" multiple>
+                                <table role="presentation" class="table table-striped"><tbody id="pic_files"></tbody></table>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-xs-3 col-sm-1 control-label">视频</label>
+                                <input name="file" class="fileinput-button" type="file" id="video" multiple>
+                                <table role="presentation" class="table table-striped"><tbody id="video_files"></tbody></table>
                             </div>
 
                             <div class="form-group">
@@ -79,12 +89,13 @@ textarea{ resize: none;}
                             <div class="form-group">
                                 <label class="col-xs-3 col-sm-1 control-label">描述</label>
                                 <div class="col-sm-11 col-xs-9">
-                                    <textarea rows="15"  type="text" name="description" id="description" required lay-verify="required" placeholder="请输入事件描述" autocomplete="off" class="form-control layui-input"></textarea>
+                                    <textarea rows="4"  type="text" name="description" id="description" required lay-verify="required" placeholder="请输入事件描述" autocomplete="off" class="form-control layui-input"></textarea>
                                 </div>
                             </div>
 							<div class="text-center " style="margin-top: 10%;">
-                            	<button id="submit1" class="btn btn-success btn-lg col-sm-12" onclick="active.setTop()">提交</button>
-                        	</div>
+                            	<!--<button id="submit1" class="btn btn-success btn-lg col-sm-12" onclick="active.setTop()">提交</button>-->
+                        	    <input type="submit" value="提交" class="btn btn-success btn-lg col-sm-12">
+                            </div>
                         </form>
                         
                     </div>
@@ -99,110 +110,137 @@ textarea{ resize: none;}
     <!-- END MAIN CONTENT -->
 
 </section>
+
+<script src="/js/jquery.validate.min.js"></script>
+<script id="template-upload" type="text/x-tmpl">
+{% for (var i=0, file; file=o.files[i]; i++) { %}
+    <tr class="template-upload fade">
+        <td>
+            <span class="preview"></span>
+        </td>
+        <td>
+            <p class="name">{%=file.name%}</p>
+            <strong class="error text-danger"></strong>
+        </td>
+        <td>
+            <p class="size">Processing...</p>
+            <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="progress-bar progress-bar-success" style="width:0%;"></div></div>
+        </td>
+        <td>
+            {% if (!i && !o.options.autoUpload) { %}
+                <button class="btn btn-primary start" disabled>
+                    <i class="glyphicon glyphicon-upload"></i>
+                    <span>Start</span>
+                </button>
+            {% } %}
+            {% if (!i) { %}
+                <button class="btn btn-warning cancel">
+                    <i class="glyphicon glyphicon-ban-circle"></i>
+                    <span>Cancel</span>
+                </button>
+            {% } %}
+        </td>
+    </tr>
+{% } %}
+</script>
+<!-- The template to display files available for download -->
+<script id="template-download" type="text/x-tmpl">
+{% for (var i=0, file; file=o.files[i]; i++) { %}
+    <tr class="template-download fade">
+        <td>
+            <span class="preview">
+                {% if (file.thumbnailUrl) { %}
+                    <a href="{%=file.url%}" title="{%=file.name%}" download="{%=file.name%}" data-gallery><img src="{%=file.thumbnailUrl%}"></a>
+                {% } %}
+            </span>
+        </td>
+        <td>
+            <p class="name">
+                    <span>提交成功！</span>
+        </td>
+        <td>
+            <span class="size">{%=o.formatFileSize(file.size)%}</span>
+        </td>
+        <td>
+        </td>
+    </tr>
+{% } %}
+</script>
+<script src="/js/upload_file/load-image.js"></script>
+<script src="/js/upload_file/tmpl.js"></script>
+<script src="/js/upload_file/vendor/jquery.ui.widget.js"></script>
+<!-- The basic File Upload plugin -->
+<script src="/js/upload_file/jquery.fileupload.js"></script>
+<!-- The File Upload processing plugin -->
+<script src="/js/upload_file/jquery.fileupload-process.js"></script>
+<script src="/js/upload_file/jquery.fileupload-validate.js"></script>
+<script src="/js/upload_file/jquery.fileupload-ui.js"></script>
+<!-- The File Upload image preview & resize plugin -->
+<script src="/js/upload_file/jquery.fileupload-image.js"></script>
+<!-- The main application script -->
+<script src="/js/upload_file/main.js"></script>
 <script>
 
-    var active = {
-        setTop : function () {
-            var title = $("#title").val();
-            var desc = $("#description").val();
-            var url = $("#url").val();
-            if(title.length < 5){
-                layer.tips('标题必须大于5个字','#title',{
-                    tips:[2,'#78BA32']
-                });
-                return;
-            }
-            if (url.length == 0){
-                layer.tips('url不能为空','#url',{
-                   tips:[2,'#78BA32']
-                });
-                return;
-            }
-            if (desc.length == 0){
-                layer.tips('描述不能为空','#description',{
-                    tips:[2,'#78BA32']
-                });
-                return;
-            }
-            if(desc.length > 200){
-                layer.tips('描述过长，请不要超过200个字','#description',{
-                    tips:[2,'#78BA32']
-                });
-                return;
-            }
-            layer.open({
-                type:1
-                ,title:false
-                ,closeBtn:false
-                ,area:'300px;'
-                ,shade:0.8
-                ,id:'submit'
-                ,content:'<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">您确定要提交吗？</div>'
-                ,btn:['确认提交','取消提交']
-                ,moveType:1
-                ,yes:function (index) {
-                    var result =  active.judgeUrl();
-                    if (result == false){
-                        layer.close(index);
-                    }else {
-                        var formdata = $('#form1').serializeArray();
-                        $.post('/Reporter/reportOrUpdate',{data:formdata},function (data) {
-                            if (data.res == 1){
-                                layer.msg('上传成功!');
-                            }else {
-                                layer.msg('上报失败！',{anim:6});
-                            }
-                            window.location = "/Reporter/reportRecording";
-                        },"json");
+    // jq validate 插件初始化
+    $.validator.setDefaults({
+        submitHandler: function () {
+            report_commit();
+        }
+    });
+    $().ready(function () {
+        $("#form1").validate({
+            rules: {
+                title: {required: true},
+                url  : {required: true,url:true,
+                    remote:{
+                        url : '/reporter/judge_url',
+                        type : 'post'
                     }
-                }
-                ,btn2:function () {
-                    layer.close();
-                }
-            })
-        },
-
-        judgeUrl : function () {
-            var this_url = $('#url').val();
-            if(this_url.length == 0){
-                layer.tips('请输入一个url地址','#url',{
-                    tips: [2,'#78BA32']
-                });
-                return false;
+                },
+                source :{required : true},
+                description :{required : true}
+            },
+            messages: {
+                title: {required: "请输入标题"},
+                url: {required: "请输入url",url:'请输入正确的url',remote:'该url已经上报过了'},
+                source : {require : '请选择来源'},
+                description : {required: "请输入描述"}
             }
-            var result = active.repeatUrl(this_url);
-            if (result==false){
-                layer.tips('您输入的不是一个正确的url地址','#url',{
-                   tips: [2,'#78BA32']
-                });
-                return false;
+        });
+    });
+
+    function report_commit() {
+        var title  =  $("#title").val();
+        var url    =  $("#url").val();
+        var source =  $("#source").val();
+        var description = $("#description").val();
+        var id = $("#id").val();
+        var other = $("#other").val();
+
+        $.ajax({
+            url: "/reporter/reportOrUpdate",
+            method: "post",
+            dataType : 'json',
+            data: {
+                "title": title,
+                "url": url,
+                "source" : source,
+                "description" : description,
+                "id" : id,
+                'other':other,
+                'attachment' : window.FILES
+            },
+            success: function (data) {
+                if (data.res == 1){
+                    layer.msg('上报成功!');
+                }else {
+                    layer.msg('上报失败！',{anim:6});
+                }
             }
-            res = true;
+        });
+    }
 
-            $.post('/Reporter/judge_url',{url:this_url},function (data) {
-                if (data == 1){
-                    layer.tips('该url已经上报过了，请重新输入','#url',{
-                        tips:[2,'#78BA32']
-                    });
-                    res = false;
-                }
-                if (data == -1){
-                    layer.tips('url不能为空，请重新输入','#url',{
-                        tips:[2,'#78BA32']
-                    });
-                    res = false;
-                }
-            }(res),"text");
-            return res;
-        },
-
-        repeatUrl:function (url) {
-            var strRegex=/((https|http|ftp|rtsp|mms):\/\/)?(([0-9a-z_!~*'().&=+$%-]+:)?[0-9a-z_!~*'().&=+$%-]+@)?(([0-9]{1,3}\.){3}[0-9]{1,3}|([0-9a-z_!~*'()-]+\.)*([0-9a-z][0-9a-z-]{0,61})?[0-9a-z]\.[a-z]{2,6})(:[0-9]{1,4})?((\/?)|(\/[0-9a-z_!~*'().;?:@&=+$,%#-]+)+\/?)/g;
-            var re = new RegExp(strRegex);
-            return re.test(url);
-        },
-
-
+    var active = {
         changeSelect :function(){
             $("#source").val() == 'other'?$("#other").css("display","block"):$("#other").css("display","none");
         }

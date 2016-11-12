@@ -1,6 +1,7 @@
 .DS_Store
 
 application/config/*
+uploads/*
 ci_session/*
 template_c/*
 .htaccess
@@ -25,6 +26,9 @@ application/views/upload_success.php
 #-------------------------
 /nbproject/
 .idea/*
+.settings
+.project
+.buildpath
 
 ## Sublime Text cache files
 *.tmlanguage.cache
