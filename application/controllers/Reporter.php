@@ -200,7 +200,7 @@ class Reporter extends MY_controller {
 
         $this->load->library('upload', $config);
 
-        if ( ! $this->upload->do_upload('screenshot'))
+        if ( ! $this->upload->do_upload('file'))
         {
             $error = array('error' => $this->upload->display_errors());
             var_dump($error);
@@ -233,7 +233,7 @@ class Reporter extends MY_controller {
 
         $this->load->library('upload', $config);
 
-        if ( ! $this->upload->do_upload('video'))
+        if ( ! $this->upload->do_upload('file'))
         {
             $error = array('error' => $this->upload->display_errors());
             var_dump($error);

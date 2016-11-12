@@ -55,9 +55,12 @@ textarea{ resize: none;}
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-xs-3 col-sm-1 control-label">截图</label>
-                                <input class="col-xs-9" type="file" id="file_name" name="screenshot">
-
+                                <select id="upload_type">
+                                    <option value="0">截图</option>
+                                    <option value="1">视频</option>
+                                </select>
+                                <input name="file" class="fileinput-button" type="file" id="fileupload" multiple>
+                                <table role="presentation" class="table table-striped"><tbody id="files"></tbody></table>
                             </div>
 
                             <div class="form-group">
@@ -100,7 +103,77 @@ textarea{ resize: none;}
 
 </section>
 
-
+<form method="post"action="/reporter/upload_video" enctype="multipart/form-data">
+    <input class="col-xs-9" type="file" id="" name="video">
+    <input type="submit" value="上传文件" id="submitBtn" />
+</form>
+<script id="template-upload" type="text/x-tmpl">
+{% for (var i=0, file; file=o.files[i]; i++) { %}
+    <tr class="template-upload fade">
+        <td>
+            <span class="preview"></span>
+        </td>
+        <td>
+            <p class="name">{%=file.name%}</p>
+            <strong class="error text-danger"></strong>
+        </td>
+        <td>
+            <p class="size">Processing...</p>
+            <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="progress-bar progress-bar-success" style="width:0%;"></div></div>
+        </td>
+        <td>
+            {% if (!i && !o.options.autoUpload) { %}
+                <button class="btn btn-primary start" disabled>
+                    <i class="glyphicon glyphicon-upload"></i>
+                    <span>Start</span>
+                </button>
+            {% } %}
+            {% if (!i) { %}
+                <button class="btn btn-warning cancel">
+                    <i class="glyphicon glyphicon-ban-circle"></i>
+                    <span>Cancel</span>
+                </button>
+            {% } %}
+        </td>
+    </tr>
+{% } %}
+</script>
+<!-- The template to display files available for download -->
+<script id="template-download" type="text/x-tmpl">
+{% for (var i=0, file; file=o.files[i]; i++) { %}
+    <tr class="template-download fade">
+        <td>
+            <span class="preview">
+                {% if (file.thumbnailUrl) { %}
+                    <a href="{%=file.url%}" title="{%=file.name%}" download="{%=file.name%}" data-gallery><img src="{%=file.thumbnailUrl%}"></a>
+                {% } %}
+            </span>
+        </td>
+        <td>
+            <p class="name">
+                    <span>提交成功！</span>
+        </td>
+        <td>
+            <span class="size">{%=o.formatFileSize(file.size)%}</span>
+        </td>
+        <td>
+        </td>
+    </tr>
+{% } %}
+</script>
+<script src="/js/upload_file/load-image.js"></script>
+<script src="/js/upload_file/tmpl.js"></script>
+<script src="/js/upload_file/vendor/jquery.ui.widget.js"></script>
+<!-- The basic File Upload plugin -->
+<script src="/js/upload_file/jquery.fileupload.js"></script>
+<!-- The File Upload processing plugin -->
+<script src="/js/upload_file/jquery.fileupload-process.js"></script>
+<script src="/js/upload_file/jquery.fileupload-validate.js"></script>
+<script src="/js/upload_file/jquery.fileupload-ui.js"></script>
+<!-- The File Upload image preview & resize plugin -->
+<script src="/js/upload_file/jquery.fileupload-image.js"></script>
+<!-- The main application script -->
+<script src="/js/upload_file/main.js"></script>
 <script>
 
     var active = {
