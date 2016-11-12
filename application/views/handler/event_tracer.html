@@ -98,7 +98,7 @@
                         <div class="reply">
                             <form role="form">
                                 <input placeholder="填写你的反馈..." class="form-control input-sm" id="comment{id}" type="text">
-                                <input value="发表" id="fb" class="input-btn" onclick="addComment({id},1)" type="button"></form>
+                                <input value="发表" id="fb" class="input-btn" onclick="addComment('{id}',1)" type="button"></form>
                         </div>
                     </li>
                     {commenthtml}
@@ -115,7 +115,7 @@
                 <strong><a class="label bg-success m-l-xs">{name}</a></strong>
                 {desc}
             </p>
-            <p class="text-muted reply-time">{daytime}小时前</p>
+            <p class="text-muted reply-time">{daytime}</p>
         </div>
     </li>
 </script>
@@ -189,7 +189,8 @@
                     //对数据进行遍历
                     $.each(value.comment, function(i, o) {
                         var nowtime= new Date().getTime();
-                        var beforetime=parseInt((nowtime-o.time*1000)/3600000);
+                        //var beforetime=parseInt((nowtime-o.time*1000)/3600000);
+                        var beforetime=getLocalTime(o.time);
                         o.daytime=beforetime;
                         comment_arr.push(formatTemplate(o, comment_item_tpl));
                     });
@@ -291,15 +292,19 @@
 		var id="";
 		if(type==1){//添加小评论
 		 id=value;
-		 var comment = $("#comment"+id).val();
+		 var comment =$.trim($("#comment"+id).val());
 			if(comment.length>200){ 
 				alert("字数不能超过200！");
-				return;
-			}
+				return false;
+			}else if(comment.length==0){
+                alert("评论不能为空！");
+                return false;
+            }
+
 			var eid=document.getElementById('eid').value;
-			console.log(comment);
+			//console.log(comment);
 		    $.ajax({
-		    	url:'/handler/post_comment',
+		    	url:'/welcome/post_comment',
 		    	type:'post',
 		    	data :
 			        {"pid" : id,
@@ -310,13 +315,20 @@
 		    	success:function(data){
                     var comment_item_tpl=$('script[id="comment_item"]').html();//得到评论模板
 		    		if(data.res == 1){
+
+                        //改变最外面div 高度
+                        $(".item-timeline-"+id).css('height','auto');
                         var commnetObj=new Object();
-                        commnetObj.daytime=0;
+                        commnetObj.daytime=new Date().toLocaleString().replace(/:\d{1,2}$/,' ');
                         commnetObj.name=$("#username").val();
                         commnetObj.desc=comment;
                         var strhtml=formatTemplate(commnetObj, comment_item_tpl);//得到当前字符串
                         $("#option-row"+id).after(strhtml);
                         $("#comment"+id).val('');
+                        //改变最外面div的高度情况
+                        //评论后，重新定义最外面高度
+                        $(".item-timeline-"+id+"").height($(".item-timeline-"+id+"").height())//解决动态加载文档流问题
+                        $(".item-timeline-"+id+"-flag").height($(".item-timeline-"+id+"").height());
 		    			//alert('发表成功！')
 		    		}else{
 		    			alert('评论失败！');
@@ -329,7 +341,9 @@
 		}
 	}
 
-
+    /*
+     事件完成后进行的相关操作
+    * */
 	function tagier(){
 		$("#wc").hide();
 		var canshow=document.getElementById("cs");
@@ -345,8 +359,9 @@
 			    	success:function(data){		
 			    		console.log(data.res);
 			    		if(data.res==1){
-			    			document.getElementById("wc").style.display="";		   
-			    			$('input').attr("readonly","readonly");
+			    			document.getElementById("wc").style.display="";
+                            $("textarea").attr('disabled','disabled');
+			    			$('input').attr("disabled","disabled");
 			    		}else{
 			    			document.getElementById("wc").style.display="none";
 			    		}
