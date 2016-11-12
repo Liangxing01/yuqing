@@ -7,10 +7,7 @@ class Handler extends MY_Controller {
         parent::__construct();
         header('Access-Control-Allow-Origin:*');
         $this->load->model('Handler_Model',"handler_model");
-
-        $this->session->set_userdata("uid",3);
-        $this->session->set_userdata('name',"王五");
-        $this->session->set_userdata('gid',3);
+        
     }
 
     public function index()
@@ -89,7 +86,6 @@ class Handler extends MY_Controller {
         }
 
         $uid = $this->session->userdata('uid');
-
         $data = $this->handler_model->get_all_unhandle($pData,$uid);
         echo json_encode($data);
 
