@@ -197,8 +197,9 @@ class Reporter extends MY_controller {
 
         if ( ! $this->upload->do_upload('file'))
         {
-            $error = array('error' => $this->upload->display_errors());
-            var_dump($error);
+            $error =$this->upload->display_errors();
+            $res=['res'=>0,'info'=>$error];
+            echo json_encode($res);
         }
         else
         {
@@ -230,8 +231,9 @@ class Reporter extends MY_controller {
 
         if ( ! $this->upload->do_upload('file'))
         {
-            $error = array('error' => $this->upload->display_errors());
-            var_dump($error);
+            $error =$this->upload->display_errors();
+            $res=['res'=>0,'info'=>$error];
+            echo json_encode($res);
         }
         else
         {

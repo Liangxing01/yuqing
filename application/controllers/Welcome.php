@@ -194,8 +194,9 @@ class Welcome extends MY_Controller {
 
         if ( ! $this->upload->do_upload('screenshot'))
         {
-            $error = array('error' => $this->upload->display_errors());
-            var_dump($error);
+            $error =$this->upload->display_errors();
+            $res=['res'=>0,'info'=>$error];
+            echo json_encode($res);
         }
         else
         {
