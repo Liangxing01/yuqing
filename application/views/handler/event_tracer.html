@@ -167,6 +167,7 @@
         success:function(data){
             //console.log(data)
             var cur_day="";//当前天数，用来判断哪一天
+            console.log(data)
             $.each(data,function(i,value){
             	var myDate = new Date(value.time*1000),
             	     iyear= myDate.getFullYear(),
@@ -268,8 +269,8 @@
                             $(".top-center-line").eq(0).after(htmlstr)
                         }else{
                             history_daytime=cur_daytime
-                            htmlstr='<li class="center-timeline-cat"><div class="inner">'+iyear+'年'+imonth+'月'+iday+'日</div></li>'+htmlstr;
-                            htmlstr='<li class="centering-line top-center-line" ></li>'+htmlstr;
+                            htmlstr='<li class="center-timeline-cat"><div class="inner">'+iyear+'年'+imonth+'月'+iday+'日</div></li>'+'<li class="centering-line top-center-line" ></li>'+htmlstr;
+                            //console.log(htmlstr);
                             $("#comment").prepend(htmlstr);
                         }
                         $(".item-timeline-"+li_obj.id+"").height($(".item-timeline-"+li_obj.id+"").height())//解决动态加载文档流问题
