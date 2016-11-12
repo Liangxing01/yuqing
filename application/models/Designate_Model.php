@@ -118,6 +118,20 @@ class Designate_Model extends CI_Model
 
 
     /**
+     * TODO
+     * 查询 事件信息 详情
+     * @param $event_id
+     * @param $info_id
+     */
+    public function get_event_info($event_id, $info_id){
+        $this->load->model("Common_Model", "common");
+        $e = $this->common->check_can_see($event_id);
+        $i = $this->db->select("id")->where(array("info_id" => $info_id, "event_id" => $event_id))->get("event_info")->num_rows();
+        echo $i;
+    }
+
+
+    /**
      * 设置 上报信息 为已看状态
      * @param $info_id
      * @return bool
@@ -396,18 +410,35 @@ class Designate_Model extends CI_Model
 
 
     /**
-     * 查询 event(事件) 信息
+     * TODO
+     * 查询 event(事件) 详情
      * @param $event_id
      * @return mixed
      */
-    public function get_event_info($event_id)
+    public function get_event($event_id)
     {
-        $event = $this->db->select("event.id, event.title, event.url, event.description, event.picture, event_type.name AS type, source, user.name AS publisher, start_time")
+        $event = $this->db->select("event.id, event.title, event.description, reply_time, A.name AS manager, B.name AS main_processor, C.name AS main_group, event.rank, event.state, event.start_time, event.end_time")
             ->from("event")
-            ->join("user", "user.id = event.publisher", "left")
-            ->join("event_type", "event_type.id = event.type", "left")
-            ->where(array("event.id" => $event_id))
+            ->join("user A", "A.id = event.manager", "left")
+            ->join("user B", "B.id = event.main_processor", "left")
+            ->join("group C", "C.id = event.group", "left")
+            ->where("event.id", $event_id)
             ->get()->row_array();
+
+        $event["info"] = $this->db->select("info.id, info.title")
+            ->from("info")
+            ->where("info.id IN (SELECT `info_id` FROM `yq_event_info` WHERE `event_id` = $event_id)")
+            ->get()->result_array();
+
+        $event["relate_event"] = $this->db->select("event.id, event.title")
+            ->from("event")
+            ->where("event.id IN (SELECT `relate_id` FROM `yq_event_relate` WHERE `event_id` = $event_id)")
+            ->get()->result_array();
+
+        $event["attachment"] = $this->db->select("event_id, name, url, type")
+            ->from("event_attachment")
+            ->where("event_id", $event_id)
+            ->get()->result_array();
 
         return $event;
     }
@@ -415,7 +446,7 @@ class Designate_Model extends CI_Model
 
     /**
      * 生成组织关系树的 Json数据
-     * @return Json
+     * @return Json字符串
      */
     public function get_relation_tree()
     {
