@@ -191,7 +191,7 @@ class Reporter extends MY_controller {
      * 上传截图接口
      */
     public function upload_pic(){
-        $config['upload_path']      = './uploads/pic/';
+        $config['upload_path']      = './uploads/temp/';
         $config['allowed_types']    = 'jpg|png|jpeg';
         $config['max_size']     = 10000;
         $config['max_width']        = 0;
@@ -212,9 +212,10 @@ class Reporter extends MY_controller {
             $res = array(
                 'res'  => 1,
                 'info' => array(
-                    'name' => $upload_data['orig_name'],
-                    'url'  => '/uploads/pic/'.$upload_data['file_name'],
-                    'type' => $upload_data['image_type']
+                    'name'     => $upload_data['orig_name'],
+                    'url'      => '/uploads/pic/'.$upload_data['file_name'],
+                    'new_name' => $upload_data['file_name'],
+                    'type'     => $upload_data['image_type']
                 )
             );
             echo json_encode($res);
@@ -223,7 +224,7 @@ class Reporter extends MY_controller {
     }
 
     public function upload_video(){
-        $config['upload_path']      = './uploads/video/';
+        $config['upload_path']      = './uploads/temp/';
         $config['allowed_types']    = 'mp4|flv|avi|mpeg';
         $config['max_size']         = 0;
         $config['max_width']        = 0;
@@ -246,6 +247,7 @@ class Reporter extends MY_controller {
                 'info' => array(
                     'name' => $upload_data['client_name'],
                     'url'  => '/uploads/video/'.$upload_data['file_name'],
+                    'new_name' => $upload_data['file_name'],
                     'type' => $upload_data['file_type']
                 )
             );
