@@ -93,6 +93,31 @@ class Welcome extends MY_Controller {
         echo json_encode($alarm_arr);
     }
 
+
+    /**
+     * 接口：发表评论
+     * 参数：事件id，是否为总结性发言标志位，父总结性发言id
+     * event tracer 时间线视图回复接口
+     */
+    public function post_comment(){
+        $this->load->model("Handler_Model", "handler_model");
+        $event_id = $this->input->post('eid');
+        $pid = $this->input->post('pid');
+        $comment = $this->input->post('comment');
+        $res = $this->handler_model->insert_comment($event_id,$pid,$comment);
+        if($res){
+            $data = array(
+                'res' => 1
+            );
+        }else{
+            $data = array(
+                'res' => 0
+            );
+        }
+        echo json_encode($data);
+    }
+
+
     /*
      * 个人信息查看接口
      */
