@@ -193,13 +193,55 @@ class Designate extends MY_controller
 
 
     /**
-     * TODO
      * 事件处理 timeline 视图载入
      */
     public function event_tracer()
     {
+        $event_id = $this->input->get('eid');
+        if (!isset($event_id) || $event_id == null || $event_id == "") {
+            show_404();
+        }
+        $gid = $this->session->userdata('gid');
+        $uid = $this->session->userdata('uid');
+
+        //判断有无督办权限
+        $pri = explode(",", $this->session->userdata('privilege'));
+        foreach ($pri as $one) {
+            if ($one == 4) {
+                $usertype = 1;
+            } else {
+                $usertype = 0;
+            }
+        }
+
+        $this->load->model("Handler_Model", "handler");
+        $einfo = $this->handler->get_title_by_eid($event_id);
+        $done_btn = $this->handler->check_done_btn($gid, $event_id);
+        $this->assign('title', $einfo['title']);
+        $this->assign('rank', $einfo['rank']);
+        if ($einfo['state'] == "已完成") {
+            $done_state = 1;
+        } else {
+            $done_state = 0;
+        }
+        if (!empty($einfo['end_time'])) {
+            $this->assign('end_time', $einfo['end_time']);
+        } else {
+            $this->assign('end_time', "");
+        }
+        $this->assign('done_state', $done_state);
+        $this->assign('eid', $event_id);
+        $this->assign('can_show_done_btn', $done_btn);
+
+        //个人信息
+        $this->load->model('MY_Model', 'my_model');
+        $user_info = $this->my_model->get_user_info($uid);
+        $this->assign('username', $user_info[0]['name']);
+        $this->assign('useracter', $user_info[0]['avatar']);
+        $this->assign('usertype', $usertype);
+
         $this->assign("active_title", "designate_parent");
-        $this->assign("active_parent", "event_is_designate");
+        $this->assign("active_parent", "event_search");
         $this->all_display("designate/event_tracer.html");
     }
 
@@ -355,7 +397,8 @@ class Designate extends MY_controller
     }
 
 
-    public function test_upload(){
+    public function test_upload()
+    {
         var_dump($_FILES['file']);
     }
 

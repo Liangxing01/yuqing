@@ -69,9 +69,9 @@
             color: #000;
             border: none;
             line-height: 30px;
-            text-indent: 20px;
+            
         }
-
+		#username, #password{text-indent: 20px !important;}
         .meih a {
             color: white;
             text-align: left !important;
@@ -82,10 +82,26 @@
             background: #5cc8f1 !important;
             border: none;
             border-radius: 8px !important;
-            line-height: 40px !important;
+            line-height: 38px !important;
             color: white !important;
             font-size: 1.8em;
+            position: absolute;
+            bottom: 38px;
         }
+        .wjmm {
+            width: 250px;
+            color: #ffffff;
+            margin: auto;
+            line-height: 20px;
+            display: none;
+        }
+        .wjmm a {
+            color: white;
+            text-align: left !important;
+        }
+        .error{ text-indent: 40px !important;}
+		.#login_error{ text-indent: 40px ;}
+
     </style>
     <!-- END STYLESHEET-->
 </head>
@@ -98,10 +114,14 @@
 <div id="box">
     <form id="login-form">
         <div class="meih" style="text-align: center;"><h2>账号登录</h2></div>
-        <div class="meih">账号：<input name="username" id="username" type="text" placeholder="输入账号"/></div>
-        <div class="meih">密码：<input name="password" id="password" type="password" placeholder="输入密码"/></div>
-        <div class="meih"><span id="login_error" class="error"></span></div>
-        <div class="meih"><a href="">忘记密码？</a></div>
+        <div class="meih">账号：<input name="username" id="username" type="text" placeholder="输入账号"/>
+        	<label class="error" for="username" style=" height: 15px;"></label>
+        </div>
+        <div class="meih">密码：<input name="password" id="password" type="password" placeholder="输入密码"/>
+        	<label class="error" for="password" style=" height: 15px;"></label>
+        </div>
+        <div class="meih"><span id="login_error" class="error" style="display: block;"></span></div>
+        <div class="wjmm"><a href="">忘记密码？</a></div>
         <div class="meih"><input type="submit" value="登录" class="an"></div>
     </form>
 </div>

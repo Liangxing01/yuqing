@@ -1,6 +1,7 @@
 .DS_Store
 
 application/config/*
+uploads/*
 ci_session/*
 template_c/*
 .htaccess

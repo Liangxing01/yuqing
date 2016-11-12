@@ -186,4 +186,73 @@ class Reporter extends MY_controller {
         $result = array('data'=> $res);
         echo json_encode($result);
     }
+
+    /**
+     * 上传截图接口
+     */
+    public function upload_pic(){
+        $config['upload_path']      = './uploads/temp/';
+        $config['allowed_types']    = 'jpg|png|jpeg';
+        $config['max_size']     = 10000;
+        $config['max_width']        = 0;
+        $config['max_height']       = 0;
+        $config['encrypt_name']     = true;
+
+        $this->load->library('upload', $config);
+
+        if ( ! $this->upload->do_upload('screenshot'))
+        {
+            $error = array('error' => $this->upload->display_errors());
+            var_dump($error);
+        }
+        else
+        {
+            $data = array('upload_data' => $this->upload->data());
+            $upload_data = $data['upload_data'];
+            $res = array(
+                'res'  => 1,
+                'info' => array(
+                    'name'     => $upload_data['orig_name'],
+                    'url'      => '/uploads/pic/'.$upload_data['file_name'],
+                    'new_name' => $upload_data['file_name'],
+                    'type'     => $upload_data['image_type']
+                )
+            );
+            echo json_encode($res);
+
+        }
+    }
+
+    public function upload_video(){
+        $config['upload_path']      = './uploads/temp/';
+        $config['allowed_types']    = 'mp4|flv|avi|mpeg';
+        $config['max_size']         = 0;
+        $config['max_width']        = 0;
+        $config['max_height']       = 0;
+        $config['encrypt_name']     = true;
+
+        $this->load->library('upload', $config);
+
+        if ( ! $this->upload->do_upload('video'))
+        {
+            $error = array('error' => $this->upload->display_errors());
+            var_dump($error);
+        }
+        else
+        {
+            $data = array('upload_data' => $this->upload->data());
+            $upload_data = $data['upload_data'];
+            $res = array(
+                'res'  => 1,
+                'info' => array(
+                    'name' => $upload_data['client_name'],
+                    'url'  => '/uploads/video/'.$upload_data['file_name'],
+                    'new_name' => $upload_data['file_name'],
+                    'type' => $upload_data['file_type']
+                )
+            );
+            echo json_encode($res);
+
+        }
+    }
 }
