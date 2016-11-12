@@ -166,128 +166,27 @@
             		<p>ChongQing·BanNan</p>
             	</div>
             	<div class="col-md-6 ">
-            		<span><b>17</b><sup>℃</sup></span>
+            		<span><b><{$temp}></b><sup>℃</sup></span>
             		<p>温度</p>
             		<p>Temperature</p>
             	</div>             
             </div>
             <div class="panel-body tq1">
             	<div class="col-md-6 ">
-            		<span><b>87</b>%</span>
+            		<span><b><{$SD}></b>%</span>
             		<p>湿度</p>
             		<p>Humidity</p>
             	</div>
             	<div class="col-md-6 ">
             		<span><img src="../../img/f.png"></span>
-            		<p>西南风·四级</p>
-            		<p>Southwest Wind  Four</p>
+            		<p><{$wind}></p>
+            		<p>Wind</p>
             	</div>             
             </div>
           </section>
           <!-- END PANEL -->
             </div>
 
-         <!-- <div id="morris">
-		     &lt;!&ndash; BEGIN ROW  &ndash;&gt;
-            <div class="row">
-              <div class="col-lg-4">
-                <div class="panel terques-chart">
-                  <div class="panel-body chart-texture">
-                    <div class="chart">
-                      <div class="heading">
-                        <span>
-                          Friday
-                        </span>
-                        <strong>
-                          $ 657,00 | 55%
-                        </strong>
-                      </div>
-                      <div class="sparkline" data-type="line" data-resize="true" data-height="75" data-width="90%" data-line-width="1" data-line-color="#fff" data-spot-color="#fff" data-fill-color="" data-highlight-line-color="#fff" data-spot-radius="4" data-data="[564,123,890,564,455,200,135,667,333,526,996]">
-                      </div>
-                    </div>
-                  </div>
-                  <div class="chart-tittle">
-                    <span class="title">
-                      New Earning
-                    </span>
-                    <span class="value">
-                      <a href="#" class="active">
-                        Market
-                      </a>
-                      |
-                      <a href="#">
-                        Local
-                      </a>
-                      |
-                      <a href="#">
-                        Online
-                      </a>
-                    </span>
-                  </div>
-                </div>
-                <div class="panel green-chart">
-                  <div class="panel-body">
-                    <div class="chart">
-                      <div class="heading">
-                        <span>
-                          June
-                        </span>
-                        <strong>
-                          23 Days | 65%
-                        </strong>
-                      </div>
-                      <div id="designchart">
-                      </div>
-                    </div>
-                  </div>
-                  <div class="chart-tittle">
-                    <span class="title">
-                      Total Earn
-                    </span>
-                    <span class="value">
-                      $, 50,23,561
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <div class="col-lg-2">
-                <div class="tiles facebook-tile text-center">
-                  <i class="fa fa-facebook icon-lg-size">
-                  </i>
-                  <h4>
-                    <a href="#fakelink">
-                      10K likes
-                    </a>
-                  </h4>
-                </div>
-                &lt;!&ndash; /.tiles .facebook-tile &ndash;&gt;
-                <div class="tiles twitter-tile text-center">
-                  <i class="fa fa-twitter icon-lg-size">
-                  </i>
-                  <h4>
-                    <a href="#fakelink">
-                      2K followers
-                    </a>
-                  </h4>
-                </div>
-                &lt;!&ndash; /.tiles .twitter-tile &ndash;&gt;
-              </div>
-              <div class="col-lg-6">
-                <section class="panel">
-                  <header class="panel-heading">
-                    Profit(USD)
-                  </header>
-                  <div class="panel-body">
-                    <div id="hero-area" class="graph">
-                    </div>
-                  </div>
-                </section>
-              </div>
-            </div>
-			 &lt;!&ndash; END ROW  &ndash;&gt;
-          </div>-->
-		   <!-- BEGIN ROW  -->
-          
             <div class="col-lg-6">
               <section class="panel">
                 <div class="panel-body">
@@ -307,76 +206,21 @@
                 </div>
                 <table class="table table-hover personal-task">
                   <tbody>
+                    <{foreach $login as $item}>
                     <tr>
                       <td>
-                        1
+                        <{$item@iteration}>
                       </td>
                       <td>
-                        2001:da8:c800:1005::3
+                        <{$item.ip}>
                       </td>
                       <td>
                         <span class="badge bg-important">
-                          2016-10-28 12:12:21
+                          <{$item.time}>
                         </span>
                       </td>
-
                     </tr>
-                    <tr>
-                      <td>
-                        2
-                      </td>
-                      <td>
-                        2001:da8:c800:1005::3
-                      </td>
-                      <td>
-                        <span class="badge bg-important">
-                          2016-10-27 15:32:22
-                        </span>
-                      </td>
-
-                    </tr>
-                    <tr>
-                      <td>
-                        3
-                      </td>
-                      <td>
-                        2001:da8:c800:10de::2
-                      </td>
-                      <td>
-                        <span class="badge bg-important">
-                          2016-10-27 08:12:21
-                        </span>
-                      </td>
-
-                    </tr>
-                    <tr>
-                      <td>
-                        4
-                      </td>
-                      <td>
-                        2001:da8:c800:10ee::3
-                      </td>
-                      <td>
-                        <span class="badge bg-important">
-                          2016-10-27 12:08:23
-                        </span>
-                      </td>
-
-                    </tr>
-                    <tr>
-                      <td>
-                        5
-                      </td>
-                      <td>
-                        2001:da8:c800:1005::3
-                      </td>
-                      <td>
-                        <span class="badge bg-important">
-                          2016-10-26 08:12:21
-                        </span>
-                      </td>
-
-                    </tr>
+                    <{/foreach}>
                   </tbody>
                 </table>
               </section>
@@ -396,8 +240,3 @@
       <!-- END MAIN CONTENT -->
 
       <script src="/assets/morris.js-0.4.3/raphael-min.js" ></script><!-- MORRIS  JS -->
-
-
-
-
-

@@ -75,13 +75,35 @@ class MY_Model extends CI_Model {
 
     //获取用户登录记录最新的6条
     public function get_login_list($uid,$num){
-        $res = $this->db->select('ip,time')->from('login_log')
+        $res = $this->db->select('ip,from_unixtime(time) time')->from('login_log')
             ->where('uid',$uid)
             ->order_by('time','DESC')
             ->limit($num)
             ->get()->result_array();
         return $res;
 
+    }
+
+    /**
+     * 获取天气信息
+     * @param $login_info
+     */
+    public function weather(){
+        $ch = curl_init();
+        // set url
+        curl_setopt($ch, CURLOPT_URL, "http://www.weather.com.cn/data/sk/101040900.html");
+        //return the transfer as a string
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        $output = curl_exec($ch);
+        curl_close($ch);
+        $res=json_decode($output,TRUE);
+        if (!$res) return [];
+        else{
+            $res=$res['weatherinfo'];
+            $res['SD']=substr($res['SD'],0,-1);
+            $res['wind']="$res[WD] $res[WS]";
+            return $res;
+        }
     }
 
     /*

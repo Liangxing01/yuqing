@@ -18,6 +18,10 @@ class Welcome extends MY_Controller {
 	{
         $this->assign("active_title", "home_page");
         $this->assign("active_parent", "home_parent");
+        $weather=$this->my_model->weather();
+        $this->assign($weather,null);
+        $login=$this->my_model->get_login_list($this->session->userdata('uid'),5);
+        $this->assign('login',$login);
 		$this->all_display('index.html');
 	}
 
@@ -51,19 +55,6 @@ class Welcome extends MY_Controller {
         }
         echo json_encode($all_num_arr);
 
-    }
-
-
-    /*
-     * 主页接口：获取用户最近登录的N条记录
-     * 参数：uid,num
-     */
-    public function get_login_list()
-    {
-        $uid = $this->session->userdata('uid');
-        $num = 5;
-        $res = $this->my_model->get_login_list($uid, $num);
-        return $res;
     }
 
     /*
