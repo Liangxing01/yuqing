@@ -6,6 +6,8 @@
 <link rel="stylesheet" href="/assets/jquery-tags-input/jquery.tagsinput.min.css">
 <!-- Ztree CSS -->
 <link rel="stylesheet" href="/assets/ztree/zTreeStyle/zTreeStyle.css">
+<!-- Jquery file upload -->
+
 <!-- JQUERY STEPY WIZARD CSS -->
 <!--<link href="/css/jquery.stepy.css" rel="stylesheet">-->
 
@@ -121,7 +123,7 @@
                                                 <div class="form-group">
                                                     <label class="col-md-2 col-sm-2 control-label">标题</label>
                                                     <div class="col-md-6 col-sm-6">
-                                                        <input class="form-control" name="title" type="text">
+                                                        <input class="form-control" name="title" id="title" type="text">
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
@@ -184,7 +186,7 @@
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-md-2 col-sm-2 control-label">参考文件上传:</label>
-                                                    <div class="col-md-2 col-sm-2 zyupload" id="attachment">
+                                                    <div class="col-md-2 col-sm-2" id="attachment">
                                                     </div>
                                                 </div>
                                             </fieldset>
@@ -193,13 +195,13 @@
                                                     <div class="col-md-4">
                                                         <section class="panel">
                                                             <header class="panel-heading">
-                                                              <i class="fa fa-hand-o-down"></i>
+                                                                <i class="fa fa-hand-o-down"></i>
                                                               <span class="label label-primary">
                                                                  结构结构
                                                               </span>
                                                             </header>
                                                             <div class="panel-body">
-                                                                <ul class="nav prod-cat ztree" id="treePartment" >
+                                                                <ul class="nav prod-cat ztree" id="treePartment">
                                                                     数据加载中……
                                                                 </ul>
                                                             </div>
@@ -208,7 +210,7 @@
                                                     <div class="col-md-3">
                                                         <section class="panel">
                                                             <header class="panel-heading">
-                                                              <i class="fa fa-hand-o-down"></i>
+                                                                <i class="fa fa-hand-o-down"></i>
                                                               <span class="label label-primary">
                                                                  操作
                                                               </span>
@@ -218,13 +220,15 @@
                                                                 <br/>
                                                                 <br/>
                                                                 <br/>
-                                                                <button type="button" id="btn-dealman" class="btn btn-primary btn-block">
+                                                                <button type="button" id="btn-dealman"
+                                                                        class="btn btn-primary btn-block">
                                                                     添加处理人或单位
                                                                 </button>
                                                                 <br/>
                                                                 <br/>
                                                                 <br/>
-                                                                <button type="button" id="btn-checkman" class="btn btn-primary btn-block">
+                                                                <button type="button" id="btn-checkman"
+                                                                        class="btn btn-primary btn-block">
                                                                     添加督办人
                                                                 </button>
                                                             </div>
@@ -240,25 +244,31 @@
                                                             </header>
                                                             <div class="panel-body">
                                                                 牵头人(单位)：<span id="con_qiantou"></span>
-                                                                <input type="hidden" name="con_qiangtou" id="input_con_qiantou" />
+                                                                <input type="hidden" name="main_processor"
+                                                                       id="input_con_qiantou"/>
                                                                 <br/>
                                                                 <br/>
                                                                 <div>处理人(单位)<br/>(单击选择牵头人或单位，双击移除当前处理人或单位)</div>
-                                                                <select name="country" class="multi-select" multiple="false" id="select_con_dealman" style="width: 100%; height: 120px;">
+                                                                <select name="select_con_dealman" class="multi-select"
+                                                                        multiple="false" id="select_con_dealman"
+                                                                        style="width: 100%; height: 120px;">
                                                                 </select>
-                                                                <input type="hidden" name="" id="input_con_dealman" />
+                                                                <input type="hidden" name="processor"
+                                                                       id="input_con_dealman"/>
                                                                 <br/>
                                                                 <br/>
                                                                 <div>督办人(双击移除当前督办人)</div>
-                                                                <select name="country" class="multi-select" multiple="false" id="select_con_checkman" style="width: 100%; height: 120px;">
+                                                                <select name="watcher" class="multi-select"
+                                                                        multiple="false" id="select_con_checkman"
+                                                                        style="width: 100%; height: 120px;">
                                                                 </select>
-                                                                <input type="hidden" name="" id="input_con_checkman" />
+                                                                <input type="hidden" name="" id="input_con_checkman"/>
                                                             </div>
                                                         </section>
                                                     </div>
                                                 </div>
                                             </fieldset>
-                                            <button type="submit" class="finish btn btn-info btn-extend">完成</button>
+                                            <button type="button" class="finish btn btn-info btn-extend">完成</button>
                                         </form>
                                     </div>
                                 </div>
@@ -285,9 +295,8 @@
 <script src="/assets/fuelux/js/spinner.min.js"></script>
 <!-- Ztree --->
 <script src="/assets/ztree/jquery.ztree.all.min.js"></script>
-<!--<link rel="stylesheet" href="/js/zTree/css/zTreeStyle/zTreeStyle.css" type="text/css">-->
-<!--<script type="text/javascript" src="/js/zTree/js/jquery.ztree.core.js"></script>-->
-<!--<script type="text/javascript" src="/js/zTree/js/jquery.ztree.excheck.js"></script>-->
+<!-- Jquery File Upload -->
+
 <!-- Public Function -->
 <script language="javascript" src="/js/public.js"></script>
 
@@ -546,6 +555,11 @@
 
     //事件指派 表单
     $(function () {
+        $.validator.setDefaults({
+            submitHandler: function () {
+                designate_form_commit();
+            }
+        });
         $('#designate-form').stepy({
             backLabel: '上一步',
             nextLabel: '下一步',
@@ -559,8 +573,10 @@
         });
         $('#designate-form').validate({
             rules: {
-//                'title': 'required',
-//                'info_id': 'required'
+                'title': 'required',
+                'info_id': 'required',
+                'main_processor': 'required',
+                'processor': "required"
             },
             messages: {
                 'title': {
@@ -568,6 +584,12 @@
                 },
                 'info_id': {
                     required: '请添加事件信息'
+                },
+                'main_processor': {
+                    required: '请指定牵头人(单位)'
+                },
+                'processor': {
+                    required: '请选择处理人'
                 }
             }
         });
@@ -592,7 +614,7 @@
         // spinner 插件
         $('#reply_time').spinner({
             value: ""
-        })
+        });
     });
 
     //添加事件信息
@@ -641,150 +663,165 @@
         return id.join(",");
     }
 
-</script>
+    /**
+     * 指派表单提交 TODO
+     */
+    function designate_form_commit() {
+        var title = $("#title").val();
+        var info_id = get_info_id();
+        var description = $("#description");
+        var rank = $("#rank").val();
+        var reply_time = $("#reply_time").val();
+        var relate_event = $("#relate_event").val();
+        var processor = $("#input_con_dealman").val();
+        var main_processor = $("#input_con_qiantou").val();
+        var watcher = $("#input_con_checkman").val();
+    }
 
-<!--ztree 相关操作--->
-<script type="text/javascript">
+    /**
+     * Ztree && MultiSelect 插件
+     * 选择处理人  督办人 和 牵头人(单位)
+     */
     var treeObj;
     var setting = {
         check: {
             enable: true,
-            chkboxType:{ "Y":"", "N":""}
+            chkboxType: {"Y": "", "N": ""}
         },
         async: {
             enable: true,
-            url:"/designate/tree",
-            autoParam:["id", "name=n", "level=lv"]
-           // dataFilter: filter
+            url: "/designate/tree",
+            autoParam: ["id", "name=n", "level=lv"]
+            // dataFilter: filter
         },
         callback: {
-           // onClick: zTreeOnClick,
+            // onClick: zTreeOnClick,
             onAsyncSuccess: zTreeOnAsyncSuccess,//异步加载完执行
-            onCheck:zTreeCheck//当选中时执行
+            onCheck: zTreeCheck//当选中时执行
         }
     };
 
-    function zTreeOnAsyncSuccess(event, treeId, treeNode, msg){
+    function zTreeOnAsyncSuccess(event, treeId, treeNode, msg) {
         //去掉组织结构的选择项
-       var rootNode= treeObj.getNodeByParam("id",0,null);//得到组织结构树
-        rootNode.nocheck=true;
+        var rootNode = treeObj.getNodeByParam("id", 0, null);//得到组织结构树
+        rootNode.nocheck = true;
         treeObj.refresh();//更改属性后，刷新界面
     }
     //当节点选中时选择
-    function zTreeCheck(event, treeId, treeNode){
-       // console.log(treeNode)
-       // console.log(treeNode.isdepartment);
-        if(treeNode.isdepartment==1){//个人
-            treeNode.getParentNode().checked=false;
-         //   console.log(treeNode.getParentNode());
-        }else if(treeNode.isdepartment==0){//单位
-            var children_arr=treeNode.children;
-            for(var i in children_arr){
-                children_arr[i].checked=false;
+    function zTreeCheck(event, treeId, treeNode) {
+        // console.log(treeNode)
+        // console.log(treeNode.isdepartment);
+        if (treeNode.isdepartment == 1) {//个人
+            treeNode.getParentNode().checked = false;
+            //   console.log(treeNode.getParentNode());
+        } else if (treeNode.isdepartment == 0) {//单位
+            var children_arr = treeNode.children;
+            for (var i in children_arr) {
+                children_arr[i].checked = false;
             }
         }
         treeObj.refresh();
     }
-    treeObj=$.fn.zTree.init($("#treePartment"), setting);
+    treeObj = $.fn.zTree.init($("#treePartment"), setting);
 
     //添加处理人或单位
-    $("#btn-dealman").click(function(){
+    $("#btn-dealman").click(function () {
         var nodes = treeObj.getCheckedNodes(true);//获取到被选中的集成
-        if(nodes.length==0){//没有选中
+        if (nodes.length == 0) {//没有选中
             alert("请选择处理人");
             return false;
         }
         //默认第一个为牵头人或单位
         //提交的值为  department_id
-        if($("#input_con_qiantou").val()=='') {//假如牵头人为空时
+        if ($("#input_con_qiantou").val() == '') {//假如牵头人为空时
             $('#con_qiantou').html(nodes[0].name);
-            $("#input_con_qiantou").val('"'+nodes[0].isdepartment + "_" + nodes[0].id+'"');
+            $("#input_con_qiantou").val('"' + nodes[0].isdepartment + "_" + nodes[0].id + '"');
         }
         //得到现在已经有的值
-        for(var i in nodes){
-            var i_value=nodes[i].isdepartment + "_" + nodes[i].id,
-                 i_name=nodes[i].name;
+        for (var i in nodes) {
+            var i_value = nodes[i].isdepartment + "_" + nodes[i].id,
+                    i_name = nodes[i].name;
             //处理与督办人中都没有找到，则添加到处理人中
-            if($("#input_con_dealman").val().indexOf(i_value)===-1&&$("#input_con_checkman").val().indexOf(i_value)===-1){
-                if($("#input_con_dealman").val()==''){
+            if ($("#input_con_dealman").val().indexOf(i_value) === -1 && $("#input_con_checkman").val().indexOf(i_value) === -1) {
+                if ($("#input_con_dealman").val() == '') {
                     $("#input_con_dealman").val(i_value)
-                }else{
-                    $("#input_con_dealman").val($("#input_con_dealman").val()+","+i_value)
+                } else {
+                    $("#input_con_dealman").val($("#input_con_dealman").val() + "," + i_value)
                 }
-                $("#select_con_dealman").append('<option value="'+i_value+'">'+i_name+'</option>');
+                $("#select_con_dealman").append('<option value="' + i_value + '">' + i_name + '</option>');
             }
         }
-    })
+    });
 
     //添加督办人
-    $("#btn-checkman").click(function(){
+    $("#btn-checkman").click(function () {
         var nodes = treeObj.getCheckedNodes(true);//获取到被选中的集成
         //得到现在已经有的值
-        for(var i in nodes){
-            if(nodes[i].isdepartment==0){//如果是部门的话不进行下面操作
+        for (var i in nodes) {
+            if (nodes[i].isdepartment == 0) {//如果是部门的话不进行下面操作
                 continue;
             }
-            var i_value=nodes[i].isdepartment + "_" + nodes[i].id,
-                    i_name=nodes[i].name;
+            var i_value = nodes[i].isdepartment + "_" + nodes[i].id,
+                    i_name = nodes[i].name;
             //处理与督办人中都没有找到，则添加到处理人中
-            if($("#input_con_dealman").val().indexOf(i_value)===-1&&$("#input_con_checkman").val().indexOf(i_value)===-1){
-                if($("#input_con_checkman").val()==''){
+            if ($("#input_con_dealman").val().indexOf(i_value) === -1 && $("#input_con_checkman").val().indexOf(i_value) === -1) {
+                if ($("#input_con_checkman").val() == '') {
                     $("#input_con_checkman").val(i_value)
-                }else{
-                    $("#input_con_checkman").val($("#input_con_checkman").val()+","+i_value)
+                } else {
+                    $("#input_con_checkman").val($("#input_con_checkman").val() + "," + i_value)
                 }
-                $("#select_con_checkman").append('<option value="'+i_value+'">'+i_name+'</option>');
+                $("#select_con_checkman").append('<option value="' + i_value + '">' + i_name + '</option>');
             }
         }
-    })
+    });
 
     //单击选择牵头人
-    $("#select_con_dealman").click(function(){
+    $("#select_con_dealman").click(function () {
         //如果是多选的话，取第一个
-        var se_option=$("#select_con_dealman option:selected:first");
+        var se_option = $("#select_con_dealman option:selected:first");
         $("#input_con_qiantou").val(se_option.val());
         $("#con_qiantou").html(se_option.text())
-    })
+    });
 
     //双击处理人情况
-    $("#select_con_dealman").dblclick(function(){
+    $("#select_con_dealman").dblclick(function () {
         //如果是多选的话，取第一个
-        var se_option=$("#select_con_dealman option:selected:first"),
-             i_value=se_option.val();
-        if(i_value==$("#input_con_qiantou").val()){//如果删除的是牵头人或单位
+        var se_option = $("#select_con_dealman option:selected:first"),
+                i_value = se_option.val();
+        if (i_value == $("#input_con_qiantou").val()) {//如果删除的是牵头人或单位
             $("#input_con_qiantou").val('')
             $("#con_qiantou").html('')
         }
         //移掉option的值
-        $("#select_con_dealman option[value='"+i_value+"']").remove();
-        var input_con_dealman=$("#input_con_dealman").val(),
-             arr_dealman=input_con_dealman.split(','),
-             new_input_value="";
-             for(var i in arr_dealman){
-                if(arr_dealman[i]!=i_value){
-                    new_input_value+=arr_dealman[i]+',';
-                }
-             }
-             new_input_value=new_input_value.slice(0,-1);
-            $("#input_con_dealman").val(new_input_value)
-
-    })
-    //双击督办人
-    $("#select_con_checkman").dblclick(function(){
-        //如果是多选的话，取第一个
-        var se_option=$("#select_con_checkman option:selected:first"),
-                i_value=se_option.val()
-        //移掉option的值
-        $("#select_con_checkman option[value='"+i_value+"']").remove();
-        var input_con_checkman=$("#input_con_checkman").val(),
-                arr_checkman=input_con_checkman.split(','),
-                new_input_value="";
-        for(var i in arr_checkman){
-            if(arr_checkman[i]!=i_value){
-                new_input_value+=arr_checkman[i]+',';
+        $("#select_con_dealman option[value='" + i_value + "']").remove();
+        var input_con_dealman = $("#input_con_dealman").val(),
+                arr_dealman = input_con_dealman.split(','),
+                new_input_value = "";
+        for (var i in arr_dealman) {
+            if (arr_dealman[i] != i_value) {
+                new_input_value += arr_dealman[i] + ',';
             }
         }
-        new_input_value=new_input_value.slice(0,-1);
+        new_input_value = new_input_value.slice(0, -1);
+        $("#input_con_dealman").val(new_input_value)
+
+    });
+    //双击督办人
+    $("#select_con_checkman").dblclick(function () {
+        //如果是多选的话，取第一个
+        var se_option = $("#select_con_checkman option:selected:first"),
+                i_value = se_option.val()
+        //移掉option的值
+        $("#select_con_checkman option[value='" + i_value + "']").remove();
+        var input_con_checkman = $("#input_con_checkman").val(),
+                arr_checkman = input_con_checkman.split(','),
+                new_input_value = "";
+        for (var i in arr_checkman) {
+            if (arr_checkman[i] != i_value) {
+                new_input_value += arr_checkman[i] + ',';
+            }
+        }
+        new_input_value = new_input_value.slice(0, -1);
         $("#input_con_checkman").val(new_input_value)
 
     })

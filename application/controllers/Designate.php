@@ -354,4 +354,9 @@ class Designate extends MY_controller
         echo $this->designate->get_relation_tree();
     }
 
+
+    public function test_upload(){
+        var_dump($_FILES['file']);
+    }
+
 }
