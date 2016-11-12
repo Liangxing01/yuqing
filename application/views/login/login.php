@@ -27,21 +27,65 @@
     </script>
     <![endif]-->
     <style>
-        .error{
+        .error {
             font-size: 0.9em;
             color: #FF4500;
         }
-        #login_error{
+
+        #login_error {
             display: none;
         }
-        
 
-        .login_bg{  width: 100%; height: 100% ; position: absolute; z-index: -1;}
-         #box{ width: 309px; height: 328px; background: #000; filter:alpha(opacity=60); opacity: 0.6; position: absolute; right: 15%;}
-        .meih{ width: 250px; color: #ffffff; margin: auto;  padding-top: 10px; padding-bottom: 10px;}
-        .meih input{ border-radius: 4px; box-shadow: none; width: 200px; background: white; border: none; line-height: 30px; text-indent: 20px;}
-        .meih a{ color: white; text-align: left !important;}
-        .an{ width: 250px !important; background: #5cc8f1 !important; border: none; border-radius: 8px !important; line-height: 40px !important; color: white !important; font-size: 1.8em;}
+        .login_bg {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            z-index: -1;
+        }
+
+        #box {
+            width: 309px;
+            height: 328px;
+            background: #000;
+            filter: alpha(opacity=60);
+            opacity: 0.6;
+            position: absolute;
+            right: 15%;
+        }
+
+        .meih {
+            width: 250px;
+            color: #ffffff;
+            margin: auto;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+
+        .meih input {
+            border-radius: 4px;
+            box-shadow: none;
+            width: 200px;
+            background: white;
+            color: #000;
+            border: none;
+            line-height: 30px;
+            text-indent: 20px;
+        }
+
+        .meih a {
+            color: white;
+            text-align: left !important;
+        }
+
+        .an {
+            width: 250px !important;
+            background: #5cc8f1 !important;
+            border: none;
+            border-radius: 8px !important;
+            line-height: 40px !important;
+            color: white !important;
+            font-size: 1.8em;
+        }
     </style>
     <!-- END STYLESHEET-->
 </head>
@@ -49,16 +93,17 @@
 
 
 <div class="login_bg">
-	<img src="../../../img/login_bg.png" width="100%" height="100%">
+    <img src="../../../img/login_bg.png" width="100%" height="100%">
 </div>
 <div id="box">
-	<form>
-		<div class="meih" style="text-align: center;"><h2>账号登录</h2></div>
-		<div class="meih">账号：<input type="text" placeholder="输入账号" /></div>
-		<div class="meih">密码：<input type="password" placeholder="输入密码"/></div>
-		<div class="meih"><a href="">忘记密码？</a></div>
-		<div class="meih"><input type="button" value="登录" class="an"></div>
-	</form>
+    <form id="login-form">
+        <div class="meih" style="text-align: center;"><h2>账号登录</h2></div>
+        <div class="meih">账号：<input name="username" id="username" type="text" placeholder="输入账号"/></div>
+        <div class="meih">密码：<input name="password" id="password" type="password" placeholder="输入密码"/></div>
+        <div class="meih"><span id="login_error" class="error"></span></div>
+        <div class="meih"><a href="">忘记密码？</a></div>
+        <div class="meih"><input type="submit" value="登录" class="an"></div>
+    </form>
 </div>
 
 <!-- BEGIN FOOTER -->
@@ -84,22 +129,22 @@
 
 <!-- Page Script -->
 <script>
-			window.onload = function(){
-			    function box(){
-			    var oBox = document.getElementById('box');
-			    var L1 = oBox.offsetWidth;
-			    var H1 = oBox.offsetHeight;
+    window.onload = function () {
+        function box() {
+            var oBox = document.getElementById('box');
+            var L1 = oBox.offsetWidth;
+            var H1 = oBox.offsetHeight;
 //			    var Left = (document.documentElement.clientWidth-L1)/2;
-			    var top = (document.documentElement.clientHeight-H1)/2;
+            var top = (document.documentElement.clientHeight - H1) / 2;
 //			    oBox.style.left = Left+'px';
-			    oBox.style.top = top+'px';
-			    }
-			    box();
-			    window.onresize = function(){
-			        box();
-			    } 
-			}
+            oBox.style.top = top + 'px';
+        }
 
+        box();
+        window.onresize = function () {
+            box();
+        }
+    }
 
 
     // jq validate 插件初始化
@@ -122,7 +167,7 @@
     });
 
     //登陆表单提交
-    function login_commit(){
+    function login_commit() {
         var username = $("#username").val();
         var password = $("#password").val();
 
@@ -134,9 +179,9 @@
                 "password": password
             },
             success: function (data) {
-                if(data.code == "0"){
+                if (data.code == "0") {
                     forward("/welcome/index");
-                }else {
+                } else {
                     $("#login_error").html(data.message).show();
                 }
             }
