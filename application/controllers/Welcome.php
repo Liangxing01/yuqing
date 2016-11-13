@@ -154,8 +154,19 @@ class Welcome extends MY_Controller
             ->set_output(json_encode($info));
     }
 
+    /**
+     * 展示个人信息页面
+     */
+    public function show_my_info(){
+        $this->assign("active_title", "my_info");
+        $this->assign("active_parent", "manage_parent");
+        $data = $this->get_my_info();
+        $this->assign('userinfo',$data);
+        $this->all_display("user_info.html");
+    }
 
-    /*
+
+    /**
      * 个人信息查看接口
      */
     public function get_my_info()
@@ -163,7 +174,7 @@ class Welcome extends MY_Controller
         $uid = $this->session->userdata('uid');
         $res = $this->my_model->get_user_info($uid);
         $res[0]['privilege'] = $this->session->userdata('privilege');
-        echo json_encode($res);
+        return $res[0];
     }
 
     /*
@@ -173,12 +184,14 @@ class Welcome extends MY_Controller
     {
         $name = $this->input->post('name');
         $sex = $this->input->post('sex');
+        $avatar = $this->input->post('avatar');
         $update_data = array(
             'name' => $name,
-            'sex' => $sex
+            'sex' => $sex,
+            'avatar' => $avatar
         );
-        $uid = $this->session->userdata('uid');
-        $res = $this->my_model->update_info($update_data, $uid);
+
+        $res = $this->my_model->update_info($update_data);
         if ($res) {
             echo json_encode(
                 array(
@@ -231,7 +244,7 @@ class Welcome extends MY_Controller
 
         $this->load->library('upload', $config);
 
-        if (!$this->upload->do_upload('screenshot')) {
+        if (!$this->upload->do_upload('avatar')) {
             $error = $this->upload->display_errors();
             $res = ['res' => 0, 'info' => $error];
             echo json_encode($res);

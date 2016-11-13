@@ -144,7 +144,17 @@ class MY_Model extends CI_Model {
     }
 
     //修改个人信息接口
-    public function update_info($data,$uid){
+    public function update_info($data){
+        $uid = $this->session->userdata('uid');
+        //删除原头像
+        $old_avatar = $this->db->select('avatar')->from('user')
+            ->where('id',$uid)
+            ->get()->row_array();
+        if(isset($old_avatar)){
+            $old_avatar_url = $old_avatar['avatar'];
+            unlink($_SERVER['DOCUMENT_ROOT'].$old_avatar_url);
+        }
+
         $this->db->where('id',$uid);
         $res = $this->db->update('user',$data);
         return $res;

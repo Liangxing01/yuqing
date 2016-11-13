@@ -28,7 +28,7 @@
                             <div class="form-group">
                                 <label class="col-xs-4 col-sm-1 control-label">姓名</label>
                                 <div class="col-xs-8 col-sm-11">
-                                    <input type="text" name="name" id="name" required lay-verify="required" placeholder="请输入姓名" autocomplete="off" class="form-control layui-input">
+                                    <input value="<{$userinfo['name']}>" type="text" name="name" id="name" required lay-verify="required" placeholder="请输入姓名" autocomplete="off" class="form-control layui-input">
                                 </div>
                             </div>
                             <div class="form-group">
@@ -41,9 +41,9 @@
                             
 
                             <div class="form-group">
-                                <label class="col-xs-4 col-sm-1 control-label">单位属性</label>
+                                <label class="col-xs-4 col-sm-1 control-label">单位</label>
                                 <div class="col-xs-8 col-sm-11">
-                                    保密单位
+                                    <{$userinfo['group_name']}>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -101,5 +101,8 @@
         <!-- END WRAPPER  -->
     </section>
     <!-- END MAIN CONTENT -->
+    <input type="hidden" id="privilege" value="<{$userinfo['privilege']}>">
+    <input type="hidden" id="avatar" value="<{$userinfo['avatar']}>">
+    <input type="hidden" id="sex" value="<{$userinfo['sex']}>">
 
 </section>

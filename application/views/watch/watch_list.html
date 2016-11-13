@@ -1,0 +1,262 @@
+<link href="/assets/advanced-datatable/media/css/demo_page.css" rel="stylesheet">
+<link href="/assets/advanced-datatable/media/css/demo_table.css" rel="stylesheet">
+<!-- BOOTSTRAP DATEPICKER PLUGIN CSS -->
+<link rel="stylesheet" type="text/css" href="/assets/bootstrap-datepicker-r/css/bootstrap-datepicker.css">
+<!-- DATATABLE CSS -->
+<link rel="stylesheet" href="/assets/data-tables/DT_bootstrap.css">
+
+<!-- Common CSS -->
+<link rel="stylesheet" href="/css/common.css">
+
+
+<!-- BEGIN MAIN CONTENT -->
+<section id="main-content">
+    <section class="wrapper site-min-height">
+        <!-- BEGIN ROW  -->
+        <div class="row">
+            <div class="col-lg-12">
+                <section class="panel">
+                    <header class="panel-heading">
+                        <span class="label label-primary">督查事件列表</span>
+                        <span class="tools pull-right">
+                           <a href="javascript:;" class="fa fa-chevron-down"></a>
+                           <a href="javascript:;" class="fa fa-refresh"></a>
+                           </span>
+                    </header>
+                    <div class="panel-body">
+                        <!-- 检索内容选择框 -->
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label>时间范围:</label>
+                                <div class="input-daterange input-group" id="datepicker">
+                                    <input type="text" id="start" class="input-sm form-control" name="start"/>
+                                    <span class="input-group-addon">到</span>
+                                    <input type="text" id="end" class="input-sm form-control" name="end"/>
+                                </div>
+                            </div>
+
+                            <div class="col-md-2">
+                                <label for="is_group">是否为单位事件:</label>
+                                <select class="form-control" name="is_group" id="is_group">
+                                    <option value="">&nbsp;</option>
+                                    <option value="1">是</option>
+                                    <option value="0">否</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-2">
+                                <label for="rank">事件等级:</label>
+                                <select class="form-control" name="rank" id="rank">
+                                    <option value="">&nbsp;</option>
+                                    <option value="一般">一般</option>
+                                    <option value="重要">重要</option>
+                                    <option value="紧急">紧急</option>
+                                </select>
+                            </div>
+
+
+
+                            <div class="col-md-1 m-t-24">
+                                <button title="搜索" class="btn btn-info" id="search-button"><i class="fa fa-search"></i></button>
+                            </div>
+
+                            <div class="col-md-1 m-t-24">
+                                <button title="清空" class="btn btn-info" id="reset-button">清空
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="adv-table">
+                            <table class="display table table-bordered table-striped" id="event_search_table">
+                                <thead>
+                                <tr>
+                                    <th>编号</th>
+                                    <th>标题</th>
+                                    <th>单位事件</th>
+                                    <th>事件等级</th>
+                                    <th class="hidden-phone">指派时间</th>
+                                    <th>描述</th>
+                                    <th>指派人</th>
+                                    <th>状态</th>
+                                    <th>操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+        <!-- END ROW  -->
+    </section>
+</section>
+<!-- END SECTION -->
+
+
+<!-- Load Plugin -->
+<!-- BOOTSTRAP DATEPICKER JS  -->
+<script src="/assets/bootstrap-datepicker-r/js/bootstrap-datepicker.js"></script>
+<script charset="utf-8"
+        src="/assets/bootstrap-datepicker-r/locales/bootstrap-datepicker.zh-CN.min.js"></script><!-- BOOTSTRAP DATEPICKER JS  -->
+<script language="javascript" src="/assets/data-tables/jquery.dataTables.min.js"></script>
+<script src="/assets/data-tables/dataTables.bootstrap.min.js"></script>
+<script src="/js/public.js"></script>
+
+<!-- Page Script -->
+<script>
+
+    $('.input-daterange').datepicker({
+        language: "zh-CN"
+    });
+
+    //查询起始时间 监听
+    $("#start").on("changeDate", function (ev) {
+        $("#event_search_table").DataTable().ajax.reload(null, false);
+    });
+
+    //查询截止时间 监听
+    $("#end").on("changeDate", function (ev) {
+        $("#event_search_table").DataTable().ajax.reload(null, false);
+    });
+
+    //查询按钮 监听
+    $("#search-button").on("click", function(){
+        $("#event_search_table").DataTable().ajax.reload(null, false);
+    });
+
+    //清空按钮 监听
+    $("#reset-button").on("click", function () {
+        $("#start").val("");
+        $("#end").val("");
+        $("#rank").val("");
+        $("#is_group").val("");
+        $("#event_search_table").DataTable().ajax.reload(null, false);
+    });
+
+    $('#event_search_table').dataTable({
+
+        "bPaginate": true,
+        "bProcessing": false,                //是否显示正在处理提示信息。
+        "bLengthChange": true,
+        "bFilter": true,                     //是否使用内置的过滤功能。
+        "bSort": true,
+        "bInfo": true,
+        "bAutoWidth": false,
+        "bStateSave": true,
+        "iDisplayLength": 10,                //每页显示10条数据
+        "aaSorting": [[5, "desc"]],          //默认排序 第5列
+
+        "bServerSide": true,
+        "sAjaxSource": "/watch/get_watch_list",
+        "sServerMethod": "POST",
+
+        "fnServerParams": function (aoData) { //发送额外参数
+            aoData.push({"name": "start_time", "value": dateToTime($("#start").val())});
+            aoData.push({"name": "end_time", "value": dateToTime($("#end").val())});
+            aoData.push({"name": "is_group", "value": $("#is_group").val()});
+            aoData.push({"name": "rank", "value": $("#rank").val()});
+        },
+
+        "aoColumns": [
+            {
+                "sTitle": "编号",
+                "mData": "event_id",
+                'sClass': "text-center",
+                'orderable': false
+            },
+            {
+                "sTitle": "标题",
+                "mData": "title",
+                'sClass': "text-center",
+                'orderable': false
+            },
+            {
+                "sTitle": "单位事件",
+                "mData": "group",
+                'sClass': "text-center",
+                'orderable': false,
+                "mRender" : function (data){
+                    return data == null ? "<button class='btn btn-success btn-xs'>否</button>" :
+                            "<button class='btn btn-info btn-xs'>是</button>";
+                }
+            },
+            {
+                "sTitle": "事件等级",
+                "mData": "rank",
+                'sClass': "text-center",
+                'orderable': false,
+                "mRender": function (data) {
+                    switch (data){
+                        case '一般':
+                            return "<button class='btn btn-primary btn-xs'>一般</button>";
+                            break;
+                        case '重要':
+                            return "<button class='btn btn-warning btn-xs'>重要</button>";
+                            break;
+                        case '紧急':
+                            return "<button class='btn btn-danger btn-xs'>紧急</button>";
+                            break;
+                    }
+
+                }
+            },
+            {
+                "sTitle": "指派时间",
+                "mData": "time",
+                'sClass': "text-center",
+                "mRender" : function (data){
+                    return timeToDate(data*1000);
+                }
+            },
+            {
+                "sTitle": "描述",
+                "mData": "description",
+                'sClass': "text-center",
+                'orderable': false
+            },
+            {
+                "sTitle": "指派人",
+                "mData": "name",
+                'sClass': "text-center",
+                'orderable': false
+            },
+            {
+                "sTitle": "状态",
+                "mData": "state",
+                'sClass': "text-center",
+                'orderable': false
+            },
+            {
+                "sTitle": "操作",
+                "mData": "eid",
+                'sClass': "text-center",
+                'orderable': false,
+                "mRender": function (data) {
+                    return "<a title='查看' href='/handler/show_detail?id=" + data + " ' class='btn btn-info btn-xs'><i class='fa fa-eye'></i>查看</a>";
+                }
+            }
+        ],
+
+        "oLanguage": {
+            "sLengthMenu": "每页显示 _MENU_ 条记录",
+            "sInfo": "从 _START_ 到 _END_ /共 _TOTAL_ 条数据",
+            "sInfoEmpty": "没有数据",
+            "sInfoFiltered": "(从 _MAX_ 条数据中检索)",
+            "oPaginate": {
+                "sFirst": "首页",
+                "sPrevious": "前一页",
+                "sNext": "后一页",
+                "sLast": "尾页"
+            },
+            "sZeroRecords": "暂无数据",
+            "sSearch": "搜索:"
+        }
+
+    });
+    //刷新表格
+    jQuery(".panel .tools .fa-refresh").click(function () {
+        $("#event_search_table").DataTable().ajax.reload(null, false);
+    });
+</script>
