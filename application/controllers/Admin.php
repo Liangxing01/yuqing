@@ -158,4 +158,29 @@ class Admin extends MY_Controller {
         $this->all_display('admin/user_manage.html');
     }
 
+    public function get_group(){
+        $this->load->model("Tree_Model","tree_model");
+        $res = $this->tree_model->get_group_tree();
+        echo $res;
+    }
+
+    //添加用户
+    public function add_person(){
+        $data = $this->input->post();
+        $res = $this->admin_model->add_person($data);
+        if($res){
+            echo json_encode(
+                array(
+                    'res' => 1
+                )
+            );
+        }else{
+            echo json_encode(
+                array(
+                    'res' => 0
+                )
+            );
+        }
+    }
+
 }
