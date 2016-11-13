@@ -1,0 +1,146 @@
+<style type="text/css">
+    .form-group{ color: #000000;}
+    input{ border:none !important; text-indent: inherit !important; padding-left: 0px !important;}
+    label{ font-weight: bold;!important; color: #000000;}
+    #submit3{background: #72d0eb; border: none;}
+</style>
+
+<!-- Ztree CSS -->
+<link rel="stylesheet" href="/assets/ztree/zTreeStyle/zTreeStyle.css">
+
+<!-- BEGIN MAIN CONTENT -->
+<section id="main-content">
+    <!-- BEGIN WRAPPER  -->
+    <section class="wrapper site-min-height">
+        <!-- BEGIN ROW  -->
+        <div class="row">
+            <div class="col-lg-12">
+                <section class="panel">
+                    <header class="panel-heading">
+                        <span class=""><strong><img src="../../../img/passw.png" width="35" height="35" />用户管理</strong></span>
+
+                    </header>
+                    <div class="panel-body">
+                        <form id="form1" class="form-horizontal tasi-form layui-form" enctype="multipart/form-data">
+                            <input type="hidden" id="id" name="id"/>
+                            <div class="form-group">
+                                <label class="col-xs-3 col-sm-1 control-label">用户名：</label>
+                                <div class="col-xs-9 col-sm-11">
+                                    <input type="password" name="username" id="username"   class="form-control layui-input">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-xs-3 col-sm-1 control-label">密码：</label>
+                                <div class="col-xs-9 col-sm-11">
+                                    <input type="password" name="pass" id="pass"  class="form-control layui-input">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-xs-3 col-sm-1 control-label">姓名：</label>
+                                <div class="col-xs-9 col-sm-11">
+                                    <input type="password" name="name" id="name"  class="form-control layui-input">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-xs-3 col-sm-1 control-label">性别：</label>
+                                <div class="col-xs-9 col-sm-11">
+                                    <input type="password" name="sex" id="sex"  class="form-control layui-input">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-xs-3 col-sm-1 control-label">权限：</label>
+                                <div class="col-xs-9 col-sm-11">
+                                    <input type="password" name="privilege" id="privilege"  class="form-control layui-input">
+                                </div>
+                            </div>
+
+
+
+
+                        </form>
+
+                        <section class="panel">
+                            <header class="panel-heading">
+                                <i class="fa fa-hand-o-down"></i>
+                                <span class="label label-primary">
+                                 结构结构
+                            </span>
+                            </header>
+                            <div class="panel-body">
+                                <ul class="nav prod-cat ztree" id="treePartment">
+                                    数据加载中……
+                                </ul>
+                            </div>
+                        </section>
+
+                    </div>
+                    <div class="text-center ">
+                        <button id="submit3" class="btn btn-success btn-lg col-sm-12">保存</button>
+                    </div>
+
+
+                </section>
+
+            </div>
+        </div>
+        </div>
+        <!-- END WRAPPER  -->
+    </section>
+    <!-- END MAIN CONTENT -->
+
+
+
+</section>
+
+
+
+<!-- Ztree --->
+<script src="/assets/ztree/jquery.ztree.all.min.js"></script>
+<script type="text/javascript">
+    /**
+     * Ztree && MultiSelect 插件
+     * 选择处理人  督办人 和 牵头人(单位)
+     */
+    var treeObj;
+    var setting = {
+        check: {
+            enable: true,
+            chkboxType: {"Y": "", "N": ""}
+        },
+        async: {
+            enable: true,
+            url: "/designate/tree",
+            autoParam: ["id", "name=n", "level=lv"]
+            // dataFilter: filter
+        },
+        callback: {
+            // onClick: zTreeOnClick,
+            onAsyncSuccess: zTreeOnAsyncSuccess,//异步加载完执行
+            onCheck: zTreeCheck//当选中时执行
+        }
+    };
+
+    function zTreeOnAsyncSuccess(event, treeId, treeNode, msg) {
+        //去掉组织结构的选择项
+        var rootNode = treeObj.getNodeByParam("id", 0, null);//得到组织结构树
+        rootNode.nocheck = true;
+        treeObj.refresh();//更改属性后，刷新界面
+    }
+    //当节点选中时选择
+    function zTreeCheck(event, treeId, treeNode) {
+        // console.log(treeNode)
+        // console.log(treeNode.isdepartment);
+        if (treeNode.isdepartment == 1) {//个人
+            treeNode.getParentNode().checked = false;
+            //   console.log(treeNode.getParentNode());
+        } else if (treeNode.isdepartment == 0) {//单位
+            var children_arr = treeNode.children;
+            for (var i in children_arr) {
+                children_arr[i].checked = false;
+            }
+        }
+        treeObj.refresh();
+    }
+    treeObj = $.fn.zTree.init($("#treePartment"), setting);
+
+</script>

@@ -183,11 +183,9 @@ class Welcome extends MY_Controller
     {
         $name = $this->input->post('name');
         $sex = $this->input->post('sex');
-        $avatar = $this->input->post('avatar');
         $update_data = array(
             'name' => $name,
-            'sex' => $sex,
-            'avatar' => $avatar
+            'sex' => $sex
         );
 
         $res = $this->my_model->update_info($update_data);
@@ -250,6 +248,11 @@ class Welcome extends MY_Controller
         } else {
             $data = array('upload_data' => $this->upload->data());
             $upload_data = $data['upload_data'];
+            //更新头像
+            $this->my_model->update_avatar(array(
+                'avatar' => '/uploads/avatar/' . $upload_data['file_name']
+            ));
+
             $res = array(
                 'res' => 1,
                 'info' => array(
