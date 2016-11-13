@@ -13,21 +13,6 @@
 
 $(function () {
     window.FILES=[];
-    // $('#upload_type').on('change',function(){
-    //     var val=this.value;
-    //     window.FILES=[];
-    //     if (val==0){
-    //         $('#fileupload').fileupload({
-    //             url:'/reporter/upload_pic',
-    //             acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i
-    //         });
-    //     }else{
-    //         $('#fileupload').fileupload({
-    //             url:'/reporter/upload_video',
-    //             acceptFileTypes: /(\.|\/)(rmvb|rm|avi|flv|mp4|mpeg)$/i
-    //         });
-    //     }
-    // });
     // Initialize the jQuery File Upload widget:
     $('#pic').fileupload({
         // Uncomment the following to send cross-domain cookies:
@@ -35,10 +20,14 @@ $(function () {
         url:'/reporter/upload_pic',
         autoUpload: false,
         filesContainer: $('#pic_files'),
-        // downloadTemplateId: null,
-        // downloadTemplate: function (o) {
-        //     alert(1);
-        // },
+        getFilesFromResponse:function(res){
+            if (res.result&&res.result.res==1){
+                res=res.result.info;
+                res.url=res.url.replace('pic/','temp/');
+                return [{'url':res.url,'name':res.name,'isPic':true}];
+            }
+            return [];
+        },
         acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i
     }).on('fileuploaddone', function (e, data) {
         var res=data.result;
@@ -57,10 +46,13 @@ $(function () {
         url:'/reporter/upload_video',
         autoUpload: false,
         filesContainer: $('#video_files'),
-        // downloadTemplateId: null,
-        // downloadTemplate: function (o) {
-        //     alert(1);
-        // },
+        getFilesFromResponse:function(res){
+            if (res.result&&res.result.res==1){
+                res=res.result.info;
+                return [{'url':res.url,'name':res.name}];
+            }
+            return [];
+        },
         acceptFileTypes: /(\.|\/)(rmvb|rm|avi|flv|mp4|mpeg)$/i
     }).on('fileuploaddone', function (e, data) {
         var res=data.result;
@@ -71,5 +63,16 @@ $(function () {
             res.info.isPic=0;
             window.FILES.push(res.info);
         }
+    });
+    $('form').on('click','.cancle-file',function(){
+        var url=$(this).data('url');
+        for (var x in window.FILES){
+            if (FILES[x].url==url){
+                FILES[x]=FILES[0];
+                FILES.shift();
+                break;
+            }
+        }
+        $(this).parent().parent().remove();
     });
 });

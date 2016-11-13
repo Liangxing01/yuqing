@@ -98,60 +98,6 @@
                         </li>
                         <li>
                             <a href="#">
-                    <span class="photo">
-                      <img alt="avatar" src="/img/avatar-mini2.jpg">
-                    </span>
-                    <span class="subject">
-                      <span class="from">
-                        张三
-                      </span>
-                      <span class="time">
-                        10 分钟前
-                      </span>
-                    </span>
-                    <span class="message">
-                      Hi, 在不？
-                    </span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                    <span class="photo">
-                      <img alt="avatar" src="/img/avatar-mini3.jpg">
-                    </span>
-                    <span class="subject">
-                      <span class="from">
-                        小李
-                      </span>
-                      <span class="time">
-                        3 小时
-                      </span>
-                    </span>
-                    <span class="message">
-                      这个一个新任务。
-                    </span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                    <span class="photo">
-                      <img alt="avatar" src="/img/avatar-mini4.jpg">
-                    </span>
-                    <span class="subject">
-                      <span class="from">
-                       小王
-                      </span>
-                      <span class="time">
-                        现在
-                      </span>
-                    </span>
-                    <span class="message">
-                      Hello, 这是上午的文件。
-                    </span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
                                 查看所有消息
                             </a>
                         </li>
@@ -161,83 +107,21 @@
 
                 <!-- START NOTIFY NOTIFICATION BAR -->
 
-                <li id="header_notification_bar" class="dropdown">
+                <li id="notification_bar1" class="dropdown">
                     <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                         <i class="fa fa-bell-o">
                         </i>
-                <span class="badge bg-warning">
-                  7
+                <span class="badge bg-warning" id="bar_num">
                 </span>
                     </a>
                     <ul class="dropdown-menu extended notification">
                         <li class="notify-arrow notify-arrow-blue">
                         </li>
                         <li>
-                            <p class="blue">
-                                你有7条新提醒
+                            <p class="blue" id="notify_total">
                             </p>
                         </li>
-                        <li>
-                            <a href="#">
-                    <span class="label label-danger">
-                      <i class="fa fa-bolt">
-                      </i>
-                    </span>
-                                收到5条邮件.
-                    <span class="small italic">
-                      34 分钟前
-                    </span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                    <span class="label label-warning">
-                      <i class="fa fa-bell">
-                      </i>
-                    </span>
-                                紧急通知
-                    <span class="small italic">
-                      1 小时前
-                    </span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                    <span class="label label-danger">
-                      <i class="fa fa-bolt">
-                      </i>
-                    </span>
-                               日志使用24%
-                    <span class="small italic">
-                      4 小时
-                    </span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                    <span class="label label-success">
-                      <i class="fa fa-plus">
-                      </i>
-                    </span>
-                                新用户注册
-                    <span class="small italic">
-                      现在
-                    </span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                    <span class="label label-primary">
-                      <i class="fa fa-bullhorn">
-                      </i>
-                    </span>
-                                错误发生。
-                    <span class="small italic">
-                      10 分钟前
-                    </span>
-                            </a>
-                        </li>
-                        <li>
+                        <li class="notify-all">
                             <a href="#">
                                 查看所有提醒
                             </a>
@@ -245,9 +129,31 @@
                     </ul>
                 </li>
                 <!-- END NOTIFY NOTIFICATION BAR -->
+                <!-- START NOTIFY NOTIFICATION BAR -->
 
+                <li id="notification_bar2" class="dropdown" style="display:none">
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                        <i class="fa fa-bell-o">
+                        </i>
+                <span class="badge bg-warning" id="bar_num">
+                </span>
+                    </a>
+                    <ul class="dropdown-menu extended notification">
+                        <li class="notify-arrow notify-arrow-blue">
+                        </li>
+                        <li>
+                            <p class="blue" id="notify_total">
+                            </p>
+                        </li>
+                        <li class="notify-all">
+                            <a href="#">
+                                查看所有提醒
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!-- END NOTIFY NOTIFICATION BAR -->
             </ul>
-
 
         </nav>
         <!-- END HEADER NAV -->

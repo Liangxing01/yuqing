@@ -49,10 +49,10 @@ class Welcome extends MY_Controller
 
             }
             if (isset($zp_tasks_num_arr)) {
-                array_push($all_num_arr, $zp_tasks_num_arr);
+                $all_num_arr['zp']=$zp_tasks_num_arr;
             }
             if (isset($handler_num_arr)) {
-                array_push($all_num_arr, $handler_num_arr);
+                $all_num_arr['handler']=$handler_num_arr;
             }
         }
         echo json_encode($all_num_arr);
@@ -75,11 +75,11 @@ class Welcome extends MY_Controller
             switch ($one) {
                 case 2 :
                     $zp_alarm = $this->my_model->get_desi_alert($uid);
-                    array_push($alarm_arr['zp_alarm'], $zp_alarm);
+                    $alarm_arr['zp_alarm']=$zp_alarm;
                     break;
                 case 3 :
                     $processor_alarm = $this->my_model->get_processor_alert($uid);
-                    array_push($alarm_arr['processor_alarm'], $processor_alarm);
+                    $alarm_arr['processor_alarm']=$processor_alarm;
                     break;
             }
         }
@@ -259,12 +259,6 @@ class Welcome extends MY_Controller
         $this->assign("active_parent", "manage_parent");
         $this->all_display("change_psw.html");
     }
-
-    function test()
-    {
-        $this->load->view('test');
-    }
-
 
     /**
      * 用户登出 接口

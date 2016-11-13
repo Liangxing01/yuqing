@@ -147,17 +147,17 @@ textarea{ resize: none;}
     <tr class="template-download fade">
         <td>
             <span class="preview">
-                {% if (file.thumbnailUrl) { %}
-                    <a href="{%=file.url%}" title="{%=file.name%}" download="{%=file.name%}" data-gallery><img src="{%=file.thumbnailUrl%}"></a>
+                {% if (file.isPic) { %}
+                    <img src="{%=file.url%}">
                 {% } %}
             </span>
         </td>
         <td>
             <p class="name">
-                    <span>提交成功！</span>
+                    <span>{%=file.name%}提交成功！</span>
         </td>
         <td>
-            <span class="size">{%=o.formatFileSize(file.size)%}</span>
+            <button class="cancle-file" data-url="{%=file.url%}">取消上传</button>
         </td>
         <td>
         </td>
