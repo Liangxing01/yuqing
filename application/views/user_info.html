@@ -57,7 +57,7 @@
                         <div class="col-md-2" style="text-align: center; padding-top:10px;">
 	                        <div class="fileupload fileupload-new" data-provides="fileupload">
 	                          <div class="fileupload-new thumbnail" >
-	                            <img src="<{$userinfo['avatar']|default:'/img/no-image.png'}>" alt="">
+	                            <img src="<{$userinfo['avatar']|default:'/img/no-image.png'}>" alt="" id="avatar_img">
 	                          </div>
 	                          <div class="fileupload-preview fileupload-exists thumbnail" >
 	                          </div>
@@ -109,6 +109,12 @@
         });
         $('#avatar').on('change',function(){
             $('#avatar_sub').show();
+            var file  = this.files[0];
+            var reader = new FileReader();
+            reader.onloadend = function () {
+                $('#avatar_img')[0].src = reader.result;
+            }
+            reader.readAsDataURL(file);
         });
         $('#avatar_sub').click(function(){
             var formData = new FormData();
