@@ -381,20 +381,6 @@ class Handler extends MY_Controller {
         echo json_encode($data);
     }
 
-    //展示组织结构
-    public function show_structure(){
-        $this->assign("active_title", "structure");
-        $this->assign("active_parent", "manage_parent");
-        $this->all_display("designate/show_structure.html");
-    }
-
-    //展示个人信息
-    public function show_my_info(){
-        $this->assign("active_title", "my_info");
-        $this->assign("active_parent", "manage_parent");
-        $this->all_display("handler/user_info.html");
-    }
-
 
 
 
