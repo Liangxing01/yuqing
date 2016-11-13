@@ -188,7 +188,35 @@ class Designate extends MY_controller
      */
     public function attachment_upload()
     {
+        $config['upload_path'] = './uploads/temp/';
+        $config['allowed_types'] = 'doc|docx|xls';
+        $config['max_size'] = 0;
+        $config['encrypt_name'] = true;
 
+        $this->load->library('upload', $config);
+
+        //处理上传文件
+        if (!$this->upload->do_upload('file')) {
+            $error = $this->upload->display_errors();
+            $res = array(
+                'res' => 0,
+                "info" => $error
+            );
+        } else {
+            $data = array('upload_data' => $this->upload->data());
+            $upload_data = $data['upload_data'];
+            $res = array(
+                'res' => 1,
+                'info' => array(
+                    'name' => $upload_data['client_name'],
+                    'url' => '/uploads/document/' . $upload_data['file_name'],
+                    'new_name' => $upload_data['file_name'],
+                    'type' => $upload_data['file_type']
+                )
+            );
+        }
+        $this->output->set_content_type('application/json')
+            ->set_output(json_encode($res));
     }
 
 

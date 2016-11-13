@@ -58,6 +58,7 @@ class Reporter extends MY_controller {
 
     /**
      * @param $att
+     * @param $info_id
      */
     public function insert_attachment($att,$info_id){
         $this->report->insert_att_info($att,$info_id);
