@@ -574,10 +574,10 @@
         });
         $('#designate-form').validate({
             rules: {
-                'title': 'required',
-                'info_id': 'required',
-                'main_processor': 'required',
-                'processor': "required"
+//                'title': 'required',
+//                'info_id': 'required',
+//                'main_processor': 'required',
+//                'processor': "required"
             },
             messages: {
                 'title': {
@@ -655,6 +655,9 @@
      */
     function get_relate_event() {
         var info_id = $("#relate_event").val();
+        if(info_id == ""){
+            return "";
+        }
         var tag_arr = info_id.split("_");
         var id = [];
         for (i in tag_arr) {
@@ -670,13 +673,34 @@
     function designate_form_commit() {
         var title = $("#title").val();
         var info_id = get_info_id();
-        var description = $("#description");
+        var description = $("#description").val();
         var rank = $("#rank").val();
         var reply_time = $("#reply_time").val();
-        var relate_event = $("#relate_event").val();
+        var relate_event = get_relate_event();
         var processor = $("#input_con_dealman").val();
         var main_processor = $("#input_con_qiantou").val();
         var watcher = $("#input_con_checkman").val();
+
+        $.ajax({
+            url: "/designate/commit_event_designate",
+            method: "post",
+            dataType : 'json',
+            data: {
+                "title": title,
+                "info_id": info_id,
+                "description" : description,
+                "rank" : rank,
+                "reply_time": reply_time,
+                'relate_event': relate_event,
+                'processor': processor,
+                'main_processor': main_processor,
+                'watcher': watcher,
+                'attachment' : window.FILES
+            },
+            success: function (data) {
+                console.log(data);
+            }
+        });
     }
 
     /**
@@ -691,7 +715,7 @@
         },
         async: {
             enable: true,
-            url: "/designate/tree",
+            url: "/designate/get_processor_tree",
             autoParam: ["id", "name=n", "level=lv"]
             // dataFilter: filter
         },
@@ -736,7 +760,7 @@
         //提交的值为  department_id
         if ($("#input_con_qiantou").val() == '') {//假如牵头人为空时
             $('#con_qiantou').html(nodes[0].name);
-            $("#input_con_qiantou").val('"' + nodes[0].isdepartment + "_" + nodes[0].id + '"');
+            $("#input_con_qiantou").val(nodes[0].isdepartment + "_" + nodes[0].id);
         }
         //得到现在已经有的值
         for (var i in nodes) {
@@ -828,6 +852,8 @@
     })
 
 </script>
+
+<!-- jQuery File Upload -->
 <script id="template-upload" type="text/x-tmpl">
 {% for (var i=0, file; file=o.files[i]; i++) { %}
     <tr class="template-upload fade">

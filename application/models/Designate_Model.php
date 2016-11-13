@@ -537,28 +537,160 @@ class Designate_Model extends CI_Model
      */
     public function event_designate($data)
     {
-        //添加事件信息
-//        $event_info = array();
-//        foreach($data AS $key ){}
+        //TODO 添加事务流程
 
-        $processors = explode(",", $data["processor"]);
-        $insert = array();
         $time = time();
-        $manager_id = $this->session->userdata("uid");
-        foreach ($processors AS $processor_id) {
-            $insert[] = array(
-                "event_id" => $data["event_id"],
-                "description" => $data["description"],
-                "manager" => $manager_id,
-                "processor" => $processor_id,
-                "time" => $time
-            );
+        $manager = $this->session->uid; //首派人
+
+        //获得处理人(单位)ID
+        $processors = array(
+            "user" => array(),
+            "group" => array()
+        );
+        foreach (explode(",", $data["processor"]) AS $processor) {
+            $temp = explode("_", $processor);
+            if ($temp[0] == "1") {
+                $processors["user"][] = $temp[1];
+            } else {
+                $processors["group"][] = $temp[1];
+            }
         }
 
-        //TODO 检测是否重复指派
-        $result = $this->db->where("id", $data["event_id"])->update("event", array("state" => "已指派"));
+        //获得督办人ID
+        $watchers = array();
+        foreach (explode(",", $data["watcher"]) AS $w) {
+            $temp = explode("_", $w);
+            $watchers[] = $temp[1];
+        }
 
-        return $this->db->insert_batch("event_designate", $insert);
+        //获得牵头人(单位)
+        $main = explode("_", $data["main_processor"]);
+        if ($main[0] == "1") {
+            $main_processor = $main[1];
+            $main_group = null;
+        } else {
+            $main_processor = null;
+            $main_group = $main[1];
+        }
+
+
+        //添加事件表
+        $event = array(
+            "title" => $data["title"],             // 标题
+            "manager" => $manager,                 // 首派人
+            "rank" => $data["rank"],               // 事件等级
+            "reply_time" => $data["reply_time"],   // 首回时间
+            "description" => $data["description"], // 事件描述
+            "main_processor" => $main_processor,   // 牵头人
+            "group" => $main_group,                // 牵头单位
+            "state" => "已指派",                    // 事件状态
+            "start_time" => $time                  // 开始时间
+        );
+        $this->db->insert("event", $event);   //事件生成
+        //获得事件ID
+        $event_id = $this->db->insert_id();
+
+
+        //添加事件信息关联表
+        $info_id = explode(",", $data["info_id"]);
+        $event_info = array();
+        foreach ($info_id AS $id) {
+            $event_info[] = array(
+                "info_id" => $id,
+                "event_id" => $event_id
+            );
+        }
+        $this->db->insert_batch("event_info", $event_info);   //事件信息关联
+
+
+        //添加事件指派表
+        $event_designate = array();
+        foreach ($processors["user"] AS $user) {
+            $event_designate[] = array(
+                "event_id" => $event_id,
+                "manager" => $manager,
+                "processor" => $user,
+                "time" => $time,
+                "description" => $data["description"],
+                "state" => "未处理"
+            );
+        }
+        foreach ($processors["group"] AS $group) {
+            $event_designate[] = array(
+                "event_id" => $event_id,
+                "manager" => $manager,
+                "group" => $group,
+                "time" => $time,
+                "description" => $data["description"],
+                "state" => "未处理"
+            );
+        }
+        $this->db->insert_batch("event_designate", $event_designate);  //事件指派
+
+
+        //添加事件关联表
+        $relate_event = array();
+        foreach (explode(",", $data["relate_event"]) AS $id) {
+            $relate_event[] = array(
+                "relate_id" => $id,
+                "event_id" => $event_id
+            );
+        }
+        $this->db->insert_batch("event_relate", $relate_event);  //事件关联
+
+
+        //添加事件督办表
+        $event_watch = array();
+        foreach ($watchers AS $watcher) {
+            $event_watch[] = array(
+                "watcher" => $watcher,
+                "event_id" => $event_id
+            );
+        }
+        $this->db->insert_batch("event_watch", $event_watch);  //事件督办
+
+
+        $event_attachment = array();
+        //添加事件参考文件表
+        foreach ($data["attachment"] AS $attachment) {
+            $event_attachment[] = array(
+                "event_id" => $event_id,
+                "name" => $attachment["name"],
+                "url" => $attachment["url"],
+                "type" => "document"
+            );
+        }
+        $this->db->insert_batch("event_attachment", $event_attachment);  //事件参考文件
+
+
+        //添加事件报警表
+        if ($data["reply_time"]) {
+            $event_alert = array();
+            foreach ($processors["user"] AS $u) {
+                $event_alert[] = array(
+                    "event_id" => $event_id,
+                    "uid" => $u,
+                    "title" => $data["title"],
+                    "state" => 1,
+                    "time" => $time + $data["reply_time"] * 60
+                );
+            }
+            //指派人报警
+            $event_alert[] = array(
+                "event_id" => $event_id,
+                "uid" => $manager,
+                "title" => $data["title"],
+                "state" => 1,
+                "time" => $time + $data["reply_time"] * 60
+            );
+            $this->db->insert_batch("event_alert", $event_alert);  //事件报警
+        }
+
+        echo "ok";
+
+
+        //TODO 检测是否重复指派
+//        return $this->db->insert_batch("event_designate", $insert);
     }
 
 }

@@ -12,77 +12,12 @@
 <!-- BEGIN MAIN CONTENT -->
 <section id="main-content">
     <section class="wrapper site-min-height">
-        <div class="inbox-head">
-            <h3>事件详情</h3>
+
+        <div class="col-lg-4">
+            选择处理人:
+            <ul id="relation-tree" class="ztree"></ul>
         </div>
-        <div class="inbox-body">
-            <div class="heading-inbox row">
-                <div class="col-md-8">
-                    <div class="compose-btn">
-                        <a href="#event-designate-form" class="btn btn-sm btn-info"><i class="fa fa-reply"></i> 指派</a>
-                    </div>
-                </div>
-                <div class="col-md-12">
-                    <h4>
-                        <{$event['title']}>
-                    </h4>
-                </div>
-            </div>
-            <div class="sender-info">
-                <div class="row">
-                    <div class="col-md-12">
-                        <strong class="">上报人:</strong><span>&nbsp;<{$event['publisher']}></span>
-                        &nbsp;
-                        <strong>来源:</strong><span>&nbsp;<{$event['source']}></span>
-                        &nbsp;
-                        <strong>链接:</strong><span>&nbsp;<{$event['url']}></span>
-                        &nbsp;
-                        <strong>类型:</strong><span>&nbsp;<{$event['type']}></span>
-                        &nbsp;
-                        <strong>时间:</strong><span>&nbsp;<{date("Y-m-d H:i:s",$event['start_time'])}></span>
-                    </div>
-                </div>
-            </div>
-            <div class="event-content">
-                <p><{$event['description']}></p>
-            </div>
-            <div class="attachment-mail">
-                <p>
-                    <span><i class="fa fa-paperclip"></i> 2 张截图 <{$event['picture']}></span>
-                </p>
-                <ul>
-                    <li>
-                        <a class="atch-thumb" href="#">
-                            <img alt="img" src="/img/pro-ac-2.png">
-                        </a>
-                    </li>
-                    <li>
-                        <a class="atch-thumb" href="#">
-                            <img alt="img" src="/img/pro-ac-1.png">
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <div class="inbox-head" id="event-designate-form">
-            <h3>事件指派</h3>
-        </div>
-        <div class="inbox-body">
-            <div class="row">
-                <div class="col-lg-4">
-                    选择处理人:
-                    <ul id="relation-tree" class="ztree"></ul>
-                </div>
-                <div class="col-lg-6">
-                    <label for="description">指派描述:</label>
-                    <textarea class="form-control" id="description" name="description"></textarea>
-                </div>
-                <div class="col-lg-10">
-                    <button id="event-designate-button" class="btn btn-primary pull-right">确认指派</button>
-                </div>
-            </div>
-        </div>
-        <input type="hidden" name="event_id" id="event_id" value="<{$event['id']}>">
+
     </section>
 </section>
 <!-- END SECTION -->
@@ -91,65 +26,47 @@
 
 <!-- Page Script -->
 <script language="javascript">
-    var zTreeObj;
-    // zTree 的参数配置，深入使用请参考 API 文档（setting 配置详解）
+    var treeObj;
     var setting = {
         check: {
             enable: true,
-            autoCheckTrigger: true,
-            chkStyle: "checkbox"
+            chkboxType: {"Y": "", "N": ""}
+        },
+        async: {
+            enable: true,
+            url: "/designate/get_processor_tree",
+            autoParam: ["id", "name=n", "level=lv"]
+            // dataFilter: filter
+        },
+        callback: {
+            // onClick: zTreeOnClick,
+            onAsyncSuccess: zTreeOnAsyncSuccess,//异步加载完执行
+            onCheck: zTreeCheck//当选中时执行
         }
     };
-    // zTree 的数据属性，深入使用请参考 API 文档（zTreeNode 节点数据详解）
-    var zNodes = [
-        {
-            name:'组织关系',open:true,children:[
-                {name: '部门A',id:1,open:false,children:[
-                    {name: '张三',id:1}
-                ]},
-                {name: '部门B',id:2,open:false,children:[
-                    {name: '李四',id:2}
-                ]},
-                {name: '部门C',id:3,open:false,children:[
-                    {name: '王五',id:3},
-                    {name: '赵六',id:4}
-                ]}
-            ]
-        }
-    ];
-    $(document).ready(function () {
-        zTreeObj = $.fn.zTree.init($("#relation-tree"), setting, zNodes);
-    });
 
-    $("#event-designate-button").click(function () {
-        var zTree = $.fn.zTree.getZTreeObj("relation-tree");
-        checkCount = zTree.getCheckedNodes(true);
-
-        var children = "";
-        for(var i=0;i<checkCount.length;i++) {
-            if(typeof(checkCount[i].id) == "undefined"){
-                continue;
+    function zTreeOnAsyncSuccess(event, treeId, treeNode, msg) {
+        //去掉组织结构的选择项
+        var rootNode = treeObj.getNodeByParam("id", 0, null);//得到组织结构树
+        rootNode.nocheck = true;
+        treeObj.refresh();//更改属性后，刷新界面
+    }
+    //当节点选中时选择
+    function zTreeCheck(event, treeId, treeNode) {
+        // console.log(treeNode)
+        // console.log(treeNode.isdepartment);
+        if (treeNode.isdepartment == 1) {//个人
+            treeNode.getParentNode().checked = false;
+            //   console.log(treeNode.getParentNode());
+        } else if (treeNode.isdepartment == 0) {//单位
+            var children_arr = treeNode.children;
+            for (var i in children_arr) {
+                children_arr[i].checked = false;
             }
-            children += checkCount[i].id + ",";
         }
+        treeObj.refresh();
+    }
+    treeObj = $.fn.zTree.init($("#treePartment"), setting);
 
-        children = children.substring(0,children.length-1);
-        var event_id = $("#event_id").val();
-        var description = $("#description").val();
-
-        if(children == ""){
-            alert("请至少选择一个事件处理人");
-            return false;
-        }
-
-        $.ajax({
-            type: "POST",
-            url: "/designate/commit_event_designate",
-            data: {"event_id": event_id, "description": description, "processor": children},
-            success: function (data) {
-                alert(data);
-            }
-        });
-    });
 
 </script>

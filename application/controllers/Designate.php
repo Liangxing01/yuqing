@@ -152,26 +152,33 @@ class Designate extends MY_controller
 
 
     /**
+     * 处理人(单位) 接口
+     */
+    public function get_processor_tree(){
+        $this->load->model("Tree_Model", "tree");
+        $this->tree->get_processor_tree();
+    }
+
+    public function demo(){
+        $this->all_display("designate/event_designate_back.html");
+    }
+
+    /**
      * TODO
      * 事件指派 表单提交
      */
     public function commit_event_designate()
     {
-//        $data = $this->input->post();
-//        if (!isset($data["processor"]) || $data["event_id"] == "") {
-//            show_404();
-//        }
-
-        $data["title"] = $this->input->post("title");                   //标题
-        $data["description"] = $this->input->post("description");       //描述
-        $data["info_id"] = $this->input->post("info_id");               //事件信息ID
-        $data["rank"] = $this->input->post("rank");                     //事件等级
-        $data["reply_time"] = $this->input->post("reply_time");         //首回时间
-        $data["relate_event"] = $this->input->post("relate_event");     //相关事件
-        $data["processor"] = $this->input->post("processor");           //处理人(单位)
-        $data["main_processor"] = $this->input->post("main_processor"); //牵头人(单位)
-        $data["watcher"] = $this->input->post("watcher");               //督办人
-        $data["attachment"] = $this->input->post("attachment");         //附件
+        $data["title"] = $this->input->post("title", true);                   //标题
+        $data["description"] = $this->input->post("description", true);       //描述
+        $data["info_id"] = $this->input->post("info_id", true);               //事件信息ID
+        $data["rank"] = $this->input->post("rank", true);                     //事件等级
+        $data["reply_time"] = $this->input->post("reply_time", true);         //首回时间
+        $data["relate_event"] = $this->input->post("relate_event", true);     //相关事件
+        $data["processor"] = $this->input->post("processor", true);           //处理人(单位)
+        $data["main_processor"] = $this->input->post("main_processor", true); //牵头人(单位)
+        $data["watcher"] = $this->input->post("watcher", true);               //督办人
+        $data["attachment"] = $this->input->post("attachment", true);         //附件
 
         $this->load->model("Designate_Model", "designate");
         $result = $this->designate->event_designate($data);
@@ -189,7 +196,7 @@ class Designate extends MY_controller
     public function attachment_upload()
     {
         $config['upload_path'] = './uploads/temp/';
-        $config['allowed_types'] = 'doc|docx|xls';
+        $config['allowed_types'] = 'xls|xlsx|doc|docx|txt';
         $config['max_size'] = 0;
         $config['encrypt_name'] = true;
 
@@ -211,7 +218,7 @@ class Designate extends MY_controller
                     'name' => $upload_data['client_name'],
                     'url' => '/uploads/document/' . $upload_data['file_name'],
                     'new_name' => $upload_data['file_name'],
-                    'type' => $upload_data['file_type']
+                    'type' => "document"
                 )
             );
         }
