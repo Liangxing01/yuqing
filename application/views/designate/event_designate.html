@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="/assets/ztree/zTreeStyle/zTreeStyle.css">
 <!-- Jquery file upload -->
 
+<link rel="stylesheet" href="/assets/ztree/zTreeStyle/zTreeStyle.css">
 <!-- JQUERY STEPY WIZARD CSS -->
 <!--<link href="/css/jquery.stepy.css" rel="stylesheet">-->
 
@@ -186,8 +187,8 @@
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-md-2 col-sm-2 control-label">参考文件上传:</label>
-                                                    <div class="col-md-2 col-sm-2" id="attachment">
-                                                    </div>
+                                                    <input name="file" class="fileinput-button" type="file" id="file" multiple>
+                                                    <table role="presentation" class="table table-striped"><tbody id="files"></tbody></table>
                                                 </div>
                                             </fieldset>
                                             <fieldset title="选择处理人">
@@ -827,3 +828,55 @@
     })
 
 </script>
+<script id="template-upload" type="text/x-tmpl">
+{% for (var i=0, file; file=o.files[i]; i++) { %}
+    <tr class="template-upload fade">
+        <td>
+            <p class="name">{%=file.name%}</p>
+            <strong class="error text-danger"></strong>
+        </td>
+        <td>
+            <p class="size">Processing...</p>
+            <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="progress-bar progress-bar-success" style="width:0%;"></div></div>
+        </td>
+        <td>
+            {% if (!i && !o.options.autoUpload) { %}
+                <button class="btn btn-primary start" disabled>
+                    <span>开始</span>
+                </button>
+            {% } %}
+            {% if (!i) { %}
+                <button class="btn btn-warning cancel">
+                    <span>取消</span>
+                </button>
+            {% } %}
+        </td>
+    </tr>
+{% } %}
+</script>
+<!-- The template to display files available for download -->
+<script id="template-download" type="text/x-tmpl">
+{% for (var i=0, file; file=o.files[i]; i++) { %}
+    <tr class="template-download fade">
+        <td>
+            <p class="name">
+                    <span>提交成功！</span>
+        </td>
+        <td>
+            <span class="size">{%=o.formatFileSize(file.size)%}</span>
+        </td>
+        <td>
+        </td>
+    </tr>
+{% } %}
+</script>
+<script src="/js/upload_file/tmpl.js"></script>
+<script src="/js/upload_file/vendor/jquery.ui.widget.js"></script>
+<!-- The basic File Upload plugin -->
+<script src="/js/upload_file/jquery.fileupload.js"></script>
+<!-- The File Upload processing plugin -->
+<script src="/js/upload_file/jquery.fileupload-process.js"></script>
+<script src="/js/upload_file/jquery.fileupload-validate.js"></script>
+<script src="/js/upload_file/jquery.fileupload-ui.js"></script>
+<!-- The main application script -->
+<script src="/js/upload_file/event.js"></script>
