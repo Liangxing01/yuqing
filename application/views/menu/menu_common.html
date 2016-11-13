@@ -10,7 +10,7 @@
     </a>
     <ul class="sub">
         <li id="my_info">
-            <a href="/handler/show_my_info">
+            <a href="/welcome/show_my_info">
                 个人信息
             </a>
         </li>
@@ -42,9 +42,12 @@
 <!-- 添加active class -->
 <script>
     $(document).ready(function () {
-        var title = "#<{$active_title}>";
-        var parent_title = "#<{$active_parent}>";
-        $(title).addClass('active');
-        $(parent_title).addClass('active');
+        if("<{$active_title}>"){
+            var title = "#<{$active_title}>";
+            var parent_title = "#<{$active_parent}>";
+            $(title).addClass('active');
+            $(parent_title).addClass('active');
+        }
+
     });
 </script>

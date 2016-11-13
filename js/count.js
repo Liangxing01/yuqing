@@ -1,10 +1,9 @@
-function countUp(count) {
+function countUp(count,$display) {
 
 'use strict';
 
     var div_by = 100,
         speed = Math.round(count / div_by),
-        $display = $('.count'),
         run_count = 1,
         int_speed = 24;
     var int = setInterval(function () {
@@ -19,74 +18,17 @@ function countUp(count) {
         }
     }, int_speed);
 }
-countUp(8);
-
-function countUp2(count) {
-
-'use strict';
-
-    var div_by = 100,
-        speed = Math.round(count / div_by),
-        $display = $('.count2'),
-        run_count = 1,
-        int_speed = 24;
-    var int = setInterval(function () {
-        if (run_count < div_by) {
-            $display.text(speed * run_count);
-            run_count++;
-        } else if (parseInt($display.text()) < count) {
-            var curr_count = parseInt($display.text()) + 1;
-            $display.text(curr_count);
-        } else {
-            clearInterval(int);
-        }
-    }, int_speed);
-}
-countUp2(5);
-
-function countUp3(count) {
-
-'use strict';
-
-    var div_by = 100,
-        speed = Math.round(count / div_by),
-        $display = $('.count3'),
-        run_count = 1,
-        int_speed = 24;
-    var int = setInterval(function () {
-        if (run_count < div_by) {
-            $display.text(speed * run_count);
-            run_count++;
-        } else if (parseInt($display.text()) < count) {
-            var curr_count = parseInt($display.text()) + 1;
-            $display.text(curr_count);
-        } else {
-            clearInterval(int);
-        }
-    }, int_speed);
-}
-countUp3(23);
-
-function countUp4(count) {
-
-
-'use strict';
-
-    var div_by = 100,
-        speed = Math.round(count / div_by),
-        $display = $('.count4'),
-        run_count = 1,
-        int_speed = 24;
-    var int = setInterval(function () {
-        if (run_count < div_by) {
-            $display.text(speed * run_count);
-            run_count++;
-        } else if (parseInt($display.text()) < count) {
-            var curr_count = parseInt($display.text()) + 1;
-            $display.text(curr_count);
-        } else {
-            clearInterval(int);
-        }
-    }, int_speed);
-}
-countUp4(35);
+$.getJSON('/welcome/get_all_tasks_num','',function(data){
+    if (typeof data.zp!='undefined'){
+        countUp(data.zp.unread_info_num,$('.js-zhipai .count'));
+        countUp(data.zp.designate_num,$('.js-zhipai .count2'));
+        countUp(data.zp.un_confirm_num,$('.js-zhipai .count3'));
+        countUp(data.zp.done_num,$('.js-zhipai .count4'));
+    }else $('.js-zhipai').hide();
+    if (typeof data.handler!='undefined'){
+        countUp(data.handler.unread_num,$('.js-chuli .count'));
+        countUp(data.handler.doing_num,$('.js-chuli .count2'));
+        countUp(data.handler.done_num,$('.js-chuli .count3'));
+        countUp(data.handler.all_num,$('.js-chuli .count4'));
+    }else $('.js-chuli').hide();
+});

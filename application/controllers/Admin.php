@@ -152,4 +152,10 @@ class Admin extends MY_Controller {
             ->set_output(json_encode($data));
     }
 
+    public function show_user_manage(){
+        $this->assign("active_title","struct_parent");
+        $this->assign("active_parent","user_manage");
+        $this->all_display('admin/user_manage.html');
+    }
+
 }

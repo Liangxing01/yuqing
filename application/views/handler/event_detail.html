@@ -1,0 +1,164 @@
+<link rel="stylesheet" href="/css/common.css">
+<style>
+    .inbox-body {
+        background: #FFF;
+    }
+
+    .form-inbox {
+        border-top: 1px solid #dddddd;
+        padding-top: 10px;
+    }
+</style>
+<!-- BEGIN MAIN CONTENT -->
+<section id="main-content">
+    <section class="wrapper site-min-height">
+        <div class="inbox-head">
+            <h3>事件详情</h3>
+        </div>
+        <div class="inbox-body">
+            <div class="heading-inbox row">
+                <div class="col-md-8">
+                    <div class="compose-btn">
+                        <a href="/handler/show_tracer?eid=<{$eid}>&first=1" class="btn btn-sm btn-info"><i class="fa fa-reply"></i> 开始处理</a>
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <h4>
+                        <{$event['title']}>
+                    </h4>
+                </div>
+            </div>
+            <div class="sender-info">
+                <div class="row">
+                    <div class="col-md-12">
+                        <strong class="">首派人:</strong><span>&nbsp;<{$event['manager']}></span>
+                        &nbsp;
+                        <strong>事件等级:</strong><span>&nbsp;<{$event['rank']}></span>
+                        &nbsp;
+                        <{if $event['reply_time'] == ''}>
+                        <strong>首回时间:</strong><span>&nbsp;不限制</span>
+                        <{else}>
+                        <strong>首回时间:</strong><span>&nbsp;<{$event['reply_time']}></span>
+                        <{/if}>
+                        &nbsp;
+                        <{if $event["main_processor"] != ''}>
+                        <strong>牵头人:</strong><span>&nbsp;<{$event['main_processor']}></span>
+                        <{/if}>
+                        <{if $event["main_group"] != ''}>
+                        <strong>牵头单位:</strong><span>&nbsp;<{$event['main_group']}></span>
+                        <{/if}>
+                        &nbsp;
+                        <strong>状态:</strong><span>&nbsp;<{$event['state']}></span>
+                        &nbsp;
+                        <strong>开始时间:</strong><span>&nbsp;<{date("Y-m-d H:i:s",$event['start_time'])}></span>
+                        &nbsp;
+                        <{if $event["end_time"] != ''}>
+                        <strong>结束时间:</strong><span>&nbsp;<{date("Y-m-d H:i:s",$event['end_time'])}></span>
+                        <{/if}>
+                    </div>
+                </div>
+            </div>
+            <div class="event-content">
+                <p>
+                    <span><strong>关联事件:</strong></span>
+                    <{foreach $event["relate_event"] AS $r}>
+                    <a target="_blank" href="/designate/event_detail?eid=<{$r['id']}>"><span
+                            class="label label-default"><{$r['title']}></span></a>
+                    <{foreachelse}>
+                    无
+                    <{/foreach}>
+                </p>
+                <p><strong>事件描述:</strong></p>
+                <p><{$event['description']}></p>
+            </div>
+            <div class="attachment-event">
+                <p>
+                    <span><i class="fa fa-paperclip"></i> <{count($event['attachment'])}> 个参考文件 </span>
+                </p>
+                <ul>
+                    <{foreach $event["attachment"] AS $attach}>
+                    <li>
+                        <a class="atch-thumb" href="#">
+                            <span><{$attach['name']}></span>
+                        </a>
+                    </li>
+                    <{/foreach}>
+                </ul>
+            </div>
+            <div class="event-info">
+                <label class="label label-primary">事件信息:</label>
+                <{foreach $event['info'] AS $info}>
+                <section class="panel">
+                    <header class="panel-heading">
+                        <span class="label label-primary"><{$info['title']}></span>
+                        <span class="tools pull-right">
+                               <a href="javascript:;" class="fa fa-chevron-up"></a>
+                           </span>
+                    </header>
+                    <div class="panel-body" info-id="<{$info['id']}>" style="display: none"></div>
+                </section>
+                <{/foreach}>
+            </div>
+        </div>
+        <input type="hidden" name="event_id" id="event_id" value="<{$event['id']}>">
+    </section>
+</section>
+<!-- END SECTION -->
+
+<!-- Public Script -->
+<script src="/js/public.js"></script>
+
+<!-- Page Script -->
+<script language="javascript">
+
+    $('.panel .tools .fa-chevron-up').click(function () {
+        var el = jQuery(this).parents(".panel").children(".panel-body");
+        if (jQuery(this).hasClass("fa-chevron-down")) {
+            jQuery(this).removeClass("fa-chevron-down").addClass("fa-chevron-up");
+            el.slideUp(200);
+        } else {
+            jQuery(this).removeClass("fa-chevron-up").addClass("fa-chevron-down");
+            var info_id = el.attr("info-id");
+            var event_id = $("#event_id").val();
+            if(el.html() === ""){
+                get_info_content(event_id, info_id, el);
+            }
+            el.slideDown(200);
+        }
+    });
+
+
+    //获取事件信息内容
+    function get_info_content(event_id, info_id, info_box) {
+        $.ajax({
+            type: "POST",
+            data: {"event_id": event_id, "info_id": info_id},
+            url: "/welcome/get_event_info",
+            success: function (data) {
+                var info =
+                        '<div class="sender-info">' +
+                        '<div class="row">' +
+                        '<div class="col-md-12">' +
+                        (data.hasOwnProperty("publisher") ? '&nbsp;<strong>发布人:</strong><span>' + data.publisher + '</span>' : "") +
+                        '&nbsp;<strong>类型:</strong><span>' + data.type + '</span>' +
+                        '&nbsp;<strong>链接:</strong><span>' + data.url + '</span>' +
+                        '&nbsp;<strong>来源:</strong><span>' + data.source + '</span>' +
+                        '&nbsp;<strong>发布时间:</strong><span>' + timeToDate(data.time * 1000) + '</span>' +
+                        '</div>' +
+                        '</div>' +
+                        '</div>' +
+                        '<div class="info-content">' +
+                        '<p><strong>信息描述:</strong></p>' +
+                        '<p>' + data.description + '</p>' +
+                        '</div>' +
+                        '<div class="attachment-info">' +
+                        '<ul>' +
+                        //TODO 插入信息图片和视频
+                        '</ul>' +
+                        '</div>';
+                info_box.html(info);
+            }
+        });
+    }
+</script>

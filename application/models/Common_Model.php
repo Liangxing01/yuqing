@@ -86,7 +86,6 @@ class Common_Model extends CI_Model {
         }
         $data = $this->db->select("l.description,l.pid,l.id,l.time,l.name,l.speaker")
             ->from('event_log AS l')
-            ->join('event_designate as ed','ed.event_id = '.$eid,'left')
             ->where('l.event_id',$eid)
             ->order_by('time','DESC')->get()
             ->result_array();

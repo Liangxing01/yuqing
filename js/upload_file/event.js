@@ -20,10 +20,13 @@ $(function () {
         url:'/designate/attachment_upload',
         autoUpload: false,
         filesContainer: $('#files'),
-        // downloadTemplateId: null,
-        // downloadTemplate: function (o) {
-        //     alert(1);
-        // },
+        getFilesFromResponse:function(res){
+            if (res.result&&res.result.res==1){
+                res=res.result.info;
+                return [{'url':res.url,'name':res.name}];
+            }
+            return [];
+        },
         acceptFileTypes: /(\.|\/)(xls|xlsx|doc|docx|txt)$/i
     }).on('fileuploaddone', function (e, data) {
         var res=data.result;
@@ -33,5 +36,16 @@ $(function () {
         }else{
             window.FILES.push(res.info);
         }
+    });
+    $('form').on('click','.cancle-file',function(){
+        var url=$(this).data('url');
+        for (var x in window.FILES){
+            if (FILES[x].url==url){
+                FILES[x]=FILES[0];
+                FILES.shift();
+                break;
+            }
+        }
+        $(this).parent().parent().remove();
     });
 });

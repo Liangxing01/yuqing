@@ -49,10 +49,10 @@ class Welcome extends MY_Controller
 
             }
             if (isset($zp_tasks_num_arr)) {
-                array_push($all_num_arr, $zp_tasks_num_arr);
+                $all_num_arr['zp']=$zp_tasks_num_arr;
             }
             if (isset($handler_num_arr)) {
-                array_push($all_num_arr, $handler_num_arr);
+                $all_num_arr['handler']=$handler_num_arr;
             }
         }
         echo json_encode($all_num_arr);
@@ -75,11 +75,11 @@ class Welcome extends MY_Controller
             switch ($one) {
                 case 2 :
                     $zp_alarm = $this->my_model->get_desi_alert($uid);
-                    array_push($alarm_arr['zp_alarm'], $zp_alarm);
+                    $alarm_arr['zp_alarm']=$zp_alarm;
                     break;
                 case 3 :
                     $processor_alarm = $this->my_model->get_processor_alert($uid);
-                    array_push($alarm_arr['processor_alarm'], $processor_alarm);
+                    $alarm_arr['processor_alarm']=$processor_alarm;
                     break;
             }
         }
@@ -133,8 +133,7 @@ class Welcome extends MY_Controller
         $event = $this->designate->get_event($event_id);
 
         $this->assign("event", $event);
-        $this->assign("active_title", "designate_parent");
-        $this->assign("active_parent", "event_search");
+
         $this->all_display("designate/event_detail.html");
     }
 
@@ -154,16 +153,32 @@ class Welcome extends MY_Controller
             ->set_output(json_encode($info));
     }
 
+    /**
+     * 展示个人信息页面
+     */
+    public function show_my_info(){
+        $this->assign("active_title", "my_info");
+        $this->assign("active_parent", "manage_parent");
+        $data = $this->get_my_info();
+        $this->assign('userinfo',$data);
+        $this->all_display("user_info.html");
+    }
 
-    /*
+
+    /**
      * 个人信息查看接口
      */
     public function get_my_info()
     {
         $uid = $this->session->userdata('uid');
         $res = $this->my_model->get_user_info($uid);
-        $res[0]['privilege'] = $this->session->userdata('privilege');
-        echo json_encode($res);
+        $pri=explode(',',$this->session->userdata('privilege'));
+        $priArr=['1'=>'上报权限','2'=>'指派权限','3'=>'处理权限','4'=>'督查权限','5'=>'管理员'];
+        foreach ($pri as &$value) {
+            $value=$priArr[$value];
+        }
+        $res[0]['privilege'] = implode(' ',$pri);
+        return $res[0];
     }
 
     /*
@@ -177,8 +192,8 @@ class Welcome extends MY_Controller
             'name' => $name,
             'sex' => $sex
         );
-        $uid = $this->session->userdata('uid');
-        $res = $this->my_model->update_info($update_data, $uid);
+
+        $res = $this->my_model->update_info($update_data);
         if ($res) {
             echo json_encode(
                 array(
@@ -231,13 +246,18 @@ class Welcome extends MY_Controller
 
         $this->load->library('upload', $config);
 
-        if (!$this->upload->do_upload('screenshot')) {
+        if (!$this->upload->do_upload('avatar')) {
             $error = $this->upload->display_errors();
             $res = ['res' => 0, 'info' => $error];
             echo json_encode($res);
         } else {
             $data = array('upload_data' => $this->upload->data());
             $upload_data = $data['upload_data'];
+            //更新头像
+            $this->my_model->update_avatar(array(
+                'avatar' => '/uploads/avatar/' . $upload_data['file_name']
+            ));
+
             $res = array(
                 'res' => 1,
                 'info' => array(
@@ -259,12 +279,6 @@ class Welcome extends MY_Controller
         $this->assign("active_parent", "manage_parent");
         $this->all_display("change_psw.html");
     }
-
-    function test()
-    {
-        $this->load->view('test');
-    }
-
 
     /**
      * 用户登出 接口

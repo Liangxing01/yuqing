@@ -8,7 +8,6 @@
 <link rel="stylesheet" href="/assets/ztree/zTreeStyle/zTreeStyle.css">
 <!-- Jquery file upload -->
 
-<link rel="stylesheet" href="/assets/ztree/zTreeStyle/zTreeStyle.css">
 <!-- JQUERY STEPY WIZARD CSS -->
 <!--<link href="/css/jquery.stepy.css" rel="stylesheet">-->
 
@@ -885,13 +884,13 @@
 {% for (var i=0, file; file=o.files[i]; i++) { %}
     <tr class="template-download fade">
         <td>
+        </td>
+        <td>
             <p class="name">
-                    <span>提交成功！</span>
+                    <span>{%=file.name%}提交成功！</span>
         </td>
         <td>
-            <span class="size">{%=o.formatFileSize(file.size)%}</span>
-        </td>
-        <td>
+            <button class="cancle-file" data-url="{%=file.url%}">取消上传</button>
         </td>
     </tr>
 {% } %}
