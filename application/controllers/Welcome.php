@@ -133,8 +133,7 @@ class Welcome extends MY_Controller
         $event = $this->designate->get_event($event_id);
 
         $this->assign("event", $event);
-        $this->assign("active_title", "designate_parent");
-        $this->assign("active_parent", "event_search");
+
         $this->all_display("designate/event_detail.html");
     }
 

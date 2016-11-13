@@ -60,19 +60,7 @@ class Handler_Model extends CI_Model{
         return $data;
     }
 
-    /*
-     * 获取 事件报警 提示
-     */
-    public function get_alert($uid){
-        $data = $this->db->select('ea.title,ed.event_id,ea.time')->from('event_alert as ea')
-            ->join('event_designate as ed','ea.designate_id = ed.id')
-            ->where('ed.processor',$uid)
-            ->where('ea.time - unix_timestamp(now()) < 300')// 时间小于5分钟开始报警
-            ->where('ea.state',1)
-            ->limit(6)
-            ->get()->result_array();
-        return $data;
-    }
+
 
     //取消 事件报警 状态
     public function cancel_alarm_state($eid,$uid){
@@ -350,6 +338,14 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
         }else{
             return false;
         }
+    }
+
+    public function update_doing_state($eid){
+        $data = array(
+          'state' => '处理中'
+        );
+        $this->db->where('event_id',$eid);
+        $this->db->update('event_designate',$data);
     }
 
     /*

@@ -92,7 +92,7 @@ class Handler extends MY_Controller {
 
     //显示待处理事件详情信息
     public function show_detail(){
-        $event_id = $this->input->get("id");
+        $event_id = $this->input->get("eid");
         if(!isset($event_id) || $event_id == null || $event_id == ""){
             show_404();
         }
@@ -100,7 +100,19 @@ class Handler extends MY_Controller {
         $this->assign('eid',$event_id);
         $this->assign("active_title","wait_to_handle");
         $this->assign("active_parent","handle_parent");
-        $this->all_display("handler/show_unhandle_detail.html");
+
+        //检查 事件查看权限
+        $this->load->model("Common_Model", "common");
+        if (!$this->common->check_can_see($event_id)) {
+            show_404();
+        }
+
+        $this->load->model("Designate_Model", "designate");
+        $event = $this->designate->get_event($event_id);
+
+        $this->assign("event", $event);
+
+        $this->all_display("handler/event_detail.html");
     }
 
     /*
@@ -223,13 +235,19 @@ class Handler extends MY_Controller {
             }
         }
         $event_id = $this->input->get('eid');
+        $first = $this->input->get('first');
+        //更新事件状态为处理中
+        if(!empty($first)){
+            $this->handler_model->update_doing_state($event_id);
+        }
+
         $this->assign("active_title","doing_handle");
         $this->assign("active_parent","handle_parent");
         $einfo = $this->handler_model->get_title_by_eid($event_id);
         $done_btn = $this->handler_model->check_done_btn($gid,$event_id);
         $this->assign('title',$einfo['title']);
         $this->assign('rank',$einfo['rank']);
-        if($einfo['state'] == "已完成"){
+        if($einfo['state'] == "已完成" || $einfo['state'] == '未审核'){
             $done_state = 1;
         }else{
             $done_state = 0;
