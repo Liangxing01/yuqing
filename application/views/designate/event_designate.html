@@ -186,16 +186,18 @@
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-md-2 col-sm-2 control-label">参考文件上传:</label>
-                                                    <input name="file" class="fileinput-button" type="file" id="file" multiple>
-                                                    <table role="presentation" class="table table-striped"><tbody id="files"></tbody></table>
+                                                    <input name="file" class="fileinput-button" type="file" id="file"
+                                                           multiple>
+                                                    <table role="presentation" class="table table-striped">
+                                                        <tbody id="files"></tbody>
+                                                    </table>
                                                 </div>
                                             </fieldset>
-                                            <fieldset title="选择处理人">
+                                            <fieldset title="选择处理人(单位)">
                                                 <div class="row">
                                                     <div class="col-md-4">
                                                         <section class="panel">
                                                             <header class="panel-heading">
-                                                                <i class="fa fa-hand-o-down"></i>
                                                               <span class="label label-primary">
                                                                  结构结构
                                                               </span>
@@ -210,7 +212,6 @@
                                                     <div class="col-md-3">
                                                         <section class="panel">
                                                             <header class="panel-heading">
-                                                                <i class="fa fa-hand-o-down"></i>
                                                               <span class="label label-primary">
                                                                  操作
                                                               </span>
@@ -224,22 +225,21 @@
                                                                         class="btn btn-primary btn-block">
                                                                     添加处理人或单位
                                                                 </button>
-                                                                <br/>
-                                                                <br/>
-                                                                <br/>
-                                                                <button type="button" id="btn-checkman"
-                                                                        class="btn btn-primary btn-block">
-                                                                    添加督办人
-                                                                </button>
+                                                                <!--<br/>-->
+                                                                <!--<br/>-->
+                                                                <!--<br/>-->
+                                                                <!--<button type="button" id="btn-checkman"-->
+                                                                        <!--class="btn btn-primary btn-block">-->
+                                                                    <!--添加督办人-->
+                                                                <!--</button>-->
                                                             </div>
                                                         </section>
                                                     </div>
                                                     <div class="col-md-5">
                                                         <section class="panel">
                                                             <header class="panel-heading">
-                                                                <i class="fa fa-hand-o-down"></i>
                                                                 <span class="label label-primary">
-                                                                        已选处理(督办)人(单位)
+                                                                        已选处理人(单位)
                                                                 </span>
                                                             </header>
                                                             <div class="panel-body">
@@ -255,8 +255,61 @@
                                                                 </select>
                                                                 <input type="hidden" name="processor"
                                                                        id="input_con_dealman"/>
+                                                                <!--<br/>-->
+                                                                <!--<br/>-->
+                                                                <!--<div>督办人(双击移除当前督办人)</div>-->
+                                                                <!--<select name="watcher" class="multi-select"-->
+                                                                        <!--multiple="false" id="select_con_checkman"-->
+                                                                        <!--style="width: 100%; height: 120px;">-->
+                                                                <!--</select>-->
+                                                                <!--<input type="hidden" name="" id="input_con_checkman"/>-->
+                                                            </div>
+                                                        </section>
+                                                    </div>
+                                                </div>
+                                            </fieldset>
+                                            <fieldset title="选择督办人">
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <section class="panel">
+                                                            <header class="panel-heading">
+                                                              <span class="label label-primary">
+                                                                 选择督办人
+                                                              </span>
+                                                            </header>
+                                                            <div class="panel-body">
+                                                                <ul class="nav prod-cat ztree" id="treeWatcher">
+                                                                    数据加载中……
+                                                                </ul>
+                                                            </div>
+                                                        </section>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <section class="panel">
+                                                            <header class="panel-heading">
+                                                              <span class="label label-primary">
+                                                                 操作
+                                                              </span>
+                                                            </header>
+                                                            <div class="panel-body">
                                                                 <br/>
                                                                 <br/>
+                                                                <br/>
+                                                                <button type="button" id="btn-checkman"
+                                                                        class="btn btn-primary btn-block">
+                                                                    添加督办人
+                                                                </button>
+                                                            </div>
+                                                        </section>
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <section class="panel">
+                                                            <header class="panel-heading">
+                                                                <span class="label label-primary">
+                                                                        已选督办人
+                                                                </span>
+                                                            </header>
+                                                            <div class="panel-body">
                                                                 <div>督办人(双击移除当前督办人)</div>
                                                                 <select name="watcher" class="multi-select"
                                                                         multiple="false" id="select_con_checkman"
@@ -573,10 +626,10 @@
         });
         $('#designate-form').validate({
             rules: {
-//                'title': 'required',
-//                'info_id': 'required',
-//                'main_processor': 'required',
-//                'processor': "required"
+                'title': 'required',
+                'info_id': 'required',
+                'main_processor': 'required',
+                'processor': "required"
             },
             messages: {
                 'title': {
@@ -654,7 +707,7 @@
      */
     function get_relate_event() {
         var info_id = $("#relate_event").val();
-        if(info_id == ""){
+        if (info_id == "") {
             return "";
         }
         var tag_arr = info_id.split("_");
@@ -683,18 +736,18 @@
         $.ajax({
             url: "/designate/commit_event_designate",
             method: "post",
-            dataType : 'json',
+            dataType: 'json',
             data: {
                 "title": title,
                 "info_id": info_id,
-                "description" : description,
-                "rank" : rank,
+                "description": description,
+                "rank": rank,
                 "reply_time": reply_time,
                 'relate_event': relate_event,
                 'processor': processor,
                 'main_processor': main_processor,
                 'watcher': watcher,
-                'attachment' : window.FILES
+                'attachment': window.FILES
             },
             success: function (data) {
                 console.log(data);
@@ -706,8 +759,10 @@
      * Ztree && MultiSelect 插件
      * 选择处理人  督办人 和 牵头人(单位)
      */
-    var treeObj;
-    var setting = {
+    var processorTree;
+    var watcherTree;
+
+    var setting1 = {
         check: {
             enable: true,
             chkboxType: {"Y": "", "N": ""}
@@ -725,11 +780,24 @@
         }
     };
 
+    var setting2 = {
+        check: {
+            enable: true,
+            chkboxType: {"Y": "ps", "N": "ps"}
+        },
+        async: {
+            enable: true,
+            url: "/designate/get_watcher_tree",
+            autoParam: ["id", "name=n", "level=lv"]
+            // dataFilter: filter
+        }
+    };
+
     function zTreeOnAsyncSuccess(event, treeId, treeNode, msg) {
         //去掉组织结构的选择项
-        var rootNode = treeObj.getNodeByParam("id", 0, null);//得到组织结构树
+        var rootNode = processorTree.getNodeByParam("id", 0, null);//得到组织结构树
         rootNode.nocheck = true;
-        treeObj.refresh();//更改属性后，刷新界面
+        processorTree.refresh();//更改属性后，刷新界面
     }
     //当节点选中时选择
     function zTreeCheck(event, treeId, treeNode) {
@@ -744,13 +812,14 @@
                 children_arr[i].checked = false;
             }
         }
-        treeObj.refresh();
+        processorTree.refresh();
     }
-    treeObj = $.fn.zTree.init($("#treePartment"), setting);
+    processorTree = $.fn.zTree.init($("#treePartment"), setting1);
+    watcherTree = $.fn.zTree.init($("#treeWatcher"), setting2);
 
     //添加处理人或单位
     $("#btn-dealman").click(function () {
-        var nodes = treeObj.getCheckedNodes(true);//获取到被选中的集成
+        var nodes = processorTree.getCheckedNodes(true);//获取到被选中的集成
         if (nodes.length == 0) {//没有选中
             alert("请选择处理人");
             return false;
@@ -765,8 +834,8 @@
         for (var i in nodes) {
             var i_value = nodes[i].isdepartment + "_" + nodes[i].id,
                     i_name = nodes[i].name;
-            //处理与督办人中都没有找到，则添加到处理人中
-            if ($("#input_con_dealman").val().indexOf(i_value) === -1 && $("#input_con_checkman").val().indexOf(i_value) === -1) {
+            //没有找到则添加到处理人中
+            if ($("#input_con_dealman").val().indexOf(i_value) === -1) {
                 if ($("#input_con_dealman").val() == '') {
                     $("#input_con_dealman").val(i_value)
                 } else {
@@ -779,16 +848,16 @@
 
     //添加督办人
     $("#btn-checkman").click(function () {
-        var nodes = treeObj.getCheckedNodes(true);//获取到被选中的集成
+        var nodes = watcherTree.getCheckedNodes(true);//获取到被选中的集成
         //得到现在已经有的值
         for (var i in nodes) {
-            if (nodes[i].isdepartment == 0) {//如果是部门的话不进行下面操作
+            if (nodes[i].isdepartment == 0 || nodes[i].id == 0) {//如果是部门或者根节点则不进行下面操作
                 continue;
             }
             var i_value = nodes[i].isdepartment + "_" + nodes[i].id,
                     i_name = nodes[i].name;
-            //处理与督办人中都没有找到，则添加到处理人中
-            if ($("#input_con_dealman").val().indexOf(i_value) === -1 && $("#input_con_checkman").val().indexOf(i_value) === -1) {
+            //没有找到则添加
+            if ($("#input_con_checkman").val().indexOf(i_value) === -1) {
                 if ($("#input_con_checkman").val() == '') {
                     $("#input_con_checkman").val(i_value)
                 } else {
@@ -878,6 +947,8 @@
         </td>
     </tr>
 {% } %}
+
+
 </script>
 <!-- The template to display files available for download -->
 <script id="template-download" type="text/x-tmpl">
@@ -894,6 +965,8 @@
         </td>
     </tr>
 {% } %}
+
+
 </script>
 <script src="/js/upload_file/tmpl.js"></script>
 <script src="/js/upload_file/vendor/jquery.ui.widget.js"></script>

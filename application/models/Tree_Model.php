@@ -96,6 +96,10 @@ class Tree_Model extends CI_Model
     }
 
 
+    /**
+     * 获得处理人(单位)数据
+     * @return Json字符串
+     */
     public function get_processor_tree()
     {
         $processor_group = $this->db->select("user.group_id AS id, group.name AS name")
@@ -121,7 +125,7 @@ class Tree_Model extends CI_Model
             $group_node = array(
                 "id" => $group["id"],
                 "name" => $group["name"],
-                "is_department" => 1,
+                "isdepartment" => 0,
                 "open" => true,
                 "children" => array()
             );
@@ -130,7 +134,7 @@ class Tree_Model extends CI_Model
                     $tree_node = array(
                         "id" => $processor["id"],
                         "name" => $processor["name"],
-                        "is_department" => 0
+                        "isdepartment" => 1
                     );
                     $group_node["children"][] = $tree_node;
                 }
@@ -138,9 +142,57 @@ class Tree_Model extends CI_Model
             }
             $tree["children"][] = $group_node;
         }
+        return json_encode($tree);
+    }
 
-        echo json_encode($tree);
 
+    /**
+     * 获得督办人数据
+     * @return Json字符串
+     */
+    public function get_watcher_tree()
+    {
+        $processor_group = $this->db->select("user.group_id AS id, group.name AS name")
+            ->join("user_privilege", "user.id = user_privilege.uid", "left")
+            ->join("group", "group.id = user.group_id", "left")
+            ->where("user_privilege.pid", 4)
+            ->group_by("user.group_id")
+            ->get("user")->result_array();
+
+        $processors = $this->db->select("user.id, user.name, user.group_id")
+            ->join("user_privilege", "user.id = user_privilege.uid", "left")
+            ->where("user_privilege.pid", 4)
+            ->get("user")->result_array();
+
+        $tree = array(
+            "id" => 0,
+            "name" => "督办人",
+            "open" => true,
+            "children" => array()
+        );
+
+        foreach ($processor_group AS $group) {
+            $group_node = array(
+                "id" => $group["id"],
+                "name" => $group["name"],
+                "isdepartment" => 0,
+                "open" => true,
+                "children" => array()
+            );
+            foreach ($processors AS $processor) {
+                if ($group["id"] == $processor["group_id"]) {
+                    $tree_node = array(
+                        "id" => $processor["id"],
+                        "name" => $processor["name"],
+                        "isdepartment" => 1
+                    );
+                    $group_node["children"][] = $tree_node;
+                }
+
+            }
+            $tree["children"][] = $group_node;
+        }
+        return json_encode($tree);
     }
 
 }
