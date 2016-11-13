@@ -118,16 +118,37 @@ class Designate_Model extends CI_Model
 
 
     /**
-     * TODO
      * 查询 事件信息 详情
      * @param $event_id
      * @param $info_id
+     * @return bool
      */
-    public function get_event_info($event_id, $info_id){
+    public function get_event_info($event_id, $info_id)
+    {
         $this->load->model("Common_Model", "common");
-        $e = $this->common->check_can_see($event_id);
+        $e_can = $this->common->check_can_see($event_id);
         $i = $this->db->select("id")->where(array("info_id" => $info_id, "event_id" => $event_id))->get("event_info")->num_rows();
-        echo $i;
+        if (!($e_can && $i != 0)) {
+            return false;
+        } else {
+            $info = $this->db->select("info.id, type.name AS type, info.url, info.source, info.description, user.name AS publisher, info.time")
+                ->join("user", "user.id = info.publisher")
+                ->join("type", "info.type = type.id", "left")
+                ->where("info.id", $info_id)
+                ->get("info")->row_array();
+
+            //验证是否有指派人权限
+            $privilege = explode(",", $this->session->privilege);
+            if (!in_array(2, $privilege)) {
+                unset($info["publisher"]);
+            }
+
+            $info["attachment"] = $this->db->select("id, name, url, type")
+                ->where("info_id", $info_id)
+                ->get("info_attachment")->result_array();
+
+            return $info;
+        }
     }
 
 
