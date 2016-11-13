@@ -82,7 +82,7 @@ class Tree_Model extends CI_Model
         $group = $this->db->select("group.id, group.name")->get("group")->result_array();
         $tree = array(
             "id" => 0,
-            "name" => "处理人(单位)",
+            "name" => "单位",
             "open" => true,
             "children" => array()
         );
