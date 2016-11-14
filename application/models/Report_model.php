@@ -68,7 +68,7 @@ class Report_model extends CI_Model {
                 $data = array(
                     'info_id' => $info_id,
                     'name'    => $one['name'],
-                    'url'     => $one['url'],
+                    'url'     => $_SERVER['DOCUMENT_ROOT']."/uploads/pic/".$one['new_name'],
                     'type'    => "pic"
                 );
                 $res = $this->db->insert('info_attachment',$data);
@@ -82,7 +82,7 @@ class Report_model extends CI_Model {
                 $data = array(
                     'info_id' => $info_id,
                     'name'    => $one['name'],
-                    'url'     => $one['url'],
+                    'url'     => $_SERVER['DOCUMENT_ROOT']."/uploads/video/".$one['new_name'],
                     'type'    => "video"
                 );
                 $res = $this->db->insert('info_attachment',$data);
