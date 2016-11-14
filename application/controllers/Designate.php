@@ -235,7 +235,6 @@ class Designate extends MY_controller
         if (!isset($event_id) || $event_id == null || $event_id == "") {
             show_404();
         }
-        $gid = $this->session->userdata('gid');
         $uid = $this->session->userdata('uid');
 
         //判断有无督办权限
@@ -254,7 +253,7 @@ class Designate extends MY_controller
         $done_btn = $this->designate->check_done_btn($event_id);   //事件审核按钮
         $this->assign('title', $einfo['title']);
         $this->assign('rank', $einfo['rank']);
-        if ($einfo['state'] == "已完成") {
+        if ($einfo['state'] == "已完成" || $einfo['state'] == '未审核') {
             $done_state = 1;
         } else {
             $done_state = 0;
@@ -274,6 +273,10 @@ class Designate extends MY_controller
         $this->assign('username', $user_info[0]['name']);
         $this->assign('useracter', $user_info[0]['avatar']);
         $this->assign('usertype', $usertype);
+
+        //获取 参考文件
+        $doc_arr = $this->handler->get_event_attachment($event_id);
+        $this->assign('attachment',$doc_arr);
 
         $this->assign("active_title", "designate_parent");
         $this->assign("active_parent", "event_search");

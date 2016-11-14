@@ -4,7 +4,7 @@
         border: 3px solid #2a7489;
         border-radius: 5px;
         height: 15px;
-        left: -7px;
+        right: -7px;
         position: absolute;
         top: 55px;
         width: 15px;
@@ -17,6 +17,46 @@
     ul.timeline li.item-timeline:nth-child(2n)::before {
         top: 5px;
     }
+
+    .cankao {
+        width: 65%;
+        float: left;
+        margin: auto;
+        font-size: 1.0em;
+    }
+
+    .cankao span {
+        float: left;
+        width: 20%;
+        color: #000000;
+    }
+
+    .cankao ul {
+        width: 80%;
+        float: left;
+
+    }
+
+    .cankao ul li {
+        float: left;
+        text-align: left;
+        list-style: none;
+        width: 33%;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+
+    .cankao ul li a {
+        text-decoration: underline;
+        color: #58d4ee;
+    }
+
+    @media only screen and (max-width: 1024px ) {
+        #sjwc {
+            margin-right: 0;
+            padding: 5px 18px;
+        }
+    }
 </style>
 <section id="main-content">
     <section class="wrapper site-min-height">
@@ -25,15 +65,32 @@
             <div class="col-lg-12">
                 <section class="panel">
                     <header class="panel-heading">
-                        <i class="fa fa-hand-o-down"></i>
-                        <span class="">事件追踪</span>
+                        <div style="float: left; width: 12%;">
+                            <i class="fa fa-hand-o-down"></i>
+                            <span class="">事件追踪</span>
+                        </div>
+
+                        <div class="cankao">
+                            <span>参考文档：</span>
+                            <ul>
+                                <{foreach $attachment AS $attach}>
+                                <li><a href="/welcome/attachment_download?id=<{$attach['event_id']}>"><{$attach['name']}></a>
+                                </li>
+                                <{foreachelse}>
+                                无
+                                <{/foreach}>
+                            </ul>
+
+                        </div>
+
                         <{if $can_show_done_btn == true}>
-                        <input type="button" value="确认审核通过" name="sjwc" id="sjwc" onclick="confirm_done('ok')"/>
-                        <input type="button" value="审核不通过" id="sjwc" onclick="confirm_done('not');"/>
+                        <button class="btn btn-primary confirm-btn" onclick="confirm_done('ok')">确认审核通过</button>
+                        <button class="btn btn-primary confirm-btn" onclick="confirm_done('not')">审核不通过</button>
                         <{/if}>
+                        <div style="clear: both;"></div>
                     </header>
                     <form class="zj">
-                        <textarea cols="" rows="4" placeholder="发布你所发布的事件" class="zjk" id="zjk"></textarea>
+                        <textarea cols="" rows="4" placeholder="发布信息" class="zjk" id="zjk"></textarea>
                         <input type="button" class="zj_button" name="zj_buttom" value="发表"/>
                     </form>
                     <div class="panel-body" style="display: block;">
@@ -67,9 +124,9 @@
     </section>
 </section>
 <script type="text/template" id="li_item">
-    <li class="item-timeline item-timeline-{id}" style="">
-        <div class="buletan_icon" style="{buletan}"></div>
-        <div class="inner-content">
+    <li class="item-timeline item-timeline-{id}">
+        <div class="buletan_icon_flag"></div>
+        <div class="inner-content" style="{usertype_style}">
             <div class="heading-timeline">
                 <img alt="Avatar" class="avatar" src="/img/avatar/avatar-1.jpg">
                 <div class="user-timeline-info">
@@ -127,7 +184,17 @@
         </div>
     </li>
 </script>
-
+<script type="text/template" id="commnet_finish">
+    <li class="item-timeline highlight text-center">
+        <div class="buletan_icon"></div>
+        <div class="inner-content">
+            <h2 class="text-info"><i class="fa fa-flag-checkered"></i></h2>
+            <h4>事件流完成</h4>
+            <p class="text-muted">{daytime}</p>
+        </div>
+        <!-- /.inner-content -->
+    </li>
+</script>
 <!-- <div id="one1"></div>-->
 <!-- END SECTION -->
 <input type="hidden" name="title" value="<{$title}>">
@@ -139,7 +206,8 @@
 <input type="hidden" name="username" value="<{$username}>" id="username"/>
 <input type="hidden" name="useracter" value="<{$useracter}>" id="useracter"/>
 <input type="hidden" name="usertype" value="<{$usertype}>" id="usertype"/>
-
+<!-- Public Script -->
+<script src="/js/public.js"></script>
 <script>
     var eid = document.getElementById('eid').value,
             history_daytime = "";//用来存时间抽上最上面的时间，用来判断总结性评论是新添加，还是在下面插入
@@ -184,12 +252,9 @@
                             commnetlength = value.comment.length,//评论数,
                             htmlstr = "";
                     if (cur_day == '' || cur_day != iday) {//第一天，按天分开
-                        htmlstr += '<li class="center-timeline-cat"><div class="inner">' + iyear + '年' + imonth + '月' + iday + '日</div></li>'
+                        htmlstr += '<li class="center-timeline-cat top-center-line"><div class="inner">' + iyear + '年' + imonth + '月' + iday + '日</div></li>'
                         if (cur_day == '') { //最上面那部分时间
                             history_daytime = iyear + '-' + imonth + '-' + iday;
-                            htmlstr += '<li class="centering-line top-center-line"></li>'
-                        } else {
-                            htmlstr += '<li class="centering-line"></li>'
                         }
                         cur_day = iday
                     }
@@ -210,22 +275,35 @@
                     if (!value.desc) value.desc = "";
                     value.commenthtml = comment_arr.join("");
                     if (value.usertype == 1) {//如果是领导把主评论放在右边,第一个与第四个为右
-                        value.buletan = "";//如果在右边不为空
-                        htmlstr += formatTemplate(value, li_item_tpl);//加载模板
-                        htmlstr += '<li class="item-timeline item-timeline-' + value.id + '-flag"></li>';
+                        value.usertype_style = "background: #d43f3a";//
                     } else {
-                        value.buletan = "right:-7px; left: auto";
-                        //htmlstr+='<li class="centering-line"></li>';
-                        htmlstr += '<li class="item-timeline item-timeline-' + value.id + '-flag"></li>';
-                        htmlstr += formatTemplate(value, li_item_tpl);//加载模板
+                        value.usertype_style = "";
                     }
+                    htmlstr += formatTemplate(value, li_item_tpl);//加载模板
                     $("#comment").append(htmlstr);
-                    $(".item-timeline-" + value.id + "").height($(".item-timeline-" + value.id + "").height())//解决动态加载文档流问题
-                    $(".item-timeline-" + value.id + "-flag").height($(".item-timeline-" + value.id + "").height());
-
-                    // console.log("valueid="+$(".item-timeline-"+value.id+"").height());
-                    // console.log("valueidflag="+$(".item-timeline-"+value.id+"-flag").height());
                 });
+                //事件完成进行操作
+                if ($("#done_state").val() == 1) {
+                    var comment_finish_tpl = $('script[id="commnet_finish"]').html();
+                    var commnetObj = new Object();
+                    if ($("#end_time").val() != '') {
+                        commnetObj.daytime = getLocalTime($("#end_time").val());
+                    } else {
+                        commnetObj.daytime == "";
+                    }
+                    var strhtml = formatTemplate(commnetObj, comment_finish_tpl);//得到当前字符串
+                    $("#comment").prepend(strhtml);
+                }
+                //左边自动添加相关样式
+                autoDatch();
+
+
+                var done_state = $("#done_state").val();
+                if (done_state == 1) {
+                    $("textarea").attr('disabled', 'disabled');
+                    $('input').attr("disabled", "disabled");
+                    $("#sjwc").hide();
+                }
 
 
             },
@@ -233,6 +311,20 @@
 
             }
         });
+    }
+    //自动左边加点
+    function autoDatch() {
+        var num = 0;
+        $.each($("#comment").children('li'), function (i, value) {
+            if ($(value).hasClass('top-center-line')) {
+                num = 0;
+            } else {
+                num++;
+                if (num % 2 == 1) {
+                    $(value).children('div.buletan_icon_flag').addClass('buletan_icon')
+                }
+            }
+        })
     }
     loadData();
     //总结性评论处理
@@ -263,27 +355,24 @@
                     li_obj.commenthtml = "";
                     li_obj.id = 'new' + Math.round(Math.random() * 200);
                     var htmlstr = '';
-                    if ($("#usertype").val() == 1) {//如果是领导把主评论放在右边,第一个与第四个为右
-                        li_obj.buletan = "";//如果在右边不为空
-                        htmlstr += formatTemplate(li_obj, li_item_tpl);//加载模板
-                        htmlstr += '<li class="item-timeline item-timeline-' + li_obj.id + '-flag"></li>';
+                    if ($("#usertype").val() == 1) {//如果是领导颜色值变换下
+                        li_obj.usertype_style = "background: #d43f3a";
                     } else {
-                        li_obj.buletan = "right:-7px; left: auto";
-                        //htmlstr+='<li class="centering-line"></li>';
-                        htmlstr += '<li class="item-timeline item-timeline-' + li_obj.id + '-flag"></li>';
-                        htmlstr += formatTemplate(li_obj, li_item_tpl);//加载模板
+                        li_obj.usertype_style = "";
                     }
+                    htmlstr += formatTemplate(li_obj, li_item_tpl);//加载模板
                     if (cur_daytime == history_daytime) {
                         $(".top-center-line").eq(0).after(htmlstr)
                     } else {
                         history_daytime = cur_daytime
-                        htmlstr = '<li class="center-timeline-cat"><div class="inner">' + iyear + '年' + imonth + '月' + iday + '日</div></li>' + '<li class="centering-line top-center-line" ></li>' + htmlstr;
+                        htmlstr = '<li class="center-timeline-cat top-center-line"><div class="inner">' + iyear + '年' + imonth + '月' + iday + '日</div></li>' + '<li class="centering-line top-center-line" ></li>' + htmlstr;
                         //console.log(htmlstr);
                         $("#comment").prepend(htmlstr);
                     }
                     $(".item-timeline-" + li_obj.id + "").height($(".item-timeline-" + li_obj.id + "").height())//解决动态加载文档流问题
                     $(".item-timeline-" + li_obj.id + "-flag").height($(".item-timeline-" + li_obj.id + "").height());
                     $("#zjk").val('');
+                    autoDatch();
                 } else {
                     alert('评论失败！');
                 }
@@ -363,12 +452,26 @@
             dataType: 'json',
             success: function (data) {
                 if (data == 1) {
-                    alert("操作成功");
+                    layer.msg("操作成功", function () {
+                        refresh();
+                    });
                 } else {
-                    alert("操作失败");
+                    layer.msg("操作失败", {anim: 6});
                 }
             }
         });
     }
+
+
+    //如果状态为 已完成 所有input 不能输入
+    $(document).ready(function () {
+        var done_state = $("#done_state").val();
+        if (done_state == 1) {
+            $("textarea").attr('disabled', 'disabled');
+            $('input').attr("disabled", "disabled");
+            $("#sjwc").hide();
+        }
+
+    });
 
 </script>
