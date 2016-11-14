@@ -323,6 +323,39 @@ class Welcome extends MY_Controller
         $this->all_display("6m_meeting.html");
     }
 
+    /**
+     * 轮询检测最新的任务和消息通知
+     *
+     */
+    public function get_new_msg(){
+        $res = $this->my_model->get_new_msg();
+        if($res){
+            echo json_encode(
+                array(
+                    'res' => 1
+                )
+            );
+        }else{
+            echo json_encode(
+                array(
+                    'res' => 0
+                )
+            );
+        }
+    }
+
+    /**
+     * 一个开直播，通知所有人
+     */
+    public function open_meeting(){
+        $data = array(
+            'publisher_id' => $this->session->userdata('uid'),
+            'name'         => $this->session->userdata('name'),
+            'msg'          => '我开直播啦'
+        );
+        $this->my_model->insert_msg($data);
+    }
+
 
     /**
      * 用户登出 接口

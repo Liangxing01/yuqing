@@ -241,3 +241,34 @@
 
 <script src="/js/count.js"></script>
       <script src="/assets/morris.js-0.4.3/raphael-min.js" ></script><!-- MORRIS  JS -->
+<script>
+  function get_msg() {
+    $.ajax({
+      url:'/welcome/get_new_msg',
+      type :'get',
+      dataType:'json',
+      success:function(data){
+        if(data.res==1){
+          layer.msg('您有新的任务获得！',{anim:6});
+          var au = document.createElement("audio");
+          au.preload="auto";
+          au.src = "1.wav";
+          au.play();
+
+        }else{
+
+        }
+      },
+      error:function(){
+
+      }
+    });
+  }
+  setInterval(get_msg,2000);
+
+</script>
+<script>
+  function open_meeting() {
+
+  }
+</script>

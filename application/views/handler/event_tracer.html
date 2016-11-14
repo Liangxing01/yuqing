@@ -33,7 +33,7 @@
     	float: left;
     	text-align: left;
     	list-style: none;
-    	width: 20%;
+    	width: 30%;
     }
     .cankao ul li a{ 
     	text-decoration: underline;
@@ -56,9 +56,9 @@
                         <div class="cankao">
                         	<span>参考文档：</span>
                         	<ul>
-	                        	<li><a href="">1.事件处理规范</a></li>
-	                        	<li><a href="">2.员工守则</a></li>
-	                        	<li><a href="">3.基本事件发表规范</a></li>
+                                <{foreach $attachment AS $attach}>
+                                <li><a href="/welcome/attachment_download?id=<{$attach['event_id']}>"><{$attach['name']}></a></li>
+                                <{/foreach}>
                         	</ul>
                         </div>
                         
