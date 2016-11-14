@@ -352,6 +352,7 @@ class Welcome extends MY_Controller
             'publisher_id' => $this->session->userdata('uid'),
             'name'         => $this->session->userdata('name'),
             'msg'          => '我开视频会议啦！',
+            'time'         => time(),
             'url'          => 'https://m.v6plus.com/'.base64_encode($this->session->userdata('name'))
         );
         $this->my_model->insert_msg($data);
