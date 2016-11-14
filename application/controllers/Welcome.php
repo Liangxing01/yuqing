@@ -329,16 +329,16 @@ class Welcome extends MY_Controller
      */
     public function get_new_msg(){
         $res = $this->my_model->get_new_msg();
-        if($res){
+        if($res == "new_unhandle"){
             echo json_encode(
                 array(
-                    'res' => 1
+                    'res' => "new_unhandle"
                 )
             );
-        }else{
+        }else if($res == "new_info"){
             echo json_encode(
                 array(
-                    'res' => 0
+                    'res' => "new_info"
                 )
             );
         }
