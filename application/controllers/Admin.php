@@ -152,6 +152,9 @@ class Admin extends MY_Controller {
             ->set_output(json_encode($data));
     }
 
+    /**
+     * 展示用户管理界面
+     */
     public function show_user_manage(){
         $this->assign("active_title","struct_parent");
         $this->assign("active_parent","user_manage");
@@ -182,5 +185,62 @@ class Admin extends MY_Controller {
             );
         }
     }
+
+    /**
+     * 展示单位管理界面
+     */
+    public function show_group_manage(){
+        $this->assign("active_title","struct_parent");
+        $this->assign("active_parent","group_manage");
+        $this->all_display('admin/group_manage.html');
+    }
+
+    //添加单位
+    public function add_group(){
+        $data = $this->input->post();
+        $res = $this->admin_model->add_group($data);
+        if($res){
+            echo json_encode(
+                array(
+                    'res' => 1
+                )
+            );
+        }else{
+            echo json_encode(
+                array(
+                    'res' => 0
+                )
+            );
+        }
+    }
+
+    public function get_node_info(){
+        $data = $this->input->post();
+        if (!empty($data)){
+            $uid  = $data['id'];
+            $type = $data['type'];//1为个人，0为单位
+            if($type == 0){
+                $res = $this->admin_model->get_group_info($uid);
+            }else if($type == 1){
+                $res = $this->admin_model->get_user_info($uid);
+            }
+            echo json_encode($res);
+        }
+    }
+
+    /**
+     *更新节点
+     */
+    public function update_info(){
+        $data = $this->input->post();
+        $type = $data['type'];//1为个人，0为单位
+        if($type == 0){
+            $res = $this->admin_model->update_group($data);
+        }else if($type == 1){
+            $res = $this->admin_model->update_user($data);
+        }
+        var_dump($res);
+    }
+
 
 }
