@@ -278,6 +278,16 @@
             //左边自动添加相关样式
             autoDatch();
 
+
+
+            var done_state = $("#done_state").val();
+            if(done_state == 1){
+                $("textarea").attr('disabled','disabled');
+                $('input').attr("disabled","disabled");
+                $("#sjwc").hide();
+            }
+
+
         },
         error:function(){
 

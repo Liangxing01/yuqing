@@ -51,7 +51,10 @@ class Reporter extends MY_controller
         $data = array('id' => $id, 'title' => $title, 'source' => $source, 'url' => $url, 'description' => $description, 'uid' => $uid, 'time' => $_SERVER['REQUEST_TIME']);
         $nu = $this->report->add_or_update($data);
         //插入附件信息
-        $this->insert_attachment($attachment, $nu['id']);
+        if($attachment != ""){
+            $this->insert_attachment($attachment, $nu['id']);
+        }
+
         $res = array(
             "res" => $nu['nu']
         );

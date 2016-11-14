@@ -214,6 +214,10 @@ textarea{ resize: none;}
         var description = $("#description").val();
         var id = $("#id").val();
         var other = $("#other").val();
+        var file = window.FILES;
+        if(file.length == 0){
+            file = ""
+        }
 
         $.ajax({
             url: "/reporter/reportOrUpdate",
@@ -226,11 +230,12 @@ textarea{ resize: none;}
                 "description" : description,
                 "id" : id,
                 'other':other,
-                'attachment' : window.FILES
+                'attachment' : file
             },
             success: function (data) {
                 if (data.res == 1){
                     layer.msg('上报成功!');
+                    location.href = '/reporter/reportRecording'
                 }else {
                     layer.msg('上报失败！',{anim:6});
                 }
