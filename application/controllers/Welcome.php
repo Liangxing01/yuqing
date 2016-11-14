@@ -173,7 +173,9 @@ class Welcome extends MY_Controller
         $uid = $this->session->userdata('uid');
         $res = $this->my_model->get_user_info($uid);
         $pri=explode(',',$this->session->userdata('privilege'));
-        $priArr=['1'=>'上报权限','2'=>'指派权限','3'=>'处理权限','4'=>'督查权限','5'=>'管理员'];
+        $priArr=array(
+            '1'=>'上报权限','2'=>'指派权限','3'=>'处理权限','4'=>'督查权限','5'=>'管理员'
+        );
         foreach ($pri as &$value) {
             $value=$priArr[$value];
         }
