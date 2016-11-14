@@ -267,6 +267,10 @@ class Handler extends MY_Controller {
         $this->assign('username',$user_info[0]['name']);
         $this->assign('useracter',$user_info[0]['avatar']);
         $this->assign('usertype',$usertype);
+
+        //获取 参考文件
+        $doc_arr = $this->handler_model->get_event_attachment($event_id);
+        $this->assign('attachment',$doc_arr);
         $this->all_display("handler/event_tracer.html");
     }
 

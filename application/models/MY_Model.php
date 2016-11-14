@@ -198,4 +198,35 @@ class MY_Model extends CI_Model {
     }
 
 
+    /**
+     * 轮询获得30秒以内的消息
+     */
+    public function get_new_msg(){
+        //未处理事件
+        $new_unhandler = $this->db->select('id')->from('event_designate')
+            ->where('unix_timestamp(now()) - time < 30')
+            ->where('processor',$this->session->userdata('uid'))
+            ->get()->result_array();
+        $new_msg = $this->db->select('id')->from('msg')
+            ->where('unix_timestamp(now()) - time < 30')
+            ->get()->result_array();
+        if(!empty($new_unhandler)){
+            return true;
+        }else{
+            return false;
+        }
+
+    }
+
+    public function insert_msg($data){
+        $this->db->insert('msg',$data);
+    }
+
+    public function get_msg(){
+        $res = $this->db->select('name,msg,url')->from('msg')
+            ->get()->result_array();
+        return $res;
+    }
+
+
 }
