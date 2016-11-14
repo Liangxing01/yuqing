@@ -3,6 +3,8 @@
     input{ border:none !important; text-indent: inherit !important; padding-left: 0px !important;}
     label{ font-weight: bold;!important; color: #000000;}
     #submit3{background: #72d0eb; border: none;}
+    .col-xs-4{border: 4px solid #e5e6e6; padding: 0px;}
+    .panel{ height: 400px;}
 </style>
 
 <!-- Ztree CSS -->
@@ -15,7 +17,7 @@
         <!-- BEGIN ROW  -->
         <div class="row">
             <div class="col-lg-12">
-                <section class="panel">
+                <section class="panel col-xs-4">
                     <header class="panel-heading">
                         <span class=""><strong><img src="../../../img/admin.png" width="35" height="35" />单位管理</strong></span>
 
@@ -24,8 +26,8 @@
                         <form id="form1" class="form-horizontal tasi-form layui-form" enctype="multipart/form-data">
                             <input type="hidden" id="id" name="id"/>
                             <div class="form-group">
-                                <label class="col-xs-3 col-sm-1 control-label">单位名：</label>
-                                <div class="col-xs-9 col-sm-11">
+                                <label class="col-xs-3 col-sm-2 control-label">单位名：</label>
+                                <div class="col-xs-9 col-sm-10">
                                     <input type="text" name="groupname" id="groupname"   class="form-control layui-input">
                                 </div>
                             </div>
@@ -35,7 +37,10 @@
 
 
                     </div>
-                    <section class="panel">
+                    
+
+                </section>
+				<section class="panel col-xs-4">
                         <header class="panel-heading">
                             <i class="fa fa-hand-o-down"></i>
                             <span class="label label-primary">
@@ -47,14 +52,15 @@
                                 数据加载中……
                             </ul>
                         </div>
-                    </section>
-
-                    <div class="text-center ">
+                        <div class="text-center " style="position: absolute; bottom: 10px; width: 100%;">
                         <button id="submit" class="btn btn-success btn-lg col-sm-12">添加</button>
-                        <button id="del" class="btn btn-success btn-lg col-sm-12">更新</button>
+                        <button id="del" class="btn btn-success btn-lg col-sm-12" style="margin-top: 10px;">更新</button>
                     </div>
+                </section>
 
-                    <section class="panel">
+                    
+
+                    <section class="panel col-xs-4">
                         <header class="panel-heading">
                             <i class="fa fa-hand-o-down"></i>
                             <span class="label label-primary">
@@ -67,9 +73,6 @@
                             </ul>
                         </div>
                     </section>
-
-
-                </section>
 
             </div>
         </div>

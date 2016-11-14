@@ -3,6 +3,8 @@
     input{ border:none !important; text-indent: inherit !important; padding-left: 0px !important;}
     label{ font-weight: bold;!important; color: #000000;}
     #submit3{background: #72d0eb; border: none;}
+    .col-xs-4{border: 4px solid #e5e6e6; padding: 0px;}
+    .panel{ height: 400px;}
 </style>
 
 <!-- Ztree CSS -->
@@ -15,7 +17,7 @@
         <!-- BEGIN ROW  -->
         <div class="row">
             <div class="col-lg-12">
-                <section class="panel">
+                <section class="panel col-xs-4" >
                     <header class="panel-heading">
                         <span class=""><strong><img src="../../../img/admin.png" width="35" height="35" />用户管理</strong></span>
 
@@ -24,47 +26,43 @@
                         <form id="form1" class="form-horizontal tasi-form layui-form" enctype="multipart/form-data">
                             <input type="hidden" id="id" name="id"/>
                             <div class="form-group">
-                                <label class="col-xs-3 col-sm-1 control-label">用户名：</label>
-                                <div class="col-xs-9 col-sm-11">
+                                <label class="col-xs-3 col-sm-2 control-label">用户名：</label>
+                                <div class="col-xs-9 col-sm-10">
                                     <input type="text" name="username" id="username"   class="form-control layui-input">
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-xs-3 col-sm-1 control-label">密码：</label>
-                                <div class="col-xs-9 col-sm-11">
+                                <label class="col-xs-3 col-sm-2 control-label">密码：</label>
+                                <div class="col-xs-9 col-sm-10">
                                     <input type="text" name="pass" id="pass"  class="form-control layui-input">
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-xs-3 col-sm-1 control-label">姓名：</label>
-                                <div class="col-xs-9 col-sm-11">
+                                <label class="col-xs-3 col-sm-2 control-label">姓名：</label>
+                                <div class="col-xs-9 col-sm-10">
                                     <input type="text" name="name" id="name"  class="form-control layui-input">
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-xs-3 col-sm-1 control-label">性别：</label>
-                                <div class="col-xs-9 col-sm-11">
+                                <label class="col-xs-3 col-sm-2 control-label">性别：</label>
+                                <div class="col-xs-9 col-sm-10">
                                     <input id="man" type="radio" checked="checked" name="sex" value="1" />男
                                     <input id="woman" type="radio"  name="sex" value="0"/>女
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-xs-3 col-sm-1 control-label">权限：</label>
-                                <div class="col-xs-9 col-sm-11">
+                                <label class="col-xs-3 col-sm-2 control-label">权限：</label>
+                                <div class="col-xs-9 col-sm-10">
                                     <input name="privilege" type="checkbox"  value="1" />上报人
                                     <input name="privilege" type="checkbox"  value="2" />指派人
                                     <input name="privilege" type="checkbox"  value="3" />处理人
                                 </div>
                             </div>
 
-
-
-
                         </form>
-
-
-                    </div>
-                    <section class="panel">
+                    </div>                    
+                </section>
+					<section class="panel  col-xs-4">
                         <header class="panel-heading">
                             <i class="fa fa-hand-o-down"></i>
                             <span class="label label-primary">
@@ -76,13 +74,14 @@
                                 数据加载中……
                             </ul>
                         </div>
+                        <div class="text-center " style="position: absolute; bottom: 10px; width: 100%;">
+                        	<button id="submit" class="btn btn-success btn-lg col-sm-12">保存</button>
+                    	</div>
                     </section>
 
-                    <div class="text-center ">
-                        <button id="submit" class="btn btn-success btn-lg col-sm-12">保存</button>
-                    </div>
+                    
 
-                    <section class="panel">
+                    <section class="panel col-xs-4">
                         <header class="panel-heading">
                             <i class="fa fa-hand-o-down"></i>
                             <span class="label label-primary">
@@ -95,9 +94,6 @@
                             </ul>
                         </div>
                     </section>
-
-
-                </section>
 
             </div>
         </div>

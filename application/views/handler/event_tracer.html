@@ -17,29 +17,37 @@
         top: 5px;
     }
     .cankao{   	
-    	width: 60%;
+    	width: 65%;
     	float: left;
     	text-align: center;
     	margin: auto;
+    	font-size: 1.0em;
     }
     .cankao span{
     	float: left;
     	width: 20%;
+    	color: #000000;
     }
     .cankao ul{
     	width: 80%;
+    	float: left;
+    	
     }
     .cankao ul li{ 
     	float: left;
     	text-align: left;
     	list-style: none;
-    	width: 30%;
+    	width: 33%;
+    	overflow: hidden;
+    	white-space: nowrap;
     }
     .cankao ul li a{ 
     	text-decoration: underline;
     	color: #58d4ee;
     }
-
+	@media only screen and (max-width:1024px ) {
+		#sjwc{ margin-right: 0;padding: 5px 18px;}
+	}
 </style>
 <section id="main-content">
     <section class="wrapper site-min-height">
@@ -48,7 +56,7 @@
             <div class="col-lg-12">
                 <section class="panel">
                     <header class="panel-heading">
-                        <div style="float: left; width: 20%;"> 
+                        <div style="float: left; width: 12%;"> 
                        	<i class="fa fa-hand-o-down"></i>
                         <span class="">事件追踪</span>
                         </div>
@@ -62,7 +70,7 @@
                         	</ul>
                         </div>
                         
-                        <input type="button" value="点击确认事件已完成" name="sjwc" id="sjwc"/>
+                        <input type="button" value="点击确认事件已完成" name="sjwc" id="sjwc" width="15%"/>
                         <div style="clear: both;"></div>
                     </header>
                     <form class="zj">

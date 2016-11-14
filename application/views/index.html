@@ -10,6 +10,8 @@
 	.tq1 span{ font-size: 1.4em; color: #72d0eb; line-height: 88px;}
 	.tq1 span b{ font-size: 3.4em; font-weight: normal;}
 	.tq1 p{ font-size: 1.4em;  color: #72d0eb; margin: 0px;}
+	.xx{ background: url(../../img/xxjl.png) no-repeat 0;}
+	.xxt{ font-size: 2.0em; color: white;}
 </style>
       <!-- BEGIN MAIN CONTENT -->
       <link href="/css/tasks.css" rel="stylesheet"><!-- TASK CSS-->
@@ -158,32 +160,38 @@
 		   <div class="row">
           <div class="col-md-6">
           <!-- START PANEL -->
-          <section class="panel tasks-widget">
-            <div class="panel-body tq">
-            	<div class="col-md-6 ">
-            		<span><img src="../../img/tq.png"></span>
-            		<p>重庆·巴南</p>
-            		<p>ChongQing·BanNan</p>
-            	</div>
-            	<div class="col-md-6 ">
-            		<span><b><{$temp}></b><sup>℃</sup></span>
-            		<p>温度</p>
-            		<p>Temperature</p>
-            	</div>             
-            </div>
-            <div class="panel-body tq1">
-            	<div class="col-md-6 ">
-            		<span><b><{$SD}></b>%</span>
-            		<p>湿度</p>
-            		<p>Humidity</p>
-            	</div>
-            	<div class="col-md-6 ">
-            		<span><img src="../../img/f.png"></span>
-            		<p><{$wind}></p>
-            		<p>Wind</p>
-            	</div>             
-            </div>
-          </section>
+          <section class="panel">
+                <div class="panel-body xx">
+                  <a href="#" class="task-thumb xxt" >
+                    5
+                  </a>
+                  <div class="task-thumb-details">
+                    <h1>
+                      <a href="#">
+                        最新消息
+                      </a>
+                    </h1>
+                    <p>
+                      最新5条留言记录
+                    </p>
+                  </div>
+                </div>
+                <table class="table table-hover personal-task">
+                  <tbody>
+                    <{foreach $login as $item}>
+                    <tr>
+                      <td>
+                        <{$item@iteration}>
+                      </td>
+                      <td style="text-align: left;">
+                        小马：今天晚上一起去加班吧！
+                      </td>
+                      
+                    </tr>
+                    <{/foreach}>
+                  </tbody>
+                </table>
+              </section>
           <!-- END PANEL -->
             </div>
 

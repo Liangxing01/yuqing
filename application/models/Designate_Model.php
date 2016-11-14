@@ -561,7 +561,7 @@ class Designate_Model extends CI_Model
             }
         }
 
-        //获得督办人ID
+        //获得督办人ID TODO 判断数组空
         $watchers = array();
         foreach (explode(",", $data["watcher"]) AS $w) {
             $temp = explode("_", $w);
@@ -596,7 +596,7 @@ class Designate_Model extends CI_Model
         $event_id = $this->db->insert_id();
 
 
-        //添加事件信息关联表
+        //添加事件信息关联表 TODO 判断数组空
         $info_id = explode(",", $data["info_id"]);
         $event_info = array();
         foreach ($info_id AS $id) {
@@ -699,4 +699,45 @@ class Designate_Model extends CI_Model
 
     }
 
+
+    /**
+     * 确认事件审核按钮显示
+     * @param $eid
+     * @return bool
+     */
+    public function check_done_btn($eid)
+    {
+        $ok = $this->db->select("id")->from("event")->where(array("id" => $eid, "state" => "未审核"))->get()->num_rows();
+        if ($ok == 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+    /**
+     * 事件审核
+     * @param $eid
+     * @param $flag
+     * @return bool
+     */
+    public function event_confirm_done($eid, $flag)
+    {
+        $n = $this->db->select("id")->where(array("id" => $eid, "state" => "未审核"))->get("event")->num_rows();
+        if ($n == 1) {
+            if ($flag == "ok") {
+                return $this->db->set(array("state" => "已完成"))->where("id", $eid)->update("event");
+            } elseif ($flag == "not") {
+//                TODO 添加事务
+                $r_1 = $this->db->set(array("state" => "处理中"))->where("event_id", $eid)->update("event_designate");
+                $r_2 = $this->db->set(array("state" => "已指派"))->where("id", $eid)->update("event");
+                return $r_1 && $r_2;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
 }

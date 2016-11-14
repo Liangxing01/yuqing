@@ -251,8 +251,9 @@ class Designate extends MY_controller
         }
 
         $this->load->model("Handler_Model", "handler");
+        $this->load->model("Designate_Model", "designate");
         $einfo = $this->handler->get_title_by_eid($event_id);
-        $done_btn = $this->handler->check_done_btn($gid, $event_id);
+        $done_btn = $this->designate->check_done_btn($event_id);   //事件审核按钮
         $this->assign('title', $einfo['title']);
         $this->assign('rank', $einfo['rank']);
         if ($einfo['state'] == "已完成") {
@@ -279,6 +280,24 @@ class Designate extends MY_controller
         $this->assign("active_title", "designate_parent");
         $this->assign("active_parent", "event_search");
         $this->all_display("designate/event_tracer.html");
+    }
+
+
+    /**
+     * 事件审核
+     */
+    public function event_confirm_done()
+    {
+        $flag = $this->input->post("flag");
+        $eid = $this->input->post("eid");
+
+        $this->load->model("Designate_Model", "designate");
+        $result = $this->designate->event_confirm_done($eid, $flag);
+        if ($result) {
+            echo 1;
+        } else {
+            echo 0;
+        }
     }
 
 

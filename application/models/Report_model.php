@@ -68,7 +68,7 @@ class Report_model extends CI_Model {
                 $data = array(
                     'info_id' => $info_id,
                     'name'    => $one['name'],
-                    'url'     => $_SERVER['DOCUMENT_ROOT']."/uploads/pic/".$one['new_name'],
+                    'url'     => "/uploads/pic/".$one['new_name'],
                     'type'    => "pic"
                 );
                 $res = $this->db->insert('info_attachment',$data);
@@ -82,7 +82,7 @@ class Report_model extends CI_Model {
                 $data = array(
                     'info_id' => $info_id,
                     'name'    => $one['name'],
-                    'url'     => $_SERVER['DOCUMENT_ROOT']."/uploads/video/".$one['new_name'],
+                    'url'     => "/uploads/video/".$one['new_name'],
                     'type'    => "video"
                 );
                 $res = $this->db->insert('info_attachment',$data);
@@ -108,6 +108,7 @@ class Report_model extends CI_Model {
             ->from('info')
             ->join('user','user.id = info.publisher','left')
             ->where(array('user.id'=> (int)$uid))
+            ->order_by("time", $pInfo["sort_type"])
             ->limit($pInfo["length"], $pInfo["start"])
             ->get()->result_array();
 
