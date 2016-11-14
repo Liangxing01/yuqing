@@ -456,7 +456,7 @@ class Designate_Model extends CI_Model
             ->where("event.id IN (SELECT `relate_id` FROM `yq_event_relate` WHERE `event_id` = $event_id)")
             ->get()->result_array();
 
-        $event["attachment"] = $this->db->select("event_id, name, url, type")
+        $event["attachment"] = $this->db->select("id, event_id, name, url, type")
             ->from("event_attachment")
             ->where("event_id", $event_id)
             ->get()->result_array();
@@ -530,14 +530,14 @@ class Designate_Model extends CI_Model
 
 
     /**
-     * TODO
      * 事件指派 插入指派数据
      * @param $data
-     * @return mixed
+     * @return bool
      */
     public function event_designate($data)
     {
         //TODO 添加事务流程
+        //TODO 检测是否重复指派
 
         $time = time();
         $manager = $this->session->uid; //首派人
@@ -650,17 +650,23 @@ class Designate_Model extends CI_Model
         $this->db->insert_batch("event_watch", $event_watch);  //事件督办
 
 
-        $event_attachment = array();
         //添加事件参考文件表
-        foreach ($data["attachment"] AS $attachment) {
-            $event_attachment[] = array(
-                "event_id" => $event_id,
-                "name" => $attachment["name"],
-                "url" => $attachment["url"],
-                "type" => "document"
-            );
+        $event_attachment = array();
+        if (!empty($data["attachment"])) {
+            foreach ($data["attachment"] AS $attachment) {
+                $event_attachment[] = array(
+                    "event_id" => $event_id,
+                    "name" => $attachment["name"],
+                    "url" => $attachment["url"],
+                    "type" => "document"
+                );
+                if (file_exists($_SERVER['DOCUMENT_ROOT'] . "/uploads/temp/" . $attachment['new_name'])) {
+                    copy($_SERVER['DOCUMENT_ROOT'] . "/uploads/temp/" . $attachment['new_name'], $_SERVER['DOCUMENT_ROOT'] . "/uploads/document/" . $attachment['new_name']);
+                    unlink($_SERVER['DOCUMENT_ROOT'] . "/uploads/temp/" . $attachment['new_name']);
+                }
+            }
+            $this->db->insert_batch("event_attachment", $event_attachment);  //事件参考文件
         }
-        $this->db->insert_batch("event_attachment", $event_attachment);  //事件参考文件
 
 
         //添加事件报警表
@@ -686,11 +692,6 @@ class Designate_Model extends CI_Model
             $this->db->insert_batch("event_alert", $event_alert);  //事件报警
         }
 
-        echo "ok";
-
-
-        //TODO 检测是否重复指派
-//        return $this->db->insert_batch("event_designate", $insert);
     }
 
 }

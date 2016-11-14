@@ -73,7 +73,7 @@
                 <ul>
                     <{foreach $event["attachment"] AS $attach}>
                     <li>
-                        <a class="atch-thumb" href="#">
+                        <a class="atch-thumb" href="/welcome/attachment_download?id=<{$attach['id']}>">
                             <span><{$attach['name']}></span>
                         </a>
                     </li>

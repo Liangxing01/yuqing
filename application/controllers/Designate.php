@@ -137,14 +137,6 @@ class Designate extends MY_controller
      */
     public function event_designate()
     {
-//        $event_id = $this->input->get("id", true);
-//        if (!isset($event_id) || $event_id == null || $event_id == "") {
-//            show_404();
-//        }
-
-//        $this->load->model("Designate_Model", "designate");
-//        $event_info = $this->designate->get_event_info($event_id);
-//        $this->assign("event", $event_info);
         $this->assign("active_title", "designate_parent");
         $this->assign("active_parent", "event_designate");
         $this->all_display("designate/event_designate.html");
@@ -154,7 +146,8 @@ class Designate extends MY_controller
     /**
      * 处理人(单位)树 接口
      */
-    public function get_processor_tree(){
+    public function get_processor_tree()
+    {
         $this->load->model("Tree_Model", "tree");
         $this->output->set_content_type('application/json')
             ->set_output($this->tree->get_processor_tree());
@@ -163,15 +156,13 @@ class Designate extends MY_controller
     /**
      * 督办人树 接口
      */
-    public function get_watcher_tree(){
+    public function get_watcher_tree()
+    {
         $this->load->model("Tree_Model", "tree");
         $this->output->set_content_type('application/json')
             ->set_output($this->tree->get_watcher_tree());
     }
 
-    public function demo(){
-        $this->all_display("designate/event_designate_back.html");
-    }
 
     /**
      * TODO
