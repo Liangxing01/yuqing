@@ -124,9 +124,9 @@ class Designate extends MY_controller
         $this->load->model("Designate_Model", "designate");
         $result = $this->designate->info_commit($data);
         if ($result) {
-            echo "提交成功";
+            echo 1;
         } else {
-            echo "提交失败";
+            echo 0;
         }
     }
 

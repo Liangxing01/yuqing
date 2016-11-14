@@ -108,13 +108,14 @@ class Reporter extends MY_controller
      */
     public function show_detail()
     {
-        $info_id = $this->input->get("id");
+        $info_id = $this->input->get("id", true);
         if (!isset($info_id) || $info_id == null || $info_id == "") {
             show_404();
         }
 
-        $info = $this->report->get_detail_by_id($info_id);
-        $this->assign("event", $info);
+        $this->load->model("Designate_Model", "designate");
+        $info = $this->designate->get_info($info_id);
+        $this->assign("info", $info);
         $this->assign("active_title", "report_parent");
         $this->assign("active_parent", "report_recording");
         $this->all_display("report/show_report_detail.html");

@@ -25,37 +25,39 @@
             </div>
             <div class="sender-info">
                 <div class="row">
-                    <div class="col-md-12">
-                        <strong class="">上报人:</strong><span>&nbsp;<{$info['publisher']}></span>
-                        &nbsp;
-                        <strong>来源:</strong><span>&nbsp;<{$info['source']}></span>
-                        &nbsp;
-                        <strong>链接:</strong><span>&nbsp;<{$info['url']}></span>
-                        &nbsp;
-                        <strong>时间:</strong><span>&nbsp;<{date("Y-m-d H:i:s",$info['time'])}></span>
-                    </div>
+                    <div class="col-md-12"><p class="col-md-4">
+                        &nbsp;<strong>上报人:</strong><span><{$info['publisher']}></span></p>
+                        <p class="col-md-4">&nbsp;<strong>类型:</strong><span><{$info['type']}></span></p>
+                        <p class="col-md-4">&nbsp;<strong>链接:</strong><span><{$info['url']}></span></p>
+                        <p class="col-md-4">&nbsp;<strong>来源:</strong><span><{$info['source']}></span></p>
+                        <p class="col-md-4">
+                            &nbsp;<strong>发布时间:</strong><span><{date("Y-m-d H:i:s",$info['time'])}></span></p></div>
                 </div>
             </div>
             <div class="info-content">
+                <p><strong>信息描述:</strong></p>
                 <p><{$info['description']}></p>
             </div>
-            <div class="attachment-mail">
-                <p>
-                    <span><i class="fa fa-paperclip"></i></span>
-                </p>
-                <ul>
-                    <li>
-                        <a class="atch-thumb" href="#">
-                            <img alt="img" src="/img/pro-ac-2.png">
-                        </a>
-                    </li>
-                    <li>
-                        <a class="atch-thumb" href="#">
-                            <img alt="img" src="/img/pro-ac-1.png">
-                        </a>
-                    </li>
-                </ul>
+            <div class="attachment-info">
+                <div class="row">
+                    <div class="info_des_img col-md-12"><h2>图片描述</h2>
+                        <{foreach $info['attachment'] AS $attachment}>
+                        <{if $attachment["type"] == 'pic'}>
+                        <p class="col-md-6"><img width="100%" src="<{$attachment['url']}>"></p>
+                        <{/if}>
+                        <{/foreach}>
+                    </div>
+
+                    <div class="info_des_video col-md-12"><h2>视频描述</h2>
+                        <{foreach $info['attachment'] AS $attachment}>
+                        <{if $attachment["type"] == 'video'}>
+                        <video src="<{$attachment['url']}>" width="100%" controls="controls" class="col-md-6"></video>
+                        <{/if}>
+                        <{/foreach}>
+                    </div>
+                </div>
             </div>
+
             <{if $info['state'] != 2}>
             <div class="form-inbox row">
                 <div class="shadow-line"></div>
@@ -92,6 +94,8 @@
 </section>
 <!-- END SECTION -->
 
+<!-- Public Script -->
+<script src="/js/public.js"></script>
 <!-- Page Script -->
 <script language="javascript">
     $("#commit-info-btn").click(function () {
@@ -105,7 +109,13 @@
             data: {"id": id, "type": type, "duplicate": duplicate, "source": source},
             url: "/designate/commit_info",
             success: function (data) {
-                alert(data);
+                if (data == "1") {
+                    layer.msg("操作成功", function () {
+                        forward("/designate/info_not_handle");
+                    });
+                } else {
+                    layer.msg("操作失败", {anim: 6});
+                }
             }
         });
     });

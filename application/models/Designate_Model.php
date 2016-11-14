@@ -108,8 +108,9 @@ class Designate_Model extends CI_Model
      */
     public function get_info($info_id)
     {
-        $info = $this->db->select("info.id, info.title, info.description, info.type, info.url, info.state, info.source, user.name AS publisher, info.time")
+        $info = $this->db->select("info.id, info.title, info.description, type.name AS type, info.url, info.state, info.source, user.name AS publisher, info.time")
             ->from("info")
+            ->join("type", "type.id = info.type", "left")
             ->join("user", "user.id = info.publisher", "left")
             ->where(array("info.id" => $info_id))
             ->get()->row_array();
