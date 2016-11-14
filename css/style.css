@@ -6738,6 +6738,8 @@ a.guest-on i {
 	float: left;
 	border-right: none;
 	border-color: #72d0eb;
+	resize: none;
+	border: 1px solid #72d0cb;
 }
 .zj_button{
 	height: 80px;
