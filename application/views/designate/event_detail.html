@@ -149,6 +149,10 @@
                 //循环图片和视频
                 var info_list_img = '<h2>图片描述</h2>';    //图片
                 var info_list_video = '<h2>视频描述</h2>';  //视频
+                if(!data.attachment.length){
+                    info_list_img = '<p class="col-md-12">暂无图片描述</p>';
+                    info_list_video = '<p class="col-md-12">暂无视频描述</p>'
+                }
                 for(var i=0;i<data.attachment.length;i++){
                     if(data.attachment[i].type == 'pic'){
                         info_list_img += '<p class="col-md-6"><img src="'+data.attachment[i].url+'" width="100%"></p>';
