@@ -6762,3 +6762,14 @@ a.guest-on i {
 	background:#8175c7;
 	color: white;
 }
+
+/*信息描述的部分样式设置*/
+.attachment-info img,.attachment-info video{
+	min-height: 100px;
+	max-height: 400px;
+}
+.attachment-info h2{
+	font-size: 1.0em;
+	font-weight: bold;
+	font-family: '微软雅黑';
+}

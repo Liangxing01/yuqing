@@ -26,35 +26,29 @@
             <div class="sender-info">
                 <div class="row">
                     <div class="col-md-12">
-                        <strong class="">首派人:</strong><span>&nbsp;<{$event['manager']}></span>
-                        &nbsp;
-                        <strong>事件等级:</strong><span>&nbsp;<{$event['rank']}></span>
-                        &nbsp;
+                        <p class="col-md-4"><strong>首派人:</strong><span>&nbsp;<{$event['manager']}></span></p>
+                        <p class="col-md-4"><strong>事件等级:</strong><span>&nbsp;<{$event['rank']}></span></p>
                         <{if $event['reply_time'] == ''}>
-                        <strong>首回时间:</strong><span>&nbsp;不限制</span>
+                        <p class="col-md-4"><strong>首回时间:</strong><span>&nbsp;不限制</span></p>
                         <{else}>
-                        <strong>首回时间:</strong><span>&nbsp;<{$event['reply_time']}></span>
+                        <p class="col-md-4"><strong>首回时间:</strong><span>&nbsp;<{$event['reply_time']}></span></p>
                         <{/if}>
-                        &nbsp;
                         <{if $event["main_processor"] != ''}>
-                        <strong>牵头人:</strong><span>&nbsp;<{$event['main_processor']}></span>
+                        <p class="col-md-4"><strong>牵头人:</strong><span>&nbsp;<{$event['main_processor']}></span></p>
                         <{/if}>
                         <{if $event["main_group"] != ''}>
-                        <strong>牵头单位:</strong><span>&nbsp;<{$event['main_group']}></span>
+                        <p class="col-md-4"><strong>牵头单位:</strong><span>&nbsp;<{$event['main_group']}></span></p>
                         <{/if}>
-                        &nbsp;
-                        <strong>状态:</strong><span>&nbsp;<{$event['state']}></span>
-                        &nbsp;
-                        <strong>开始时间:</strong><span>&nbsp;<{date("Y-m-d H:i:s",$event['start_time'])}></span>
-                        &nbsp;
+                        <p class="col-md-4"><strong>状态:</strong><span>&nbsp;<{$event['state']}></span></p>
+                        <p class="col-md-4"><strong>开始时间:</strong><span>&nbsp;<{date("Y-m-d H:i:s",$event['start_time'])}></span></p>
                         <{if $event["end_time"] != ''}>
-                        <strong>结束时间:</strong><span>&nbsp;<{date("Y-m-d H:i:s",$event['end_time'])}></span>
+                        <p class="col-md-4"><strong>结束时间:</strong><span>&nbsp;<{date("Y-m-d H:i:s",$event['end_time'])}></span></p>
                         <{/if}>
                     </div>
                 </div>
             </div>
             <div class="event-content">
-                <p>
+                <p class="col-md-12">
                     <span><strong>关联事件:</strong></span>
                     <{foreach $event["relate_event"] AS $r}>
                     <a target="_blank" href="/designate/event_detail?eid=<{$r['id']}>"><span
@@ -63,8 +57,8 @@
                     无
                     <{/foreach}>
                 </p>
-                <p><strong>事件描述:</strong></p>
-                <p><{$event['description']}></p>
+                <p class="col-md-12"><strong>事件描述:</strong></p>
+                <p class="col-md-12"><{$event['description']}></p>
             </div>
             <div class="attachment-event">
                 <p>
@@ -134,11 +128,11 @@
                         '<div class="sender-info">' +
                         '<div class="row">' +
                         '<div class="col-md-12">' +
-                        (data.hasOwnProperty("publisher") ? '&nbsp;<strong>发布人:</strong><span>' + data.publisher + '</span>' : "") +
-                        '&nbsp;<strong>类型:</strong><span>' + data.type + '</span>' +
-                        '&nbsp;<strong>链接:</strong><span>' + data.url + '</span>' +
-                        '&nbsp;<strong>来源:</strong><span>' + data.source + '</span>' +
-                        '&nbsp;<strong>发布时间:</strong><span>' + timeToDate(data.time * 1000) + '</span>' +
+                        (data.hasOwnProperty("publisher") ? '<p class="col-md-4">&nbsp;<strong>上报人:</strong><span>' + data.publisher + '</span></p>' : "") +
+                        '<p class="col-md-4">&nbsp;<strong>类型:</strong><span>' + data.type + '</span></p>' +
+                        '<p class="col-md-4">&nbsp;<strong>链接:</strong><span>' + data.url + '</span></p>' +
+                        '<p class="col-md-4">&nbsp;<strong>来源:</strong><span>' + data.source + '</span></p>' +
+                        '<p class="col-md-4">&nbsp;<strong>发布时间:</strong><span>' + timeToDate(data.time * 1000) + '</span></p>' +
                         '</div>' +
                         '</div>' +
                         '</div>' +
@@ -147,12 +141,26 @@
                         '<p>' + data.description + '</p>' +
                         '</div>' +
                         '<div class="attachment-info">' +
-                        '<ul>' +
-                            //TODO 插入信息图片和视频
-                        '</ul>' +
+                        '<div class="info_des_img col-md-12"></div>' +
+                        '<div class="info_des_video col-md-12"></div>'+
                         '</div>';
                 info_box.html(info);
+
+                //循环图片和视频
+                var info_list_img = '<h2>图片描述</h2>';    //图片
+                var info_list_video = '<h2>视频描述</h2>';  //视频
+                for(var i=0;i<data.attachment.length;i++){
+                    if(data.attachment[i].type == 'pic'){
+                        info_list_img += '<p class="col-md-6"><img src="'+data.attachment[i].url+'" width="100%"></p>';
+                    }
+                    if(data.attachment[i].type == 'video'){
+                        info_list_video += '<video src="'+data.attachment[i].url+'" width="100%" controls="controls" class="col-md-6"></video>';
+                    }
+                }
+                $('.info_des_img').append(info_list_img);
+                $('.info_des_video').append(info_list_video);
             }
         });
     }
+
 </script>
