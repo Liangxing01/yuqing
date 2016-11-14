@@ -49,10 +49,10 @@ class Welcome extends MY_Controller
 
             }
             if (isset($zp_tasks_num_arr)) {
-                $all_num_arr['zp']=$zp_tasks_num_arr;
+                $all_num_arr['zp'] = $zp_tasks_num_arr;
             }
             if (isset($handler_num_arr)) {
-                $all_num_arr['handler']=$handler_num_arr;
+                $all_num_arr['handler'] = $handler_num_arr;
             }
         }
         echo json_encode($all_num_arr);
@@ -75,11 +75,11 @@ class Welcome extends MY_Controller
             switch ($one) {
                 case 2 :
                     $zp_alarm = $this->my_model->get_desi_alert($uid);
-                    $alarm_arr['zp_alarm']=$zp_alarm;
+                    $alarm_arr['zp_alarm'] = $zp_alarm;
                     break;
                 case 3 :
                     $processor_alarm = $this->my_model->get_processor_alert($uid);
-                    $alarm_arr['processor_alarm']=$processor_alarm;
+                    $alarm_arr['processor_alarm'] = $processor_alarm;
                     break;
             }
         }
@@ -139,6 +139,34 @@ class Welcome extends MY_Controller
 
 
     /**
+     * 事件参考文件下载 接口
+     */
+    public function attachment_download()
+    {
+        $id = $this->input->get("id", true);
+        if (!isset($id) || $id == null || $id == "") {
+            show_404();
+        }
+
+        //获取附件信息和鉴权
+        $this->load->model("Common_Model", "common");
+        $attachment = $this->common->check_can_download($id);
+        if ($attachment) {
+            if (file_exists($_SERVER['DOCUMENT_ROOT'] . $attachment["url"])) {
+                $this->load->helper("download");
+                $data = file_get_contents($_SERVER['DOCUMENT_ROOT'] . $attachment["url"]);
+                $name = $attachment["name"];
+                force_download($name, $data);
+            } else {
+                show_404("文件不存在");
+            }
+        } else {
+            show_404("文件不存在");
+        }
+    }
+
+
+    /**
      * 接口: 获取上报信息
      * 参数: 事件ID 信息ID
      * 返回: Json 字符串
@@ -156,11 +184,13 @@ class Welcome extends MY_Controller
     /**
      * 展示个人信息页面
      */
-    public function show_my_info(){
+    public
+    function show_my_info()
+    {
         $this->assign("active_title", "my_info");
         $this->assign("active_parent", "manage_parent");
         $data = $this->get_my_info();
-        $this->assign('userinfo',$data);
+        $this->assign('userinfo', $data);
         $this->all_display("user_info.html");
     }
 
@@ -168,25 +198,27 @@ class Welcome extends MY_Controller
     /**
      * 个人信息查看接口
      */
-    public function get_my_info()
+    public
+    function get_my_info()
     {
         $uid = $this->session->userdata('uid');
         $res = $this->my_model->get_user_info($uid);
-        $pri=explode(',',$this->session->userdata('privilege'));
-        $priArr=array(
-            '1'=>'上报权限','2'=>'指派权限','3'=>'处理权限','4'=>'督查权限','5'=>'管理员'
+        $pri = explode(',', $this->session->userdata('privilege'));
+        $priArr = array(
+            '1' => '上报权限', '2' => '指派权限', '3' => '处理权限', '4' => '督查权限', '5' => '管理员'
         );
         foreach ($pri as &$value) {
-            $value=$priArr[$value];
+            $value = $priArr[$value];
         }
-        $res[0]['privilege'] = implode(' ',$pri);
+        $res[0]['privilege'] = implode(' ', $pri);
         return $res[0];
     }
 
     /*
      * 个人信息修改接口
      */
-    public function update_info()
+    public
+    function update_info()
     {
         $name = $this->input->post('name');
         $sex = $this->input->post('sex');
@@ -217,7 +249,8 @@ class Welcome extends MY_Controller
      * 修改密码接口
      */
 
-    public function change_psw()
+    public
+    function change_psw()
     {
         $old = $this->input->post('old_pass');
         $new = $this->input->post('new_pass');
@@ -237,7 +270,8 @@ class Welcome extends MY_Controller
     }
 
     //修改头像接口
-    public function change_avatar()
+    public
+    function change_avatar()
     {
         $config['upload_path'] = './uploads/avatar/';
         $config['allowed_types'] = 'jpg|png|jpeg';
@@ -277,7 +311,8 @@ class Welcome extends MY_Controller
     }
 
     //展示修改密码界面
-    public function show_change_psw()
+    public
+    function show_change_psw()
     {
         $this->assign("active_title", "change_psw");
         $this->assign("active_parent", "manage_parent");
@@ -287,7 +322,8 @@ class Welcome extends MY_Controller
     /**
      * 用户登出 接口
      */
-    public function logout()
+    public
+    function logout()
     {
         $this->identity->destroy();
     }
