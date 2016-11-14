@@ -56,21 +56,19 @@
                         
                         <div class="col-md-2" style="text-align: center; padding-top:10px;">
 	                        <div class="fileupload fileupload-new" data-provides="fileupload">
-	                          <div class="fileupload-new thumbnail" >
-	                            <img src="<{$userinfo['avatar']|default:'/img/no-image.png'}>" alt="" id="avatar_img">
+	                          <div class="fileupload-new thumbnail">
+	                            <!--<img src="../../img/chose.png" alt="请统一上传蓝色证件照" id="avatar_img"> -->
+	                            <img src="<{$userinfo['avatar']|default:'/img/chose.png'}>" alt="请统一上传蓝色证件照" id="avatar_img">
 	                          </div>
 	                          <div class="fileupload-preview fileupload-exists thumbnail" >
 	                          </div>
 	                          <div>
-	                            <span class="btn btn-white btn-file">
-	                              <span class="fileupload-new" style="color: #000000;">
-	                                <i class="fa fa-paper-clip">
-	                                </i>
-	                                请统一上传蓝色证件照
-	                              </span>
+	                            <span class="btn">
+	                              
 	                              <input type="file" class="default" id="avatar">
+	                              
 	                            </span>
-                                <button id="avatar_sub" class="btn btn-lg submit" style="display:none">确定上传</button>
+                                <button id="avatar_sub" class="btn  submit" style="display:none; color: white; width: 100%;">确定上传</button>
 	                          </div>
                         	</div>
                         
