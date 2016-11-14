@@ -183,12 +183,9 @@ class Designate extends MY_controller
         $data["attachment"] = $this->input->post("attachment", true);         //附件
 
         $this->load->model("Designate_Model", "designate");
-        $result = $this->designate->event_designate($data);
-        if ($result) {
-            echo "指派成功";
-        } else {
-            echo "指派失败";
-        }
+        $this->designate->event_designate($data);
+        //TODO 返回结果
+        echo 1;
     }
 
 

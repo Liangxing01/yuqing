@@ -562,7 +562,7 @@ class Designate_Model extends CI_Model
             }
         }
 
-        //获得督办人ID TODO 判断数组空
+        //获得督办人ID
         $watchers = array();
         foreach (explode(",", $data["watcher"]) AS $w) {
             $temp = explode("_", $w);
@@ -585,7 +585,7 @@ class Designate_Model extends CI_Model
             "title" => $data["title"],             // 标题
             "manager" => $manager,                 // 首派人
             "rank" => $data["rank"],               // 事件等级
-            "reply_time" => $data["reply_time"],   // 首回时间
+            "reply_time" => $data["reply_time"] ? $data["reply_time"] : NULL,   // 首回时间
             "description" => $data["description"], // 事件描述
             "main_processor" => $main_processor,   // 牵头人
             "group" => $main_group,                // 牵头单位
@@ -597,16 +597,18 @@ class Designate_Model extends CI_Model
         $event_id = $this->db->insert_id();
 
 
-        //添加事件信息关联表 TODO 判断数组空
+        //添加事件信息关联表
         $info_id = explode(",", $data["info_id"]);
         $event_info = array();
-        foreach ($info_id AS $id) {
-            $event_info[] = array(
-                "info_id" => $id,
-                "event_id" => $event_id
-            );
+        if(!empty($info_id)){
+            foreach ($info_id AS $id) {
+                $event_info[] = array(
+                    "info_id" => $id,
+                    "event_id" => $event_id
+                );
+            }
+            $this->db->insert_batch("event_info", $event_info);   //事件信息关联
         }
-        $this->db->insert_batch("event_info", $event_info);   //事件信息关联
 
 
         //添加事件指派表
@@ -647,13 +649,15 @@ class Designate_Model extends CI_Model
 
         //添加事件督办表
         $event_watch = array();
-        foreach ($watchers AS $watcher) {
-            $event_watch[] = array(
-                "watcher" => $watcher,
-                "event_id" => $event_id
-            );
+        if (!empty($watchers)) {
+            foreach ($watchers AS $watcher) {
+                $event_watch[] = array(
+                    "watcher" => $watcher,
+                    "event_id" => $event_id
+                );
+            }
+            $this->db->insert_batch("event_watch", $event_watch);  //事件督办
         }
-        $this->db->insert_batch("event_watch", $event_watch);  //事件督办
 
 
         //添加事件参考文件表

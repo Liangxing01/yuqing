@@ -750,7 +750,13 @@
                 'attachment': window.FILES
             },
             success: function (data) {
-                console.log(data);
+                if (data == "1") {
+                    layer.msg("指派成功", function () {
+                        refresh();
+                    });
+                } else {
+                    layer.msg("操作失败", {anim: 6});
+                }
             }
         });
     }
