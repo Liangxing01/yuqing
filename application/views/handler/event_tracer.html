@@ -373,11 +373,11 @@
 		if(type==1){//添加小评论
 		 id=value;
 		 var comment =$.trim($("#comment"+id).val());
-			if(comment.length>200){ 
-				alert("字数不能超过200！");
+			if(comment.length>200){
+                layer.msg("字数不能超过200!",{anim:6,time:1500})
 				return false;
 			}else if(comment.length==0){
-                alert("评论不能为空！");
+                layer.msg("评论不能为空!",{anim:6,time:1500})
                 return false;
             }
 
@@ -439,6 +439,7 @@
 			    	success:function(data){		
 			    		//console.log(data.res);
 			    		if(data.res==1){
+                            layer.msg("确认完成成功！",{time:1500})
                             var comment_finish_tpl=$('script[id="commnet_finish"]').html();
                             var commnetObj=new Object();
                             commnetObj.daytime=new Date().toLocaleString().replace(/:\d{1,2}$/,' ');
