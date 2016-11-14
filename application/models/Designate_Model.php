@@ -740,4 +740,23 @@ class Designate_Model extends CI_Model
             return false;
         }
     }
+
+
+    /**
+     * 事件重启
+     * @param $eid
+     * @return bool
+     */
+    public function event_restart($eid)
+    {
+        $n = $this->db->select("id")->where(array("id" => $eid, "state" => "已完成"))->get("event")->num_rows();
+        if ($n == 1) {
+            //TODO 添加事务
+            $r_1 = $this->db->set(array("state" => "已指派"))->where("id", $eid)->update("event");
+            $r_2 = $this->db->set(array("state" => "处理中"))->where("event_id", $eid)->update("event_designate");
+            return $r_1 && $r_2;
+        } else {
+            return false;
+        }
+    }
 }

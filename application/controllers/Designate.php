@@ -153,6 +153,7 @@ class Designate extends MY_controller
             ->set_output($this->tree->get_processor_tree());
     }
 
+
     /**
      * 督办人树 接口
      */
@@ -293,6 +294,25 @@ class Designate extends MY_controller
 
         $this->load->model("Designate_Model", "designate");
         $result = $this->designate->event_confirm_done($eid, $flag);
+        if ($result) {
+            echo 1;
+        } else {
+            echo 0;
+        }
+    }
+
+
+    /**
+     * 事件重启
+     */
+    public function event_restart()
+    {
+        $event_id = $this->input->post("eid");
+        if (!isset($event_id) || $event_id == null || $event_id == "") {
+            show_404();
+        }
+        $this->load->model("Designate_Model", "designate");
+        $result = $this->designate->event_restart($event_id);
         if ($result) {
             echo 1;
         } else {

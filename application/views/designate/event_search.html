@@ -273,7 +273,7 @@
                             break;
                         case "已完成":
                             button += "<a title='回溯' href='/designate/event_tracer?eid=" + data + " ' class='btn btn-info btn-xs'>回溯</a>&nbsp;";
-                            button += "<a title='重启事件' href='/designate/restart?id=" + data + " ' class='btn btn-info btn-xs'>重启</a>&nbsp;";
+                            button += "<a title='重启事件' onclick='event_restart("+ data +")' href='javascript:;' class='btn btn-info btn-xs'>重启</a>&nbsp;";
                             break;
                     }
                     return button;
@@ -303,4 +303,35 @@
     jQuery(".panel .tools .fa-refresh").click(function () {
         $("#event_search_table").DataTable().ajax.reload(null, false);
     });
+
+    //事件重启
+    function event_restart(eid) {
+
+        layer.confirm('确认重启该事件?', {title:'提示'}, function(index){
+            $.ajax({
+                url: "/designate/event_restart",
+                method: "post",
+                dataType: 'json',
+                data: {"eid": eid},
+                success: function (data) {
+                    if (data == 1) {
+                        layer.msg('重启成功!');
+                        $("#event_search_table").DataTable().ajax.reload(null, false); //刷新表格
+                    } else {
+                        layer.msg('重启失败！', {anim: 6});
+                    }
+                }
+            });
+            layer.close(index);
+        });
+
+//        layer.confirm('确认重启该事件吗', {
+//            btn: ['确认', '取消'] //可以无限个按钮
+//        }, function(index, layero){
+//
+//        }, function(index){
+//            //按钮【按钮二】的回调
+//        });
+
+    }
 </script>
