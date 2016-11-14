@@ -172,21 +172,62 @@
                       </a>
                     </h1>
                     <p>
-                      最新5条留言记录
+                      最新5条消息记录
                     </p>
                   </div>
                 </div>
                 <table class="table table-hover personal-task">
                   <tbody id="msg">
 
-                    <!--<tr>
+                    <tr>
                       <td>
                         1
                       </td>
                       <td style="text-align: left;">
-                        小马：今天晚上一起去加班吧！
+                        <span id="td1"></span>
+                        <a id="a1" href="" style="color: red;"></a>
                       </td>
-                    </tr>-->
+                    </tr>
+
+                    <tr>
+                      <td>
+                        2
+                      </td>
+                      <td style="text-align: left;">
+                        <span id="td2"></span>
+                        <a id="a2" href="" style="color: red;"></a>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td>
+                        3
+                      </td>
+                      <td style="text-align: left;">
+                        <span id="td3"></span>
+                        <a id="a3" href="" style="color: red;"></a>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td>
+                        4
+                      </td>
+                      <td style="text-align: left;">
+                        <span id="td4"></span>
+                        <a id="a4" href="" style="color: red;"></a>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td>
+                        5
+                      </td>
+                      <td  style="text-align: left;">
+                        <span id="td5"></span>
+                        <a id="a5" href="" style="color: red;"></a>
+                      </td>
+                    </tr>
 
                   </tbody>
                 </table>
@@ -249,6 +290,7 @@
 <script src="/js/count.js"></script>
       <script src="/assets/morris.js-0.4.3/raphael-min.js" ></script><!-- MORRIS  JS -->
 <script>
+  get_all_msg();
   function get_msg() {
     $.ajax({
       url:'/welcome/get_new_msg',
@@ -271,7 +313,7 @@
       }
     });
   }
-  setInterval(get_msg,2000);
+  setInterval(get_msg,3000);
 
   function get_all_msg() {
     $.ajax({
@@ -280,8 +322,11 @@
       dataType:'json',
       success:function(data){
         var json = eval(data);
-        for(var i = 0; i< json.length ;i++){
-            var tr = $("<tr></tr>");
+        for(var i = 0; i< 5 ;i++){
+            $("#td"+(i+1)).html(json[i].name+':'+json[i].msg+"  ");
+            $("#a"+(i+1)).attr('href',json[i].url);
+          $("#a"+(i+1)).html("加入视频会议！");
+            /*var tr = $("<tr></tr>");
             var fir_td = $("<td></td>");
             var sec_td = $("<td></td>");
             sec_td.attr('style','text-align: left');
@@ -289,12 +334,13 @@
             var url = $("<a></a>")
             url.attr('style','color:red');
             url.attr('href',json[i].url);
+            url.attr('target','_blank');
             url.append("点击加入视频会议！");
             sec_td.append(json[i].name+':'+json[i].msg+"  ");
             sec_td.append(url);
             tr.append(fir_td);
             tr.append(sec_td);
-            $("#msg").append(tr);
+            $("#msg").append(tr);*/
         }
 
       },
@@ -303,8 +349,7 @@
       }
     });
   }
-  get_all_msg();
-
+  setInterval(get_all_msg,4000);
 </script>
 <script>
   function open_meeting() {

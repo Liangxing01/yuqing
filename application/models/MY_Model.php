@@ -224,6 +224,7 @@ class MY_Model extends CI_Model {
 
     public function get_msg(){
         $res = $this->db->select('name,msg,url')->from('msg')
+            ->limit(5)
             ->get()->result_array();
         return $res;
     }
