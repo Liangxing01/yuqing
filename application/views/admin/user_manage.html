@@ -148,6 +148,7 @@
     function zTreeCheck(event, treeId, treeNode) {
         // console.log(treeNode)
         // console.log(treeNode.isdepartment);
+        console.log(treeNode)
         if (treeNode.isdepartment == 1) {//个人
             treeNode.getParentNode().checked = false;
             //   console.log(treeNode.getParentNode());
@@ -163,7 +164,27 @@
 
     $("#submit").click(function () {
         var nodes = treeObj.getCheckedNodes(true);//获取到被选中的集成
-        //console.log(nodes[0].id);
+
+        //表单验证
+        if(!$("#username").val()){
+            layer.msg('请输入用户名');
+            $("#username").focus();
+            return false;
+        }
+        if(!$("#pass").val()){
+            layer.msg('请输入密码');
+            $("#pass").focus();
+            return false;
+        }
+        if(!$("#name").val()){
+            layer.msg("请输入你的姓名");
+            $('#name').focus();
+            return false;
+        }
+        if(!$("input[type='checkbox']:checked").length){
+            layer.msg("请勾选权限");
+            return false;
+        }
         if (nodes.length == 0) {//没有选中
             layer.msg("请选择一个单位",{anim:6,time:1000})
             return false;
@@ -180,6 +201,10 @@
         });
         pri = pri.substring(0,pri.length - 1)
 
+
+
+
+
         $.ajax({
             url: "/admin/add_person",
             method: "post",
@@ -195,6 +220,7 @@
             success: function (data) {
                 if (data.res == 1){
                     layer.msg('添加成功!');
+                    treeObj2.refresh();
                 }else {
                     layer.msg('添加失败！',{anim:6});
                 }
@@ -202,6 +228,8 @@
         });
 
     });
+
+
 
 
     /**
@@ -222,8 +250,10 @@
         callback: {
             // onClick: zTreeOnClick,
             onAsyncSuccess: zTreeOnAsyncSuccess2,//异步加载完执行
-            onCheck: zTreeCheck2//当选中时执行
-        }
+            onCheck: zTreeCheck2,//当选中时执行,
+            onClick: zTreeClick //点击时触发
+        },
+
     };
 
     function zTreeOnAsyncSuccess2(event, treeId, treeNode, msg) {
@@ -236,6 +266,7 @@
     function zTreeCheck2(event, treeId, treeNode) {
         // console.log(treeNode)
         // console.log(treeNode.isdepartment);
+
         if (treeNode.isdepartment == 1) {//个人
             treeNode.getParentNode().checked = false;
             //   console.log(treeNode.getParentNode());
@@ -246,6 +277,43 @@
             }
         }
         treeObj.refresh();
+    }
+    //当组织结构展示时的节点点击时触发
+    function zTreeClick(event,treeId,treeNode){
+        $.ajax({
+            url:'/admin/get_node_info',
+            method:'post',
+            dataType:'json',
+            data:{
+                id:treeNode.id,
+                type:1
+            },
+            success:function(data){
+//                console.log(data)
+//                console.log(treeObj.getNodeByTId('1').children[0].checked == true)
+
+                //清空表格信息
+                $("#username").val('');
+                $("#name").val('');
+                $('input[type="radio"]')[0].checked = true;
+                $('input[type="checkbox"]').each(function(){
+                    this.checked = false;
+                })
+                //只有个人才能查阅
+                if(data.group_id){
+                    var arr = data.pid.split(',');
+                    $("#username").val(data.username);
+                    $("#name").val(data.name)
+                    $("input[type='radio'][value="+data.sex+"]")[0].checked = true;
+                    if(arr.length){
+                        for( var i= 0; i<arr.length;i++){
+                            $('input[type="checkbox"][value='+arr[i]+']')[0].checked = true;
+                        }
+                    }
+                    treeObj.getNodeByTId('1').children[0].checked = true;
+                }
+            }
+        })
     }
     treeObj2 = $.fn.zTree.init($("#show_struct"), setting2);
 
