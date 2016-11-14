@@ -39,8 +39,15 @@
         .login_bg {
             width: 100%;
             height: 100%;
-            position: absolute;
-            z-index: -1;
+            /*position: absolute;
+            z-index: -1;*/
+            background: url(../../../img/login_bg.png) no-repeat;
+            background-size: cover;
+            margin-left:auto; 
+            margin-right:auto;  
+            position: fixed;
+            left: 0;
+            top: 0
         }
 
         #box {
@@ -100,7 +107,7 @@
             text-align: left !important;
         }
         .error{ text-indent: 40px !important;}
-		.#login_error{ text-indent: 40px ;}
+		#login_error{ text-indent: 40px ;}
 
     </style>
     <!-- END STYLESHEET-->
@@ -109,8 +116,8 @@
 
 
 <div class="login_bg">
-    <img src="../../../img/login_bg.png" width="100%" height="100%">
-</div>
+   <!-- <img src="../../../img/login_bg.png" width="100%" height="100%">-->
+
 <div id="box">
     <form id="login-form">
         <div class="meih" style="text-align: center;"><h2>账号登录</h2></div>
@@ -139,6 +146,7 @@
         </a>
     </div>
 </footer>
+</div>
 <!-- END  FOOTER -->
 <!-- BEGIN JS -->
 <script src="/js/jquery-2.1.1.min.js"></script><!-- BASIC JQUERY LIB. JS -->
