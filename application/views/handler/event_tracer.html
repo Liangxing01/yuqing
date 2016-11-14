@@ -19,7 +19,6 @@
     .cankao{   	
     	width: 65%;
     	float: left;
-    	text-align: center;
     	margin: auto;
     	font-size: 1.0em;
     }
@@ -450,7 +449,16 @@
 		}
 	}  	
 	tagier();
-	
-	
-    
+
+    //如果状态为 已完成 所有input 不能输入
+    $(document).ready(function () {
+        var done_state = $("#done_state").val();
+        if(done_state == 1){
+            $("textarea").attr('disabled','disabled');
+            $('input').attr("disabled","disabled");
+            $("#sjwc").hide();
+        }
+
+    });
+
 </script>
