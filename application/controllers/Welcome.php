@@ -250,7 +250,9 @@ class Welcome extends MY_Controller
 
         if (!$this->upload->do_upload('avatar')) {
             $error = $this->upload->display_errors();
-            $res = ['res' => 0, 'info' => $error];
+            $res = array(
+                'res' => 0, 'info' => $error
+            );
             echo json_encode($res);
         } else {
             $data = array('upload_data' => $this->upload->data());
