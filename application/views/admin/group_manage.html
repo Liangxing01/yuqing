@@ -17,56 +17,34 @@
         <!-- BEGIN ROW  -->
         <div class="row">
             <div class="col-lg-12">
-                <section class="panel col-xs-4" >
+                <section class="panel col-xs-4">
                     <header class="panel-heading">
-                        <span class=""><strong><img src="../../../img/admin.png" width="35" height="35" />用户管理</strong></span>
+                        <span class=""><strong><img src="../../../img/admin.png" width="35" height="35" />单位管理</strong></span>
 
                     </header>
                     <div class="panel-body">
                         <form id="form1" class="form-horizontal tasi-form layui-form" enctype="multipart/form-data">
                             <input type="hidden" id="id" name="id"/>
                             <div class="form-group">
-                                <label class="col-xs-3 col-sm-2 control-label">用户名：</label>
+                                <label class="col-xs-3 col-sm-2 control-label">单位名：</label>
                                 <div class="col-xs-9 col-sm-10">
-                                    <input type="text" name="username" id="username"   class="form-control layui-input">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-xs-3 col-sm-2 control-label">密码：</label>
-                                <div class="col-xs-9 col-sm-10">
-                                    <input type="text" name="pass" id="pass"  class="form-control layui-input">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-xs-3 col-sm-2 control-label">姓名：</label>
-                                <div class="col-xs-9 col-sm-10">
-                                    <input type="text" name="name" id="name"  class="form-control layui-input">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-xs-3 col-sm-2 control-label">性别：</label>
-                                <div class="col-xs-9 col-sm-10">
-                                    <input id="man" type="radio" checked="checked" name="sex" value="1" />男
-                                    <input id="woman" type="radio"  name="sex" value="0"/>女
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-xs-3 col-sm-2 control-label">权限：</label>
-                                <div class="col-xs-9 col-sm-10">
-                                    <input name="privilege" type="checkbox"  value="1" />上报人
-                                    <input name="privilege" type="checkbox"  value="2" />指派人
-                                    <input name="privilege" type="checkbox"  value="3" />处理人
+                                    <input type="text" name="groupname" id="groupname"   class="form-control layui-input">
                                 </div>
                             </div>
 
+
                         </form>
-                    </div>                    
+
+
+                    </div>
+                    
+
                 </section>
-					<section class="panel  col-xs-4">
+				<section class="panel col-xs-4">
                         <header class="panel-heading">
                             <i class="fa fa-hand-o-down"></i>
                             <span class="label label-primary">
-                                 添加单位
+                                 添加到
                             </span>
                         </header>
                         <div class="panel-body">
@@ -75,9 +53,10 @@
                             </ul>
                         </div>
                         <div class="text-center " style="position: absolute; bottom: 10px; width: 100%;">
-                        	<button id="submit" class="btn btn-success btn-lg col-sm-12">保存</button>
-                    	</div>
-                    </section>
+                        <button id="submit" class="btn btn-success btn-lg col-sm-12">添加</button>
+                        <button id="del" class="btn btn-success btn-lg col-sm-12" style="margin-top: 10px;">更新</button>
+                    </div>
+                </section>
 
                     
 
@@ -137,7 +116,6 @@
     function zTreeOnAsyncSuccess(event, treeId, treeNode, msg) {
         //去掉组织结构的选择项
         var rootNode = treeObj.getNodeByParam("id", 0, null);//得到组织结构树
-        rootNode.nocheck = true;
         treeObj.refresh();//更改属性后，刷新界面
     }
     //当节点选中时选择
@@ -168,24 +146,13 @@
             return false;
         }
 
-        var pri = "";
-        $("input[type=checkbox]").each(function(){
-            if(this.checked){
-                pri += $(this).val()+",";
-            }
-        });
-        pri = pri.substring(0,pri.length - 1)
 
         $.ajax({
-            url: "/admin/add_person",
+            url: "/admin/add_group",
             method: "post",
             dataType : 'json',
             data: {
-                "username": $("#username").val(),
-                "password": $("#pass").val(),
-                "name" : $("#name").val(),
-                "sex" : $("input[name='sex']:checked").val(),
-                "privilege" : pri,
+                "groupname": $("#groupname").val(),
                 'gid':nodes[0].id,
             },
             success: function (data) {
@@ -198,6 +165,37 @@
         });
 
     });
+
+    $("#del").click(function () {
+        var nodes = treeObj.getCheckedNodes(true);//获取到被选中的集成
+        //console.log(nodes[0].id);
+        if (nodes.length == 0) {//没有选中
+            layer.msg("请选择一个单位",{anim:6,time:1000})
+            return false;
+        }else if(nodes.length > 1){
+            layer.msg("最多选择一个单位",{anim:6,time:1000})
+            return false;
+        }
+
+        $.ajax({
+            url: "/admin/del_relation",
+            method: "post",
+            dataType : 'json',
+            data: {
+                'uid':nodes[0].id,
+            },
+            success: function (data) {
+                if (data.res == 1){
+                    layer.msg('删除成功!',{time:1500});
+                }else {
+                    layer.msg('删除失败！',{anim:6,time:1500});
+                }
+            }
+        });
+
+    });
+
+
 
 
     /**
@@ -225,7 +223,7 @@
     function zTreeOnAsyncSuccess2(event, treeId, treeNode, msg) {
         //去掉组织结构的选择项
         var rootNode = treeObj.getNodeByParam("id", 0, null);//得到组织结构树
-        rootNode.nocheck = true;
+        //rootNode.nocheck = true;
         treeObj.refresh();//更改属性后，刷新界面
     }
     //当节点选中时选择
