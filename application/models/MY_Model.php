@@ -207,11 +207,13 @@ class MY_Model extends CI_Model {
             ->where('unix_timestamp(now()) - time < 30')
             ->where('processor',$this->session->userdata('uid'))
             ->get()->result_array();
-        $new_msg = $this->db->select('id')->from('msg')
+        $new_info = $this->db->select('id')->from('info')
             ->where('unix_timestamp(now()) - time < 30')
             ->get()->result_array();
         if(!empty($new_unhandler)){
-            return true;
+            return "new_unhandle";
+        }else if(!empty($new_info)){
+            return "new_info";
         }else{
             return false;
         }

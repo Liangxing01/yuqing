@@ -297,15 +297,19 @@
       type :'get',
       dataType:'json',
       success:function(data){
-        if(data.res==1){
-          layer.msg('您有新的任务获得！',{anim:6});
+        if(data.res == "new_unhandle"){
+          layer.msg('您有新的待处理任务获得！',{anim:6});
           var au = document.createElement("audio");
           au.preload="auto";
-          au.src = "1.wav";
+          au.src = "tips.wav";
           au.play();
 
-        }else{
-
+        }else if(data.res == "new_info"){
+          layer.msg('您有新的上报信息！',{anim:6});
+          var au = document.createElement("audio");
+          au.preload="auto";
+          au.src = "tips.wav";
+          au.play();
         }
       },
       error:function(){
