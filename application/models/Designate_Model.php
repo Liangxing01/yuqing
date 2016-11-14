@@ -102,18 +102,23 @@ class Designate_Model extends CI_Model
 
 
     /**
-     * TODO
      * 查询 上报信息 详情
      * @param $info_id
      * @return array
      */
     public function get_info($info_id)
     {
-        return $this->db->select("info.id, info.title, info.description, info.type, info.url, info.state, info.picture, info.source, user.name AS publisher, info.time")
+        $info = $this->db->select("info.id, info.title, info.description, info.type, info.url, info.state, info.source, user.name AS publisher, info.time")
             ->from("info")
             ->join("user", "user.id = info.publisher", "left")
             ->where(array("info.id" => $info_id))
             ->get()->row_array();
+        //附件信息
+        $info["attachment"] = $this->db->select("id, name, url, type")
+            ->where("info_id", $info_id)
+            ->get("info_attachment")->result_array();
+
+        return $info;
     }
 
 

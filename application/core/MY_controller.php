@@ -47,6 +47,11 @@ class MY_Controller extends CI_Controller
             }
         }
 
+        // 6视频会议菜单
+        if(in_array(2, $privilege) || in_array(3, $privilege) || in_array(4, $privilege)){
+            $this->ci_smarty->display('menu/v6_meeting.html');
+        }
+
         $this->ci_smarty->display('menu/menu_common.html');
         $this->ci_smarty->display($html);
         $this->ci_smarty->display('footer.html');

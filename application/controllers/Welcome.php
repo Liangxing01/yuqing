@@ -184,8 +184,7 @@ class Welcome extends MY_Controller
     /**
      * 展示个人信息页面
      */
-    public
-    function show_my_info()
+    public function show_my_info()
     {
         $this->assign("active_title", "my_info");
         $this->assign("active_parent", "manage_parent");
@@ -198,8 +197,7 @@ class Welcome extends MY_Controller
     /**
      * 个人信息查看接口
      */
-    public
-    function get_my_info()
+    public function get_my_info()
     {
         $uid = $this->session->userdata('uid');
         $res = $this->my_model->get_user_info($uid);
@@ -217,8 +215,7 @@ class Welcome extends MY_Controller
     /*
      * 个人信息修改接口
      */
-    public
-    function update_info()
+    public function update_info()
     {
         $name = $this->input->post('name');
         $sex = $this->input->post('sex');
@@ -249,8 +246,7 @@ class Welcome extends MY_Controller
      * 修改密码接口
      */
 
-    public
-    function change_psw()
+    public function change_psw()
     {
         $old = $this->input->post('old_pass');
         $new = $this->input->post('new_pass');
@@ -270,8 +266,7 @@ class Welcome extends MY_Controller
     }
 
     //修改头像接口
-    public
-    function change_avatar()
+    public function change_avatar()
     {
         $config['upload_path'] = './uploads/avatar/';
         $config['allowed_types'] = 'jpg|png|jpeg';
@@ -311,19 +306,28 @@ class Welcome extends MY_Controller
     }
 
     //展示修改密码界面
-    public
-    function show_change_psw()
+    public function show_change_psw()
     {
         $this->assign("active_title", "change_psw");
         $this->assign("active_parent", "manage_parent");
         $this->all_display("change_psw.html");
     }
 
+
+    /**
+     * 6M 视频会议 视图载入
+     */
+    public function meeting(){
+        $this->assign("active_title", "6m_page");
+        $this->assign("active_parent", "6m_parent");
+        $this->all_display("6m_meeting.html");
+    }
+
+
     /**
      * 用户登出 接口
      */
-    public
-    function logout()
+    public function logout()
     {
         $this->identity->destroy();
     }
