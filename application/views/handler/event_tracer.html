@@ -16,6 +16,30 @@
     ul.timeline li.item-timeline:nth-child(2n)::before {
         top: 5px;
     }
+    .cankao{   	
+    	width: 60%;
+    	float: left;
+    	text-align: center;
+    	margin: auto;
+    }
+    .cankao span{
+    	float: left;
+    	width: 20%;
+    }
+    .cankao ul{
+    	width: 80%;
+    }
+    .cankao ul li{ 
+    	float: left;
+    	text-align: left;
+    	list-style: none;
+    	width: 20%;
+    }
+    .cankao ul li a{ 
+    	text-decoration: underline;
+    	color: #58d4ee;
+    }
+
 </style>
 <section id="main-content">
     <section class="wrapper site-min-height">
@@ -24,9 +48,22 @@
             <div class="col-lg-12">
                 <section class="panel">
                     <header class="panel-heading">
-                        <i class="fa fa-hand-o-down"></i>
-                        <span class="" >事件追踪</span>
+                        <div style="float: left; width: 20%;"> 
+                       	<i class="fa fa-hand-o-down"></i>
+                        <span class="">事件追踪</span>
+                        </div>
+                        
+                        <div class="cankao">
+                        	<span>参考文档：</span>
+                        	<ul>
+	                        	<li><a href="">1.事件处理规范</a></li>
+	                        	<li><a href="">2.员工守则</a></li>
+	                        	<li><a href="">3.基本事件发表规范</a></li>
+                        	</ul>
+                        </div>
+                        
                         <input type="button" value="点击确认事件已完成" name="sjwc" id="sjwc"/>
+                        <div style="clear: both;"></div>
                     </header>
                     <form class="zj">
                         <textarea cols="" rows="4" placeholder="发布你所发布的事件" class="zjk" id="zjk"></textarea>
