@@ -642,6 +642,13 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
         $this->db->insert('event_log',$arr);
     }
 
+    public function get_event_attachment($eid){
+        $res = $this->db->select('event_id,name')->from('event_attachment')
+            ->where('event_id',$eid)
+            ->get()->result_array();
+        return $res;
+    }
+
     //根据用户关键字查询待处理事件
     public function get_unhandle_by_keyword($key){
         $this->db->where('');

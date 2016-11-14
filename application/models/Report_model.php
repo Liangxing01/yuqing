@@ -134,7 +134,7 @@ class Report_model extends CI_Model {
      * @return bool 没有获取到记录
      */
     public function get_detail_by_id($id){
-        $data = $this->db->select("info.id,title,url,source,picture,description,user.name As publisher,time")
+        $data = $this->db->select("info.id,title,url,source,description,user.name As publisher,time")
             ->from("info")
             ->join("user","user.id = info.publisher","left")
             ->where("info.id",(int)$id)

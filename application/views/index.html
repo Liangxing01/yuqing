@@ -177,18 +177,17 @@
                   </div>
                 </div>
                 <table class="table table-hover personal-task">
-                  <tbody>
-                    <{foreach $login as $item}>
-                    <tr>
+                  <tbody id="msg">
+
+                    <!--<tr>
                       <td>
-                        <{$item@iteration}>
+                        1
                       </td>
                       <td style="text-align: left;">
                         小马：今天晚上一起去加班吧！
                       </td>
-                      
-                    </tr>
-                    <{/foreach}>
+                    </tr>-->
+
                   </tbody>
                 </table>
               </section>
@@ -249,3 +248,76 @@
 
 <script src="/js/count.js"></script>
       <script src="/assets/morris.js-0.4.3/raphael-min.js" ></script><!-- MORRIS  JS -->
+<script>
+  function get_msg() {
+    $.ajax({
+      url:'/welcome/get_new_msg',
+      type :'get',
+      dataType:'json',
+      success:function(data){
+        if(data.res==1){
+          layer.msg('您有新的任务获得！',{anim:6});
+          var au = document.createElement("audio");
+          au.preload="auto";
+          au.src = "1.wav";
+          au.play();
+
+        }else{
+
+        }
+      },
+      error:function(){
+
+      }
+    });
+  }
+  setInterval(get_msg,2000);
+
+  function get_all_msg() {
+    $.ajax({
+      url:'/welcome/get_msg',
+      type :'get',
+      dataType:'json',
+      success:function(data){
+        var json = eval(data);
+        for(var i = 0; i< json.length ;i++){
+            var tr = $("<tr></tr>");
+            var fir_td = $("<td></td>");
+            var sec_td = $("<td></td>");
+            sec_td.attr('style','text-align: left');
+            fir_td.append(i+1);
+            var url = $("<a></a>")
+            url.attr('style','color:red');
+            url.attr('href',json[i].url);
+            url.append("点击加入视频会议！");
+            sec_td.append(json[i].name+':'+json[i].msg+"  ");
+            sec_td.append(url);
+            tr.append(fir_td);
+            tr.append(sec_td);
+            $("#msg").append(tr);
+        }
+
+      },
+      error:function(){
+
+      }
+    });
+  }
+  get_all_msg();
+
+</script>
+<script>
+  function open_meeting() {
+    $.ajax({
+      url:'/welcome/open_meeting',
+      type :'get',
+      dataType:'json',
+      success:function(data){
+
+      },
+      error:function(){
+
+      }
+    });
+  }
+</script>
