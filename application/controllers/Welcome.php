@@ -351,9 +351,15 @@ class Welcome extends MY_Controller
         $data = array(
             'publisher_id' => $this->session->userdata('uid'),
             'name'         => $this->session->userdata('name'),
-            'msg'          => '我开直播啦'
+            'msg'          => '我开直播啦',
+            'url'          => 'https://m.v6plus.com/'.$this->session->userdata('name')
         );
         $this->my_model->insert_msg($data);
+    }
+
+    public function get_msg(){
+        $res = $this->my_model->get_msg();
+        echo json_encode($res);
     }
 
 

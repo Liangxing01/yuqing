@@ -210,7 +210,7 @@ class MY_Model extends CI_Model {
         $new_msg = $this->db->select('id')->from('msg')
             ->where('unix_timestamp(now()) - time < 30')
             ->get()->result_array();
-        if(!empty($new_unhandler) || !empty($new_msg)){
+        if(!empty($new_unhandler)){
             return true;
         }else{
             return false;
@@ -220,6 +220,12 @@ class MY_Model extends CI_Model {
 
     public function insert_msg($data){
         $this->db->insert('msg',$data);
+    }
+
+    public function get_msg(){
+        $res = $this->db->select('name,msg,url')->from('msg')
+            ->get()->result_array();
+        return $res;
     }
 
 
