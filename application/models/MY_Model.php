@@ -97,7 +97,7 @@ class MY_Model extends CI_Model {
         $output = curl_exec($ch);
         curl_close($ch);
         $res=json_decode($output,TRUE);
-        if (!$res) return [];
+        if (!$res) return array();
         else{
             $res=$res['weatherinfo'];
             $res['SD']=substr($res['SD'],0,-1);
