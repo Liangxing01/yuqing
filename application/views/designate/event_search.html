@@ -267,6 +267,7 @@
                     switch (state) {
                         case "已指派":
                             button += "<a title='追踪' href='/designate/event_tracer?eid=" + data + " ' class='btn btn-info btn-xs'>追踪</a>&nbsp;";
+                            button += "<a title='追踪' href='/designate/event_tracer?eid=" + data + " ' class='btn btn-info btn-xs'>追加</a>&nbsp;";
                             break;
                         case "未审核":
                             button += "<a title='审核' href='/designate/event_tracer?eid=" + data + " ' class='btn btn-info btn-xs'>审核</a>&nbsp;";
@@ -306,7 +307,6 @@
 
     //事件重启
     function event_restart(eid) {
-
         layer.confirm('确认重启该事件?', {title:'提示'}, function(index){
             $.ajax({
                 url: "/designate/event_restart",
@@ -324,14 +324,5 @@
             });
             layer.close(index);
         });
-
-//        layer.confirm('确认重启该事件吗', {
-//            btn: ['确认', '取消'] //可以无限个按钮
-//        }, function(index, layero){
-//
-//        }, function(index){
-//            //按钮【按钮二】的回调
-//        });
-
     }
 </script>
