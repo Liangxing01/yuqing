@@ -564,10 +564,13 @@ class Designate_Model extends CI_Model
 
         //获得督办人ID
         $watchers = array();
-        foreach (explode(",", $data["watcher"]) AS $w) {
-            $temp = explode("_", $w);
-            $watchers[] = $temp[1];
+        if ($data["watcher"]) {
+            foreach (explode(",", $data["watcher"]) AS $w) {
+                $temp = explode("_", $w);
+                $watchers[] = $temp[1];
+            }
         }
+
 
         //获得牵头人(单位)
         $main = explode("_", $data["main_processor"]);
@@ -600,7 +603,7 @@ class Designate_Model extends CI_Model
         //添加事件信息关联表
         $info_id = explode(",", $data["info_id"]);
         $event_info = array();
-        if(!empty($info_id)){
+        if (!empty($info_id)) {
             foreach ($info_id AS $id) {
                 $event_info[] = array(
                     "info_id" => $id,
@@ -637,14 +640,16 @@ class Designate_Model extends CI_Model
 
 
         //添加事件关联表
-        $relate_event = array();
-        foreach (explode(",", $data["relate_event"]) AS $id) {
-            $relate_event[] = array(
-                "relate_id" => $id,
-                "event_id" => $event_id
-            );
+        if ($data["relate_event"]) {
+            $relate_event = array();
+            foreach (explode(",", $data["relate_event"]) AS $id) {
+                $relate_event[] = array(
+                    "relate_id" => $id,
+                    "event_id" => $event_id
+                );
+            }
+            $this->db->insert_batch("event_relate", $relate_event);  //事件关联
         }
-        $this->db->insert_batch("event_relate", $relate_event);  //事件关联
 
 
         //添加事件督办表
