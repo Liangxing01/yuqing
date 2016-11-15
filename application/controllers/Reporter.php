@@ -212,7 +212,7 @@ class Reporter extends MY_controller
     {
 
         $config=array();
-        $config['upload_path'] = './uploads/tmp/';
+        $config['upload_path'] = './uploads/temp/';
         $config['allowed_types'] = '*';
         $config['max_size'] = 10000;
         $config['max_width'] = 0;
