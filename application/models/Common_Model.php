@@ -156,11 +156,12 @@ class Common_Model extends CI_Model
             ->where('event_id', $eid)
             ->get()->result_array();
         if (!empty($res)) {
-            if ($res[0]['watcher'] == $uid) {
-                return 1;
-            } else {
-                return 0;
+            foreach ($res as $one){
+                if($one['watcher'] == $uid){
+                    return 1;
+                }
             }
+            return 0;
         } else {
             return false;
         }
