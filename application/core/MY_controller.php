@@ -23,6 +23,8 @@ class MY_Controller extends CI_Controller
         $privilege = explode(",", $this->session->privilege);
         $name = $this->session->userdata('name');
         $this->assign('name',$name);
+        $username = $this->session->userdata('username');
+        $this->assign('username',$username);
         $this->ci_smarty->display('head.html');
         $this->ci_smarty->display('menu/menu_home.html');
 
