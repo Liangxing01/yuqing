@@ -55,7 +55,7 @@ website:	http://code.google.com/p/jquerytree/
 
 .ztree li span.button.switch {width:18px; height:18px}
 .ztree li span.button.root_open{background-position:0px -72px}
-.ztree li span.button.root_close{background-position:0px -70px}
+.ztree li span.button.root_close{background: url(img/close.png) no-repeat;}
 .ztree li span.button.roots_open{background-position:-92px 0}
 .ztree li span.button.roots_close{background-position:-74px 0}
 .ztree li span.button.center_open{background-position:-92px -18px}
