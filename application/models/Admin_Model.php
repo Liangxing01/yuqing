@@ -168,7 +168,7 @@ class Admin_Model extends CI_Model {
     public function update_user($data){
         $update_info = array(
             'id'      => $data['uid'],
-            'password' => $data['password'],
+            'password' => md5($data['password']),
             'sex'      => $data['sex'],
             'name'     => $data['name'],
             'group_id' => $data['gid']
