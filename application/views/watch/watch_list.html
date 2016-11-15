@@ -227,7 +227,8 @@
                 'sClass': "text-center",
                 'orderable': false,
                 "mRender": function (data) {
-                    return "<a title='查看' href='/watch/show_tracer?eid=" + data + " ' class='btn btn-info btn-xs'><i class='fa fa-eye'></i>事件追踪</a>";
+                    return "<a title='查看' href='/watch/show_detail?eid=" + data + " ' class='btn btn-warning btn-xs'><i class='fa fa-eye'></i>事件查看</a>"+
+                    "<a title='查看' href='/watch/show_tracer?eid=" + data + " ' class='btn btn-info btn-xs'><i class='fa fa-eye'></i>事件追踪</a>";
                 }
             }
         ],
