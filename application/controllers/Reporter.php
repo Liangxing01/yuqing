@@ -219,28 +219,29 @@ class Reporter extends MY_controller
         $config['encrypt_name'] = true;
 
         $this->load->library('upload', $config);
+        $this->upload->do_upload('file');
 
-        if (!$this->upload->do_upload('file')) {
-            $error = $this->upload->display_errors();
-            $res = array(
-                'res' => 0, 'info' => $error
-            );
-            echo json_encode($res);
-        } else {
-            $data = array('upload_data' => $this->upload->data());
-            $upload_data = $data['upload_data'];
-            $res = array(
-                'res' => 1,
-                'info' => array(
-                    'name' => $upload_data['orig_name'],
-                    'url' => '/uploads/pic/' . $upload_data['file_name'],
-                    'new_name' => $upload_data['file_name'],
-                    'type' => $upload_data['image_type']
-                )
-            );
-            echo json_encode($res);
-
-        }
+//        if (!$this->upload->do_upload('file')) {
+//            $error = $this->upload->display_errors();
+//            $res = array(
+//                'res' => 0, 'info' => $error
+//            );
+//            echo json_encode($res);
+//        } else {
+//            $data = array('upload_data' => $this->upload->data());
+//            $upload_data = $data['upload_data'];
+//            $res = array(
+//                'res' => 1,
+//                'info' => array(
+//                    'name' => $upload_data['orig_name'],
+//                    'url' => '/uploads/pic/' . $upload_data['file_name'],
+//                    'new_name' => $upload_data['file_name'],
+//                    'type' => $upload_data['image_type']
+//                )
+//            );
+//            echo json_encode($res);
+//
+//        }
     }
 
     public function upload_video()
