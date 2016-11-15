@@ -386,8 +386,8 @@
             success:function(data){
 //                console.log(data)
 //                console.log(treeObj.getNodeByTId('1').children[0].checked == true)
-
                 //清空表格信息
+                console.log(treeObj.getNodeByParam('id',data.group_id,null));
                 $("#username").val('');
                 $("#name").val('');
                 $('#pass').val('');
@@ -395,6 +395,12 @@
                 $('input[type="checkbox"]').each(function(){
                     this.checked = false;
                 })
+                var chi_length = treeObj.getNodes()[0].children.length;
+                //清空部门
+                for(var j=0;j<chi_length;j++){
+                    treeObj.getNodes()[0].children[j].checked = false;
+                    treeObj.refresh();
+                }
                 //只有个人才能查阅
                 if(data.group_id){
                     var arr = data.pid.split(',');
@@ -407,6 +413,8 @@
                         }
                     }
                    // treeObj.getNodeByTId('1').children[0].checked = true;
+                    treeObj.getNodeByParam('id',data.group_id,null).checked = true;
+                    treeObj.refresh();
                 }
             }
         })
