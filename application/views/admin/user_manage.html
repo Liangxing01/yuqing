@@ -233,7 +233,7 @@
 
     function sub_or_up(that){
         var nodes = treeObj.getCheckedNodes(true);//获取到被选中的集成
-
+        var uid = window.sessionStorage.getItem('uid');//获取点击用户的uid
         //表单验证
         if(!$("#username").val()){
             layer.msg('请输入用户名');
@@ -308,6 +308,7 @@
                     "sex" : $("input[name='sex']:checked").val(),
                     "privilege" : pri,
                     'gid':nodes[0].id,
+                    'uid':uid
                 },
                 success: function (data) {
                     if (data.res == 1){
@@ -372,6 +373,8 @@
     }
     //当组织结构展示时的节点点击时触发
     function zTreeClick(event,treeId,treeNode){
+
+        window.sessionStorage.setItem('uid',treeNode.id);
         $.ajax({
             url:'/admin/get_node_info',
             method:'post',
@@ -403,7 +406,7 @@
                             $('input[type="checkbox"][value='+arr[i]+']')[0].checked = true;
                         }
                     }
-                    treeObj.getNodeByTId('1').children[0].checked = true;
+                   // treeObj.getNodeByTId('1').children[0].checked = true;
                 }
             }
         })
