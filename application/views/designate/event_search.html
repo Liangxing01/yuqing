@@ -262,12 +262,12 @@
                 'orderable': false,
                 "mRender": function (data, type, all) {
                     var state = all.state;
-                    var button = "<a title='查看' href='/welcome/event_detail?eid=" + data + " ' class='btn btn-info btn-xs'>查看</a>&nbsp;";
+                    var button = "<a target='_blank' title='查看' href='/welcome/event_detail?eid=" + data + " ' class='btn btn-info btn-xs'>查看</a>&nbsp;";
 
                     switch (state) {
                         case "已指派":
                             button += "<a title='追踪' href='/designate/event_tracer?eid=" + data + " ' class='btn btn-info btn-xs'>追踪</a>&nbsp;";
-                            button += "<a title='追踪' href='/designate/event_tracer?eid=" + data + " ' class='btn btn-info btn-xs'>追加</a>&nbsp;";
+                            button += "<a title='增派' href='/designate/event_alter?eid=" + data + " ' class='btn btn-info btn-xs'>增派</a>&nbsp;";
                             break;
                         case "未审核":
                             button += "<a title='审核' href='/designate/event_tracer?eid=" + data + " ' class='btn btn-info btn-xs'>审核</a>&nbsp;";

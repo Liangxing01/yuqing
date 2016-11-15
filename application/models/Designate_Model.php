@@ -621,6 +621,7 @@ class Designate_Model extends CI_Model
                 "event_id" => $event_id,
                 "manager" => $manager,
                 "processor" => $user,
+                "group" => null,
                 "time" => $time,
                 "description" => $data["description"],
                 "state" => "未处理"
@@ -631,6 +632,7 @@ class Designate_Model extends CI_Model
                 "event_id" => $event_id,
                 "manager" => $manager,
                 "group" => $group,
+                "processor" => null,
                 "time" => $time,
                 "description" => $data["description"],
                 "state" => "未处理"
@@ -707,6 +709,108 @@ class Designate_Model extends CI_Model
             $this->db->insert_batch("event_alert", $event_alert);  //事件报警
         }
 
+    }
+
+
+    /**
+     * 事件增派 插入数据
+     * @param $data
+     */
+    public function event_alter($data)
+    {
+
+        $event_id = $data["event_id"];
+        $manager = $this->session->uid;
+        $time = time();
+
+        //获得处理人(单位)ID
+        $processors = array(
+            "user" => array(),
+            "group" => array()
+        );
+        if ($data["processor"]) {
+            foreach (explode(",", $data["processor"]) AS $processor) {
+                $temp = explode("_", $processor);
+                if ($temp[0] == "1") {
+                    $processors["user"][] = $temp[1];
+                } else {
+                    $processors["group"][] = $temp[1];
+                }
+            }
+        }
+
+        //获得督办人ID
+        $watchers = array();
+        if ($data["watcher"]) {
+            foreach (explode(",", $data["watcher"]) AS $w) {
+                $temp = explode("_", $w);
+                $watchers[] = $temp[1];
+            }
+        }
+
+
+        //添加事件指派表
+        $event_designate = array();
+
+        if (!empty($processors["user"])) {
+            foreach ($processors["user"] AS $user) {
+                $event_designate[] = array(
+                    "event_id" => $event_id,
+                    "manager" => $manager,
+                    "processor" => $user,
+                    "group" => null,
+                    "time" => $time,
+                    "description" => null,
+                    "state" => "未处理"
+                );
+            }
+        }
+
+        if (!empty($processors["group"])) {
+            foreach ($processors["group"] AS $group) {
+                $event_designate[] = array(
+                    "event_id" => $event_id,
+                    "manager" => $manager,
+                    "group" => $group,
+                    "processor" => null,
+                    "time" => $time,
+                    "description" => null,
+                    "state" => "未处理"
+                );
+            }
+        }
+
+        if(!empty($event_designate)){
+            $this->db->insert_batch("event_designate", $event_designate);  //事件指派
+        }
+
+
+        //添加事件督办表
+        $event_watch = array();
+        if (!empty($watchers)) {
+            foreach ($watchers AS $watcher) {
+                $event_watch[] = array(
+                    "watcher" => $watcher,
+                    "event_id" => $event_id
+                );
+            }
+            $this->db->insert_batch("event_watch", $event_watch);  //事件督办
+        }
+    }
+
+
+    /**
+     * 获取事件牵头人
+     * @param $event_id
+     * @return mixed
+     */
+    public function get_event_main($event_id)
+    {
+        return $this->db->select("group, user.name AS processor")
+            ->join("user", "user.id = event.main_processor", "left")
+            ->join("group", "group.id = event.group", "left")
+            ->where("event.id", $event_id)
+            ->get("event")->row_array();
     }
 
 

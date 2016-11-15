@@ -1,0 +1,382 @@
+<!-- Ztree CSS -->
+<link rel="stylesheet" href="/assets/ztree/zTreeStyle/zTreeStyle.css">
+<!-- Jquery file upload -->
+
+<!-- Common CSS -->
+<link rel="stylesheet" href="/css/common.css">
+
+<style>
+    #top_tabby {
+        display: table;
+        margin: 0 auto;
+    }
+
+    .error {
+        font-size: 0.9em;
+        color: #FF4500;
+    }
+</style>
+
+<!-- BEGIN MAIN CONTENT -->
+<section id="main-content">
+    <section class="wrapper site-min-height">
+        <!-- BEGIN ROW  -->
+        <div class="row">
+            <div class="col-md-12">
+                <section class="panel">
+                    <header class="panel-heading">
+                        <span class="label label-primary">事件增派</span>
+                    </header>
+                    <div class="panel-body">
+                        <div class="box-widget">
+                            <div class="widget-head clearfix">
+                                <div id="top_tabby" class="block-tabby ">
+                                </div>
+                            </div>
+                            <div class="widget-container m-t-20">
+                                <div class="widget-block">
+                                    <div class="widget-content box-padding">
+                                        <form id="alter-event-form" class=" form-horizontal left-align form-well">
+                                            <fieldset title="增加处理人(单位)">
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <section class="panel">
+                                                            <header class="panel-heading">
+                                                              <span class="label label-primary">
+                                                                 可选处理人(单位)
+                                                              </span>
+                                                            </header>
+                                                            <div class="panel-body">
+                                                                <ul class="nav prod-cat ztree" id="treePartment">
+                                                                    数据加载中……
+                                                                </ul>
+                                                            </div>
+                                                        </section>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <section class="panel">
+                                                            <header class="panel-heading">
+                                                              <span class="label label-primary">
+                                                                 操作
+                                                              </span>
+                                                            </header>
+                                                            <div class="panel-body">
+                                                                <br/>
+                                                                <br/>
+                                                                <br/>
+                                                                <br/>
+                                                                <button type="button" id="btn-dealman"
+                                                                        class="btn btn-primary btn-block">
+                                                                    增加处理人或单位
+                                                                </button>
+                                                            </div>
+                                                        </section>
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <section class="panel">
+                                                            <header class="panel-heading">
+                                                                <span class="label label-primary">
+                                                                        已选处理人(单位)
+                                                                </span>
+                                                            </header>
+                                                            <div class="panel-body">
+                                                                <{if $main["processor"] != ""}>
+                                                                牵头人:<span id="con_qiantou"><{$main["processor"]}></span>
+                                                                <{else}>
+                                                                牵头单位:<span id="con_qiantou"><{$main["group"]}></span>
+                                                                <{/if}>
+                                                                <br/>
+                                                                <br/>
+                                                                <div>处理人(单位)<br/>(双击移除当前处理人或单位)</div>
+                                                                <select name="select_con_dealman" class="multi-select"
+                                                                        multiple="false" id="select_con_dealman"
+                                                                        style="width: 100%; height: 120px;">
+                                                                </select>
+                                                                <input type="hidden" name="processor"
+                                                                       id="input_con_dealman"/>
+                                                            </div>
+                                                        </section>
+                                                    </div>
+                                                </div>
+                                            </fieldset>
+                                            <fieldset title="增加督办人">
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <section class="panel">
+                                                            <header class="panel-heading">
+                                                              <span class="label label-primary">
+                                                                 选择督办人
+                                                              </span>
+                                                            </header>
+                                                            <div class="panel-body">
+                                                                <ul class="nav prod-cat ztree" id="treeWatcher">
+                                                                    数据加载中……
+                                                                </ul>
+                                                            </div>
+                                                        </section>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <section class="panel">
+                                                            <header class="panel-heading">
+                                                              <span class="label label-primary">
+                                                                 操作
+                                                              </span>
+                                                            </header>
+                                                            <div class="panel-body">
+                                                                <br/>
+                                                                <br/>
+                                                                <br/>
+                                                                <button type="button" id="btn-checkman"
+                                                                        class="btn btn-primary btn-block">
+                                                                    增加督办人
+                                                                </button>
+                                                            </div>
+                                                        </section>
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <section class="panel">
+                                                            <header class="panel-heading">
+                                                                <span class="label label-primary">
+                                                                        已选督办人
+                                                                </span>
+                                                            </header>
+                                                            <div class="panel-body">
+                                                                <div>督办人(双击移除当前督办人)</div>
+                                                                <select name="watcher" class="multi-select"
+                                                                        multiple="false" id="select_con_checkman"
+                                                                        style="width: 100%; height: 120px;">
+                                                                </select>
+                                                                <input type="hidden" name="" id="input_con_checkman"/>
+                                                            </div>
+                                                        </section>
+                                                    </div>
+                                                </div>
+                                            </fieldset>
+                                            <input type="hidden" id="event_id" value="<{$event_id}>">
+                                            <button type="button" class="finish btn btn-info btn-extend">完成</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+        <!-- END ROW  -->
+    </section>
+</section>
+<!-- END SECTION -->
+
+<!-- From Wizard -->
+<script src="/js/jquery.stepy.js"></script><!-- JQUERY STEPY WIZARD JS  -->
+<script src="/js/jquery.validate.min.js"></script><!-- VALIDATE JS  -->
+<!-- Ztree --->
+<script src="/assets/ztree/jquery.ztree.all.min.js"></script>
+
+<!-- Public Function -->
+<script language="javascript" src="/js/public.js"></script>
+
+<!-- Page Script -->
+<script language="javascript">
+
+    //事件指派 表单
+    $(function () {
+        $.validator.setDefaults({
+            submitHandler: function () {
+                alter_form_commit();
+            }
+        });
+        $('#alter-event-form').stepy({
+            backLabel: '上一步',
+            nextLabel: '下一步',
+            errorImage: false,
+            block: true,
+            description: false,
+            legend: false,
+            titleClick: true,
+            titleTarget: '#top_tabby',
+            validate: true
+        });
+    });
+
+
+    /**
+     * 增派表单提交 TODO
+     */
+    function alter_form_commit() {
+        var event_id = $("#event_id").val();
+        var processor = $("#input_con_dealman").val();
+        var watcher = $("#input_con_checkman").val();
+
+        $.ajax({
+            url: "/designate/commit_event_alter",
+            method: "post",
+            dataType: 'json',
+            data: {
+                'event_id': event_id,
+                'processor': processor,
+                'watcher': watcher
+            },
+            success: function (data) {
+                if (data == "1") {
+                    layer.msg("增派成功", function () {
+                        refresh();
+                    });
+                } else {
+                    layer.msg("操作失败", {anim: 6});
+                }
+            }
+        });
+    }
+
+    /**
+     * Ztree && MultiSelect 插件
+     * 选择处理人  督办人 和 牵头人(单位)
+     */
+    var processorTree;
+    var watcherTree;
+
+    var setting1 = {
+        check: {
+            enable: true,
+            chkboxType: {"Y": "", "N": ""}
+        },
+        async: {
+            enable: true,
+            url: "/designate/get_event_processor_tree?eid=<{$event_id}>",
+            autoParam: ["id", "name=n", "level=lv"]
+            // dataFilter: filter
+        },
+        callback: {
+            // onClick: zTreeOnClick,
+            onAsyncSuccess: zTreeOnAsyncSuccess,//异步加载完执行
+            onCheck: zTreeCheck//当选中时执行
+        }
+    };
+
+    var setting2 = {
+        check: {
+            enable: true,
+            chkboxType: {"Y": "ps", "N": "ps"}
+        },
+        async: {
+            enable: true,
+            url: "/designate/get_event_watcher_tree?eid=<{$event_id}>",
+            autoParam: ["id", "name=n", "level=lv"]
+            // dataFilter: filter
+        }
+    };
+
+    function zTreeOnAsyncSuccess(event, treeId, treeNode, msg) {
+        //去掉组织结构的选择项
+        var rootNode = processorTree.getNodeByParam("id", 0, null);//得到组织结构树
+        rootNode.nocheck = true;
+        processorTree.refresh();//更改属性后，刷新界面
+    }
+    //当节点选中时选择
+    function zTreeCheck(event, treeId, treeNode) {
+        // console.log(treeNode)
+        // console.log(treeNode.isdepartment);
+        if (treeNode.isdepartment == 1) {//个人
+            treeNode.getParentNode().checked = false;
+            //   console.log(treeNode.getParentNode());
+        } else if (treeNode.isdepartment == 0) {//单位
+            var children_arr = treeNode.children;
+            for (var i in children_arr) {
+                children_arr[i].checked = false;
+            }
+        }
+        processorTree.refresh();
+    }
+    processorTree = $.fn.zTree.init($("#treePartment"), setting1);
+    watcherTree = $.fn.zTree.init($("#treeWatcher"), setting2);
+
+    //添加处理人或单位
+    $("#btn-dealman").click(function () {
+        var nodes = processorTree.getCheckedNodes(true);//获取到被选中的集成
+        if (nodes.length == 0) {//没有选中
+            layer.msg("请选择处理人", function(){
+                return false;
+            });
+        }
+
+        //得到现在已经有的值
+        for (var i in nodes) {
+            var i_value = nodes[i].isdepartment + "_" + nodes[i].id,
+                    i_name = nodes[i].name;
+            //没有找到则添加到处理人中
+            if ($("#input_con_dealman").val().indexOf(i_value) === -1) {
+                if ($("#input_con_dealman").val() == '') {
+                    $("#input_con_dealman").val(i_value)
+                } else {
+                    $("#input_con_dealman").val($("#input_con_dealman").val() + "," + i_value)
+                }
+                $("#select_con_dealman").append('<option value="' + i_value + '">' + i_name + '</option>');
+            }
+        }
+    });
+
+    //添加督办人
+    $("#btn-checkman").click(function () {
+        var nodes = watcherTree.getCheckedNodes(true);//获取到被选中的集成
+        //得到现在已经有的值
+        for (var i in nodes) {
+            if (nodes[i].isdepartment == 0 || nodes[i].id == 0) {//如果是部门或者根节点则不进行下面操作
+                continue;
+            }
+            var i_value = nodes[i].isdepartment + "_" + nodes[i].id,
+                    i_name = nodes[i].name;
+            //没有找到则添加
+            if ($("#input_con_checkman").val().indexOf(i_value) === -1) {
+                if ($("#input_con_checkman").val() == '') {
+                    $("#input_con_checkman").val(i_value)
+                } else {
+                    $("#input_con_checkman").val($("#input_con_checkman").val() + "," + i_value)
+                }
+                $("#select_con_checkman").append('<option value="' + i_value + '">' + i_name + '</option>');
+            }
+        }
+    });
+
+
+    //双击处理人情况
+    $("#select_con_dealman").dblclick(function () {
+        //如果是多选的话，取第一个
+        var se_option = $("#select_con_dealman option:selected:first"),
+                i_value = se_option.val();
+        //移掉option的值
+        $("#select_con_dealman option[value='" + i_value + "']").remove();
+        var input_con_dealman = $("#input_con_dealman").val(),
+                arr_dealman = input_con_dealman.split(','),
+                new_input_value = "";
+        for (var i in arr_dealman) {
+            if (arr_dealman[i] != i_value) {
+                new_input_value += arr_dealman[i] + ',';
+            }
+        }
+        new_input_value = new_input_value.slice(0, -1);
+        $("#input_con_dealman").val(new_input_value)
+
+    });
+    //双击督办人
+    $("#select_con_checkman").dblclick(function () {
+        //如果是多选的话，取第一个
+        var se_option = $("#select_con_checkman option:selected:first"),
+                i_value = se_option.val()
+        //移掉option的值
+        $("#select_con_checkman option[value='" + i_value + "']").remove();
+        var input_con_checkman = $("#input_con_checkman").val(),
+                arr_checkman = input_con_checkman.split(','),
+                new_input_value = "";
+        for (var i in arr_checkman) {
+            if (arr_checkman[i] != i_value) {
+                new_input_value += arr_checkman[i] + ',';
+            }
+        }
+        new_input_value = new_input_value.slice(0, -1);
+        $("#input_con_checkman").val(new_input_value)
+
+    })
+
+</script>

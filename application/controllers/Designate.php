@@ -155,6 +155,21 @@ class Designate extends MY_controller
 
 
     /**
+     * 事件处理人(单位)树 接口
+     */
+    public function get_event_processor_tree()
+    {
+        $event_id = $this->input->get("eid");
+        if (!isset($event_id) || $event_id == null || $event_id == "") {
+            show_404();
+        }
+        $this->load->model("Tree_Model", "tree");
+        $this->output->set_content_type('application/json')
+            ->set_output($this->tree->get_event_processor_tree($event_id));
+    }
+
+
+    /**
      * 督办人树 接口
      */
     public function get_watcher_tree()
@@ -162,6 +177,21 @@ class Designate extends MY_controller
         $this->load->model("Tree_Model", "tree");
         $this->output->set_content_type('application/json')
             ->set_output($this->tree->get_watcher_tree());
+    }
+
+
+    /**
+     * 事件督办人树 接口
+     */
+    public function get_event_watcher_tree()
+    {
+        $event_id = $this->input->get("eid");
+        if (!isset($event_id) || $event_id == null || $event_id == "") {
+            show_404();
+        }
+        $this->load->model("Tree_Model", "tree");
+        $this->output->set_content_type('application/json')
+            ->set_output($this->tree->get_event_watcher_tree($event_id));
     }
 
 
@@ -276,7 +306,7 @@ class Designate extends MY_controller
 
         //获取 参考文件
         $doc_arr = $this->handler->get_event_attachment($event_id);
-        $this->assign('attachment',$doc_arr);
+        $this->assign('attachment', $doc_arr);
 
         $this->assign("active_title", "designate_parent");
         $this->assign("active_parent", "event_search");
@@ -318,6 +348,41 @@ class Designate extends MY_controller
         } else {
             echo 0;
         }
+    }
+
+
+    /**
+     * 事件增派
+     */
+    public function event_alter()
+    {
+        $event_id = $this->input->get('eid');
+        if (!isset($event_id) || $event_id == null || $event_id == "") {
+            show_404();
+        }
+        $this->load->model("Designate_Model", "designate");
+        $main = $this->designate->get_event_main($event_id);  //获得牵头人(单位)
+        $this->assign("event_id", $event_id);
+        $this->assign("main", $main);
+        $this->assign("active_title", "designate_parent");
+        $this->assign("active_parent", "event_designate");
+        $this->all_display("designate/event_alter.html");
+    }
+
+
+    /**
+     * 提交事件增派
+     */
+    public function commit_event_alter()
+    {
+        $data["event_id"] = $this->input->post("event_id", true);             //事件ID
+        $data["processor"] = $this->input->post("processor", true);           //处理人(单位)
+        $data["watcher"] = $this->input->post("watcher", true);               //督办人
+
+        $this->load->model("Designate_Model", "designate");
+        $this->designate->event_alter($data);
+        //TODO 返回结果
+        echo 1;
     }
 
 
