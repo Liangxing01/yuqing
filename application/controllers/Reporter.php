@@ -210,6 +210,7 @@ class Reporter extends MY_controller
      */
     public function upload_pic()
     {
+        var_dump($_FILES);
         $config['upload_path'] = './uploads/temp/';
         $config['allowed_types'] = 'jpg|png|jpeg';
         $config['max_size'] = 10000;
