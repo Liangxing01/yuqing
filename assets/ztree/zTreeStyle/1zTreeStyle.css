@@ -44,7 +44,7 @@ website:	http://code.google.com/p/jquerytree/
 .ztree li span.button.chk.checkbox_true_disable {background-position:-14px -56px}
 .ztree li span.button.chk.radio_false_full {background-position:-28px 0}
 .ztree li span.button.chk.radio_false_full_focus {background-position:-28px -14px}
-.ztree li span.button.chk.radio_false_part {background-position:-28px -28px} 
+.ztree li span.button.chk.radio_false_part {background-position:-28px -28px}
 .ztree li span.button.chk.radio_false_part_focus {background-position:-28px -42px}
 .ztree li span.button.chk.radio_false_disable {background-position:-28px -56px}
 .ztree li span.button.chk.radio_true_full {background-position:-42px 0}
@@ -54,8 +54,8 @@ website:	http://code.google.com/p/jquerytree/
 .ztree li span.button.chk.radio_true_disable {background-position:-42px -56px}
 
 .ztree li span.button.switch {width:18px; height:18px}
-.ztree li span.button.root_open{background-position:0px -72px}
-.ztree li span.button.root_close{background-position:0px -70px}
+.ztree li span.button.root_open{background-position:-92px -54px}
+.ztree li span.button.root_close{background-position:-74px -54px}
 .ztree li span.button.roots_open{background-position:-92px 0}
 .ztree li span.button.roots_close{background-position:-74px 0}
 .ztree li span.button.center_open{background-position:-92px -18px}
@@ -70,9 +70,9 @@ website:	http://code.google.com/p/jquerytree/
 .ztree li span.button.bottom_docu{background-position:-56px -36px}
 .ztree li span.button.noline_docu{ background:none;}
 
-.ztree li span.button.ico_open{margin-right:2px; background: url(img/group.png) no-repeat; vertical-align:top; *vertical-align:middle}
-.ztree li span.button.ico_close{margin-right:2px; background: url(img/group.png) no-repeat;  vertical-align:top; *vertical-align:middle}
-.ztree li span.button.ico_docu{margin-right:2px; background: url(img/admin.png) no-repeat; vertical-align:top; *vertical-align:middle}
+.ztree li span.button.ico_open{margin-right:2px; background-position:-110px -16px; vertical-align:top; *vertical-align:middle}
+.ztree li span.button.ico_close{margin-right:2px; background-position:-110px 0; vertical-align:top; *vertical-align:middle}
+.ztree li span.button.ico_docu{margin-right:2px; background-position:-110px -32px; vertical-align:top; *vertical-align:middle}
 .ztree li span.button.edit {margin-right:2px; background-position:-110px -48px; vertical-align:top; *vertical-align:middle}
 .ztree li span.button.remove {margin-right:2px; background-position:-110px -64px; vertical-align:top; *vertical-align:middle}
 
