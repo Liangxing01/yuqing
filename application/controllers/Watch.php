@@ -118,4 +118,31 @@ class Watch extends MY_Controller {
         echo json_encode($data);
     }
 
+    /**
+     * 显示待处理事件详情信息
+     */
+    public function show_detail(){
+        $event_id = $this->input->get("eid");
+        if(!isset($event_id) || $event_id == null || $event_id == ""){
+            show_404();
+        }
+
+        $this->assign('eid',$event_id);
+        $this->assign("active_title","watch_list");
+        $this->assign("active_parent","watch_parent");
+
+        //检查 事件查看权限
+        $this->load->model("Common_Model", "common");
+        if (!$this->common->check_can_see($event_id)) {
+            show_404();
+        }
+
+        $this->load->model("Designate_Model", "designate");
+        $event = $this->designate->get_event($event_id);
+
+        $this->assign("event", $event);
+
+        $this->all_display("handler/event_detail.html");
+    }
+
 }
