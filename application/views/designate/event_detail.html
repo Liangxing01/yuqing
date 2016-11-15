@@ -155,7 +155,7 @@
                 }
                 for(var i=0;i<data.attachment.length;i++){
                     if(data.attachment[i].type == 'pic'){
-                        info_list_img += '<p class="col-md-6"><img src="'+data.attachment[i].url+'" width="100%"></p>';
+                        info_list_img += '<p class="col-md-6"><img src="'+data.attachment[i].url+'" width="100%" onclick="enlarge_pic(this)"></p>';
                     }
                     if(data.attachment[i].type == 'video'){
                         info_list_video += '<video src="'+data.attachment[i].url+'" width="100%" controls="controls" class="col-md-6"></video>';
@@ -166,5 +166,20 @@
             }
         });
     }
+    //点击信息描述图片放大图片
+    function enlarge_pic(that){
+        var str = '';
+            str += '<div class="Mongolia" onclick="close_Mongolia()">';
+            str += '<div class="Mongolia_content">';
+            str += '<img src="'+that.src+'"/>';
+            str += '<span class="fa fa-times" aria-hidden="true" onclick="close_Mongolia()"></span>';
+            str += '</div>';
+            str += '</div>';
+        $('body').append(str);
+    }
 
+    //关闭按钮函数
+    function close_Mongolia(){
+        $('.Mongolia').remove();
+    }
 </script>
