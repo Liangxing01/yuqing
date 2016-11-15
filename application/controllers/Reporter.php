@@ -219,7 +219,7 @@ class Reporter extends MY_controller
         $config['encrypt_name'] = true;
 
         $this->load->library('upload', $config);
-//        $this->upload->do_upload('file');
+        $this->upload->do_upload('file');
 
 //        if (!$this->upload->do_upload('file')) {
 //            $error = $this->upload->display_errors();
