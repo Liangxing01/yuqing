@@ -200,7 +200,7 @@ class Admin_Model extends CI_Model {
         $insert_data = array(
             'uid'   => $data['uid'],
             'name'  => $data['name'],
-            'parent_id' => $data['new_group_id'],
+            'parent_id' => $data['gid'],
             'type'  => 1
 
         );
