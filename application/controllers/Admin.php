@@ -186,6 +186,25 @@ class Admin extends MY_Controller {
         }
     }
 
+    //更新用户
+    public function update_user(){
+        $data = $this->input->post();
+        $res = $this->admin_model->update_person($data);
+        if($res){
+            echo json_encode(
+                array(
+                    'res' => 1
+                )
+            );
+        }else{
+            echo json_encode(
+                array(
+                    'res' => 0
+                )
+            );
+        }
+    }
+
     /**
      * 展示单位管理界面
      */
