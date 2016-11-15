@@ -78,8 +78,8 @@
                 	</div>
                     <div class="sousuo">
                         <form>
-                        	<input type="text" placeholder="输入你要进入的房间" style="width: 100%; line-height: 45px; text-indent: 1em; border: none;"/>
-                        	<input type="button" value="Go" class="go"></input>
+                        	<input id="room_num" type="text" placeholder="输入你要进入的房间" style="width: 100%; line-height: 45px; text-indent: 1em; border: none;"/>
+                        	<input onclick="go_meeting();" type="button" value="Go" class="go"></input>
                         </form>
                                                 
                     </div>
@@ -107,7 +107,7 @@
     <!-- END MAIN CONTENT -->
 </section>
 
-<!--<script>
+<script>
 				window.onload = function(){
 			    function box(){
 			    var oBox = document.getElementById('pane1');
@@ -122,4 +122,10 @@
 			        box();
 			    } 
 			}
-</script>-->
+</script>
+<script>
+    function go_meeting() {
+        var num = $("#room_num").val();
+        window.open("https://m.v6plus.com/"+num);
+    }
+</script>
