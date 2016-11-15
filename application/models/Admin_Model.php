@@ -171,7 +171,7 @@ class Admin_Model extends CI_Model {
             'password' => $data['password'],
             'sex'      => $data['sex'],
             'name'     => $data['name'],
-            'group_id' => $data['new_group_id']
+            'group_id' => $data['gid']
         );
 
         $pri_arr = explode(",",$data['privilege']);

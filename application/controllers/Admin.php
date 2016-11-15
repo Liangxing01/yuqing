@@ -189,7 +189,7 @@ class Admin extends MY_Controller {
     //更新用户
     public function update_user(){
         $data = $this->input->post();
-        $res = $this->admin_model->update_person($data);
+        $res = $this->admin_model->update_user($data);
         if($res){
             echo json_encode(
                 array(
