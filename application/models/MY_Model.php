@@ -139,6 +139,23 @@ class MY_Model extends CI_Model {
             ->where('u.id',$uid)
             ->get()->result_array();
         return $data;
+
+    }
+
+    public function check_duban($uid,$event_id){
+        $res = $this->db->select('watcher')->from('event_watch')
+            ->where('event_id',$event_id)
+            ->get()->result_array();
+        if(!empty($res)){
+            foreach ($res as $one) {
+                if($one['watcher'] == $uid){
+                    return true;
+                }
+            }
+            return false;
+        }else{
+            return false;
+        }
     }
 
     //修改个人信息接口
