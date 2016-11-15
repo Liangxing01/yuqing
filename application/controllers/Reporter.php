@@ -210,38 +210,40 @@ class Reporter extends MY_controller
      */
     public function upload_pic()
     {
-        var_dump($_FILES);
+
+        $config=array();
         $config['upload_path'] = './uploads/temp/';
-        $config['allowed_types'] = 'jpg|png|jpeg';
+        $config['allowed_types'] = '*';
         $config['max_size'] = 10000;
         $config['max_width'] = 0;
         $config['max_height'] = 0;
         $config['encrypt_name'] = true;
+        $config['detect_mime']=false;
 
         $this->load->library('upload', $config);
-        $this->upload->do_upload('file');
+      //  $this->upload->do_upload('file');
 
-//        if (!$this->upload->do_upload('file')) {
-//            $error = $this->upload->display_errors();
-//            $res = array(
-//                'res' => 0, 'info' => $error
-//            );
-//            echo json_encode($res);
-//        } else {
-//            $data = array('upload_data' => $this->upload->data());
-//            $upload_data = $data['upload_data'];
-//            $res = array(
-//                'res' => 1,
-//                'info' => array(
-//                    'name' => $upload_data['orig_name'],
-//                    'url' => '/uploads/pic/' . $upload_data['file_name'],
-//                    'new_name' => $upload_data['file_name'],
-//                    'type' => $upload_data['image_type']
-//                )
-//            );
-//            echo json_encode($res);
-//
-//        }
+       if (!$this->upload->do_upload('file')) {
+            $error = $this->upload->display_errors();
+            $res = array(
+                'res' => 0, 'info' => $error
+            );
+            echo json_encode($res);
+        } else {
+            $data = array('upload_data' => $this->upload->data());
+            $upload_data = $data['upload_data'];
+            $res = array(
+                'res' => 1,
+                'info' => array(
+                    'name' => $upload_data['orig_name'],
+                    'url' => '/uploads/pic/' . $upload_data['file_name'],
+                    'new_name' => $upload_data['file_name'],
+                    'type' => $upload_data['image_type']
+                )
+            );
+            echo json_encode($res);
+
+        }
     }
 
     public function upload_video()
