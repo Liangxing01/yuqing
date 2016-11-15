@@ -75,7 +75,6 @@
                                     <th>单位事件</th>
                                     <th>事件等级</th>
                                     <th class="hidden-phone">指派时间</th>
-                                    <th>描述</th>
                                     <th>指派人</th>
                                     <th>状态</th>
                                     <th>操作</th>
@@ -209,12 +208,6 @@
                 "mRender" : function (data){
                     return timeToDate(data*1000);
                 }
-            },
-            {
-                "sTitle": "描述",
-                "mData": "description",
-                'sClass': "text-center",
-                'orderable': false
             },
             {
                 "sTitle": "指派人",

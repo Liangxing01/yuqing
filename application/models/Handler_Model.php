@@ -426,10 +426,13 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
         $check = $this->check_done_btn($gid,$eid);
         if($check){
             $data = array(
-                'state' => '未审核'
+                'state' => '未审核',
+                'end_time' => time()
+
             );
             $this->db->where('id',$eid);
             $res = $this->db->update('event',$data);
+
 
             //更改 指派表 状态为已完成
             $data1 = array(

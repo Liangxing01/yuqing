@@ -206,9 +206,11 @@ class MY_Model extends CI_Model {
         $new_unhandler = $this->db->select('id')->from('event_designate')
             ->where('unix_timestamp(now()) - time < 30')
             ->where('processor',$this->session->userdata('uid'))
+            ->where('state','未处理')
             ->get()->result_array();
         $new_info = $this->db->select('id')->from('info')
             ->where('unix_timestamp(now()) - time < 30')
+            ->where('state',0)
             ->get()->result_array();
         if(!empty($new_unhandler)){
             return "new_unhandle";
