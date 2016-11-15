@@ -223,18 +223,27 @@ class Handler extends MY_Controller {
 
     //交互显示事件处理进度
     public function show_tracer(){
+        $this->load->model('MY_Model','my_model');
         $gid = $this->session->userdata('gid');
         $uid = $this->session->userdata('uid');
         //判断有无督办权限
         $pri = explode(",",$this->session->userdata('privilege'));
-        foreach ($pri as $one){
+
+        /*foreach ($pri as $one){
             if($one == 4){
                 $usertype = 1;
             }else{
                 $usertype = 0;
             }
-        }
+        }*/
         $event_id = $this->input->get('eid');
+        //判断对这样事 有督办全
+        $duban = $this->my_model->check_duban($uid,$event_id);
+        if ($duban){
+            $usertype = 1;
+        }else{
+            $usertype = 0;
+        }
         $first = $this->input->get('first');
         //更新事件状态为处理中
         if(!empty($first)){
@@ -262,7 +271,7 @@ class Handler extends MY_Controller {
         $this->assign('can_show_done_btn',$done_btn);
 
         //个人信息
-        $this->load->model('MY_Model','my_model');
+
         $user_info = $this->my_model->get_user_info($uid);
         $this->assign('username',$user_info[0]['name']);
         $this->assign('useracter',$user_info[0]['avatar']);
