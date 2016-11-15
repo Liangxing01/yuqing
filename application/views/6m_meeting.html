@@ -4,7 +4,7 @@
 		width: 30%; 
 		margin: auto; 
 		position: relative; 
-		top: 30%;
+		margin-top: 15%;
 		font-size: 1.2em;
 	}
 	.go{ 
@@ -18,7 +18,7 @@
 		background: #72d0eb;
 		font-size: 1.2em;
 		text-align: center;
-		border: 1px solid silver;
+		border:none;
    					 
 		
 	}
@@ -32,6 +32,27 @@
 		font-size: 1.4em;
 	}
 	.sp{
+		position:absolute; 
+		width:98%; 
+		height:100%; 
+		margin: auto;
+		
+	}
+@media only screen and (max-width:1440px ) {
+		.sp{		
+		width:97.5%; 
+		margin:auto;  
+		}
+
+}
+@media only screen and (max-width:1024px ) {
+		.sp{		
+		width:96.5%; 
+		margin:auto;  
+		}
+
+}
+	/*.sp{
 		background:url(../../img/meeting_bg.png); 
 		background-size: cover; 
 		width:86%; 
@@ -42,11 +63,13 @@
 		top: 10%; 
 		bottom: 10%;
 	}
-	@media only screen and (max-width:1440px ) {
+	
+	
+	@media only screen and (max-width:1024px ) {
 		.sp{
 		background:url(../../img/meeting_bg.png); 
 		background-size: cover; 
-		width:78%; 
+		width:74%; 
 		height:85%; 
 		margin:auto;  
 		position: fixed;
@@ -62,8 +85,7 @@
 		color: white;
 		text-align: center;
 		font-size: 1.4em;
-	}
-		
+	}	
 	}
 		@media only screen and (max-width:768px ) {
 		.sp{
@@ -87,7 +109,7 @@
 		font-size: 1.4em;
 	}
 		
-	}
+	}*/
 </style>
 	
 <!-- BEGIN MAIN CONTENT -->
@@ -98,7 +120,7 @@
         <div class="row">
             <div class="col-lg-12">
             	
-                <section class="panel sp">
+                <section class="panel">
                 	
                     <header class="panel-heading" style="background: white;">
                         <span class=""><strong><img src="../../../img/meeting.png" width="35" height="35" />视频会议</strong></span>
@@ -107,6 +129,9 @@
                            <a href="javascript:;" class="fa fa-times"></a>
                            </span>
                     </header>
+                    <div class="sp">
+                		<img src="../../img/meeting_bg.png" width="100%" height="100%" />
+                	</div>
                     <div class="sousuo">
                         <form>
                         	<input type="text" placeholder="输入你要进入的房间" style="width: 100%; line-height: 45px; text-indent: 1em; border: none;"/>

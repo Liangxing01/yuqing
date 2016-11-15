@@ -298,17 +298,32 @@
       dataType:'json',
       success:function(data){
         if(data.res == "new_unhandle"){
-          layer.msg('您有新的待处理任务获得！',{anim:6});
+          layer.confirm("您有新的待处理任务获得！",{
+              btn:['开始处理','取消报警'],anim:6,title:'通知'
+          },function () {
+              location.href = '/handler/wait_to_handle';
+          },function (index) {
+              layer.close(index);
+              clearInterval(get_msg_timer);
+          });
           var au = document.createElement("audio");
           au.preload="auto";
-          au.src = "tips.wav";
+          au.src = "/tips.wav";
           au.play();
 
         }else if(data.res == "new_info"){
-          layer.msg('您有新的上报信息！',{anim:6});
+          layer.confirm("您有新的上报信息获得！",{
+            btn:['开始处理','取消报警'],anim:6,title:'通知'
+          },function () {
+            location.href = '/designate/info_not_handle';
+          },function (index) {
+            layer.close(index);
+            clearInterval(get_msg_timer);
+          });
+
           var au = document.createElement("audio");
           au.preload="auto";
-          au.src = "tips.wav";
+          au.src = "/tips.wav";
           au.play();
         }
       },
@@ -317,7 +332,7 @@
       }
     });
   }
-  setInterval(get_msg,3000);
+  var get_msg_timer = setInterval(get_msg,3000);
 
   function get_all_msg() {
     $.ajax({
@@ -353,7 +368,7 @@
       }
     });
   }
-  setInterval(get_all_msg,4000);
+  var get_all_msg_timer = setInterval(get_all_msg,4000);
 </script>
 <script>
   function open_meeting() {

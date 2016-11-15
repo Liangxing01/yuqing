@@ -75,7 +75,6 @@
                                     <th>单位事件</th>
                                     <th>事件等级</th>
                                     <th class="hidden-phone">指派时间</th>
-                                    <th>描述</th>
                                     <th>指派人</th>
                                     <th>状态</th>
                                     <th>操作</th>
@@ -211,12 +210,6 @@
                 }
             },
             {
-                "sTitle": "描述",
-                "mData": "description",
-                'sClass': "text-center",
-                'orderable': false
-            },
-            {
                 "sTitle": "指派人",
                 "mData": "name",
                 'sClass': "text-center",
@@ -230,11 +223,12 @@
             },
             {
                 "sTitle": "操作",
-                "mData": "eid",
+                "mData": "event_id",
                 'sClass': "text-center",
                 'orderable': false,
                 "mRender": function (data) {
-                    return "<a title='查看' href='/handler/show_detail?id=" + data + " ' class='btn btn-info btn-xs'><i class='fa fa-eye'></i>查看</a>";
+                    return "<a title='查看' href='/watch/show_detail?eid=" + data + " ' class='btn btn-warning btn-xs'><i class='fa fa-eye'></i>事件查看</a>"+
+                    "<a title='查看' href='/watch/show_tracer?eid=" + data + " ' class='btn btn-info btn-xs'><i class='fa fa-eye'></i>事件追踪</a>";
                 }
             }
         ],

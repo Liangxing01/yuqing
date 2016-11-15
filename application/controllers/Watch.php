@@ -57,4 +57,92 @@ class Watch extends MY_Controller {
         echo json_encode($data);
     }
 
+    //交互显示事件处理进度
+    public function show_tracer(){
+        $this->load->model('Handler_Model','handler_model');
+        $gid = $this->session->userdata('gid');
+        $uid = $this->session->userdata('uid');
+        //判断有无督办权限
+        $pri = explode(",",$this->session->userdata('privilege'));
+        foreach ($pri as $one){
+            if($one == 4){
+                $usertype = 1;
+            }else{
+                $usertype = 0;
+            }
+        }
+        $event_id = $this->input->get('eid');
+
+
+        $this->assign("active_title","watch_list");
+        $this->assign("active_parent","watch_parent");
+        $einfo = $this->handler_model->get_title_by_eid($event_id);
+        $done_btn = $this->handler_model->check_done_btn($gid,$event_id);
+        $this->assign('title',$einfo['title']);
+        $this->assign('rank',$einfo['rank']);
+        if($einfo['state'] == "已完成" || $einfo['state'] == '未审核'){
+            $done_state = 1;
+        }else{
+            $done_state = 0;
+        }
+        if(!empty($einfo['end_time'])){
+            $this->assign('end_time',$einfo['end_time']);
+        }else{
+            $this->assign('end_time',"");
+        }
+        $this->assign('done_state',$done_state);
+        $this->assign('eid',$event_id);
+        $this->assign('can_show_done_btn',$done_btn);
+
+        //个人信息
+        $this->load->model('MY_Model','my_model');
+        $user_info = $this->my_model->get_user_info($uid);
+        $this->assign('username',$user_info[0]['name']);
+        $this->assign('useracter',$user_info[0]['avatar']);
+        $this->assign('usertype',$usertype);
+
+        //获取 参考文件
+        $doc_arr = $this->handler_model->get_event_attachment($event_id);
+        $this->assign('attachment',$doc_arr);
+        $this->all_display("watch/event_tracer.html");
+    }
+
+    /*
+        接口：获取事件进度
+        参数：事件id
+    */
+    public function get_event_logs(){
+        $this->load->model('Common_Model','common_model');
+        $event_id = $this->input->post('eid');
+        $data = $this->common_model->get_all_logs_by_id($event_id);
+        echo json_encode($data);
+    }
+
+    /**
+     * 显示待处理事件详情信息
+     */
+    public function show_detail(){
+        $event_id = $this->input->get("eid");
+        if(!isset($event_id) || $event_id == null || $event_id == ""){
+            show_404();
+        }
+
+        $this->assign('eid',$event_id);
+        $this->assign("active_title","watch_list");
+        $this->assign("active_parent","watch_parent");
+
+        //检查 事件查看权限
+        $this->load->model("Common_Model", "common");
+        if (!$this->common->check_can_see($event_id)) {
+            show_404();
+        }
+
+        $this->load->model("Designate_Model", "designate");
+        $event = $this->designate->get_event($event_id);
+
+        $this->assign("event", $event);
+
+        $this->all_display("handler/event_detail.html");
+    }
+
 }
