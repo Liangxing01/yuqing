@@ -1225,7 +1225,7 @@ class CI_Upload {
 
 		// Fileinfo extension - most reliable method
 		echo "flag2";
-		$finfo = @finfo_open(FILEINFO_MIME);
+		$finfo = finfo_open(FILEINFO_MIME);
 		echo "flag3";
 		if (is_resource($finfo)) // It is possible that a FALSE value is returned, if there is no magic MIME database file found on the system
 		{
