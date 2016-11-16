@@ -100,9 +100,10 @@ class Welcome extends MY_Controller
         $pid = $this->input->post('pid');
         $comment = $this->input->post('comment');
         $res = $this->handler_model->insert_comment($event_id, $pid, $comment);
-        if ($res) {
+        if ($res['res']) {
             $data = array(
-                'res' => 1
+                'res' => 1,
+                'id'  => $res['id']
             );
         } else {
             $data = array(

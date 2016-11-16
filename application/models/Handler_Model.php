@@ -404,7 +404,8 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
                 'name'     => $name,
                 'time'     => time()
             );
-            $res = $this->db->insert('event_log',$data);
+            $res['res'] = $this->db->insert('event_log',$data);
+            $res['id'] = $this->db->insert_id();
             return $res;
         }else{
             //子评论
@@ -416,7 +417,8 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
                 'name'     => $name,
                 'time'     => time()
             );
-            $res = $this->db->insert('event_log',$data);
+            $res['res'] = $this->db->insert('event_log',$data);
+            $res['id'] = $this->db->insert_id();
             return $res;
         }
     }
