@@ -448,11 +448,15 @@ class CI_Upload {
 		$this->file_temp = $_file['tmp_name'];
 		$this->file_size = $_file['size'];
 
+		echo "flag1";
+
 		// Skip MIME type detection?
 		if ($this->detect_mime !== FALSE)
 		{
 			$this->_file_mime_type($_file);
 		}
+
+		echo "flag";
 
 		$this->file_type = preg_replace('/^(.+?);.*$/', '\\1', $this->file_type);
 		$this->file_type = strtolower(trim(stripslashes($this->file_type), '"'));
