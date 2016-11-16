@@ -106,6 +106,7 @@ class Handler extends MY_Controller {
         if (!$this->common->check_can_see($event_id)) {
             show_404();
         }
+        //$this->common->check_can_see($event_id);
 
         $this->load->model("Designate_Model", "designate");
         $event = $this->designate->get_event($event_id);
