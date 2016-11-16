@@ -23,35 +23,32 @@ class Common_Model extends CI_Model
     {
         $uid = $this->session->userdata('uid');
         $pri = explode(",", $this->session->userdata('privilege'));
+        $flag = false;
         foreach ($pri as $one) {
             switch ($one) {
                 case 2 :
-                    return true;
+                    $flag = true;
                     break;
                 case 3 :
                     $res = $this->check_processor_see($eid, $uid);
                     if ($res) {
-                        return true;
-                    } else {
-                        return false;
+                        $flag = true;
                     }
                     break;
                 case 4 :
-                    $res = $this->check_watcker_see($eid, $uid);
+                    $res = $this->check_watcher_see($eid, $uid);
                     if ($res) {
-                        return true;
-                    } else {
-                        return false;
+                        $flag = true;
                     }
                     break;
                 case 5 :
-                    return true;
+                    $flag = true;
                     break;
                 default :
                     break;
             }
         }
-        return false;
+        return $flag;
     }
 
     //权限:判断处理人是否能查看
@@ -69,7 +66,7 @@ class Common_Model extends CI_Model
     }
 
     //权限：判断 督查者是否能看
-    public function check_watcker_see($eid, $uid)
+    public function check_watcher_see($eid, $uid)
     {
         $res = $this->db->select('id')->from('event_watch')
             ->where('event_id', $eid)
