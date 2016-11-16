@@ -87,8 +87,16 @@
             cursor: pointer;
             margin-top: 20px;
         }
-
-
+		label{ 
+			color: #ffe300;
+			position: relative;
+			top: -3.0em;
+			font-size: 1.4em;
+		}
+		#login_error{
+			color: #ffe300;
+			font-size: 1.4em;
+		}
 
     </style>
 </head>
@@ -104,7 +112,7 @@
             <h2>网络舆情工作平台</h2>
         </div>
         <div class="form-group">
-            <input type="text" class="form-control" name="username" id="username" placeholder="输入账号" autocomplete="off">
+            <input type="text" class="form-control" name="username" id="username" placeholder="账号" autocomplete="off">
             <label class="error" for="username" style=" height: 15px;"></label>
         </div>
 
@@ -113,7 +121,7 @@
             <label class="error" for="password" style=" height: 15px;"></label>
         </div>
 
-        <div ><span id="login_error" class="error" style="display: block;"></span></div>
+        <div class="form-group"><span id="login_error" class="error" style="display: block;"></span></div>
         <div class="form-group">
             <button type="submit" class="btn" >登录</button>
         </div>
