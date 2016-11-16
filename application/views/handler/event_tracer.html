@@ -329,6 +329,8 @@
 		    	dataType:'json',
 		    	success:function(data){
                     if(data.res == 1){
+
+                        window.sessionStorage.setItem('p_id',data.id);
                         var li_obj=new Object();
                         li_obj.name=$("#username").val();
                         li_obj.daytime=new Date().toLocaleString().replace(/:\d{1,2}$/,' ');
@@ -371,8 +373,8 @@
 		//父亲节点ID获取到了
 		var id="";
 		if(type==1){//添加小评论
-		 id=value;
-		 var comment =$.trim($("#comment"+id).val());
+		 id=   window.sessionStorage.getItem('p_id');
+		 var comment =$.trim($("#comment"+value).val());
 			if(comment.length>200){
                 layer.msg("字数不能超过200!",{anim:6,time:1500})
 				return false;
@@ -397,18 +399,18 @@
 		    		if(data.res == 1){
 
                         //改变最外面div 高度
-                        $(".item-timeline-"+id).css('height','auto');
+                        $(".item-timeline-"+value).css('height','auto');
                         var commnetObj=new Object();
                         commnetObj.daytime=new Date().toLocaleString().replace(/:\d{1,2}$/,' ');
                         commnetObj.name=$("#username").val();
                         commnetObj.desc=comment;
                         var strhtml=formatTemplate(commnetObj, comment_item_tpl);//得到当前字符串
-                        $("#option-row"+id).after(strhtml);
-                        $("#comment"+id).val('');
+                        $("#option-row"+value).after(strhtml);
+                        $("#comment"+value).val('');
                         //改变最外面div的高度情况
                         //评论后，重新定义最外面高度
-                        $(".item-timeline-"+id+"").height($(".item-timeline-"+id+"").height())//解决动态加载文档流问题
-                        $(".item-timeline-"+id+"-flag").height($(".item-timeline-"+id+"").height());
+                        $(".item-timeline-"+value+"").height($(".item-timeline-"+value+"").height())//解决动态加载文档流问题
+                        $(".item-timeline-"+value+"-flag").height($(".item-timeline-"+value+"").height());
 		    			//alert('发表成功！')
 		    		}else{
 		    			alert('评论失败！');
