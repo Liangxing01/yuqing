@@ -25,10 +25,10 @@
                                 <tr>
                                     <th>编号</th>
                                     <th>标题</th>
-                                    <th>描述</th>
                                     <th>事件等级</th>
                                     <th class="hidden-phone">结束时间</th>
                                     <th>状态</th>
+                                    <th>指派人</th>
                                     <th>操作</th>
                                 </tr>
                                 </thead>
@@ -87,12 +87,6 @@
                 'orderable': false
             },
             {
-                "sTitle": "描述",
-                "mData": "description",
-                'sClass': "text-center",
-                'orderable': false
-            },
-            {
                 "sTitle": "事件等级",
                 "mData": "rank",
                 'sClass': "text-center",
@@ -136,6 +130,12 @@
                     }
 
                 }
+            },
+            {
+                "sTitle": "指派人",
+                "mData": "zpname",
+                'sClass': "text-center",
+                'orderable': false
             },
             {
                 "sTitle": "操作",
