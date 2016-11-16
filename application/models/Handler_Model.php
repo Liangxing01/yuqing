@@ -138,7 +138,7 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
         $gid = $this->session->userdata('gid');
         if($where){
             $data['aaData'] = $this->db->select('a.id,a.time AS zptime,a.group,t.name as type_name,a.description,
-        i.title,i.id as info_id,u.username as zpname,einfo.event_id as eid,e.rank')->from('event_designate AS a')
+        i.title,i.id as info_id,u.name as zpname,einfo.event_id as eid,e.rank')->from('event_designate AS a')
                 ->where('a.state','未处理')
                 ->group_start()
                 ->where('a.processor',$processorID)
@@ -161,7 +161,7 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
             //$total = $this->db->query($sql2,array($processorID))->num_rows();
 
             $total = $this->db->select('a.id,a.time AS zptime,a.group,t.name as type_name,a.description,
-        i.title,i.id as info_id,u.username as zpname,einfo.event_id as eid,e.rank')->from('event_designate AS a')
+        i.title,i.id as info_id,u.name as zpname,einfo.event_id as eid,e.rank')->from('event_designate AS a')
                 ->where('a.state','未处理')
                 ->group_start()
                 ->where('a.processor',$processorID)
@@ -190,7 +190,7 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
             }
         }else{
             $data['aaData'] = $this->db->select('a.id,a.time AS zptime,a.group,t.name as type_name,a.description,
-        i.title,i.id as info_id,u.username as zpname,einfo.event_id as eid,e.rank')->from('event_designate AS a')
+        i.title,i.id as info_id,u.name as zpname,einfo.event_id as eid,e.rank')->from('event_designate AS a')
                 ->where('a.state','未处理')
                 ->group_start()
                 ->where('a.processor',$processorID)
@@ -209,7 +209,7 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
                 ->get()->result_array();
 
             $total = $this->db->select('a.id,a.time AS zptime,a.group,t.name as type_name,a.description,
-        i.title,i.id as info_id,u.username as zpname,einfo.event_id as eid,e.rank')->from('event_designate AS a')
+        i.title,i.id as info_id,u.name as zpname,einfo.event_id as eid,e.rank')->from('event_designate AS a')
                 ->where('a.state','未处理')
                 ->group_start()
                 ->where('a.processor',$processorID)
@@ -275,7 +275,7 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
         }
         $where = substr($where, 0, strlen($where) - 4);
         if($where){
-            $data['aaData'] = $this->db->select('a.id,a.event_id,b.title,u.username as zpname,a.time,a.state,b.rank')
+            $data['aaData'] = $this->db->select('a.id,a.event_id,b.title,u.name as zpname,a.time,a.state,b.rank')
                 ->from('event_designate as a')
                 ->where('a.processor',$processorID)
                 ->where('a.state','处理中')
@@ -289,7 +289,7 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
                 ->limit($pInfo['length'],$pInfo['start'])
                 ->get()->result_array();
 
-            $total = $this->db->select('a.id,a.event_id,b.title,u.username as zpname,a.time,a.state,b.rank')
+            $total = $this->db->select('a.id,a.event_id,b.title,u.name as zpname,a.time,a.state,b.rank')
                 ->from('event_designate as a')
                 ->where('a.processor',$processorID)
                 ->where('a.state','处理中')
@@ -301,7 +301,7 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
                 ->group_end()
                 ->get()->num_rows();
         }else{
-            $data['aaData'] = $this->db->select('a.id,a.event_id,b.title,u.username as zpname,a.time,a.state,b.rank')
+            $data['aaData'] = $this->db->select('a.id,a.event_id,b.title,u.name as zpname,a.time,a.state,b.rank')
                 ->from('event_designate as a')
                 ->where('a.processor',$processorID)
                 ->where('a.state','处理中')
@@ -314,7 +314,7 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
                 ->limit($pInfo['length'],$pInfo['start'])
                 ->get()->result_array();
 
-            $total = $this->db->select('a.id,a.event_id,b.title,u.username as zpname,a.time,a.state,b.rank')
+            $total = $this->db->select('a.id,a.event_id,b.title,u.name as zpname,a.time,a.state,b.rank')
                 ->from('event_designate as a')
                 ->where('a.processor',$processorID)
                 ->where('a.state','处理中')
@@ -457,33 +457,29 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
     //获取 已完成 或 未审核 事件列表
     public function get_done_list($pInfo,$processorID){
         $data['aaData'] = $this->db->select("e.id,e.title,e.description,e.rank,e.state,e.end_time")
-            ->from('event_designate AS ed')
-            ->join('event AS e','ed.event_id = e.id','left')
-            ->join('event_info AS einfo','einfo.event_id = e.id','left')
-            ->join('info','info.id = einfo.info_id','left')
+            ->from('event AS e')
+            ->where('e.state','未审核')
+            ->or_where('e.state','已完成')
+            ->join('event_designate AS ed','ed.event_id = e.id')
             ->where('ed.processor',$processorID)
             ->group_start()
             ->like('e.title',$pInfo['search'])
             ->or_like('e.rank',$pInfo['search'])
             ->group_end()
-            ->where('e.state','未审核')
-            ->or_where('e.state','已完成')
             ->order_by('e.end_time',$pInfo['sort_type'])
             ->limit($pInfo['length'],$pInfo['start'])
             ->get()->result_array();
 
         $total = $this->db->select("e.id,e.title,e.description,e.rank,e.state,e.end_time")
-            ->from('event_designate AS ed')
-            ->join('event AS e','ed.event_id = e.id','left')
-            ->join('event_info AS einfo','einfo.event_id = e.id','left')
-            ->join('info','info.id = einfo.info_id','left')
+            ->from('event AS e')
+            ->where('e.state','未审核')
+            ->or_where('e.state','已完成')
+            ->join('event_designate AS ed','ed.event_id = e.id')
             ->where('ed.processor',$processorID)
             ->group_start()
             ->like('e.title',$pInfo['search'])
             ->or_like('e.rank',$pInfo['search'])
             ->group_end()
-            ->where('e.state','未审核')
-            ->or_where('e.state','已完成')
             ->get()->num_rows();
 
         $data['sEcho'] = $pInfo['sEcho'];
