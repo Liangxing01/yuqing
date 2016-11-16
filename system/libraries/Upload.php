@@ -449,6 +449,7 @@ class CI_Upload {
 		$this->file_size = $_file['size'];
 
 		echo "flag1";
+		var_dump($_file);
 
 		// Skip MIME type detection?
 		if ($this->detect_mime !== FALSE)
