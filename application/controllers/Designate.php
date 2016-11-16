@@ -225,9 +225,10 @@ class Designate extends MY_controller
     public function attachment_upload()
     {
         $config['upload_path'] = './uploads/temp/';
-        $config['allowed_types'] = 'xls|xlsx|doc|docx|txt';
+        $config['allowed_types'] = '*';
         $config['max_size'] = 0;
         $config['encrypt_name'] = true;
+        $config['detect_mime']=false;
 
         $this->load->library('upload', $config);
 

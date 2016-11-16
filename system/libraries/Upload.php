@@ -448,16 +448,11 @@ class CI_Upload {
 		$this->file_temp = $_file['tmp_name'];
 		$this->file_size = $_file['size'];
 
-		echo "flag1";
-		var_dump($_file);
-
 		// Skip MIME type detection?
 		if ($this->detect_mime !== FALSE)
 		{
 			$this->_file_mime_type($_file);
 		}
-
-		echo "flag";
 
 		$this->file_type = preg_replace('/^(.+?);.*$/', '\\1', $this->file_type);
 		$this->file_type = strtolower(trim(stripslashes($this->file_type), '"'));
@@ -1224,9 +1219,7 @@ class CI_Upload {
 		$regexp = '/^([a-z\-]+\/[a-z0-9\-\.\+]+)(;\s.+)?$/';
 
 		// Fileinfo extension - most reliable method
-		echo "flag2";
-		$finfo = finfo_open(FILEINFO_MIME);
-		echo "flag3";
+		$finfo = @finfo_open(FILEINFO_MIME);
 		if (is_resource($finfo)) // It is possible that a FALSE value is returned, if there is no magic MIME database file found on the system
 		{
 			$mime = @finfo_file($finfo, $file['tmp_name']);
