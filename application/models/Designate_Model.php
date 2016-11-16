@@ -131,9 +131,10 @@ class Designate_Model extends CI_Model
      */
     public function get_event_info($event_id, $info_id)
     {
-        $this->load->model("Common_Model", "common");
-        $e_can = $this->common->check_can_see($event_id);
+        $this->load->model("Verify_Model", "verify");
+        $e_can = $this->verify->can_see_event($event_id);
         $i = $this->db->select("id")->where(array("info_id" => $info_id, "event_id" => $event_id))->get("event_info")->num_rows();
+        //验证是否可查看事件信息
         if (!($e_can && $i != 0)) {
             return false;
         } else {
@@ -143,9 +144,8 @@ class Designate_Model extends CI_Model
                 ->where("info.id", $info_id)
                 ->get("info")->row_array();
 
-            //验证是否有指派人权限
-            $privilege = explode(",", $this->session->privilege);
-            if (!in_array(2, $privilege)) {
+            //非指派人不可查看上报人信息
+            if (!$this->verify->is_manager()) {
                 unset($info["publisher"]);
             }
 
@@ -779,7 +779,7 @@ class Designate_Model extends CI_Model
             }
         }
 
-        if(!empty($event_designate)){
+        if (!empty($event_designate)) {
             $this->db->insert_batch("event_designate", $event_designate);  //事件指派
         }
 
