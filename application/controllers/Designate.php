@@ -7,6 +7,7 @@ class Designate extends MY_controller
     public function __construct()
     {
         parent::__construct();
+        $this->identity->is_authentic();
     }
 
 
@@ -228,7 +229,7 @@ class Designate extends MY_controller
         $config['allowed_types'] = '*';
         $config['max_size'] = 0;
         $config['encrypt_name'] = true;
-        $config['detect_mime']=false;
+        $config['detect_mime'] = false;
 
         $this->load->library('upload', $config);
 

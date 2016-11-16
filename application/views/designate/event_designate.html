@@ -29,41 +29,28 @@
 <!-- BEGIN MAIN CONTENT -->
 <section id="main-content">
     <section class="wrapper site-min-height">
-        <!-- BEGIN ROW  -->
-        <div class="row">
-            <div class="col-lg-12">
-                <section class="panel">
-                    <header class="panel-heading">
-                        <span class="label label-primary">已确认信息列表</span>
-                           <span class="tools pull-right">
-                           <a href="javascript:;" title="收起" class="fa fa-chevron-up"></a>
-                           <a href="javascript:;" title="刷新" class="fa fa-refresh" id="info_table_refresh"></a>
-                           </span>
-                    </header>
-                    <div class="panel-body" style="display: none">
-                        <div class="adv-table">
-                            <table class="display table table-bordered table-striped" id="info_is_handle_table">
-                                <thead>
-                                <tr>
-                                    <th>编号</th>
-                                    <th>标题</th>
-                                    <th>来源</th>
-                                    <th>类别</th>
-                                    <th>上报人</th>
-                                    <th class="hidden-phone">上报时间</th>
-                                    <th>操作</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </section>
+        <!-- BEGIN Table  -->
+        <div class="panel-body" style="display: none" id="info_choose_table">
+            <div class="adv-table">
+                <table class="display table table-bordered table-striped" id="info_is_handle_table">
+                    <thead>
+                    <tr>
+                        <th>编号</th>
+                        <th>标题</th>
+                        <th>来源</th>
+                        <th>类别</th>
+                        <th>上报人</th>
+                        <th class="hidden-phone">上报时间</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
             </div>
         </div>
-        <!-- END ROW  -->
-        <!-- BEGIN ROW  -->
+        <!-- END Table  -->
+        <!-- BEGIN Table  -->
         <div class="row">
             <div class="col-lg-12">
                 <section class="panel">
@@ -74,7 +61,7 @@
                            <a href="javascript:;" title="刷新" class="fa fa-refresh" id="event_table_refresh"></a>
                            </span>
                     </header>
-                    <div class="panel-body" style="display: none">
+                    <div class="panel-body" style="display: none" id="event_choose_table">
                         <div class="adv-table">
                             <table class="display table table-bordered table-striped" id="event_table">
                                 <thead>
@@ -98,7 +85,7 @@
                 </section>
             </div>
         </div>
-        <!-- END ROW  -->
+        <!-- END Table  -->
         <!-- BEGIN ROW  -->
         <div class="row">
             <div class="col-md-12">
@@ -127,10 +114,12 @@
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label class="col-md-2 col-sm-2 control-label">事件信息:</br>
-                                                        (从上方的表格中添加)</label>
+                                                    <label class="col-md-2 col-sm-2 control-label">事件信息:</label>
                                                     <div class="col-md-6 col-sm-6">
                                                         <input type='text' id="info_id" class='tags' name="info_id">
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <a href="javascript:;" onclick="open_event_info_table();" class="btn btn-info">点我选择</a>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
@@ -183,6 +172,9 @@
                                                         <input type='text' id="relate_event" class='tags'
                                                                name="relate_event">
                                                     </div>
+                                                    <div class="col-md-2">
+                                                        <a href="javascript:;" onclick="open_relate_event_table();" class="btn btn-info">点我选择</a>
+                                                    </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-md-2 col-sm-2 control-label">参考文件上传:</label>
@@ -225,13 +217,6 @@
                                                                         class="btn btn-primary btn-block">
                                                                     添加处理人或单位
                                                                 </button>
-                                                                <!--<br/>-->
-                                                                <!--<br/>-->
-                                                                <!--<br/>-->
-                                                                <!--<button type="button" id="btn-checkman"-->
-                                                                        <!--class="btn btn-primary btn-block">-->
-                                                                    <!--添加督办人-->
-                                                                <!--</button>-->
                                                             </div>
                                                         </section>
                                                     </div>
@@ -356,30 +341,17 @@
 <!-- Page Script -->
 <script language="javascript">
 
-    //默认收起 确认信息列表 panel
-    $('.panel .tools .fa-chevron-up').click(function () {
-        var el = jQuery(this).parents(".panel").children(".panel-body");
-        if (jQuery(this).hasClass("fa-chevron-down")) {
-            jQuery(this).removeClass("fa-chevron-down").addClass("fa-chevron-up");
-            el.slideUp(200);
-        } else {
-            jQuery(this).removeClass("fa-chevron-up").addClass("fa-chevron-down");
-            el.slideDown(200);
-        }
-    });
-
     //DataTable 表格
     $('#info_is_handle_table').dataTable({
         "bPaginate": true,
         "bProcessing": false,                //是否显示正在处理提示信息。
-        "bLengthChange": true,
+        "bLengthChange": false,
         "bFilter": true,                     //是否使用内置的过滤功能。
         "bSort": true,
         "bInfo": true,
         "bAutoWidth": false,
         "bStateSave": true,
         "iDisplayLength": 5,                //每页显示5条数据
-        "aLengthMenu": [5, 10, 15, 20],
         "aaSorting": [[6, "desc"]],          //默认排序 第6列
 
         "bServerSide": true,
@@ -431,7 +403,7 @@
                 'sClass': "text-center",
                 'orderable': false,
                 "mRender": function (data, type, all) {
-                    return "<a title='查看' href='/designate/info_detail?id=" + data + " ' class='btn btn-info btn-xs'>查看</a>&nbsp;" +
+                    return "<a title='查看' target='_blank' href='/designate/info_detail?id=" + data + " ' class='btn btn-info btn-xs'>查看</a>&nbsp;" +
                             "<a title='添加' href='javascript:;' onclick='add_event_info(" + all.id + ",\"" + all.title + "\")' class='btn btn-success btn-xs'>添加</a>";
                 }
             }
@@ -457,14 +429,13 @@
 
         "bPaginate": true,
         "bProcessing": false,                //是否显示正在处理提示信息。
-        "bLengthChange": true,
+        "bLengthChange": false,
         "bFilter": true,                     //是否使用内置的过滤功能。
         "bSort": true,
         "bInfo": true,
         "bAutoWidth": false,
         "bStateSave": true,
         "iDisplayLength": 5,                //每页显示10条数据
-        "aLengthMenu": [5, 10, 15, 20],
         "aaSorting": [[5, "desc"], [6, "desc"]],          //默认排序 第6,7列
 
         "bServerSide": true,
@@ -575,7 +546,7 @@
                 'sClass': "text-center",
                 'orderable': false,
                 "mRender": function (data, type, all) {
-                    return "<a title='查看' target='_blank' href='/common/event_detail?eid=" + data + " ' class='btn btn-info btn-xs'>查看</a>&nbsp;"
+                    return "<a title='查看' target='_blank' href='/common/event_detail?eid=" + data + " ' class='btn btn-info btn-xs'>查看</a>&nbsp;<br>"
                             + "<a title='添加' href='javascript:;' onclick='add_relate_event(" + all.id + ",\"" + all.title + "\")' class='btn btn-success btn-xs'>添加</a>";
                 }
             }
@@ -598,13 +569,6 @@
 
     });
 
-    //刷新表格
-    $("#info_table_refresh").click(function () {
-        $("#info_is_handle_table").DataTable().ajax.reload(null, false);
-    });
-    $("#event_table_refresh").click(function () {
-        $("#event_table").DataTable().ajax.reload(null, false);
-    });
 
     //事件指派 表单
     $(function () {
@@ -669,6 +633,32 @@
             value: ""
         });
     });
+
+    //弹出确认信息表格
+    function open_event_info_table(){
+        $("#info_is_handle_table").DataTable().ajax.reload(null, false);
+        layer.open({
+            type: 1,
+            title: "已确认信息列表",
+            closeBtn: 0,
+            shadeClose: true,
+            area: "800px",
+            content: $('#info_choose_table')
+        });
+    }
+
+    //弹出关联事件表格
+    function open_relate_event_table(){
+        $("#event_table").DataTable().ajax.reload(null, false);
+        layer.open({
+            type: 1,
+            title: "事件列表",
+            closeBtn: 0,
+            shadeClose: true,
+            area: "850px",
+            content: $('#event_choose_table')
+        });
+    }
 
     //添加事件信息
     function add_event_info(id, title) {
