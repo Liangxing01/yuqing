@@ -122,7 +122,7 @@
         $.ajax({
             type: "POST",
             data: {"event_id": event_id, "info_id": info_id},
-            url: "/welcome/get_event_info",
+            url: "/common/get_event_info",
             success: function (data) {
                 var info =
                         '<div class="sender-info">' +

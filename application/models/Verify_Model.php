@@ -17,6 +17,20 @@ class Verify_Model extends CI_Model
 
 
     /**
+     * 验证指派人权限
+     * @return bool
+     */
+    public function is_manager()
+    {
+        $privilege = explode(",", $this->session->privilege);
+        if (in_array(manager, $privilege)) {
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
      * 事件查看权限
      * @param $event_id
      * @return bool

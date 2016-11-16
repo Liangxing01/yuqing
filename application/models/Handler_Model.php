@@ -456,11 +456,12 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
 
     //获取 已完成 或 未审核 事件列表
     public function get_done_list($pInfo,$processorID){
-        $data['aaData'] = $this->db->select("e.id,e.title,e.description,e.rank,e.state,e.end_time")
+        $data['aaData'] = $this->db->select("e.id,e.title,e.rank,u.name as zpname,e.state,e.end_time")
             ->from('event AS e')
             ->where('e.state','未审核')
             ->or_where('e.state','已完成')
             ->join('event_designate AS ed','ed.event_id = e.id')
+            ->join('user as u','u.id = ed.manager')
             ->where('ed.processor',$processorID)
             ->group_start()
             ->like('e.title',$pInfo['search'])
@@ -470,11 +471,12 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
             ->limit($pInfo['length'],$pInfo['start'])
             ->get()->result_array();
 
-        $total = $this->db->select("e.id,e.title,e.description,e.rank,e.state,e.end_time")
+        $total = $this->db->select("e.id,e.title,e.rank,u.name as zpname,e.state,e.end_time")
             ->from('event AS e')
             ->where('e.state','未审核')
             ->or_where('e.state','已完成')
             ->join('event_designate AS ed','ed.event_id = e.id')
+            ->join('user as u','u.id = ed.manager')
             ->where('ed.processor',$processorID)
             ->group_start()
             ->like('e.title',$pInfo['search'])

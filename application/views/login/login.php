@@ -43,8 +43,8 @@
             z-index: -1;*/
             background: url(../../../img/login_bg.png) no-repeat;
             background-size: cover;
-            margin-left:auto; 
-            margin-right:auto;  
+            margin-left:auto;
+            margin-right:auto;
             position: fixed;
             left: 0;
             top: 0
@@ -76,7 +76,7 @@
             color: #000;
             border: none;
             line-height: 30px;
-            
+
         }
 		#username, #password{text-indent: 20px !important;}
         .meih a {

@@ -25,10 +25,10 @@
                                 <tr>
                                     <th>编号</th>
                                     <th>标题</th>
-                                    <th>描述</th>
                                     <th>事件等级</th>
                                     <th class="hidden-phone">结束时间</th>
                                     <th>状态</th>
+                                    <th>指派人</th>
                                     <th>操作</th>
                                 </tr>
                                 </thead>
@@ -87,12 +87,6 @@
                 'orderable': false
             },
             {
-                "sTitle": "描述",
-                "mData": "description",
-                'sClass': "text-center",
-                'orderable': false
-            },
-            {
                 "sTitle": "事件等级",
                 "mData": "rank",
                 'sClass': "text-center",
@@ -138,12 +132,18 @@
                 }
             },
             {
+                "sTitle": "指派人",
+                "mData": "zpname",
+                'sClass': "text-center",
+                'orderable': false
+            },
+            {
                 "sTitle": "操作",
                 "mData": "id",
                 'sClass': "text-center",
                 'orderable': false,
                 "mRender": function (data) {
-                    return "<a title='查看' href='/handler/show_detail?eid=" + data + " ' class='btn btn-info btn-xs'><i class='fa fa-eye'>事件查看</i></a>"
+                    return "<a title='查看' href='/common/event_detail?eid=" + data + " ' class='btn btn-info btn-xs'><i class='fa fa-eye'>事件查看</i></a>"
                             +"  <a title='查看' href='/handler/show_tracer?eid=" + data + " ' class='btn btn-warning btn-xs'><i class='fa fa-eye'>事件追踪</i></a>";
                 }
             }

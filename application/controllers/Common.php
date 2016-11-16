@@ -35,6 +35,21 @@ class Common extends MY_Controller
     }
 
 
+    /** 接口: 获取上报信息
+     * 参数: 事件ID 信息ID
+     * 返回: Json 字符串
+     */
+    public function get_event_info()
+    {
+        $event_id = $this->input->post("event_id");
+        $info_id = $this->input->post("info_id");
+        $this->load->model("Designate_Model", "designate");
+        $info = $this->designate->get_event_info($event_id, $info_id);
+        $this->output->set_content_type('application/json')
+            ->set_output(json_encode($info));
+    }
+
+
     /**
      * 事件参考文件下载 接口
      */
