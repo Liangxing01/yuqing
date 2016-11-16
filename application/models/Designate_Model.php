@@ -437,7 +437,6 @@ class Designate_Model extends CI_Model
 
 
     /**
-     * TODO
      * 查询 event(事件) 详情
      * @param $event_id
      * @return mixed
