@@ -219,16 +219,27 @@ class MY_Model extends CI_Model {
      * 轮询获得30秒以内的消息
      */
     public function get_new_msg(){
-        //未处理事件
-        $new_unhandler = $this->db->select('id')->from('event_designate')
-            ->where('unix_timestamp(now()) - time < 30')
-            ->where('processor',$this->session->userdata('uid'))
-            ->where('state','未处理')
-            ->get()->result_array();
-        $new_info = $this->db->select('id')->from('info')
-            ->where('unix_timestamp(now()) - time < 30')
-            ->where('state',0)
-            ->get()->result_array();
+        $pri = explode(",",$this->session->userdata('privilege'));
+        foreach ($pri as $one){
+            switch ($one){
+                case 2:
+                    $new_info = $this->db->select('id')->from('info')
+                        ->where('unix_timestamp(now()) - time < 30')
+                        ->where('state',0)
+                        ->get()->result_array();
+                    continue;
+                case 3:
+                    $new_unhandler = $this->db->select('id')->from('event_designate')
+                        ->where('unix_timestamp(now()) - time < 30')
+                        ->where('processor',$this->session->userdata('uid'))
+                        ->where('state','未处理')
+                        ->get()->result_array();
+                    continue;
+                default:
+                    return false;
+            }
+        }
+
         if(!empty($new_unhandler)){
             return "new_unhandle";
         }else if(!empty($new_info)){
