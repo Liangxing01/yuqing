@@ -274,7 +274,7 @@ class Handler extends MY_Controller {
         //个人信息
 
         $user_info = $this->my_model->get_user_info($uid);
-        $this->assign('username',$user_info[0]['name']);
+        $this->assign('username',$user_info[0]['username']);
         $this->assign('useracter',$user_info[0]['avatar']);
         $this->assign('usertype',$usertype);
 
