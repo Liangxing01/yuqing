@@ -153,8 +153,8 @@ class Common_Model extends CI_Model
             ->where('event_id', $eid)
             ->get()->result_array();
         if (!empty($res)) {
-            foreach ($res as $one){
-                if($one['watcher'] == $uid){
+            foreach ($res as $one) {
+                if ($one['watcher'] == $uid) {
                     return 1;
                 }
             }
@@ -167,27 +167,24 @@ class Common_Model extends CI_Model
 
 
     /**
-     * 权限:判断用户是否能下载该文件
+     * 事件附件下载
      * @param $attachment_id
      * @return mixed
      */
-    public function check_can_download($attachment_id)
+    public function event_attachment_download($attachment_id)
     {
-        $this->load->model("Common_Model", "common");
-
         $attachment_info = $this->db->select("id, event_id, name, url, type")
             ->where("id", $attachment_id)
             ->get("event_attachment")->row_array();
-
         if (empty($attachment_info)) {
             return false;
         }
-
-        $e_can = $this->common->check_can_see($attachment_info["event_id"]);
+        //用户是否可以下载该文件
+        $this->load->model("Verify_Model", "verify");
+        $e_can = $this->verify->can_see_event($attachment_info["event_id"]);
         if (!$e_can) {
             return false;
         }
-
         return $attachment_info;
     }
 

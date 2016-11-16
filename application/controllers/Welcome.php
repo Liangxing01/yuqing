@@ -115,49 +115,6 @@ class Welcome extends MY_Controller
 
 
     /**
-     * 事件参考文件下载 接口
-     */
-    public function attachment_download()
-    {
-        $id = $this->input->get("id", true);
-        if (!isset($id) || $id == null || $id == "") {
-            show_404();
-        }
-
-        //获取附件信息和鉴权
-        $this->load->model("Common_Model", "common");
-        $attachment = $this->common->check_can_download($id);
-        if ($attachment) {
-            if (file_exists($_SERVER['DOCUMENT_ROOT'] . $attachment["url"])) {
-                $this->load->helper("download");
-                $data = file_get_contents($_SERVER['DOCUMENT_ROOT'] . $attachment["url"]);
-                $name = $attachment["name"];
-                force_download($name, $data);
-            } else {
-                show_404("文件不存在");
-            }
-        } else {
-            show_404("文件不存在");
-        }
-    }
-
-
-    /**
-     * 接口: 获取上报信息
-     * 参数: 事件ID 信息ID
-     * 返回: Json 字符串
-     */
-    public function get_event_info()
-    {
-        $event_id = $this->input->post("event_id");
-        $info_id = $this->input->post("info_id");
-        $this->load->model("Designate_Model", "designate");
-        $info = $this->designate->get_event_info($event_id, $info_id);
-        $this->output->set_content_type('application/json')
-            ->set_output(json_encode($info));
-    }
-
-    /**
      * 展示个人信息页面
      */
     public function show_my_info()
