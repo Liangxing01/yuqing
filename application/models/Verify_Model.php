@@ -30,6 +30,7 @@ class Verify_Model extends CI_Model
     }
 
 
+
     /**
      * 事件查看权限
      * @param $event_id
@@ -116,5 +117,6 @@ class Verify_Model extends CI_Model
         }
         return false;
     }
+
 
 }
