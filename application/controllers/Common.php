@@ -100,6 +100,38 @@ class Common extends MY_Controller
         }
     }
 
+
+
+    /**
+     * 个人信息修改接口
+     */
+    public function update_info()
+    {
+        $name = $this->input->post('name');
+        $sex = $this->input->post('sex');
+        $update_data = array(
+            'name' => $name,
+            'sex' => $sex
+        );
+        $this->load->model("Common_Model", "common");
+        $res = $this->common->update_info($update_data);
+        if ($res) {
+            echo json_encode(
+                array(
+                    'res' => 1
+                )
+            );
+        } else {
+            echo json_encode(
+                array(
+                    'res' => 0
+                )
+            );
+        }
+
+
+    }
+
     /**
      * 修改密码接口
      */

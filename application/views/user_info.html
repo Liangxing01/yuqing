@@ -99,8 +99,8 @@
                 return;
             }else{
                 err.hide();
-                $.post('/welcome/update_info',$('#form1').serialize(),function(d){
-                    if (d.res==1) alert('保存成功！');
+                $.post('/common/update_info',$('#form1').serialize(),function(d){
+                    if (d.res==1) layer.msg('保存成功');
                     else alert(d.info);
                 },'json');
             }
