@@ -30,6 +30,7 @@ class Verify_Model extends CI_Model
     }
 
 
+
     /**
      * 验证处理人权限
      * @return bool
@@ -144,5 +145,6 @@ class Verify_Model extends CI_Model
         }
         return false;
     }
+
 
 }

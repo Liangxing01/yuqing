@@ -340,11 +340,16 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
         }
     }
 
+    /**
+     * @param $eid
+     * 更改未处理事件状态为 处理中
+     */
     public function update_doing_state($eid){
         $data = array(
           'state' => '处理中'
         );
         $this->db->where('event_id',$eid);
+        $this->db->where('state =','未处理');
         $this->db->update('event_designate',$data);
     }
 
