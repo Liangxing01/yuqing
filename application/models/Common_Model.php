@@ -220,5 +220,14 @@ class Common_Model extends CI_Model
         }
     }
 
+    //修改个人信息接口
+    public function update_info($data){
+        $uid = $this->session->userdata('uid');
+
+        $this->db->where('id',$uid);
+        $res = $this->db->update('user',$data);
+        return $res;
+    }
+
 
 }
