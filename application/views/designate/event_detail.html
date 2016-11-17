@@ -17,6 +17,20 @@
         </div>
         <div class="inbox-body">
             <div class="heading-inbox row">
+                <div class="col-md-8">
+                    <div class="compose-btn">
+                        <{if $role == 3}>
+                        <a href="/handler/show_tracer?eid=<{$event['id']}>&first=1" class="btn btn-sm btn-info"><i
+                                class="fa fa-reply"></i> 工作汇报</a>
+                        <{else if $role == 2}>
+                        <a href="/designate/event_tracer?eid=<{$event['id']}>" class="btn btn-sm btn-info"><i
+                                class="fa fa-reply"></i> 工作汇报</a>
+                        <{else if $role == 4}>
+                        <a href="/watch/show_tracer?eid=<{$event['id']}>" class="btn btn-sm btn-info"><i
+                                class="fa fa-reply"></i> 工作汇报</a>
+                        <{/if}>
+                    </div>
+                </div>
                 <div class="col-md-12">
                     <h4>
                         <{$event['title']}>
@@ -40,9 +54,11 @@
                         <p class="col-md-4"><strong>牵头单位:</strong><span>&nbsp;<{$event['main_group']}></span></p>
                         <{/if}>
                         <p class="col-md-4"><strong>状态:</strong><span>&nbsp;<{$event['state']}></span></p>
-                        <p class="col-md-4"><strong>开始时间:</strong><span>&nbsp;<{date("Y-m-d H:i:s",$event['start_time'])}></span></p>
+                        <p class="col-md-4"><strong>开始时间:</strong><span>&nbsp;<{date("Y-m-d H:i:s",$event['start_time'])}></span>
+                        </p>
                         <{if $event["end_time"] != ''}>
-                        <p class="col-md-4"><strong>结束时间:</strong><span>&nbsp;<{date("Y-m-d H:i:s",$event['end_time'])}></span></p>
+                        <p class="col-md-4">
+                            <strong>结束时间:</strong><span>&nbsp;<{date("Y-m-d H:i:s",$event['end_time'])}></span></p>
                         <{/if}>
                     </div>
                 </div>
@@ -109,7 +125,7 @@
             jQuery(this).removeClass("fa-chevron-up").addClass("fa-chevron-down");
             var info_id = el.attr("info-id");
             var event_id = $("#event_id").val();
-            if(el.html() === ""){
+            if (el.html() === "") {
                 get_info_content(event_id, info_id, el);
             }
             el.slideDown(200);
@@ -142,23 +158,23 @@
                         '</div>' +
                         '<div class="attachment-info">' +
                         '<div class="info_des_img col-md-12"></div>' +
-                        '<div class="info_des_video col-md-12"></div>'+
+                        '<div class="info_des_video col-md-12"></div>' +
                         '</div>';
                 info_box.html(info);
 
                 //循环图片和视频
                 var info_list_img = '<h2>图片描述</h2>';    //图片
                 var info_list_video = '<h2>视频描述</h2>';  //视频
-                if(!data.attachment.length){
+                if (!data.attachment.length) {
                     info_list_img = '<p class="col-md-12">暂无图片描述</p>';
                     info_list_video = '<p class="col-md-12">暂无视频描述</p>'
                 }
-                for(var i=0;i<data.attachment.length;i++){
-                    if(data.attachment[i].type == 'pic'){
-                        info_list_img += '<p class="col-md-6"><img src="'+data.attachment[i].url+'" width="100%" onclick="enlarge_pic(this)"></p>';
+                for (var i = 0; i < data.attachment.length; i++) {
+                    if (data.attachment[i].type == 'pic') {
+                        info_list_img += '<p class="col-md-6"><img src="' + data.attachment[i].url + '" width="100%" onclick="enlarge_pic(this)"></p>';
                     }
-                    if(data.attachment[i].type == 'video'){
-                        info_list_video += '<video src="'+data.attachment[i].url+'" width="100%" controls="controls" class="col-md-6"></video>';
+                    if (data.attachment[i].type == 'video') {
+                        info_list_video += '<video src="' + data.attachment[i].url + '" width="100%" controls="controls" class="col-md-6"></video>';
                     }
                 }
                 $('.info_des_img').append(info_list_img);
@@ -167,19 +183,19 @@
         });
     }
     //点击信息描述图片放大图片
-    function enlarge_pic(that){
+    function enlarge_pic(that) {
         var str = '';
-            str += '<div class="Mongolia" onclick="close_Mongolia()">';
-            str += '<div class="Mongolia_content">';
-            str += '<img src="'+that.src+'"/>';
-            str += '<span class="fa fa-times" aria-hidden="true" onclick="close_Mongolia()"></span>';
-            str += '</div>';
-            str += '</div>';
+        str += '<div class="Mongolia" onclick="close_Mongolia()">';
+        str += '<div class="Mongolia_content">';
+        str += '<img src="' + that.src + '"/>';
+        str += '<span class="fa fa-times" aria-hidden="true" onclick="close_Mongolia()"></span>';
+        str += '</div>';
+        str += '</div>';
         $('body').append(str);
     }
 
     //关闭按钮函数
-    function close_Mongolia(){
+    function close_Mongolia() {
         $('.Mongolia').remove();
     }
 </script>

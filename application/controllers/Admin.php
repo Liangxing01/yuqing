@@ -8,20 +8,23 @@
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Admin extends MY_Controller {
-    public function __construct(){
+class Admin extends MY_Controller
+{
+    public function __construct()
+    {
         parent::__construct();
 
         header('Access-Control-Allow-Origin:*');
-        $this->load->model('Admin_Model',"admin_model");
+        $this->load->model('Admin_Model', "admin_model");
     }
 
     //展示上报信息查看页面
-    public function show_all_info(){
+    public function show_all_info()
+    {
         $type_list = $this->admin_model->get_info_type();  //获取类别列表
         $this->assign("type_list", $type_list);
-        $this->assign("active_title","see_infos");
-        $this->assign("active_parent","infos_parent");
+        $this->assign("active_title", "see_infos");
+        $this->assign("active_parent", "infos_parent");
         $this->all_display('admin/all_infos.html');
     }
 
@@ -83,10 +86,31 @@ class Admin extends MY_Controller {
             ->set_output(json_encode($data));
     }
 
+
+    /**
+     * 信息详情 视图载入
+     */
+    public function info_detail()
+    {
+        $info_id = $this->input->get("id", true);
+        if (!isset($info_id) || $info_id == null || $info_id == "") {
+            show_404();
+        }
+
+        $this->load->model("Designate_Model", "designate");
+        $info = $this->designate->get_info($info_id);
+        $this->assign("info", $info);
+        $this->assign("active_title", "report_parent");
+        $this->assign("active_parent", "report_recording");
+        $this->all_display("report/info_detail.html");
+    }
+
+
     //所有事件查看
-    public function show_all_events(){
-        $this->assign("active_title","see_events");
-        $this->assign("active_parent","events_parent");
+    public function show_all_events()
+    {
+        $this->assign("active_title", "see_events");
+        $this->assign("active_parent", "events_parent");
         $this->all_display('admin/all_events.html');
     }
 
@@ -155,29 +179,32 @@ class Admin extends MY_Controller {
     /**
      * 展示用户管理界面
      */
-    public function show_user_manage(){
-        $this->assign("active_title","struct_parent");
-        $this->assign("active_parent","user_manage");
+    public function show_user_manage()
+    {
+        $this->assign("active_title", "struct_parent");
+        $this->assign("active_parent", "user_manage");
         $this->all_display('admin/user_manage.html');
     }
 
-    public function get_group(){
-        $this->load->model("Tree_Model","tree_model");
+    public function get_group()
+    {
+        $this->load->model("Tree_Model", "tree_model");
         $res = $this->tree_model->get_group_tree();
         echo $res;
     }
 
     //添加用户
-    public function add_person(){
+    public function add_person()
+    {
         $data = $this->input->post();
         $res = $this->admin_model->add_person($data);
-        if($res){
+        if ($res) {
             echo json_encode(
                 array(
                     'res' => 1
                 )
             );
-        }else{
+        } else {
             echo json_encode(
                 array(
                     'res' => 0
@@ -187,16 +214,17 @@ class Admin extends MY_Controller {
     }
 
     //更新用户
-    public function update_user(){
+    public function update_user()
+    {
         $data = $this->input->post();
         $res = $this->admin_model->update_user($data);
-        if($res){
+        if ($res) {
             echo json_encode(
                 array(
                     'res' => 1
                 )
             );
-        }else{
+        } else {
             echo json_encode(
                 array(
                     'res' => 0
@@ -208,23 +236,25 @@ class Admin extends MY_Controller {
     /**
      * 展示单位管理界面
      */
-    public function show_group_manage(){
-        $this->assign("active_title","struct_parent");
-        $this->assign("active_parent","group_manage");
+    public function show_group_manage()
+    {
+        $this->assign("active_title", "struct_parent");
+        $this->assign("active_parent", "group_manage");
         $this->all_display('admin/group_manage.html');
     }
 
     //添加单位
-    public function add_group(){
+    public function add_group()
+    {
         $data = $this->input->post();
         $res = $this->admin_model->add_group($data);
-        if($res){
+        if ($res) {
             echo json_encode(
                 array(
                     'res' => 1
                 )
             );
-        }else{
+        } else {
             echo json_encode(
                 array(
                     'res' => 0
@@ -233,14 +263,15 @@ class Admin extends MY_Controller {
         }
     }
 
-    public function get_node_info(){
+    public function get_node_info()
+    {
         $data = $this->input->post();
-        if (!empty($data)){
-            $uid  = $data['id'];
+        if (!empty($data)) {
+            $uid = $data['id'];
             $type = $data['type'];//1为个人，0为单位
-            if($type == 0){
+            if ($type == 0) {
                 $res = $this->admin_model->get_group_info($uid);
-            }else if($type == 1){
+            } else if ($type == 1) {
                 $res = $this->admin_model->get_user_info($uid);
             }
             echo json_encode($res);
@@ -250,12 +281,13 @@ class Admin extends MY_Controller {
     /**
      *更新节点
      */
-    public function update_info(){
+    public function update_info()
+    {
         $data = $this->input->post();
         $type = $data['type'];//1为个人，0为单位
-        if($type == 0){
+        if ($type == 0) {
             $res = $this->admin_model->update_group($data);
-        }else if($type == 1){
+        } else if ($type == 1) {
             $res = $this->admin_model->update_user($data);
         }
         var_dump($res);

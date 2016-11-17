@@ -26,9 +26,28 @@ class Common extends MY_Controller
             show_404();
         }
 
+        $role = 0;
+        //判断是否是处理人
+        $this->load->model("Verify_Model", "verify");
+        if($this->verify->is_processor()){
+            $role = 3;
+        }
+        //判断是否是指派人
+        $this->load->model("Verify_Model", "verify");
+        if($this->verify->is_manager()){
+            $role = 2;
+        }
+
+        //判断是否是督办人
+        $this->load->model("Verify_Model", "verify");
+        if($this->verify->is_watcher()){
+            $role = 4;
+        }
+
         $this->load->model("Designate_Model", "designate");
         $event = $this->designate->get_event($event_id);
 
+        $this->assign("role", $role);
         $this->assign("event", $event);
 
         $this->all_display("designate/event_detail.html");
