@@ -51,38 +51,25 @@
         </div>
         <!-- END Table  -->
         <!-- BEGIN Table  -->
-        <div class="row">
-            <div class="col-lg-12">
-                <section class="panel">
-                    <header class="panel-heading">
-                        <span class="label label-primary">已完结事件列表</span>
-                           <span class="tools pull-right">
-                           <a href="javascript:;" title="收起" class="fa fa-chevron-up"></a>
-                           <a href="javascript:;" title="刷新" class="fa fa-refresh" id="event_table_refresh"></a>
-                           </span>
-                    </header>
-                    <div class="panel-body" style="display: none" id="event_choose_table">
-                        <div class="adv-table">
-                            <table class="display table table-bordered table-striped" id="event_table">
-                                <thead>
-                                <tr>
-                                    <th>编号</th>
-                                    <th>标题</th>
-                                    <th>首派人</th>
-                                    <th>等级</th>
-                                    <th>牵头人(单位)</th>
-                                    <th>开始时间</th>
-                                    <th>结束时间</th>
-                                    <th>状态</th>
-                                    <th>操作</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </section>
+        <div class="panel-body" style="display: none" id="event_choose_table">
+            <div class="adv-table">
+                <table class="display table table-bordered table-striped" id="event_table">
+                    <thead>
+                    <tr>
+                        <th>编号</th>
+                        <th>标题</th>
+                        <th>首派人</th>
+                        <th>等级</th>
+                        <th>牵头人(单位)</th>
+                        <th>开始时间</th>
+                        <th>结束时间</th>
+                        <th>状态</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
             </div>
         </div>
         <!-- END Table  -->
@@ -92,9 +79,6 @@
                 <section class="panel">
                     <header class="panel-heading">
                         <span class="label label-primary">事件指派</span>
-                           <span class="tools pull-right">
-                           <a href="javascript:;" class="fa fa-chevron-down"></a>
-                           </span>
                     </header>
                     <div class="panel-body">
                         <div class="box-widget">
@@ -148,7 +132,7 @@
                                                             <div class="input-group input-small">
                                                                 <input type="text"
                                                                        class="spinner-input form-control"
-                                                                       maxlength="3">
+                                                                       maxlength="3"/>
                                                                 <div class="spinner-buttons input-group-btn btn-group-vertical">
                                                                     <button type="button"
                                                                             class="btn spinner-up btn-xs btn-default">
@@ -442,10 +426,6 @@
         "sAjaxSource": "/designate/event_search_data",
         "sServerMethod": "POST",
 
-        "fnServerParams": function (aoData) { //发送额外参数
-            aoData.push({"name": "state", "value": "已完成"});
-        },
-
         "aoColumns": [
             {
                 "sTitle": "编号",
@@ -537,7 +517,6 @@
                             return "<button class='btn btn-success btn-xs'>已完成</button>";
                             break;
                     }
-
                 }
             },
             {
