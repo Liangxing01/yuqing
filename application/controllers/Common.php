@@ -53,6 +53,7 @@ class Common extends MY_Controller
         $this->assign("role", $role);
         $this->assign("event", $event);
 
+
         $this->all_display("designate/event_detail.html");
     }
 
@@ -96,6 +97,32 @@ class Common extends MY_Controller
             }
         } else {
             show_404("文件不存在");
+        }
+    }
+
+    /**
+     * 修改密码接口
+     */
+    public function change_psw(){
+        $old = $this->input->post('old_pass');
+        $new = $this->input->post('new_pass');
+        $this->load->model("Common_Model", "common");
+        $check = $this->common->check_old_pass($old);
+        if($check){
+            $res = $this->common->update_psw($new);
+            if($res){
+                echo json_encode(array(
+                    'res' => 1
+                ));
+            }else{
+                echo json_encode(array(
+                    'res' => 0
+                ));
+            }
+        }else{
+            echo json_encode(array(
+                'res' => 0
+            ));
         }
     }
 }
