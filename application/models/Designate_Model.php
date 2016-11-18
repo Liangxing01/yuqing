@@ -805,7 +805,7 @@ class Designate_Model extends CI_Model
      */
     public function get_event_main($event_id)
     {
-        return $this->db->select("group, user.name AS processor")
+        return $this->db->select("group.name AS group, user.name AS processor")
             ->join("user", "user.id = event.main_processor", "left")
             ->join("group", "group.id = event.group", "left")
             ->where("event.id", $event_id)

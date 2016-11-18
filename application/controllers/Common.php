@@ -20,8 +20,8 @@ class Common extends MY_Controller
             show_404();
         }
 
-        //检查事件查看权限
         $this->load->model("Verify_Model", "verify");
+        //检查事件查看权限
         if (!$this->verify->can_see_event($event_id)) {
             show_404();
         }
@@ -29,20 +29,17 @@ class Common extends MY_Controller
         $role = 0;
 
         //判断是否是指派人
-        $this->load->model("Verify_Model", "verify");
         if($this->verify->is_manager()){
             $role = 2;
         }
 
         //判断是否是督办人
-        $this->load->model("Verify_Model", "verify");
         if($this->verify->is_watcher()){
             $role = 4;
         }
 
         //判断是否是处理人
         //注意:处理人最后判断
-        $this->load->model("Verify_Model", "verify");
         if($this->verify->is_processor()){
             $role = 3;
         }
