@@ -145,58 +145,7 @@ class Welcome extends MY_Controller
         return $res[0];
     }
 
-    /*
-     * 个人信息修改接口
-     */
-    public function update_info()
-    {
-        $name = $this->input->post('name');
-        $sex = $this->input->post('sex');
-        $update_data = array(
-            'name' => $name,
-            'sex' => $sex
-        );
 
-        $res = $this->my_model->update_info($update_data);
-        if ($res) {
-            echo json_encode(
-                array(
-                    'res' => 1
-                )
-            );
-        } else {
-            echo json_encode(
-                array(
-                    'res' => 0
-                )
-            );
-        }
-
-
-    }
-
-    /*
-     * 修改密码接口
-     */
-
-    public function change_psw()
-    {
-        $old = $this->input->post('old_pass');
-        $new = $this->input->post('new_pass');
-        $uid = $this->session->userdata('uid');
-        $check = $this->my_model->check_old_pass($old);
-        if ($check) {
-            $res = $this->my_model->update_psw($new, $uid);
-            if ($res) {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }
-
-    }
 
     //修改头像接口
     public function change_avatar()
