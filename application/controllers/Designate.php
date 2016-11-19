@@ -363,9 +363,20 @@ class Designate extends MY_controller
             show_404();
         }
         $this->load->model("Designate_Model", "designate");
-        $main = $this->designate->get_event_main($event_id);  //获得牵头人(单位)
+        $main = $this->designate->get_event_main($event_id);    //获得牵头人(单位)
+        $event = $this->designate->get_event($event_id);               //获取事件详情
+
+        //关联事件ID
+        $relate_event = "";
+        foreach ($event["relate_event"] as $relate) {
+            $relate_event .= $relate["id"] . ",";
+        }
+        $relate_event = substr($relate_event, 0, strlen($relate_event) - 1);
+
+        $this->assign("relate_event", $relate_event);
         $this->assign("event_id", $event_id);
         $this->assign("main", $main);
+        $this->assign("title", $event["title"]);
         $this->assign("active_title", "designate_parent");
         $this->assign("active_parent", "event_designate");
         $this->all_display("designate/event_alter.html");
@@ -380,6 +391,8 @@ class Designate extends MY_controller
         $data["event_id"] = $this->input->post("event_id", true);             //事件ID
         $data["processor"] = $this->input->post("processor", true);           //处理人(单位)
         $data["watcher"] = $this->input->post("watcher", true);               //督办人
+        $data["relate_event"] = $this->input->post("relate_event", true);     //关联事件ID
+        $data["info_id"] = $this->input->post("info_id", true);               //事件信息ID
 
         $this->load->model("Designate_Model", "designate");
         $this->designate->event_alter($data);
@@ -536,12 +549,6 @@ class Designate extends MY_controller
     {
         $this->load->model("Designate_Model", "designate");
         echo $this->designate->get_relation_tree();
-    }
-
-
-    public function test_upload()
-    {
-        var_dump($_FILES['file']);
     }
 
 }

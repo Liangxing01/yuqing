@@ -42,9 +42,17 @@ class Tree_Model extends CI_Model
 
                 //判断是否为父节点
                 if ($row["rgt"] - $row["lft"] != 1) {
-                    $tree_json .= "{name: '" . $row["name"] . "',id:" . $row["uid"] . ",isdepartment:" . $row["type"] . ",open:false,children:[";
+                    if ($row["type"] == 0) {
+                        $tree_json .= "{name: '" . $row["name"] . "',id:" . $row["uid"] . ",isdepartment:" . $row["type"] . ",icon:'/assert/ztree/zTreeStyle/img/group.png',open:false,children:[";
+                    } else {
+                        $tree_json .= "{name: '" . $row["name"] . "',id:" . $row["uid"] . ",isdepartment:" . $row["type"] . ",icon:'/assert/ztree/zTreeStyle/img/admin.png',open:false,children:[";
+                    }
                 } else {
-                    $tree_json .= "{name: '" . $row["name"] . "',id:" . $row["uid"] . ",isdepartment:" . $row["type"];
+                    if ($row["type"] == 0) {
+                        $tree_json .= "{name: '" . $row["name"] . "',id:" . $row["uid"] . ",isdepartment:" . $row["type"] . ",icon:'/assert/ztree/zTreeStyle/img/group.png'";
+                    } else {
+                        $tree_json .= "{name: '" . $row["name"] . "',id:" . $row["uid"] . ",isdepartment:" . $row["type"] . ",icon:'/assert/ztree/zTreeStyle/img/admin.png'";
+                    }
                 }
 
             } else {
@@ -195,8 +203,8 @@ class Tree_Model extends CI_Model
                 "chkDisabled" => false
             );
             //设置已指派单位
-            foreach($event_group AS $event_g){
-                if($event_g["id"] == $group["id"]){
+            foreach ($event_group AS $event_g) {
+                if ($event_g["id"] == $group["id"]) {
                     $group_node["chkDisabled"] = true;
                 }
             }
@@ -208,8 +216,8 @@ class Tree_Model extends CI_Model
                         "isdepartment" => 1,
                         "chkDisabled" => false
                     );
-                    foreach($event_processors AS $event_p){
-                        if($event_p["id"] == $processor["id"]){
+                    foreach ($event_processors AS $event_p) {
+                        if ($event_p["id"] == $processor["id"]) {
                             $tree_node["chkDisabled"] = true;
                         }
                     }
@@ -320,8 +328,8 @@ class Tree_Model extends CI_Model
                         "chkDisabled" => false
                     );
                     //设置事件已督办人
-                    foreach($event_watchers AS $watcher){
-                        if($watcher["id"] == $processor["id"]){
+                    foreach ($event_watchers AS $watcher) {
+                        if ($watcher["id"] == $processor["id"]) {
                             $tree_node["chkDisabled"] = true;
                         }
                     }
