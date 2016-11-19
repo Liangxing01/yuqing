@@ -290,7 +290,26 @@ class Admin extends MY_Controller
         } else if ($type == 1) {
             $res = $this->admin_model->update_user($data);
         }
-        var_dump($res);
+        if($res){
+            echo json_encode(
+                array(
+                    'res' => 1
+                )
+            );
+        }else{
+            echo json_encode(
+                array(
+                    'res' => 0
+                )
+            );
+        }
+    }
+
+    //生成组织结构树
+    public function tree()
+    {
+        $this->load->model("Tree_Model", "tree");
+        echo $this->tree->get_relation_tree();
     }
 
 

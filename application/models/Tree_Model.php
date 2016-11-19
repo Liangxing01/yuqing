@@ -89,7 +89,8 @@ class Tree_Model extends CI_Model
         foreach ($group AS $g) {
             $tree["children"][] = array(
                 "id" => $g["id"],
-                "name" => $g["name"]
+                "name" => $g["name"],
+                "icon" => '/assets/ztree/zTreeStyle/img/group.png'
             );
         }
         return json_encode($tree);

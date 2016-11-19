@@ -55,7 +55,7 @@
                         </div>
                         <div class="text-center " style="position: absolute; bottom: 10px; width: 100%;">
                         <button id="submit" class="btn btn-success btn-lg col-sm-12">添加</button>
-                        <button id="del" class="btn btn-success btn-lg col-sm-12" style="margin-top: 10px;">更新</button>
+                        <button id="update" class="btn btn-success btn-lg col-sm-12" style="margin-top: 10px;">更新</button>
                     </div>
                 </section>
 
@@ -159,6 +159,8 @@
             success: function (data) {
                 if (data.res == 1){
                     layer.msg('添加成功!');
+                    treeObj.reAsyncChildNodes(null,"refresh",false);
+                    treeObj2.reAsyncChildNodes(null,"refresh",false);
                 }else {
                     layer.msg('添加失败！',{anim:6});
                 }
@@ -196,7 +198,40 @@
 
     });
 
+//更新节点
+    $("#update").click(function () {
+        var nodes = treeObj.getCheckedNodes(true);//获取到被选中的集成
+        //console.log(nodes[0].id);
+        if (nodes.length == 0) {//没有选中
+            layer.msg("请选择一个单位",{anim:6,time:1000})
+            return false;
+        }else if(nodes.length > 1){
+            layer.msg("最多选择一个单位",{anim:6,time:1000})
+            return false;
+        }
 
+        $.ajax({
+            url: "/admin/update_info",
+            method: "post",
+            dataType : 'json',
+            data: {
+                'new_group_id':nodes[0].id,
+                'uid':window.sessionStorage.getItem('uid'),//获取点击用户的uid
+                'name': $("#groupname").val(),
+                'type' : 0
+            },
+            success: function (data) {
+                if (data.res == 1){
+                    layer.msg('更新成功!',{time:1500});
+                    treeObj.reAsyncChildNodes(null,"refresh",false);
+                    treeObj2.reAsyncChildNodes(null,"refresh",false);
+                }else {
+                    layer.msg('更新失败！',{anim:6,time:1500});
+                }
+            }
+        });
+
+    });
 
 
     /**
@@ -210,14 +245,15 @@
         },
         async: {
             enable: true,
-            url: "/designate/tree",
+            url: "/admin/tree",
             autoParam: ["id", "name=n", "level=lv"]
             // dataFilter: filter
         },
         callback: {
             // onClick: zTreeOnClick,
             onAsyncSuccess: zTreeOnAsyncSuccess2,//异步加载完执行
-            onCheck: zTreeCheck2//当选中时执行
+            onCheck: zTreeCheck2,//当选中时执行
+            onClick: zTreeClick
         }
     };
 
@@ -229,8 +265,7 @@
     }
     //当节点选中时选择
     function zTreeCheck2(event, treeId, treeNode) {
-        // console.log(treeNode)
-        // console.log(treeNode.isdepartment);
+
         if (treeNode.isdepartment == 1) {//个人
             treeNode.getParentNode().checked = false;
             //   console.log(treeNode.getParentNode());
@@ -242,8 +277,27 @@
         }
         treeObj.refresh();
     }
-    treeObj2 = $.fn.zTree.init($("#show_struct"), setting2);
 
+    //当组织结构展示时的节点点击时触发
+    function zTreeClick(event,treeId,treeNode){
+
+        window.sessionStorage.setItem('uid',treeNode.id);
+        $.ajax({
+            url:'/admin/get_node_info',
+            method:'post',
+            dataType:'json',
+            data:{
+                id:treeNode.id,
+                type:0
+            },
+            success:function(data){
+                    $("#groupname").val(data.name);
+            }
+        })
+    }
+
+    treeObj2 = $.fn.zTree.init($("#show_struct"), setting2);
+    treeObj2.expandAll(true);
 
 
 

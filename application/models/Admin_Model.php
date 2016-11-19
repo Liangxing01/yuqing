@@ -30,7 +30,8 @@ class Admin_Model extends CI_Model {
             'password' => md5($data['password']),
             'name'     => $data['name'],
             'group_id' => $data['gid'],
-            'sex'      => $data['sex']
+            'sex'      => $data['sex'],
+            'job'      => $data['job']
         );
         $res1 = $this->db->insert('user',$userInfo);
         $uid = $this->db->insert_id();
@@ -137,7 +138,7 @@ class Admin_Model extends CI_Model {
 
     public function get_group_info($uid){
         $res = $this->db->select('name')->from('group')
-            ->where('uid',$uid)
+            ->where('id',$uid)
             ->get()->row_array();
         return $res;
     }
@@ -152,6 +153,7 @@ class Admin_Model extends CI_Model {
             'username' => $res[0]['username'],
             'name'     => $res[0]['name'],
             'sex'      => $res[0]['sex'],
+            'job'      => $res[0]['job'],
             'pid'      => ""
         );
         foreach ($res as $one) {
@@ -171,6 +173,7 @@ class Admin_Model extends CI_Model {
             'password' => md5($data['password']),
             'sex'      => $data['sex'],
             'name'     => $data['name'],
+            'job'      => $data['job'],
             'group_id' => $data['gid']
         );
 
