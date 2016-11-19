@@ -747,7 +747,6 @@ class Designate_Model extends CI_Model
             }
         }
 
-
         //添加事件指派表
         $event_designate = array();
 
@@ -765,6 +764,7 @@ class Designate_Model extends CI_Model
             }
         }
 
+        //单位事件
         if (!empty($processors["group"])) {
             foreach ($processors["group"] AS $group) {
                 $event_designate[] = array(
@@ -795,6 +795,27 @@ class Designate_Model extends CI_Model
             }
             $this->db->insert_batch("event_watch", $event_watch);  //事件督办
         }
+
+
+        //事件信息表
+        $event_info = array();
+        if ($data["info_id"]) {
+            foreach (explode(",", $data["info_id"]) AS $item) {
+                $event_info[] = array("event_id" => $event_id, "info_id" => $item);
+            }
+            $this->db->insert_batch("event_info", $event_info);     //事件信息
+        }
+
+
+        //事件关联表
+        $event_relate = array();
+        if ($data["relate_event"]) {
+            foreach (explode(",", $data["relate_event"]) AS $item) {
+                $event_relate[] = array("event_id" => $event_id, "relate_id" => $item);
+            }
+            $this->db->insert_batch("event_relate", $event_relate);     //事件关联
+        }
+
     }
 
 
@@ -805,7 +826,7 @@ class Designate_Model extends CI_Model
      */
     public function get_event_main($event_id)
     {
-        return $this->db->select("group, user.name AS processor")
+        return $this->db->select("group.name AS group, user.name AS processor")
             ->join("user", "user.id = event.main_processor", "left")
             ->join("group", "group.id = event.group", "left")
             ->where("event.id", $event_id)

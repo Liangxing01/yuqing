@@ -110,7 +110,7 @@
             url: "/designate/commit_info",
             success: function (data) {
                 if (data == "1") {
-                    layer.msg("操作成功", function () {
+                    layer.msg("操作成功", {anim: 0, time: 1000}, function () {
                         forward("/designate/info_not_handle");
                     });
                 } else {

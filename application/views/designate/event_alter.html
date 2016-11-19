@@ -75,7 +75,8 @@
             <div class="col-md-12">
                 <section class="panel">
                     <header class="panel-heading">
-                        <span class="label label-primary">事件增派</span>
+                        <span class="label label-danger event-tile"><{$title}></span>
+                        <span class="label label-info">事件增派</span>
                     </header>
                     <div class="panel-body">
                         <div class="box-widget">
@@ -94,7 +95,8 @@
                                                         <input type='text' id="info_id" class='tags' name="info_id">
                                                     </div>
                                                     <div class="col-md-2">
-                                                        <a href="javascript:;" onclick="open_event_info_table();" class="btn btn-info">点我选择</a>
+                                                        <a href="javascript:;" onclick="open_event_info_table();"
+                                                           class="btn btn-info">点我选择</a>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
@@ -104,7 +106,8 @@
                                                                name="relate_event">
                                                     </div>
                                                     <div class="col-md-2">
-                                                        <a href="javascript:;" onclick="open_relate_event_table();" class="btn btn-info">点我选择</a>
+                                                        <a href="javascript:;" onclick="open_relate_event_table();"
+                                                           class="btn btn-info">点我选择</a>
                                                     </div>
                                                 </div>
                                             </fieldset>
@@ -224,6 +227,7 @@
                                                 </div>
                                             </fieldset>
                                             <input type="hidden" id="event_id" value="<{$event_id}>">
+                                            <input type="hidden" value="<{$relate_event}>" id="check-event">
                                             <button type="button" class="finish btn btn-info btn-extend">完成</button>
                                         </form>
                                     </div>
@@ -523,6 +527,8 @@
      */
     function alter_form_commit() {
         var event_id = $("#event_id").val();
+        var relate_event = get_relate_event();
+        var info_id = get_info_id();
         var processor = $("#input_con_dealman").val();
         var watcher = $("#input_con_checkman").val();
 
@@ -533,22 +539,24 @@
             data: {
                 'event_id': event_id,
                 'processor': processor,
-                'watcher': watcher
+                'watcher': watcher,
+                'info_id': info_id,
+                'relate_event': relate_event
             },
             success: function (data) {
                 if (data == "1") {
-                    layer.msg("增派成功", function () {
+                    layer.msg("增派成功", {anim: 0, time: 1000}, function () {
                         refresh();
                     });
                 } else {
-                    layer.msg("操作失败", {anim: 6});
+                    layer.msg("操作失败", {anim: 6, time: 1000});
                 }
             }
         });
     }
 
     //弹出确认信息表格
-    function open_event_info_table(){
+    function open_event_info_table() {
         $("#info_is_handle_table").DataTable().ajax.reload(null, false);
         layer.open({
             type: 1,
@@ -561,7 +569,7 @@
     }
 
     //弹出关联事件表格
-    function open_relate_event_table(){
+    function open_relate_event_table() {
         $("#event_table").DataTable().ajax.reload(null, false);
         layer.open({
             type: 1,
@@ -584,10 +592,47 @@
     //添加关联事件
     function add_relate_event(id, title) {
         var tag = "#" + id + "-" + title;
-        if (!$("#relate_event").tagExist(tag)) {
+        var relate_event = $("#check-event").val().split(",");
+        if (!$("#relate_event").tagExist(tag) && $.inArray(id.toString(), relate_event) == -1) {
             $("#relate_event").addTag(tag);
+        } else {
+            layer.msg("该事件已经关联了", {anim: 6, time: 1000});
         }
     }
+
+    /**
+     * 获取info_id
+     * @return string
+     */
+    function get_info_id() {
+        var info_id = $("#info_id").val();
+        var tag_arr = info_id.split("_");
+        var id = [];
+        for (i in tag_arr) {
+            var id_reg = /^#(\d+)/.exec(tag_arr[i]);
+            id.push(id_reg[1]);
+        }
+        return id.join(",");
+    }
+
+    /**
+     * 获取relate_event
+     * @return string
+     */
+    function get_relate_event() {
+        var info_id = $("#relate_event").val();
+        if (info_id == "") {
+            return "";
+        }
+        var tag_arr = info_id.split("_");
+        var id = [];
+        for (i in tag_arr) {
+            var id_reg = /^#(\d+)/.exec(tag_arr[i]);
+            id.push(id_reg[1]);
+        }
+        return id.join(",");
+    }
+
 
     /**
      * Ztree && MultiSelect 插件
@@ -655,7 +700,7 @@
     $("#btn-dealman").click(function () {
         var nodes = processorTree.getCheckedNodes(true);//获取到被选中的集成
         if (nodes.length == 0) {//没有选中
-            layer.msg("请选择处理人", function(){
+            layer.msg("请选择处理人", function () {
                 return false;
             });
         }

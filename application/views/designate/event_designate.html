@@ -103,7 +103,8 @@
                                                         <input type='text' id="info_id" class='tags' name="info_id">
                                                     </div>
                                                     <div class="col-md-2">
-                                                        <a href="javascript:;" onclick="open_event_info_table();" class="btn btn-info">点我选择</a>
+                                                        <a href="javascript:;" onclick="open_event_info_table();"
+                                                           class="btn btn-info">点我选择</a>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
@@ -157,7 +158,8 @@
                                                                name="relate_event">
                                                     </div>
                                                     <div class="col-md-2">
-                                                        <a href="javascript:;" onclick="open_relate_event_table();" class="btn btn-info">点我选择</a>
+                                                        <a href="javascript:;" onclick="open_relate_event_table();"
+                                                           class="btn btn-info">点我选择</a>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
@@ -228,8 +230,8 @@
                                                                 <!--<br/>-->
                                                                 <!--<div>督办人(双击移除当前督办人)</div>-->
                                                                 <!--<select name="watcher" class="multi-select"-->
-                                                                        <!--multiple="false" id="select_con_checkman"-->
-                                                                        <!--style="width: 100%; height: 120px;">-->
+                                                                <!--multiple="false" id="select_con_checkman"-->
+                                                                <!--style="width: 100%; height: 120px;">-->
                                                                 <!--</select>-->
                                                                 <!--<input type="hidden" name="" id="input_con_checkman"/>-->
                                                             </div>
@@ -614,7 +616,7 @@
     });
 
     //弹出确认信息表格
-    function open_event_info_table(){
+    function open_event_info_table() {
         $("#info_is_handle_table").DataTable().ajax.reload(null, false);
         layer.open({
             type: 1,
@@ -627,7 +629,7 @@
     }
 
     //弹出关联事件表格
-    function open_relate_event_table(){
+    function open_relate_event_table() {
         $("#event_table").DataTable().ajax.reload(null, false);
         layer.open({
             type: 1,
@@ -720,11 +722,11 @@
             },
             success: function (data) {
                 if (data == "1") {
-                    layer.msg("指派成功", function () {
+                    layer.msg("指派成功", {anim: 0, time: 1000}, function () {
                         refresh();
                     });
                 } else {
-                    layer.msg("操作失败", {anim: 6});
+                    layer.msg("操作失败", {anim: 6, time: 1000});
                 }
             }
         });
@@ -924,6 +926,7 @@
 {% } %}
 
 
+
 </script>
 <!-- The template to display files available for download -->
 <script id="template-download" type="text/x-tmpl">
@@ -940,6 +943,7 @@
         </td>
     </tr>
 {% } %}
+
 
 
 </script>
