@@ -295,7 +295,7 @@
                     "sex" : $("input[name='sex']:checked").val(),
                     "privilege" : pri,
                     'gid':nodes[0].id,
-                    "jov":$("#job").val()
+                    "job":$("#job").val()
                 },
                 success: function (data) {
                     if (data.res == 1){
@@ -321,7 +321,7 @@
                     "privilege" : pri,
                     'gid':nodes[0].id,
                     'uid':uid,
-                    "jov":$("#job").val()
+                    "job":$("#job").val()
                 },
                 success: function (data) {
                     if (data.res == 1){
@@ -347,7 +347,7 @@
         },
         async: {
             enable: true,
-            url: "/designate/tree",
+            url: "/admin/tree",
             autoParam: ["id", "name=n", "level=lv"]
             // dataFilter: filter
         },

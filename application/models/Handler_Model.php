@@ -137,21 +137,18 @@ LEFT JOIN yq_user as u on u.id = a.manager LEFT JOIN yq_type as t on t.id = i.ty
 WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
         $gid = $this->session->userdata('gid');
         if($where){
-            $data['aaData'] = $this->db->select('a.id,a.time AS zptime,a.group,t.name as type_name,a.description,
-        i.title,i.id as info_id,u.name as zpname,einfo.event_id as eid,e.rank')->from('event_designate AS a')
+            $data['aaData'] = $this->db->select('a.event_id as id,a.time AS zptime,a.group,a.description,
+        e.title,u.name as zpname,a.event_id as eid,e.rank')->from('event_designate AS a')
                 ->where('a.state','未处理')
                 ->group_start()
                 ->where('a.processor',$processorID)
                 ->or_where('a.group',$gid)
                 ->group_end()
                 ->where($where)
-                ->join('event_info as einfo','einfo.event_id = a.event_id','left')
-                ->join('info as i','i.id = einfo.`info_id`','left')
                 ->join('user as u','u.id = a.manager','left')
-                ->join('type as t','t.id = i.type','left')
                 ->join('event as e','e.id = a.event_id','left')
                 ->group_start()
-                ->like('i.title',$pInfo['search'])
+                ->like('e.title',$pInfo['search'])
                 ->group_end()
                 ->order_by('zptime',$pInfo['sort_type'])
                 ->limit($pInfo['length'],$pInfo['start'])
@@ -160,21 +157,18 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
             //$data['aaData'] = $this->db->query($sql,array($processorID,(int)$pInfo['start'],(int)$pInfo['length']))->result_array();
             //$total = $this->db->query($sql2,array($processorID))->num_rows();
 
-            $total = $this->db->select('a.id,a.time AS zptime,a.group,t.name as type_name,a.description,
-        i.title,i.id as info_id,u.name as zpname,einfo.event_id as eid,e.rank')->from('event_designate AS a')
+            $total = $this->db->select('a.event_id as id,a.time AS zptime,a.group,a.description,
+        e.title,u.name as zpname,a.event_id as eid,e.rank')->from('event_designate AS a')
                 ->where('a.state','未处理')
                 ->group_start()
                 ->where('a.processor',$processorID)
                 ->or_where('a.group',$gid)
                 ->group_end()
                 ->where($where)
-                ->join('event_info as einfo','einfo.event_id = a.event_id','left')
-                ->join('info as i','i.id = einfo.`info_id`','left')
                 ->join('user as u','u.id = a.manager','left')
-                ->join('type as t','t.id = i.type','left')
                 ->join('event as e','e.id = a.event_id','left')
                 ->group_start()
-                ->like('i.title',$pInfo['search'])
+                ->like('e.title',$pInfo['search'])
                 ->group_end()
                 ->get()->num_rows();
             $data['sEcho']                = $pInfo['sEcho'];
@@ -189,39 +183,33 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
                 return false;
             }
         }else{
-            $data['aaData'] = $this->db->select('a.id,a.time AS zptime,a.group,t.name as type_name,a.description,
-        i.title,i.id as info_id,u.name as zpname,einfo.event_id as eid,e.rank')->from('event_designate AS a')
+            $data['aaData'] = $this->db->select('a.event_id as id,a.time AS zptime,a.group,a.description,
+        e.title,u.name as zpname,a.event_id as eid,e.rank')->from('event_designate AS a')
                 ->where('a.state','未处理')
                 ->group_start()
                 ->where('a.processor',$processorID)
                 ->or_where('a.group',$gid)
                 ->group_end()
-                ->join('event_info as einfo','einfo.event_id = a.event_id','left')
-                ->join('info as i','i.id = einfo.`info_id`','left')
                 ->join('user as u','u.id = a.manager','left')
-                ->join('type as t','t.id = i.type','left')
                 ->join('event as e','e.id = a.event_id','left')
                 ->group_start()
-                ->like('i.title',$pInfo['search'])
+                ->like('e.title',$pInfo['search'])
                 ->group_end()
                 ->order_by('zptime',$pInfo['sort_type'])
                 ->limit($pInfo['length'],$pInfo['start'])
                 ->get()->result_array();
 
-            $total = $this->db->select('a.id,a.time AS zptime,a.group,t.name as type_name,a.description,
-        i.title,i.id as info_id,u.name as zpname,einfo.event_id as eid,e.rank')->from('event_designate AS a')
+            $total = $this->db->select('a.event_id as id,a.time AS zptime,a.group,a.description,
+        e.title,u.name as zpname,a.event_id as eid,e.rank')->from('event_designate AS a')
                 ->where('a.state','未处理')
                 ->group_start()
                 ->where('a.processor',$processorID)
                 ->or_where('a.group',$gid)
                 ->group_end()
-                ->join('event_info as einfo','einfo.event_id = a.event_id','left')
-                ->join('info as i','i.id = einfo.`info_id`','left')
                 ->join('user as u','u.id = a.manager','left')
-                ->join('type as t','t.id = i.type','left')
                 ->join('event as e','e.id = a.event_id','left')
                 ->group_start()
-                ->like('i.title',$pInfo['search'])
+                ->like('e.title',$pInfo['search'])
                 ->group_end()
                 ->get()->num_rows();
             $data['sEcho']                = $pInfo['sEcho'];

@@ -219,7 +219,24 @@
                 "sTitle": "状态",
                 "mData": "state",
                 'sClass': "text-center",
-                'orderable': false
+                'orderable': false,
+                "mRender": function (data) {
+                    switch (data){
+                        case '已指派':
+                            return "<span class='label label-danger'>已指派</span>";
+                            break;
+                        case '处理中':
+                            return "<span class='label label-primary'>处理中</span>";
+                            break;
+                        case '未审核':
+                            return "<span class='label label-warning'>未审核</span>";
+                            break;
+                        case '已完成':
+                            return "<span class='label label-success'>已完成</span>";
+                            break;
+                    }
+
+                }
             },
             {
                 "sTitle": "操作",
