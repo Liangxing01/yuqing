@@ -797,8 +797,12 @@
     //添加处理人或单位
     $("#btn-dealman").click(function () {
         var nodes = processorTree.getCheckedNodes(true);//获取到被选中的集成
+        $("#con_qiantou").html("");       //重置牵头人(单位)
+        $("#input_con_qiantou").val("");
+        $("#input_con_dealman").val(""); //重置处理人(单位列表)
+        $("#select_con_dealman").html("");
         if (nodes.length == 0) {//没有选中
-            alert("请选择处理人");
+            layer.msg("请选择处理人", {anim: 0, time: 1000});
             return false;
         }
         //默认第一个为牵头人或单位
@@ -927,6 +931,7 @@
 
 
 
+
 </script>
 <!-- The template to display files available for download -->
 <script id="template-download" type="text/x-tmpl">
@@ -943,6 +948,7 @@
         </td>
     </tr>
 {% } %}
+
 
 
 

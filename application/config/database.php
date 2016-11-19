@@ -75,11 +75,11 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-	//'hostname' => '27.8.44.5',
-    'hostname'=> '127.0.0.1',
+	'hostname' => '27.8.44.5',
+//    'hostname'=> '127.0.0.1',
     'username' => 'root',
-	//'password' => 'masker',
-	'password' => 'roshamon',
+	'password' => 'masker',
+//	'password' => 'roshamon',
     'database' => 'yuqing',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => 'yq_',

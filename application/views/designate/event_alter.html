@@ -546,7 +546,7 @@
             success: function (data) {
                 if (data == "1") {
                     layer.msg("增派成功", {anim: 0, time: 1000}, function () {
-                        refresh();
+                        forward("/designate/event_search");
                     });
                 } else {
                     layer.msg("操作失败", {anim: 6, time: 1000});
@@ -606,6 +606,9 @@
      */
     function get_info_id() {
         var info_id = $("#info_id").val();
+        if(info_id == ""){
+            return "";
+        }
         var tag_arr = info_id.split("_");
         var id = [];
         for (i in tag_arr) {
@@ -620,11 +623,11 @@
      * @return string
      */
     function get_relate_event() {
-        var info_id = $("#relate_event").val();
-        if (info_id == "") {
+        var event_id = $("#relate_event").val();
+        if (event_id == "") {
             return "";
         }
-        var tag_arr = info_id.split("_");
+        var tag_arr = event_id.split("_");
         var id = [];
         for (i in tag_arr) {
             var id_reg = /^#(\d+)/.exec(tag_arr[i]);
@@ -698,6 +701,8 @@
 
     //添加处理人或单位
     $("#btn-dealman").click(function () {
+        $("#input_con_dealman").val(""); //重置处理人(单位列表)
+        $("#select_con_dealman").html("");
         var nodes = processorTree.getCheckedNodes(true);//获取到被选中的集成
         if (nodes.length == 0) {//没有选中
             layer.msg("请选择处理人", function () {

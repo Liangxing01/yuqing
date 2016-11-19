@@ -204,22 +204,26 @@ class Tree_Model extends CI_Model
                 "chkDisabled" => false
             );
             //设置已指派单位
+            $group_is_processor = false;
             foreach ($event_group AS $event_g) {
                 if ($event_g["id"] == $group["id"]) {
                     $group_node["chkDisabled"] = true;
+                    $group_is_processor = true;
                 }
             }
+            //设置已指派处理人
             foreach ($processors AS $processor) {
                 if ($group["id"] == $processor["group_id"]) {
                     $tree_node = array(
                         "id" => $processor["id"],
                         "name" => $processor["name"],
                         "isdepartment" => 1,
-                        "chkDisabled" => false
+                        "chkDisabled" => $group_is_processor    //所属单位被指派 默认该单位的人为不可选
                     );
                     foreach ($event_processors AS $event_p) {
                         if ($event_p["id"] == $processor["id"]) {
                             $tree_node["chkDisabled"] = true;
+                            $group_node["chkDisabled"] = true;  //单位所属被指派 默认该单位不可选
                         }
                     }
                     $group_node["children"][] = $tree_node;
