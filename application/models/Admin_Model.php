@@ -144,7 +144,7 @@ class Admin_Model extends CI_Model {
     }
 
     public function get_user_info($uid){
-        $res = $this->db->select('u.group_id,u.username,u.name,u.sex,up.pid')->from('user as u')
+        $res = $this->db->select('u.group_id,u.username,u.name,u.sex,up.pid,u.job')->from('user as u')
             ->join('user_privilege as up','up.uid ='.$uid,'left')
             ->where('u.id',$uid)
             ->get()->result_array();
