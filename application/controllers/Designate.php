@@ -197,7 +197,6 @@ class Designate extends MY_controller
 
 
     /**
-     * TODO
      * 事件指派 表单提交
      */
     public function commit_event_designate()
@@ -214,9 +213,12 @@ class Designate extends MY_controller
         $data["attachment"] = $this->input->post("attachment", true);         //附件
 
         $this->load->model("Designate_Model", "designate");
-        $this->designate->event_designate($data);
-        //TODO 返回结果
-        echo 1;
+        $result = $this->designate->event_designate($data);
+        if ($result) {
+            echo 1;   //指派成功
+        } else {
+            echo 0;   //指派失败
+        }
     }
 
 

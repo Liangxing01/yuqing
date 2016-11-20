@@ -639,7 +639,7 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
     }
 
     public function get_event_attachment($eid){
-        $res = $this->db->select('event_id,name')->from('event_attachment')
+        $res = $this->db->select('id,event_id,name')->from('event_attachment')
             ->where('event_id',$eid)
             ->get()->result_array();
         return $res;

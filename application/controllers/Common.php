@@ -72,6 +72,7 @@ class Common extends MY_Controller
 
     /**
      * 事件参考文件下载 接口
+     * GET: 附件ID
      */
     public function attachment_download()
     {

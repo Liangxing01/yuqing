@@ -146,6 +146,7 @@
                                                                         </i>
                                                                     </button>
                                                                 </div>
+                                                                分钟
                                                             </div>
                                                         </div>
                                                     </div>
@@ -698,7 +699,7 @@
         var info_id = get_info_id();
         var description = $("#description").val();
         var rank = $("#rank").val();
-        var reply_time = $("#reply_time").val();
+        var reply_time = $("#reply_time").spinner("value");
         var relate_event = get_relate_event();
         var processor = $("#input_con_dealman").val();
         var main_processor = $("#input_con_qiantou").val();
