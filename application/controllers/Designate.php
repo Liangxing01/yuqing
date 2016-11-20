@@ -366,7 +366,7 @@ class Designate extends MY_controller
         }
         $this->load->model("Designate_Model", "designate");
         $main = $this->designate->get_event_main($event_id);    //获得牵头人(单位)
-        $event = $this->designate->get_event($event_id);               //获取事件详情
+        $event = $this->designate->get_event($event_id);        //获取事件详情
 
         //关联事件ID
         $relate_event = "";
@@ -397,9 +397,13 @@ class Designate extends MY_controller
         $data["info_id"] = $this->input->post("info_id", true);               //事件信息ID
 
         $this->load->model("Designate_Model", "designate");
-        $this->designate->event_alter($data);
-        //TODO 返回结果
-        echo 1;
+        $result = $this->designate->event_alter($data);
+        //返回结果
+        if ($result) {
+            echo 1;
+        } else {
+            echo 0;
+        }
     }
 
 

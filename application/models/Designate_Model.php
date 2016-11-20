@@ -707,13 +707,7 @@ class Designate_Model extends CI_Model
 
         //数据分表操作
         //事件信息关联
-        if (!empty($event_info) && isset($arr_info_id)) {
-            //验证事件信息是否重复指派
-            $i_num = $this->db->select("id")->where_in("info_id", $arr_info_id)->get("event_info")->num_rows();
-            if ($i_num > 0) {
-                $this->db->trans_rollback();
-                return false;
-            }
+        if (!empty($event_info)) {
             $this->db->insert_batch("event_info", $event_info);
         } else {
             $this->db->trans_rollback();
@@ -757,6 +751,7 @@ class Designate_Model extends CI_Model
     /**
      * 事件增派 插入数据
      * @param $data
+     * @return bool
      */
     public function event_alter($data)
     {
@@ -771,7 +766,8 @@ class Designate_Model extends CI_Model
             "group" => array()
         );
         if ($data["processor"]) {
-            foreach (explode(",", $data["processor"]) AS $processor) {
+            $arr_processor = explode(",", $data["processor"]);
+            foreach ($arr_processor AS $processor) {
                 $temp = explode("_", $processor);
                 if ($temp[0] == "1") {
                     $processors["user"][] = $temp[1];
@@ -784,15 +780,15 @@ class Designate_Model extends CI_Model
         //获得督办人ID
         $watchers = array();
         if ($data["watcher"]) {
-            foreach (explode(",", $data["watcher"]) AS $w) {
+            $arr_watcher = explode(",", $data["watcher"]);
+            foreach ($arr_watcher AS $w) {
                 $temp = explode("_", $w);
                 $watchers[] = $temp[1];
             }
         }
 
-        //添加事件指派表
+        //事件指派表数据
         $event_designate = array();
-
         if (!empty($processors["user"])) {
             foreach ($processors["user"] AS $user) {
                 $event_designate[] = array(
@@ -806,7 +802,6 @@ class Designate_Model extends CI_Model
                 );
             }
         }
-
         //单位事件
         if (!empty($processors["group"])) {
             foreach ($processors["group"] AS $group) {
@@ -822,12 +817,8 @@ class Designate_Model extends CI_Model
             }
         }
 
-        if (!empty($event_designate)) {
-            $this->db->insert_batch("event_designate", $event_designate);  //事件指派
-        }
 
-
-        //添加事件督办表
+        //事件督办表数据
         $event_watch = array();
         if (!empty($watchers)) {
             foreach ($watchers AS $watcher) {
@@ -836,27 +827,58 @@ class Designate_Model extends CI_Model
                     "event_id" => $event_id
                 );
             }
-            $this->db->insert_batch("event_watch", $event_watch);  //事件督办
         }
 
 
-        //事件信息表
+        //事件信息表数据
         $event_info = array();
         if ($data["info_id"]) {
-            foreach (explode(",", $data["info_id"]) AS $item) {
+            $arr_info_id = explode(",", $data["info_id"]);
+            foreach ($arr_info_id AS $item) {
                 $event_info[] = array("event_id" => $event_id, "info_id" => $item);
             }
-            $this->db->insert_batch("event_info", $event_info);     //事件信息
         }
 
 
-        //事件关联表
+        //事件关联表数据
         $event_relate = array();
         if ($data["relate_event"]) {
-            foreach (explode(",", $data["relate_event"]) AS $item) {
+            $arr_relate_event = explode(",", $data["relate_event"]);
+            foreach ($arr_relate_event AS $item) {
                 $event_relate[] = array("event_id" => $event_id, "relate_id" => $item);
             }
-            $this->db->insert_batch("event_relate", $event_relate);     //事件关联
+
+        }
+
+
+        // 事件增派事务开始
+        $this->db->trans_begin();
+
+        //数据分表操作
+        //事件信息关联
+        if (!empty($event_info)) {
+            $this->db->insert_batch("event_info", $event_info);
+        }
+        //事件关联
+        if (!empty($relate_event)) {
+            $this->db->insert_batch("event_relate", $event_relate);
+        }
+        //事件指派
+        if (!empty($event_designate)) {
+            $this->db->insert_batch("event_designate", $event_designate);
+        }
+        //事件督办
+        if (!empty($event_watch)) {
+            $this->db->insert_batch("event_watch", $event_watch);
+        }
+
+        // 事件指派事务提交
+        if ($this->db->trans_status() === FALSE) {
+            $this->db->trans_rollback();
+            return false;
+        } else {
+            $this->db->trans_commit();
+            return true;
         }
 
     }
