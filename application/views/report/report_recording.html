@@ -14,7 +14,6 @@
                     <header class="panel-heading">
                         <span class="label label-primary">提交记录</span>
                         <span class="tools pull-right">
-                           <a href="javascript:;" class="fa fa-chevron-down"></a>
                            <a href="javascript:;" class="fa fa-refresh"></a>
                            </span>
                     </header>
@@ -69,9 +68,6 @@
         "sAjaxSource": "/reporter/get_report_data",
         "sServerMethod": "POST",
 
-//        "fnServerParams": function (aoData) { //发送额外参数
-//            aoData.push({"name": "ip", "value": "<?php //echo $ip;?>//"});
-//        },
 
         "aoColumns": [
             {
@@ -102,8 +98,8 @@
                 "sTitle": "提交时间",
                 "mData": "time",
                 'sClass': "text-center",
-                "mRender" : function (data){
-                    return timeToDate(data*1000);
+                "mRender": function (data) {
+                    return timeToDate(data * 1000);
                 }
             },
             {
@@ -117,8 +113,8 @@
                 "mData": "id",
                 'sClass': "text-center",
                 "mRender": function (data) {
-                    return "<a title='查看' href='/reporter/show_detail?id=" + data + " ' class='btn btn-info btn-xs'><i class='fa fa-eye'>查看</i> " +
-                            "</a> <a title='删除' onclick='active.pre_del("+ data +")' class='btn btn-danger btn-xs'><i class='fa fa-trash-o'>删除</i></a> ";
+                    return "<a title='查看' href='/reporter/show_detail?id=" + data + " ' class='btn btn-info btn-xs'>查看&nbsp;" +
+                            "</a> <a title='删除' onclick='active.pre_del(" + data + ")' class='btn btn-danger btn-xs'>删除</a>";
                 }
             }
         ],
@@ -141,36 +137,36 @@
     });
 
     var active = {
-        pre_edit:function (data) {
-            $.post('/Reporter/pre_state',{id:data},function (data) {
-                if (data['state'] == 0){
-                    window.location.href = '/Reporter/edit?id='+data['id'];
-                }else{
-                    layer.msg("已经被查看，无法修改",{anim:6});
+        pre_edit: function (data) {
+            $.post('/Reporter/pre_state', {id: data}, function (data) {
+                if (data['state'] == 0) {
+                    window.location.href = '/Reporter/edit?id=' + data['id'];
+                } else {
+                    layer.msg("已经被查看，无法修改", {anim: 6});
                 }
-            },"json");
+            }, "json");
         },
 
-        pre_del:function(data){
-            $.post('/Reporter/pre_state',{id:data},function (data) {
-                if (data['state'] == 0){
+        pre_del: function (data) {
+            $.post('/Reporter/pre_state', {id: data}, function (data) {
+                if (data['state'] == 0) {
                     active.delete_report(data['id']);
-                }else {
-                    layer.msg('该信息已经被查看，无法删除',{anim:6});
+                } else {
+                    layer.msg('该信息已经被查看，无法删除', {anim: 6});
                 }
-            },"json");
+            }, "json");
         },
 
-        delete_report:function (data) {
-            layer.confirm('删除后不可恢复，确定要删除么?', {icon: 3, title:'提示',btn:['确定','取消'],anim:1}, function(index) {
+        delete_report: function (data) {
+            layer.confirm('删除后不可恢复，确定要删除么?', {icon: 3, title: '提示', btn: ['确定', '取消'], anim: 1}, function (index) {
 
-                $.post('/Reporter/delete',{id:data},function () {
-                    if (data['data'] != 0){
+                $.post('/Reporter/delete', {id: data}, function () {
+                    if (data['data'] != 0) {
                         layer.msg('删除成功！');
                         $("#report_table").DataTable().ajax.reload(null, false);
 
                     }
-                },"json");
+                }, "json");
 
                 layer.close(index);
             });

@@ -556,7 +556,8 @@
     $(function () {
         $.validator.setDefaults({
             submitHandler: function () {
-                designate_form_commit();
+                var layer_index = layer.load(2, {shade: true});
+                designate_form_commit(layer_index);
             }
         });
         $('#designate-form').stepy({
@@ -692,9 +693,9 @@
     }
 
     /**
-     * 指派表单提交 TODO
+     * 指派表单提交
      */
-    function designate_form_commit() {
+    function designate_form_commit(layer_index) {
         var title = $("#title").val();
         var info_id = get_info_id();
         var description = $("#description").val();
@@ -722,6 +723,7 @@
                 'attachment': window.FILES
             },
             success: function (data) {
+                layer.close(layer_index);
                 if (data == "1") {
                     layer.msg("指派成功", {anim: 0, time: 1000}, function () {
                         refresh();

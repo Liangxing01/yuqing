@@ -488,7 +488,9 @@
     $(function () {
         $.validator.setDefaults({
             submitHandler: function () {
-                alter_form_commit();
+                //加载层
+                var layer_index = layer.load(2);
+                alter_form_commit(layer_index);
             }
         });
         $('#alter-event-form').stepy({
@@ -523,9 +525,9 @@
 
 
     /**
-     * 增派表单提交 TODO
+     * 增派表单提交
      */
-    function alter_form_commit() {
+    function alter_form_commit(layer_index) {
         var event_id = $("#event_id").val();
         var relate_event = get_relate_event();
         var info_id = get_info_id();
@@ -544,6 +546,7 @@
                 'relate_event': relate_event
             },
             success: function (data) {
+                layer.close(layer_index);
                 if (data == "1") {
                     layer.msg("增派成功", {anim: 0, time: 1000}, function () {
                         forward("/designate/event_search");

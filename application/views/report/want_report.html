@@ -94,6 +94,14 @@
         width: 15%;
     }
 
+    .icon-title{
+        line-height: 25px;
+    }
+
+    .icon-title img{
+        margin-right: 5px;
+    }
+
     .error {
         font-size: 0.9em;
         color: #FF4500;
@@ -109,12 +117,8 @@
             <div class="col-lg-12">
                 <section class="panel">
                     <header class="panel-heading">
-                        <span class=""><strong><img src="../../../img/1.png" width="35"
-                                                    height="35"/>我要提交</strong></span>
-                        <span class="tools pull-right">
-                           <a href="javascript:;" class="fa fa-chevron-down"></a>
-                           <a href="javascript:;" class="fa fa-times"></a>
-                           </span>
+                        <span class="icon-title"><strong><img src="/img/1.png" width="25"
+                                                    height="25"/>我要提交</strong></span>
                     </header>
                     <div class="panel-body">
                         <form id="form1" class="form-horizontal tasi-form layui-form" enctype="multipart/form-data">
@@ -222,6 +226,7 @@
     </tr>
 {% } %}
 
+
 </script>
 <!-- The template to display files available for download -->
 <script id="template-download" type="text/x-tmpl">
@@ -245,6 +250,7 @@
         </td>
     </tr>
 {% } %}
+
 
 </script>
 <script src="/js/upload_file/load-image.js"></script>
