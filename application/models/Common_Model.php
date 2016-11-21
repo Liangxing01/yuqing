@@ -192,6 +192,23 @@ class Common_Model extends CI_Model
         return $attachment_info;
     }
 
+
+    /**
+     * @param $video_id
+     * @return mixed
+     * TODO 鉴权
+     */
+    public function info_video_download($video_id){
+        $video_info = $this->db->select("id, info_id, name, url, type")
+            ->where("id", $video_id)
+            ->get("info_attachment")->row_array();
+        if (empty($video_info)) {
+            return false;
+        }
+        return $video_info;
+    }
+
+
     //检查 原密码是否正确
     public function check_old_pass($old){
         $uid = $this->session->userdata('uid');
