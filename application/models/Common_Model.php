@@ -87,9 +87,10 @@ class Common_Model extends CI_Model
         if (!$check) {
             return false;
         }
-        $data = $this->db->select("l.description,l.pid,l.id,l.time,l.name,l.speaker")
+        $data = $this->db->select("l.description,l.pid,l.id,l.time,l.name,l.speaker,user.avatar")
             ->from('event_log AS l')
             ->where('l.event_id', $eid)
+            ->join('user','l.speaker = user.id')
             ->order_by('time', 'DESC')->get()
             ->result_array();
         if (empty($data)) {
@@ -107,6 +108,7 @@ class Common_Model extends CI_Model
                         'time' => $words['time'],
                         'desc' => $words['description'],
                         'name' => $words['name'],
+                        'avatar' => $words['avatar'],
                         'usertype' => $this->check_is_watcher($eid, $words['speaker']) ? 1 : 0,
                         'comment' => array()
                     );
@@ -118,6 +120,7 @@ class Common_Model extends CI_Model
                         'time' => $words['time'],
                         'desc' => $words['description'],
                         'name' => $words['name'],
+                        'avatar' => $words['avatar'],
                         'pid' => $words['pid']
                     );
                     array_push($comment_array, $com);
@@ -133,6 +136,7 @@ class Common_Model extends CI_Model
                             'time' => $words['time'],
                             'name' => $words['name'],
                             'desc' => $words['desc'],
+                            'avatar' => $words['avatar'],
                             'pid' => $words['pid']
                         );
                         array_push($summary_array[$k]['comment'], $info);
