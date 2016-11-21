@@ -201,7 +201,7 @@ class MY_Model extends CI_Model {
                         ->get()->result_array();
                     continue;
                 default:
-                    return false;
+                    continue;
             }
         }
 
