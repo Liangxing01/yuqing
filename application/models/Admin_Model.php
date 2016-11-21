@@ -30,11 +30,15 @@ class Admin_Model extends CI_Model {
             'password' => md5($data['password']),
             'name'     => $data['name'],
             'group_id' => $data['gid'],
-            'sex'      => $data['sex']
+            'sex'      => $data['sex'],
+            'job'      => $data['job']
         );
-        $res1 = $this->db->insert('user',$userInfo);
+        //开始事务
+        $this->db->trans_begin();
+
+        $this->db->insert('user',$userInfo);
         $uid = $this->db->insert_id();
-        $res2 = false;
+        //$res2 = false;
 
         //插入权限表
         $pri = $data['privilege'];
@@ -44,7 +48,7 @@ class Admin_Model extends CI_Model {
                 'pid' => $one,
                 'uid' => $uid
             );
-            $res2 = $this->db->insert('user_privilege',$insert_pri);
+            $this->db->insert('user_privilege',$insert_pri);
         }
 
         //插入组织结构
@@ -55,12 +59,16 @@ class Admin_Model extends CI_Model {
             'type'  => 1
 
         );
-        $res3 = $this->insert_children_node($insert_data);
-        if($res1 && $res2 && $res3){
-            return true;
-        }else{
+        $this->insert_children_node($insert_data);
+
+        if($this->db->trans_status() === FALSE){
+            $this->db->trans_rollback();
             return false;
+        }else{
+            $this->db->trans_commit();
+            return true;
         }
+
 
     }
 
@@ -74,7 +82,10 @@ class Admin_Model extends CI_Model {
             'name' => $data['groupname']
         );
         //插入组织表
-        $res1 = $this->db->insert('group',$groupInfo);
+        //开始事务
+        $this->db->trans_begin();
+
+        $this->db->insert('group',$groupInfo);
         $uid = $this->db->insert_id();
 
         //插入关系表(组织结构)
@@ -85,12 +96,16 @@ class Admin_Model extends CI_Model {
             'type'  => 0
 
         );
-        $res2 = $this->insert_children_node($insert_data);
-        if($res1 && $res2){
-            return true;
-        }else{
+        $this->insert_children_node($insert_data);
+
+        if($this->db->trans_status() === FALSE){
+            $this->db->trans_rollback();
             return false;
+        }else{
+            $this->db->trans_commit();
+            return true;
         }
+
     }
 
 
@@ -137,13 +152,13 @@ class Admin_Model extends CI_Model {
 
     public function get_group_info($uid){
         $res = $this->db->select('name')->from('group')
-            ->where('uid',$uid)
+            ->where('id',$uid)
             ->get()->row_array();
         return $res;
     }
 
     public function get_user_info($uid){
-        $res = $this->db->select('u.group_id,u.username,u.name,u.sex,up.pid')->from('user as u')
+        $res = $this->db->select('u.group_id,u.username,u.name,u.sex,up.pid,u.job')->from('user as u')
             ->join('user_privilege as up','up.uid ='.$uid,'left')
             ->where('u.id',$uid)
             ->get()->result_array();
@@ -152,6 +167,7 @@ class Admin_Model extends CI_Model {
             'username' => $res[0]['username'],
             'name'     => $res[0]['name'],
             'sex'      => $res[0]['sex'],
+            'job'      => $res[0]['job'],
             'pid'      => ""
         );
         foreach ($res as $one) {
@@ -171,13 +187,17 @@ class Admin_Model extends CI_Model {
             'password' => md5($data['password']),
             'sex'      => $data['sex'],
             'name'     => $data['name'],
+            'job'      => $data['job'],
             'group_id' => $data['gid']
         );
 
         $pri_arr = explode(",",$data['privilege']);
+        //开始事务
+        $this->db->trans_begin();
+
         //更新user表
         $this->db->where('id',$data['uid']);
-        $res1 = $this->db->update('user',$update_info);
+        $this->db->update('user',$update_info);
 
         //更新权限表
         //1、删除权限
@@ -189,7 +209,7 @@ class Admin_Model extends CI_Model {
                 'pid' => $one,
                 'uid' => $data['uid']
             );
-            $res2 = $this->db->insert('user_privilege',$insert_pri);
+            $this->db->insert('user_privilege',$insert_pri);
         }
 
         //更新关系表
@@ -204,9 +224,16 @@ class Admin_Model extends CI_Model {
             'type'  => 1
 
         );
-        $res3 = $this->insert_children_node($insert_data);
+        $this->insert_children_node($insert_data);
 
-        return $res1 && $res2 && $res3;
+        if($this->db->trans_status() === FALSE){
+            $this->db->trans_rollback();
+            return false;
+        }else{
+            $this->db->trans_commit();
+            return true;
+        }
+
 
     }
 

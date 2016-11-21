@@ -20,16 +20,36 @@ class Common extends MY_Controller
             show_404();
         }
 
-        //检查事件查看权限
         $this->load->model("Verify_Model", "verify");
+        //检查事件查看权限
         if (!$this->verify->can_see_event($event_id)) {
             show_404();
+        }
+
+        $role = 0;
+
+        //判断是否是指派人
+        if($this->verify->is_manager()){
+            $role = 2;
+        }
+
+        //判断是否是督办人
+        if($this->verify->is_watcher()){
+            $role = 4;
+        }
+
+        //判断是否是处理人
+        //注意:处理人最后判断
+        if($this->verify->is_processor()){
+            $role = 3;
         }
 
         $this->load->model("Designate_Model", "designate");
         $event = $this->designate->get_event($event_id);
 
+        $this->assign("role", $role);
         $this->assign("event", $event);
+
 
         $this->all_display("designate/event_detail.html");
     }
@@ -52,6 +72,7 @@ class Common extends MY_Controller
 
     /**
      * 事件参考文件下载 接口
+     * GET: 附件ID
      */
     public function attachment_download()
     {
@@ -74,6 +95,64 @@ class Common extends MY_Controller
             }
         } else {
             show_404("文件不存在");
+        }
+    }
+
+
+
+    /**
+     * 个人信息修改接口
+     */
+    public function update_info()
+    {
+        $name = $this->input->post('name');
+        $sex = $this->input->post('sex');
+        $update_data = array(
+            'name' => $name,
+            'sex' => $sex
+        );
+        $this->load->model("Common_Model", "common");
+        $res = $this->common->update_info($update_data);
+        if ($res) {
+            echo json_encode(
+                array(
+                    'res' => 1
+                )
+            );
+        } else {
+            echo json_encode(
+                array(
+                    'res' => 0
+                )
+            );
+        }
+
+
+    }
+
+    /**
+     * 修改密码接口
+     */
+    public function change_psw(){
+        $old = $this->input->post('old_pass');
+        $new = $this->input->post('new_pass');
+        $this->load->model("Common_Model", "common");
+        $check = $this->common->check_old_pass($old);
+        if($check){
+            $res = $this->common->update_psw($new);
+            if($res){
+                echo json_encode(array(
+                    'res' => 1
+                ));
+            }else{
+                echo json_encode(array(
+                    'res' => 0
+                ));
+            }
+        }else{
+            echo json_encode(array(
+                'res' => 0
+            ));
         }
     }
 }

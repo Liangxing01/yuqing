@@ -3,6 +3,12 @@
 	input{ border:none !important; text-indent: inherit !important; padding-left: 0px !important;}
 	label{ font-weight: bold;!important; color: #000000;}
 	#submit3{background: #72d0eb; border: none;}
+    .icon-title{
+        line-height: 25px;
+    }
+    .icon-title img{
+        margin-right: 5px;
+    }
 </style>
 	
 <!-- BEGIN MAIN CONTENT -->
@@ -14,14 +20,10 @@
             <div class="col-lg-12">
                 <section class="panel">
                     <header class="panel-heading">
-                        <span class=""><strong><img src="../../../img/passw.png" width="35" height="35" />修改密码</strong></span>
-                        <span class="tools pull-right">
-                           <a href="javascript:;" class="fa fa-chevron-down"></a>
-                           <a href="javascript:;" class="fa fa-times"></a>
-                           </span>
+                        <span class="icon-title"><strong><img src="/img/passw.png" width="25" height="25" />修改密码</strong></span>
                     </header>
                     <div class="panel-body">
-                        <form id="form1" class="form-horizontal tasi-form layui-form" enctype="multipart/form-data">
+                        <form id="form1" class="form-horizontal tasi-form layui-form" >
                             <input type="hidden" id="id" name="id"/>
                             <div class="form-group">
                                 <label class="col-xs-3 col-sm-1 control-label">原密码：</label>
@@ -32,13 +34,13 @@
                             <div class="form-group">
                                 <label class="col-xs-3 col-sm-1 control-label">新密码：</label>
                                 <div class="col-xs-9 col-sm-11">
-                                    <input type="password" name="passw" id="new_pass" required lay-verify="required" placeholder="请输入原密码" autocomplete="off" class="form-control layui-input">
+                                    <input type="password" name="new_pass" id="new_pass" required lay-verify="required" placeholder="请输入原密码" autocomplete="off" class="form-control layui-input">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="col-xs-3 col-sm-1 control-label">重复新密码：</label>
                                 <div class="col-xs-9 col-sm-11">
-                                    <input type="password" name="passw" id="repeat_new" required lay-verify="required" placeholder="请输入原密码" autocomplete="off" class="form-control layui-input">
+                                    <input type="password" name="pass_again" id="repeat_new" required lay-verify="required" placeholder="请输入原密码" autocomplete="off" class="form-control layui-input">
                                 </div>
                             </div>
       
@@ -50,7 +52,7 @@
                         
                     </div>
                     <div class="text-center ">
-                            	<button id="submit3" class="btn btn-success btn-lg col-sm-12">保存</button>
+                            	<button id="submit" class="btn btn-success btn-lg col-sm-12">保存</button>
                         	</div>
                 </section>
                 
@@ -62,3 +64,37 @@
     <!-- END MAIN CONTENT -->
 
 </section>
+
+<script>
+    $("#submit").click(function () {
+        var old = $("#old_pass").val();
+        var new_pass = $("#new_pass").val();
+        var pass_again = $("#repeat_new").val();
+
+        if(new_pass == pass_again){
+            $.ajax({
+                url:'/common/change_psw',
+                type:'POST',
+                dataType : 'json',
+                data :{
+                    old_pass :  old,
+                    new_pass : new_pass
+                },
+                success : function (data) {
+                    if(data.res == 1){
+                        layer.msg('更新成功',{time:1500});
+                    }else{
+                        layer.msg('更新失败',{anim:6,time:1500});
+                    }
+                },
+                error : function () {
+
+                }
+
+            });
+        }else{
+            layer.msg("两次输入密码不一致",{anim:6,time:1500});
+        }
+
+    });
+</script>

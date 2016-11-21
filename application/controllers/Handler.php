@@ -245,11 +245,8 @@ class Handler extends MY_Controller {
         }else{
             $usertype = 0;
         }
-        $first = $this->input->get('first');
         //更新事件状态为处理中
-        if(!empty($first)){
-            $this->handler_model->update_doing_state($event_id);
-        }
+        $this->handler_model->update_doing_state($event_id);
 
         $this->assign("active_title","doing_handle");
         $this->assign("active_parent","handle_parent");

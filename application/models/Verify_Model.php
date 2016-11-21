@@ -30,6 +30,35 @@ class Verify_Model extends CI_Model
     }
 
 
+
+    /**
+     * 验证处理人权限
+     * @return bool
+     */
+    public function is_processor()
+    {
+        $privilege = explode(",", $this->session->privilege);
+        if (in_array(processor, $privilege)) {
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * 验证处理人权限
+     * @return bool
+     */
+    public function is_watcher()
+    {
+        $privilege = explode(",", $this->session->privilege);
+        if (in_array(watcher, $privilege)) {
+            return true;
+        }
+        return false;
+    }
+
+
     /**
      * 事件查看权限
      * @param $event_id
@@ -116,5 +145,6 @@ class Verify_Model extends CI_Model
         }
         return false;
     }
+
 
 }

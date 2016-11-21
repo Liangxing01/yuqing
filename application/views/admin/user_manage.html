@@ -5,7 +5,7 @@
     #submit3{background: #72d0eb; border: none;}
     .col-xs-12{border: 4px solid #e5e6e6; padding: 0px;}
     .col-sm-3,.col-sm-4{ padding-right: 0px;}
-    .panel{ height: 400px; overflow-y: scroll;}
+    .panel{ min-height: 550px; overflow-y: scroll;}
 </style>
 
 <!-- Ztree CSS -->
@@ -42,6 +42,12 @@
                                 <label class="col-xs-3 col-sm-3 control-label">姓名：</label>
                                 <div class="col-xs-9 col-sm-9">
                                     <input type="text" name="name" id="name"  class="form-control layui-input">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-xs-3 col-sm-3 control-label">职位：</label>
+                                <div class="col-xs-9 col-sm-9">
+                                    <input type="text" name="job" id="job"  class="form-control layui-input">
                                 </div>
                             </div>
                             <div class="form-group">
@@ -250,6 +256,11 @@
             $('#name').focus();
             return false;
         }
+        if(!$("#job").val()){
+            layer.msg("请输入你的职位");
+            $('#job').focus();
+            return false;
+        }
         if(!$("input[type='checkbox']:checked").length){
             layer.msg("请勾选权限");
             return false;
@@ -284,11 +295,13 @@
                     "sex" : $("input[name='sex']:checked").val(),
                     "privilege" : pri,
                     'gid':nodes[0].id,
+                    "job":$("#job").val()
                 },
                 success: function (data) {
                     if (data.res == 1){
                         layer.msg('添加成功!');
-                        treeObj2.refresh();
+                        treeObj.reAsyncChildNodes(null,"refresh",false);
+                        treeObj2.reAsyncChildNodes(null,"refresh",false);
                     }else {
                         layer.msg('添加失败！',{anim:6});
                     }
@@ -308,12 +321,14 @@
                     "sex" : $("input[name='sex']:checked").val(),
                     "privilege" : pri,
                     'gid':nodes[0].id,
-                    'uid':uid
+                    'uid':uid,
+                    "job":$("#job").val()
                 },
                 success: function (data) {
                     if (data.res == 1){
                         layer.msg('更新成功!');
-                        treeObj2.refresh();
+                        treeObj.reAsyncChildNodes(null,"refresh",false);
+                        treeObj2.reAsyncChildNodes(null,"refresh",false);
                     }else {
                         layer.msg('更新失败！',{anim:6});
                     }
@@ -334,7 +349,7 @@
         },
         async: {
             enable: true,
-            url: "/designate/tree",
+            url: "/admin/tree",
             autoParam: ["id", "name=n", "level=lv"]
             // dataFilter: filter
         },
@@ -405,7 +420,8 @@
                 if(data.group_id){
                     var arr = data.pid.split(',');
                     $("#username").val(data.username);
-                    $("#name").val(data.name)
+                    $("#name").val(data.name);
+                    $("#job").val(data.job);
                     $("input[type='radio'][value="+data.sex+"]")[0].checked = true;
                     if(arr.length){
                         for( var i= 0; i<arr.length;i++){

@@ -1,6 +1,6 @@
 .DS_Store
 
-application/config/*
+application/config/database.php
 uploads/*
 ci_session/*
 template_c/*

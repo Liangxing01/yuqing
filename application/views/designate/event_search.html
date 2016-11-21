@@ -54,7 +54,6 @@
                                 <select class="form-control" name="state" id="event_state">
                                     <option value="">&nbsp;</option>
                                     <option value="已指派">已指派</option>
-                                    <option value="未指派">未指派</option>
                                     <option value="未审核">未审核</option>
                                     <option value="已完成">已完成</option>
                                 </select>
@@ -252,7 +251,6 @@
                             return "<button class='btn btn-success btn-xs'>已完成</button>";
                             break;
                     }
-
                 }
             },
             {
@@ -315,7 +313,7 @@
                 data: {"eid": eid},
                 success: function (data) {
                     if (data == 1) {
-                        layer.msg('重启成功!');
+                        layer.msg('重启成功!', {time:1000});
                         $("#event_search_table").DataTable().ajax.reload(null, false); //刷新表格
                     } else {
                         layer.msg('重启失败！', {anim: 6});

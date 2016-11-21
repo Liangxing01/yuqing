@@ -103,14 +103,15 @@
         var type = $('select#type option:selected').val();
         var duplicate = $('input:radio:checked').val();
         var source = $('#source').val();
-
+        var layer_index = layer.load(2, {shade: true});
         $.ajax({
             type: "POST",
             data: {"id": id, "type": type, "duplicate": duplicate, "source": source},
             url: "/designate/commit_info",
             success: function (data) {
+                layer.close(layer_index);
                 if (data == "1") {
-                    layer.msg("操作成功", function () {
+                    layer.msg("操作成功", {anim: 0, time: 1000}, function () {
                         forward("/designate/info_not_handle");
                     });
                 } else {

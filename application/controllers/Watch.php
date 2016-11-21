@@ -22,19 +22,25 @@ class Watch extends MY_Controller {
         $this->all_display("watch/watch_list.html");
     }
 
+
+    /**
+     * 督查事件列表分页 数据接口
+     */
     public function get_watch_list(){
+
         $pData['sEcho'] = $this->input->post('psEcho', true);           //DataTables 用来生成的信息
         $pData['start'] = $this->input->post('iDisplayStart', true);    //显示的起始索引
         $pData['length'] = $this->input->post('iDisplayLength', true);  //每页显示的行数
-        $pData['sort_th'] = $this->input->post('iSortCol_0', true);     //排序的列 默认第三列
-        $pData['sort_type'] = $this->input->post('sSortDir_0', true);   //排序的方向 默认 desc
-        $pData['search'] = $this->input->post('sSearch', true);         //全局搜索关键字 默认为空
+        $pData['sort_start'] = $this->input->post('sSortDir_0', true);  //开始时间排序的方向 默认 desc
+        $pData['sort_end'] = $this->input->post('sSortDir_1', true);    //结束时间排序的方向 默认 desc
 
         //高级查询 关键字
-        $pData["start_time"] = $this->input->post('start_time', true);  //查询起始时间 默认为0
-        $pData["end_time"] = $this->input->post('end_time', true);      //查询截止时间 默认为0
-        $pData['is_group'] = $this->input->post('is_group');
-        $pData['rank']     = $this->input->post('rank');
+        $pData['search'] = $this->input->post('sSearch', true);         //全局搜索关键字 默认为空
+        $pData['rank'] = $this->input->post('rank', true);              //查询事件等级 默认为空
+        $pData['state'] = $this->input->post('state', true);            //查询事件状态 默认为空
+        $pData['start_start'] = $this->input->post('start_start', true);//查询事件开始时间 起始范围 默认为0
+        $pData['start_end'] = $this->input->post('start_end', true);    //查询事件开始时间 结束范围 默认为0
+
 
         if ($pData['start'] == NULL) {
             $pData['start'] = 0;
@@ -42,20 +48,37 @@ class Watch extends MY_Controller {
         if ($pData['length'] == NULL) {
             $pData['length'] = 10;
         }
-        if ($pData["sort_th"] == NULL) {
-            $pData["sort_th"] = 2;
+        if ($pData['sort_start'] == NULL) {
+            $pData['sort_start'] = "desc";
         }
-        if ($pData['sort_type'] == NULL) {
-            $pData['sort_type'] = "desc";
+        if ($pData['sort_end'] == NULL) {
+            $pData['sort_end'] = "desc";
         }
         if ($pData['search'] == NULL) {
             $pData['search'] = '';
         }
+        if ($pData['rank'] == NULL) {
+            $pData['rank'] = '';
+        }
+        if ($pData['state'] == NULL) {
+            $pData['state'] = '';
+        }
+        if ($pData['start_start'] == NULL) {
+            $pData['start_start'] = 0;
+        }
+        if ($pData['start_end'] == NULL) {
+            $pData['start_end'] = 0;
+        }
 
 
-        $data = $this->watcher_model->get_all_watch_list($pData);
-        echo json_encode($data);
+        $this->load->model("Watcher_Model", "watcher");
+        $data = $this->watcher->get_all_watch_list($pData);
+
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($data));
     }
+
 
     //交互显示事件处理进度
     public function show_tracer(){

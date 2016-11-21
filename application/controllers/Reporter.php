@@ -107,7 +107,7 @@ class Reporter extends MY_controller
     }
 
     /**
-     * 提交详情 页面载入
+     * 信息详情 页面载入
      */
     public function show_detail()
     {
@@ -121,7 +121,7 @@ class Reporter extends MY_controller
         $this->assign("info", $info);
         $this->assign("active_title", "report_parent");
         $this->assign("active_parent", "report_recording");
-        $this->all_display("report/show_report_detail.html");
+        $this->all_display("report/info_detail.html");
     }
 
     /**

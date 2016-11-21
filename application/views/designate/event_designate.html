@@ -51,38 +51,25 @@
         </div>
         <!-- END Table  -->
         <!-- BEGIN Table  -->
-        <div class="row">
-            <div class="col-lg-12">
-                <section class="panel">
-                    <header class="panel-heading">
-                        <span class="label label-primary">已完结事件列表</span>
-                           <span class="tools pull-right">
-                           <a href="javascript:;" title="收起" class="fa fa-chevron-up"></a>
-                           <a href="javascript:;" title="刷新" class="fa fa-refresh" id="event_table_refresh"></a>
-                           </span>
-                    </header>
-                    <div class="panel-body" style="display: none" id="event_choose_table">
-                        <div class="adv-table">
-                            <table class="display table table-bordered table-striped" id="event_table">
-                                <thead>
-                                <tr>
-                                    <th>编号</th>
-                                    <th>标题</th>
-                                    <th>首派人</th>
-                                    <th>等级</th>
-                                    <th>牵头人(单位)</th>
-                                    <th>开始时间</th>
-                                    <th>结束时间</th>
-                                    <th>状态</th>
-                                    <th>操作</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </section>
+        <div class="panel-body" style="display: none" id="event_choose_table">
+            <div class="adv-table">
+                <table class="display table table-bordered table-striped" id="event_table">
+                    <thead>
+                    <tr>
+                        <th>编号</th>
+                        <th>标题</th>
+                        <th>首派人</th>
+                        <th>等级</th>
+                        <th>牵头人(单位)</th>
+                        <th>开始时间</th>
+                        <th>结束时间</th>
+                        <th>状态</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
             </div>
         </div>
         <!-- END Table  -->
@@ -92,9 +79,6 @@
                 <section class="panel">
                     <header class="panel-heading">
                         <span class="label label-primary">事件指派</span>
-                           <span class="tools pull-right">
-                           <a href="javascript:;" class="fa fa-chevron-down"></a>
-                           </span>
                     </header>
                     <div class="panel-body">
                         <div class="box-widget">
@@ -119,7 +103,8 @@
                                                         <input type='text' id="info_id" class='tags' name="info_id">
                                                     </div>
                                                     <div class="col-md-2">
-                                                        <a href="javascript:;" onclick="open_event_info_table();" class="btn btn-info">点我选择</a>
+                                                        <a href="javascript:;" onclick="open_event_info_table();"
+                                                           class="btn btn-info">点我选择</a>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
@@ -148,7 +133,7 @@
                                                             <div class="input-group input-small">
                                                                 <input type="text"
                                                                        class="spinner-input form-control"
-                                                                       maxlength="3">
+                                                                       maxlength="3"/>
                                                                 <div class="spinner-buttons input-group-btn btn-group-vertical">
                                                                     <button type="button"
                                                                             class="btn spinner-up btn-xs btn-default">
@@ -161,6 +146,7 @@
                                                                         </i>
                                                                     </button>
                                                                 </div>
+                                                                分钟
                                                             </div>
                                                         </div>
                                                     </div>
@@ -173,7 +159,8 @@
                                                                name="relate_event">
                                                     </div>
                                                     <div class="col-md-2">
-                                                        <a href="javascript:;" onclick="open_relate_event_table();" class="btn btn-info">点我选择</a>
+                                                        <a href="javascript:;" onclick="open_relate_event_table();"
+                                                           class="btn btn-info">点我选择</a>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
@@ -244,8 +231,8 @@
                                                                 <!--<br/>-->
                                                                 <!--<div>督办人(双击移除当前督办人)</div>-->
                                                                 <!--<select name="watcher" class="multi-select"-->
-                                                                        <!--multiple="false" id="select_con_checkman"-->
-                                                                        <!--style="width: 100%; height: 120px;">-->
+                                                                <!--multiple="false" id="select_con_checkman"-->
+                                                                <!--style="width: 100%; height: 120px;">-->
                                                                 <!--</select>-->
                                                                 <!--<input type="hidden" name="" id="input_con_checkman"/>-->
                                                             </div>
@@ -341,240 +328,12 @@
 <!-- Page Script -->
 <script language="javascript">
 
-    //DataTable 表格
-    $('#info_is_handle_table').dataTable({
-        "bPaginate": true,
-        "bProcessing": false,                //是否显示正在处理提示信息。
-        "bLengthChange": false,
-        "bFilter": true,                     //是否使用内置的过滤功能。
-        "bSort": true,
-        "bInfo": true,
-        "bAutoWidth": false,
-        "bStateSave": true,
-        "iDisplayLength": 5,                //每页显示5条数据
-        "aaSorting": [[6, "desc"]],          //默认排序 第6列
-
-        "bServerSide": true,
-        "sAjaxSource": "/designate/info_is_handle_data",
-        "sServerMethod": "POST",
-
-        "aoColumns": [
-            {
-                "sTitle": "编号",
-                "mData": "id",
-                'sClass': "text-center",
-                'orderable': false
-            },
-            {
-                "sTitle": "标题",
-                "mData": "title",
-                'sClass': "text-center",
-                'orderable': false
-            },
-            {
-                "sTitle": "来源",
-                "mData": "source",
-                'sClass': "text-center",
-                'orderable': false
-            },
-            {
-                "sTitle": "类别",
-                "mData": "type",
-                'sClass': "text-center",
-                'orderable': false
-            },
-            {
-                "sTitle": "上报人",
-                "mData": "publisher",
-                'sClass': "text-center",
-                'orderable': false
-            },
-            {
-                "sTitle": "上报时间",
-                "mData": "time",
-                'sClass': "text-center",
-                "mRender": function (data) {
-                    return timeToDate(data * 1000);
-                }
-            },
-            {
-                "sTitle": "操作",
-                "mData": "id",
-                'sClass': "text-center",
-                'orderable': false,
-                "mRender": function (data, type, all) {
-                    return "<a title='查看' target='_blank' href='/designate/info_detail?id=" + data + " ' class='btn btn-info btn-xs'>查看</a>&nbsp;" +
-                            "<a title='添加' href='javascript:;' onclick='add_event_info(" + all.id + ",\"" + all.title + "\")' class='btn btn-success btn-xs'>添加</a>";
-                }
-            }
-        ],
-
-        "oLanguage": {
-            "sLengthMenu": "每页显示 _MENU_ 条记录",
-            "sInfo": "从 _START_ 到 _END_ /共 _TOTAL_ 条数据",
-            "sInfoEmpty": "没有数据",
-            "sInfoFiltered": "(从 _MAX_ 条数据中检索)",
-            "oPaginate": {
-                "sFirst": "首页",
-                "sPrevious": "前一页",
-                "sNext": "后一页",
-                "sLast": "尾页"
-            },
-            "sZeroRecords": "暂无数据",
-            "sSearch": "搜索:"
-        }
-
-    });
-    $("#event_table").dataTable({
-
-        "bPaginate": true,
-        "bProcessing": false,                //是否显示正在处理提示信息。
-        "bLengthChange": false,
-        "bFilter": true,                     //是否使用内置的过滤功能。
-        "bSort": true,
-        "bInfo": true,
-        "bAutoWidth": false,
-        "bStateSave": true,
-        "iDisplayLength": 5,                //每页显示10条数据
-        "aaSorting": [[5, "desc"], [6, "desc"]],          //默认排序 第6,7列
-
-        "bServerSide": true,
-        "sAjaxSource": "/designate/event_search_data",
-        "sServerMethod": "POST",
-
-        "fnServerParams": function (aoData) { //发送额外参数
-            aoData.push({"name": "state", "value": "已完成"});
-        },
-
-        "aoColumns": [
-            {
-                "sTitle": "编号",
-                "mData": "id",
-                'sClass': "text-center",
-                'orderable': false
-            },
-            {
-                "sTitle": "标题",
-                "mData": "title",
-                'sClass': "text-center",
-                'orderable': false
-            },
-            {
-                "sTitle": "首派人",
-                "mData": "manager",
-                'sClass': "text-center",
-                'orderable': false
-            },
-            {
-                "sTitle": "等级",
-                "mData": "rank",
-                'sClass': "text-center",
-                'orderable': false,
-                "mRender": function (data) {
-                    switch (data) {
-                        case '一般':
-                            return "<button class='btn btn-primary btn-xs'>一般</button>";
-                            break;
-                        case '重要':
-                            return "<button class='btn btn-warning btn-xs'>重要</button>";
-                            break;
-                        case '紧急':
-                            return "<button class='btn btn-danger btn-xs'>紧急</button>";
-                            break;
-                    }
-
-                }
-            },
-            {
-                "sTitle": "牵头人(单位)",
-                "mData": "main_processor",
-                'sClass': "text-center",
-                'orderable': false,
-                "mRender": function (data, type, full) {
-                    if (data == null) {
-                        return full.main_group;
-                    }
-                    return data;
-                }
-            },
-            {
-                "sTitle": "开始时间",
-                "mData": "start_time",
-                'sClass': "text-center",
-                "mRender": function (data) {
-                    return timeToDate(data * 1000);
-                }
-            },
-            {
-                "sTitle": "结束时间",
-                "mData": "end_time",
-                'sClass': "text-center",
-                "mRender": function (data) {
-                    if (data == null) {
-                        return "";
-                    } else {
-                        return timeToDate(data * 1000);
-                    }
-                }
-            },
-            {
-                "sTitle": "状态",
-                "mData": "state",
-                'sClass': "text-center",
-                'orderable': false,
-                "mRender": function (data) {
-                    switch (data) {
-                        case '未指派':
-                            return "<button class='btn btn-info btn-xs'>未指派</button>";
-                            break;
-                        case '已指派':
-                            return "<button class='btn btn-primary btn-xs'>已指派</button>";
-                            break;
-                        case '未审核':
-                            return "<button class='btn btn-warning btn-xs'>未审核</button>";
-                            break;
-                        case '已完成':
-                            return "<button class='btn btn-success btn-xs'>已完成</button>";
-                            break;
-                    }
-
-                }
-            },
-            {
-                "sTitle": "操作",
-                "mData": "id",
-                'sClass': "text-center",
-                'orderable': false,
-                "mRender": function (data, type, all) {
-                    return "<a title='查看' target='_blank' href='/common/event_detail?eid=" + data + " ' class='btn btn-info btn-xs'>查看</a>&nbsp;<br>"
-                            + "<a title='添加' href='javascript:;' onclick='add_relate_event(" + all.id + ",\"" + all.title + "\")' class='btn btn-success btn-xs'>添加</a>";
-                }
-            }
-        ],
-
-        "oLanguage": {
-            "sLengthMenu": "每页显示 _MENU_ 条记录",
-            "sInfo": "从 _START_ 到 _END_ /共 _TOTAL_ 条数据",
-            "sInfoEmpty": "没有数据",
-            "sInfoFiltered": "(从 _MAX_ 条数据中检索)",
-            "oPaginate": {
-                "sFirst": "首页",
-                "sPrevious": "前一页",
-                "sNext": "后一页",
-                "sLast": "尾页"
-            },
-            "sZeroRecords": "暂无数据",
-            "sSearch": "关键字:"
-        }
-
-    });
-
-
     //事件指派 表单
     $(function () {
         $.validator.setDefaults({
             submitHandler: function () {
-                designate_form_commit();
+                var layer_index = layer.load(2, {shade: true});
+                designate_form_commit(layer_index);
             }
         });
         $('#designate-form').stepy({
@@ -632,10 +391,234 @@
         $('#reply_time').spinner({
             value: ""
         });
+
+
+        //DataTable 表格
+        $('#info_is_handle_table').dataTable({
+            "bPaginate": true,
+            "bProcessing": false,                //是否显示正在处理提示信息。
+            "bLengthChange": false,
+            "bFilter": true,                     //是否使用内置的过滤功能。
+            "bSort": true,
+            "bInfo": true,
+            "bAutoWidth": false,
+            "bStateSave": true,
+            "iDisplayLength": 5,                //每页显示5条数据
+            "aaSorting": [[6, "desc"]],          //默认排序 第6列
+
+            "bServerSide": true,
+            "sAjaxSource": "/designate/info_is_handle_data",
+            "sServerMethod": "POST",
+
+            "aoColumns": [
+                {
+                    "sTitle": "编号",
+                    "mData": "id",
+                    'sClass': "text-center",
+                    'orderable': false
+                },
+                {
+                    "sTitle": "标题",
+                    "mData": "title",
+                    'sClass': "text-center",
+                    'orderable': false
+                },
+                {
+                    "sTitle": "来源",
+                    "mData": "source",
+                    'sClass': "text-center",
+                    'orderable': false
+                },
+                {
+                    "sTitle": "类别",
+                    "mData": "type",
+                    'sClass': "text-center",
+                    'orderable': false
+                },
+                {
+                    "sTitle": "上报人",
+                    "mData": "publisher",
+                    'sClass': "text-center",
+                    'orderable': false
+                },
+                {
+                    "sTitle": "上报时间",
+                    "mData": "time",
+                    'sClass': "text-center",
+                    "mRender": function (data) {
+                        return timeToDate(data * 1000);
+                    }
+                },
+                {
+                    "sTitle": "操作",
+                    "mData": "id",
+                    'sClass': "text-center",
+                    'orderable': false,
+                    "mRender": function (data, type, all) {
+                        return "<a title='查看' target='_blank' href='/designate/info_detail?id=" + data + " ' class='btn btn-info btn-xs'>查看</a>&nbsp;" +
+                                "<a title='添加' href='javascript:;' onclick='add_event_info(" + all.id + ",\"" + all.title + "\")' class='btn btn-success btn-xs'>添加</a>";
+                    }
+                }
+            ],
+
+            "oLanguage": {
+                "sLengthMenu": "每页显示 _MENU_ 条记录",
+                "sInfo": "从 _START_ 到 _END_ /共 _TOTAL_ 条数据",
+                "sInfoEmpty": "没有数据",
+                "sInfoFiltered": "(从 _MAX_ 条数据中检索)",
+                "oPaginate": {
+                    "sFirst": "首页",
+                    "sPrevious": "前一页",
+                    "sNext": "后一页",
+                    "sLast": "尾页"
+                },
+                "sZeroRecords": "暂无数据",
+                "sSearch": "搜索:"
+            }
+
+        });
+        $("#event_table").dataTable({
+
+            "bPaginate": true,
+            "bProcessing": false,                //是否显示正在处理提示信息。
+            "bLengthChange": false,
+            "bFilter": true,                     //是否使用内置的过滤功能。
+            "bSort": true,
+            "bInfo": true,
+            "bAutoWidth": false,
+            "bStateSave": true,
+            "iDisplayLength": 5,                //每页显示10条数据
+            "aaSorting": [[5, "desc"], [6, "desc"]],          //默认排序 第6,7列
+
+            "bServerSide": true,
+            "sAjaxSource": "/designate/event_search_data",
+            "sServerMethod": "POST",
+
+            "aoColumns": [
+                {
+                    "sTitle": "编号",
+                    "mData": "id",
+                    'sClass': "text-center",
+                    'orderable': false
+                },
+                {
+                    "sTitle": "标题",
+                    "mData": "title",
+                    'sClass': "text-center",
+                    'orderable': false
+                },
+                {
+                    "sTitle": "首派人",
+                    "mData": "manager",
+                    'sClass': "text-center",
+                    'orderable': false
+                },
+                {
+                    "sTitle": "等级",
+                    "mData": "rank",
+                    'sClass': "text-center",
+                    'orderable': false,
+                    "mRender": function (data) {
+                        switch (data) {
+                            case '一般':
+                                return "<button class='btn btn-primary btn-xs'>一般</button>";
+                                break;
+                            case '重要':
+                                return "<button class='btn btn-warning btn-xs'>重要</button>";
+                                break;
+                            case '紧急':
+                                return "<button class='btn btn-danger btn-xs'>紧急</button>";
+                                break;
+                        }
+
+                    }
+                },
+                {
+                    "sTitle": "牵头人(单位)",
+                    "mData": "main_processor",
+                    'sClass': "text-center",
+                    'orderable': false,
+                    "mRender": function (data, type, full) {
+                        if (data == null) {
+                            return full.main_group;
+                        }
+                        return data;
+                    }
+                },
+                {
+                    "sTitle": "开始时间",
+                    "mData": "start_time",
+                    'sClass': "text-center",
+                    "mRender": function (data) {
+                        return timeToDate(data * 1000);
+                    }
+                },
+                {
+                    "sTitle": "结束时间",
+                    "mData": "end_time",
+                    'sClass': "text-center",
+                    "mRender": function (data) {
+                        if (data == null) {
+                            return "";
+                        } else {
+                            return timeToDate(data * 1000);
+                        }
+                    }
+                },
+                {
+                    "sTitle": "状态",
+                    "mData": "state",
+                    'sClass': "text-center",
+                    'orderable': false,
+                    "mRender": function (data) {
+                        switch (data) {
+                            case '未指派':
+                                return "<button class='btn btn-info btn-xs'>未指派</button>";
+                                break;
+                            case '已指派':
+                                return "<button class='btn btn-primary btn-xs'>已指派</button>";
+                                break;
+                            case '未审核':
+                                return "<button class='btn btn-warning btn-xs'>未审核</button>";
+                                break;
+                            case '已完成':
+                                return "<button class='btn btn-success btn-xs'>已完成</button>";
+                                break;
+                        }
+                    }
+                },
+                {
+                    "sTitle": "操作",
+                    "mData": "id",
+                    'sClass': "text-center",
+                    'orderable': false,
+                    "mRender": function (data, type, all) {
+                        return "<a title='查看' target='_blank' href='/common/event_detail?eid=" + data + " ' class='btn btn-info btn-xs'>查看</a>&nbsp;<br>"
+                                + "<a title='添加' href='javascript:;' onclick='add_relate_event(" + all.id + ",\"" + all.title + "\")' class='btn btn-success btn-xs'>添加</a>";
+                    }
+                }
+            ],
+
+            "oLanguage": {
+                "sLengthMenu": "每页显示 _MENU_ 条记录",
+                "sInfo": "从 _START_ 到 _END_ /共 _TOTAL_ 条数据",
+                "sInfoEmpty": "没有数据",
+                "sInfoFiltered": "(从 _MAX_ 条数据中检索)",
+                "oPaginate": {
+                    "sFirst": "首页",
+                    "sPrevious": "前一页",
+                    "sNext": "后一页",
+                    "sLast": "尾页"
+                },
+                "sZeroRecords": "暂无数据",
+                "sSearch": "关键字:"
+            }
+
+        });
     });
 
     //弹出确认信息表格
-    function open_event_info_table(){
+    function open_event_info_table() {
         $("#info_is_handle_table").DataTable().ajax.reload(null, false);
         layer.open({
             type: 1,
@@ -648,7 +631,7 @@
     }
 
     //弹出关联事件表格
-    function open_relate_event_table(){
+    function open_relate_event_table() {
         $("#event_table").DataTable().ajax.reload(null, false);
         layer.open({
             type: 1,
@@ -710,14 +693,14 @@
     }
 
     /**
-     * 指派表单提交 TODO
+     * 指派表单提交
      */
-    function designate_form_commit() {
+    function designate_form_commit(layer_index) {
         var title = $("#title").val();
         var info_id = get_info_id();
         var description = $("#description").val();
         var rank = $("#rank").val();
-        var reply_time = $("#reply_time").val();
+        var reply_time = $("#reply_time").spinner("value");
         var relate_event = get_relate_event();
         var processor = $("#input_con_dealman").val();
         var main_processor = $("#input_con_qiantou").val();
@@ -740,12 +723,13 @@
                 'attachment': window.FILES
             },
             success: function (data) {
+                layer.close(layer_index);
                 if (data == "1") {
-                    layer.msg("指派成功", function () {
+                    layer.msg("指派成功", {anim: 0, time: 1000}, function () {
                         refresh();
                     });
                 } else {
-                    layer.msg("操作失败", {anim: 6});
+                    layer.msg("操作失败", {anim: 6, time: 1000});
                 }
             }
         });
@@ -816,8 +800,12 @@
     //添加处理人或单位
     $("#btn-dealman").click(function () {
         var nodes = processorTree.getCheckedNodes(true);//获取到被选中的集成
+        $("#con_qiantou").html("");       //重置牵头人(单位)
+        $("#input_con_qiantou").val("");
+        $("#input_con_dealman").val(""); //重置处理人(单位列表)
+        $("#select_con_dealman").html("");
         if (nodes.length == 0) {//没有选中
-            alert("请选择处理人");
+            layer.msg("请选择处理人", {anim: 0, time: 1000});
             return false;
         }
         //默认第一个为牵头人或单位
@@ -945,6 +933,9 @@
 {% } %}
 
 
+
+
+
 </script>
 <!-- The template to display files available for download -->
 <script id="template-download" type="text/x-tmpl">
@@ -961,6 +952,9 @@
         </td>
     </tr>
 {% } %}
+
+
+
 
 
 </script>

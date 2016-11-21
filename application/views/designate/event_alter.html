@@ -1,3 +1,9 @@
+<link href="/assets/advanced-datatable/media/css/demo_page.css" rel="stylesheet">
+<link href="/assets/advanced-datatable/media/css/demo_table.css" rel="stylesheet">
+<!-- DATATABLE CSS -->
+<link rel="stylesheet" href="/assets/data-tables/DT_bootstrap.css">
+<!-- Jquery Tags Input CSS -->
+<link rel="stylesheet" href="/assets/jquery-tags-input/jquery.tagsinput.min.css">
 <!-- Ztree CSS -->
 <link rel="stylesheet" href="/assets/ztree/zTreeStyle/zTreeStyle.css">
 <!-- Jquery file upload -->
@@ -20,12 +26,57 @@
 <!-- BEGIN MAIN CONTENT -->
 <section id="main-content">
     <section class="wrapper site-min-height">
+        <!-- BEGIN Table  -->
+        <div class="panel-body" style="display: none" id="info_choose_table">
+            <div class="adv-table">
+                <table class="display table table-bordered table-striped" id="info_is_handle_table">
+                    <thead>
+                    <tr>
+                        <th>编号</th>
+                        <th>标题</th>
+                        <th>来源</th>
+                        <th>类别</th>
+                        <th>上报人</th>
+                        <th class="hidden-phone">上报时间</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- END Table  -->
+        <!-- BEGIN Table  -->
+        <div class="panel-body" style="display: none" id="event_choose_table">
+            <div class="adv-table">
+                <table class="display table table-bordered table-striped" id="event_table">
+                    <thead>
+                    <tr>
+                        <th>编号</th>
+                        <th>标题</th>
+                        <th>首派人</th>
+                        <th>等级</th>
+                        <th>牵头人(单位)</th>
+                        <th>开始时间</th>
+                        <th>结束时间</th>
+                        <th>状态</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- END Table  -->
         <!-- BEGIN ROW  -->
         <div class="row">
             <div class="col-md-12">
                 <section class="panel">
                     <header class="panel-heading">
-                        <span class="label label-primary">事件增派</span>
+                        <span class="label label-danger event-tile"><{$title}></span>
+                        <span class="label label-info">事件增派</span>
                     </header>
                     <div class="panel-body">
                         <div class="box-widget">
@@ -37,6 +88,29 @@
                                 <div class="widget-block">
                                     <div class="widget-content box-padding">
                                         <form id="alter-event-form" class=" form-horizontal left-align form-well">
+                                            <fieldset title="增加事件信息">
+                                                <div class="form-group">
+                                                    <label class="col-md-2 col-sm-2 control-label">追加<b>事件信息</b>:</label>
+                                                    <div class="col-md-6 col-sm-6">
+                                                        <input type='text' id="info_id" class='tags' name="info_id">
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <a href="javascript:;" onclick="open_event_info_table();"
+                                                           class="btn btn-info">点我选择</a>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-md-2 col-sm-2 control-label">追加<b>关联事件</b>:</label>
+                                                    <div class="col-md-6 col-sm-6">
+                                                        <input type='text' id="relate_event" class='tags'
+                                                               name="relate_event">
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <a href="javascript:;" onclick="open_relate_event_table();"
+                                                           class="btn btn-info">点我选择</a>
+                                                    </div>
+                                                </div>
+                                            </fieldset>
                                             <fieldset title="增加处理人(单位)">
                                                 <div class="row">
                                                     <div class="col-md-4">
@@ -153,6 +227,7 @@
                                                 </div>
                                             </fieldset>
                                             <input type="hidden" id="event_id" value="<{$event_id}>">
+                                            <input type="hidden" value="<{$relate_event}>" id="check-event">
                                             <button type="button" class="finish btn btn-info btn-extend">完成</button>
                                         </form>
                                     </div>
@@ -168,11 +243,17 @@
 </section>
 <!-- END SECTION -->
 
+<!-- DataTable -->
+<script language="javascript" src="/assets/data-tables/jquery.dataTables.min.js"></script>
+<script src="/assets/data-tables/dataTables.bootstrap.min.js"></script>
 <!-- From Wizard -->
 <script src="/js/jquery.stepy.js"></script><!-- JQUERY STEPY WIZARD JS  -->
 <script src="/js/jquery.validate.min.js"></script><!-- VALIDATE JS  -->
+<!-- Tags Input -->
+<script src="/assets/jquery-tags-input/jquery.tagsinput.min.js"></script>
 <!-- Ztree --->
 <script src="/assets/ztree/jquery.ztree.all.min.js"></script>
+<!-- Jquery File Upload -->
 
 <!-- Public Function -->
 <script language="javascript" src="/js/public.js"></script>
@@ -180,11 +261,236 @@
 <!-- Page Script -->
 <script language="javascript">
 
+    //DataTable 表格
+    $('#info_is_handle_table').dataTable({
+        "bPaginate": true,
+        "bProcessing": false,                //是否显示正在处理提示信息。
+        "bLengthChange": false,
+        "bFilter": true,                     //是否使用内置的过滤功能。
+        "bSort": true,
+        "bInfo": true,
+        "bAutoWidth": false,
+        "bStateSave": true,
+        "iDisplayLength": 5,                //每页显示5条数据
+        "aaSorting": [[6, "desc"]],          //默认排序 第6列
+
+        "bServerSide": true,
+        "sAjaxSource": "/designate/info_is_handle_data",
+        "sServerMethod": "POST",
+
+        "aoColumns": [
+            {
+                "sTitle": "编号",
+                "mData": "id",
+                'sClass': "text-center",
+                'orderable': false
+            },
+            {
+                "sTitle": "标题",
+                "mData": "title",
+                'sClass': "text-center",
+                'orderable': false
+            },
+            {
+                "sTitle": "来源",
+                "mData": "source",
+                'sClass': "text-center",
+                'orderable': false
+            },
+            {
+                "sTitle": "类别",
+                "mData": "type",
+                'sClass': "text-center",
+                'orderable': false
+            },
+            {
+                "sTitle": "上报人",
+                "mData": "publisher",
+                'sClass': "text-center",
+                'orderable': false
+            },
+            {
+                "sTitle": "上报时间",
+                "mData": "time",
+                'sClass': "text-center",
+                "mRender": function (data) {
+                    return timeToDate(data * 1000);
+                }
+            },
+            {
+                "sTitle": "操作",
+                "mData": "id",
+                'sClass': "text-center",
+                'orderable': false,
+                "mRender": function (data, type, all) {
+                    return "<a title='查看' target='_blank' href='/designate/info_detail?id=" + data + " ' class='btn btn-info btn-xs'>查看</a>&nbsp;" +
+                            "<a title='添加' href='javascript:;' onclick='add_event_info(" + all.id + ",\"" + all.title + "\")' class='btn btn-success btn-xs'>添加</a>";
+                }
+            }
+        ],
+
+        "oLanguage": {
+            "sLengthMenu": "每页显示 _MENU_ 条记录",
+            "sInfo": "从 _START_ 到 _END_ /共 _TOTAL_ 条数据",
+            "sInfoEmpty": "没有数据",
+            "sInfoFiltered": "(从 _MAX_ 条数据中检索)",
+            "oPaginate": {
+                "sFirst": "首页",
+                "sPrevious": "前一页",
+                "sNext": "后一页",
+                "sLast": "尾页"
+            },
+            "sZeroRecords": "暂无数据",
+            "sSearch": "搜索:"
+        }
+
+    });
+    $("#event_table").dataTable({
+
+        "bPaginate": true,
+        "bProcessing": false,                //是否显示正在处理提示信息。
+        "bLengthChange": false,
+        "bFilter": true,                     //是否使用内置的过滤功能。
+        "bSort": true,
+        "bInfo": true,
+        "bAutoWidth": false,
+        "bStateSave": true,
+        "iDisplayLength": 5,                //每页显示10条数据
+        "aaSorting": [[5, "desc"], [6, "desc"]],          //默认排序 第6,7列
+
+        "bServerSide": true,
+        "sAjaxSource": "/designate/event_search_data",
+        "sServerMethod": "POST",
+
+        "aoColumns": [
+            {
+                "sTitle": "编号",
+                "mData": "id",
+                'sClass': "text-center",
+                'orderable': false
+            },
+            {
+                "sTitle": "标题",
+                "mData": "title",
+                'sClass': "text-center",
+                'orderable': false
+            },
+            {
+                "sTitle": "首派人",
+                "mData": "manager",
+                'sClass': "text-center",
+                'orderable': false
+            },
+            {
+                "sTitle": "等级",
+                "mData": "rank",
+                'sClass': "text-center",
+                'orderable': false,
+                "mRender": function (data) {
+                    switch (data) {
+                        case '一般':
+                            return "<button class='btn btn-primary btn-xs'>一般</button>";
+                            break;
+                        case '重要':
+                            return "<button class='btn btn-warning btn-xs'>重要</button>";
+                            break;
+                        case '紧急':
+                            return "<button class='btn btn-danger btn-xs'>紧急</button>";
+                            break;
+                    }
+
+                }
+            },
+            {
+                "sTitle": "牵头人(单位)",
+                "mData": "main_processor",
+                'sClass': "text-center",
+                'orderable': false,
+                "mRender": function (data, type, full) {
+                    if (data == null) {
+                        return full.main_group;
+                    }
+                    return data;
+                }
+            },
+            {
+                "sTitle": "开始时间",
+                "mData": "start_time",
+                'sClass': "text-center",
+                "mRender": function (data) {
+                    return timeToDate(data * 1000);
+                }
+            },
+            {
+                "sTitle": "结束时间",
+                "mData": "end_time",
+                'sClass': "text-center",
+                "mRender": function (data) {
+                    if (data == null) {
+                        return "";
+                    } else {
+                        return timeToDate(data * 1000);
+                    }
+                }
+            },
+            {
+                "sTitle": "状态",
+                "mData": "state",
+                'sClass': "text-center",
+                'orderable': false,
+                "mRender": function (data) {
+                    switch (data) {
+                        case '未指派':
+                            return "<button class='btn btn-info btn-xs'>未指派</button>";
+                            break;
+                        case '已指派':
+                            return "<button class='btn btn-primary btn-xs'>已指派</button>";
+                            break;
+                        case '未审核':
+                            return "<button class='btn btn-warning btn-xs'>未审核</button>";
+                            break;
+                        case '已完成':
+                            return "<button class='btn btn-success btn-xs'>已完成</button>";
+                            break;
+                    }
+                }
+            },
+            {
+                "sTitle": "操作",
+                "mData": "id",
+                'sClass': "text-center",
+                'orderable': false,
+                "mRender": function (data, type, all) {
+                    return "<a title='查看' target='_blank' href='/common/event_detail?eid=" + data + " ' class='btn btn-info btn-xs'>查看</a>&nbsp;<br>"
+                            + "<a title='添加' href='javascript:;' onclick='add_relate_event(" + all.id + ",\"" + all.title + "\")' class='btn btn-success btn-xs'>添加</a>";
+                }
+            }
+        ],
+
+        "oLanguage": {
+            "sLengthMenu": "每页显示 _MENU_ 条记录",
+            "sInfo": "从 _START_ 到 _END_ /共 _TOTAL_ 条数据",
+            "sInfoEmpty": "没有数据",
+            "sInfoFiltered": "(从 _MAX_ 条数据中检索)",
+            "oPaginate": {
+                "sFirst": "首页",
+                "sPrevious": "前一页",
+                "sNext": "后一页",
+                "sLast": "尾页"
+            },
+            "sZeroRecords": "暂无数据",
+            "sSearch": "关键字:"
+        }
+
+    });
+
     //事件指派 表单
     $(function () {
         $.validator.setDefaults({
             submitHandler: function () {
-                alter_form_commit();
+                //加载层
+                var layer_index = layer.load(2);
+                alter_form_commit(layer_index);
             }
         });
         $('#alter-event-form').stepy({
@@ -198,14 +504,33 @@
             titleTarget: '#top_tabby',
             validate: true
         });
+
+        // tags input 插件
+
+        // 事件信息ID
+        $('#info_id').tagsInput({
+            width: 'auto',
+            defaultText: "",
+            delimiter: "_",
+            interactive: false
+        });
+        // 关联事件ID
+        $('#relate_event').tagsInput({
+            width: 'auto',
+            defaultText: "",
+            delimiter: "_",
+            interactive: false
+        });
     });
 
 
     /**
-     * 增派表单提交 TODO
+     * 增派表单提交
      */
-    function alter_form_commit() {
+    function alter_form_commit(layer_index) {
         var event_id = $("#event_id").val();
+        var relate_event = get_relate_event();
+        var info_id = get_info_id();
         var processor = $("#input_con_dealman").val();
         var watcher = $("#input_con_checkman").val();
 
@@ -216,19 +541,104 @@
             data: {
                 'event_id': event_id,
                 'processor': processor,
-                'watcher': watcher
+                'watcher': watcher,
+                'info_id': info_id,
+                'relate_event': relate_event
             },
             success: function (data) {
+                layer.close(layer_index);
                 if (data == "1") {
-                    layer.msg("增派成功", function () {
-                        refresh();
+                    layer.msg("增派成功", {anim: 0, time: 1000}, function () {
+                        forward("/designate/event_search");
                     });
                 } else {
-                    layer.msg("操作失败", {anim: 6});
+                    layer.msg("操作失败", {anim: 6, time: 1000});
                 }
             }
         });
     }
+
+    //弹出确认信息表格
+    function open_event_info_table() {
+        $("#info_is_handle_table").DataTable().ajax.reload(null, false);
+        layer.open({
+            type: 1,
+            title: "已确认信息列表",
+            closeBtn: 0,
+            shadeClose: true,
+            area: "800px",
+            content: $('#info_choose_table')
+        });
+    }
+
+    //弹出关联事件表格
+    function open_relate_event_table() {
+        $("#event_table").DataTable().ajax.reload(null, false);
+        layer.open({
+            type: 1,
+            title: "事件列表",
+            closeBtn: 0,
+            shadeClose: true,
+            area: "850px",
+            content: $('#event_choose_table')
+        });
+    }
+
+    //添加事件信息
+    function add_event_info(id, title) {
+        var tag = "#" + id + "-" + title;
+        if (!$("#info_id").tagExist(tag)) {
+            $("#info_id").addTag(tag);
+        }
+    }
+
+    //添加关联事件
+    function add_relate_event(id, title) {
+        var tag = "#" + id + "-" + title;
+        var relate_event = $("#check-event").val().split(",");
+        if (!$("#relate_event").tagExist(tag) && $.inArray(id.toString(), relate_event) == -1) {
+            $("#relate_event").addTag(tag);
+        } else {
+            layer.msg("该事件已经关联了", {anim: 6, time: 1000});
+        }
+    }
+
+    /**
+     * 获取info_id
+     * @return string
+     */
+    function get_info_id() {
+        var info_id = $("#info_id").val();
+        if(info_id == ""){
+            return "";
+        }
+        var tag_arr = info_id.split("_");
+        var id = [];
+        for (i in tag_arr) {
+            var id_reg = /^#(\d+)/.exec(tag_arr[i]);
+            id.push(id_reg[1]);
+        }
+        return id.join(",");
+    }
+
+    /**
+     * 获取relate_event
+     * @return string
+     */
+    function get_relate_event() {
+        var event_id = $("#relate_event").val();
+        if (event_id == "") {
+            return "";
+        }
+        var tag_arr = event_id.split("_");
+        var id = [];
+        for (i in tag_arr) {
+            var id_reg = /^#(\d+)/.exec(tag_arr[i]);
+            id.push(id_reg[1]);
+        }
+        return id.join(",");
+    }
+
 
     /**
      * Ztree && MultiSelect 插件
@@ -294,9 +704,11 @@
 
     //添加处理人或单位
     $("#btn-dealman").click(function () {
+        $("#input_con_dealman").val(""); //重置处理人(单位列表)
+        $("#select_con_dealman").html("");
         var nodes = processorTree.getCheckedNodes(true);//获取到被选中的集成
         if (nodes.length == 0) {//没有选中
-            layer.msg("请选择处理人", function(){
+            layer.msg("请选择处理人", function () {
                 return false;
             });
         }

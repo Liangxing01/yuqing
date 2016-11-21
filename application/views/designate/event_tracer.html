@@ -72,13 +72,12 @@
 
                         <div class="cankao">
                             <span>参考文档：</span>
-                            <ul>
-                                <{foreach $attachment AS $attach}>
-                                <li><a href="/common/attachment_download?id=<{$attach['event_id']}>"><{$attach['name']}></a>
-                                </li>
-                                <{foreachelse}>
-                                无
-                                <{/foreach}>
+
+                            <{foreach $attachment AS $attach}>
+                            <li><a href="/common/attachment_download?id=<{$attach['id']}>"><{$attach['name']}></a></li>
+                            <{foreachelse}>
+                            无
+                            <{/foreach}>
                             </ul>
 
                         </div>
@@ -90,7 +89,7 @@
                         <div style="clear: both;"></div>
                     </header>
                     <form class="zj">
-                        <textarea cols="" rows="4" placeholder="发布信息" class="zjk" id="zjk"></textarea>
+                        <textarea cols="" rows="4" placeholder="发布你所发布的事件" class="zjk" id="zjk"></textarea>
                         <input type="button" class="zj_button" name="zj_buttom" value="发表"/>
                     </form>
                     <div class="panel-body" style="display: block;">
@@ -101,6 +100,19 @@
                             <!-- BEGIN CENTERING LINE -->
                             <li class="centering-line"></li>
                             <!-- END CENTERING LINE -->
+
+                            <!-- BEGIN HIGHLIGHT TIMELINE MOMENT -->
+                            <li class="item-timeline highlight text-center" id="wc">
+                                <div class="buletan"></div>
+                                <div class="inner-content">
+                                    <h2 class="text-info"><i class="fa fa-flag-checkered"></i></h2>
+                                    <h4>事件处理完成</h4>
+                                    <p class="text-muted">2016年4月3日</p>
+                                </div>
+                                <!-- /.inner-content -->
+                            </li>
+                            <!-- END HIGHLIGHT TIMELINE MOMENT -->
+
                         </ul>
                     </div>
 
@@ -192,9 +204,9 @@
 <!--需要得到当前用户名与用户头像地址以及用户类型权限-->
 <input type="hidden" name="username" value="<{$username}>" id="username"/>
 <input type="hidden" name="useracter" value="<{$useracter}>" id="useracter"/>
+<input type="hidden" name="name" value="<{$name}>" id="name"/>
 <input type="hidden" name="usertype" value="<{$usertype}>" id="usertype"/>
-<!-- Public Script -->
-<script src="/js/public.js"></script>
+
 <script>
     var eid = document.getElementById('eid').value,
             history_daytime = "";//用来存时间抽上最上面的时间，用来判断总结性评论是新添加，还是在下面插入
@@ -334,6 +346,8 @@
             dataType: 'json',
             success: function (data) {
                 if (data.res == 1) {
+
+                    window.sessionStorage.setItem('p_id', data.id);
                     var li_obj = new Object();
                     li_obj.name = $("#username").val();
                     li_obj.daytime = new Date().toLocaleString().replace(/:\d{1,2}$/, ' ');
@@ -376,13 +390,13 @@
         //父亲节点ID获取到了
         var id = "";
         if (type == 1) {//添加小评论
-            id = value;
-            var comment = $.trim($("#comment" + id).val());
+            id = window.sessionStorage.getItem('p_id');
+            var comment = $.trim($("#comment" + value).val());
             if (comment.length > 200) {
-                alert("字数不能超过200！");
+                layer.msg("字数不能超过200!", {anim: 6, time: 1500})
                 return false;
             } else if (comment.length == 0) {
-                alert("评论不能为空！");
+                layer.msg("评论不能为空!", {anim: 6, time: 1500})
                 return false;
             }
 
@@ -402,18 +416,18 @@
                     if (data.res == 1) {
 
                         //改变最外面div 高度
-                        $(".item-timeline-" + id).css('height', 'auto');
+                        $(".item-timeline-" + value).css('height', 'auto');
                         var commnetObj = new Object();
                         commnetObj.daytime = new Date().toLocaleString().replace(/:\d{1,2}$/, ' ');
-                        commnetObj.name = $("#username").val();
+                        commnetObj.name = $("#name").val();
                         commnetObj.desc = comment;
                         var strhtml = formatTemplate(commnetObj, comment_item_tpl);//得到当前字符串
-                        $("#option-row" + id).after(strhtml);
-                        $("#comment" + id).val('');
+                        $("#option-row" + value).after(strhtml);
+                        $("#comment" + value).val('');
                         //改变最外面div的高度情况
                         //评论后，重新定义最外面高度
-                        $(".item-timeline-" + id + "").height($(".item-timeline-" + id + "").height())//解决动态加载文档流问题
-                        $(".item-timeline-" + id + "-flag").height($(".item-timeline-" + id + "").height());
+                        $(".item-timeline-" + value + "").height($(".item-timeline-" + value + "").height())//解决动态加载文档流问题
+                        $(".item-timeline-" + value + "-flag").height($(".item-timeline-" + value + "").height());
                         //alert('发表成功！')
                     } else {
                         alert('评论失败！');
@@ -426,10 +440,9 @@
         }
     }
 
-
     /*
-     * 事件完成后进行的相关操作
-     */
+     事件完成后进行的相关操作
+     * */
     function confirm_done(flag) {
         var eid = document.getElementById("eid").value;
         $.ajax({
@@ -439,16 +452,15 @@
             dataType: 'json',
             success: function (data) {
                 if (data == 1) {
-                    layer.msg("操作成功", function () {
+                    layer.msg("操作成功", {time: 1000}, function () {
                         refresh();
                     });
                 } else {
-                    layer.msg("操作失败", {anim: 6});
+                    layer.msg("操作失败", {anim: 6, time: 1000});
                 }
             }
         });
     }
-
 
     //如果状态为 已完成 所有input 不能输入
     $(document).ready(function () {

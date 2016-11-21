@@ -21,6 +21,7 @@ class MY_Controller extends CI_Controller
     public function all_display($html)
     {
         $privilege = explode(",", $this->session->privilege);
+        sort($privilege);
         $name = $this->session->userdata('name');
         $this->assign('name',$name);
         $username = $this->session->userdata('username');
