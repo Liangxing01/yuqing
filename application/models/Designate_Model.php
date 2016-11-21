@@ -926,12 +926,20 @@ class Designate_Model extends CI_Model
         $n = $this->db->select("id")->where(array("id" => $eid, "state" => "未审核"))->get("event")->num_rows();
         if ($n == 1) {
             if ($flag == "ok") {
+                //审核通过
                 return $this->db->set(array("state" => "已完成", "end_time" => time()))->where("id", $eid)->update("event");
             } elseif ($flag == "not") {
-//                TODO 添加事务
-                $r_1 = $this->db->set(array("state" => "处理中"))->where("event_id", $eid)->update("event_designate");
-                $r_2 = $this->db->set(array("state" => "已指派"))->where("id", $eid)->update("event");
-                return $r_1 && $r_2;
+                //审核不通过
+                $this->db->trans_begin();
+                $this->db->set(array("state" => "处理中"))->where("event_id", $eid)->update("event_designate");
+                $this->db->set(array("state" => "已指派"))->where("id", $eid)->update("event");
+                if ($this->db->trans_status() === FALSE) {
+                    $this->db->trans_rollback();
+                    return false;
+                } else {
+                    $this->db->trans_commit();
+                    return true;
+                }
             } else {
                 return false;
             }
@@ -950,10 +958,17 @@ class Designate_Model extends CI_Model
     {
         $n = $this->db->select("id")->where(array("id" => $eid, "state" => "已完成"))->get("event")->num_rows();
         if ($n == 1) {
-            //TODO 添加事务
-            $r_1 = $this->db->set(array("state" => "已指派", "end_time" => NULL))->where("id", $eid)->update("event");
-            $r_2 = $this->db->set(array("state" => "处理中"))->where("event_id", $eid)->update("event_designate");
-            return $r_1 && $r_2;
+            //事件重启事务开始
+            $this->db->trans_begin();
+            $this->db->set(array("state" => "已指派", "end_time" => NULL))->where("id", $eid)->update("event");
+            $this->db->set(array("state" => "处理中"))->where("event_id", $eid)->update("event_designate");
+            if ($this->db->trans_status() === FALSE) {
+                $this->db->trans_rollback();
+                return false;
+            } else {
+                $this->db->trans_commit();
+                return true;
+            }
         } else {
             return false;
         }

@@ -89,7 +89,6 @@ class Designate extends MY_controller
 
 
     /**
-     * TODO
      * 信息详情页面 视图载入
      */
     public function info_detail()
@@ -133,7 +132,6 @@ class Designate extends MY_controller
 
 
     /**
-     * TODO
      * 事件指派 视图载入
      */
     public function event_designate()

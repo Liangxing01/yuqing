@@ -313,7 +313,7 @@
                 data: {"eid": eid},
                 success: function (data) {
                     if (data == 1) {
-                        layer.msg('重启成功!');
+                        layer.msg('重启成功!', {time:1000});
                         $("#event_search_table").DataTable().ajax.reload(null, false); //刷新表格
                     } else {
                         layer.msg('重启失败！', {anim: 6});
