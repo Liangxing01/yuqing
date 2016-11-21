@@ -420,13 +420,16 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
     public function confirm_done($eid,$gid){
         $check = $this->check_done_btn($gid,$eid);
         if($check){
+            //开始运行事务
+            $this->db->trans_begin();
+
             $data = array(
                 'state' => '未审核',
                 'end_time' => time()
 
             );
             $this->db->where('id',$eid);
-            $res = $this->db->update('event',$data);
+            $this->db->update('event',$data);
 
 
             //更改 指派表 状态为已完成
@@ -434,13 +437,16 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
                 'state' => '已完成'
             );
             $this->db->where('event_id',$eid);
-            $res1 = $this->db->update('event_designate',$data1);
+            $this->db->update('event_designate',$data1);
 
-            if($res && $res1){
-                return true;
-            }else{
+            if($this->db->trans_status === FALSE){
+                $this->db->trans_rollback();
                 return false;
+            }else{
+                $this->db->trans_commit();
+                return true;
             }
+
         }else{
             return false;
         }
