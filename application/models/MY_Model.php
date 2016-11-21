@@ -227,5 +227,15 @@ class MY_Model extends CI_Model {
         return $res;
     }
 
+    /**
+     *  获取职位
+     */
+    public function get_job(){
+        $res = $this->db->select('job')->from('user')
+            ->where('id',$this->session->userdata('uid'))
+            ->get()->row_array();
+        return $res['job'];
+    }
+
 
 }
