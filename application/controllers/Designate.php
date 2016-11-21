@@ -270,13 +270,12 @@ class Designate extends MY_controller
         $uid = $this->session->userdata('uid');
 
         //判断有无督办权限
-        $pri = explode(",", $this->session->userdata('privilege'));
-        foreach ($pri as $one) {
-            if ($one == 4) {
-                $usertype = 1;
-            } else {
-                $usertype = 0;
-            }
+        //判断对这样事 有督办全
+        $duban = $this->my_model->check_duban($uid,$event_id);
+        if ($duban){
+            $usertype = 1;
+        }else{
+            $usertype = 0;
         }
 
         $this->load->model("Handler_Model", "handler");
