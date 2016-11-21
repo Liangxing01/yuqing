@@ -24,6 +24,7 @@ class MY_Controller extends CI_Controller
         sort($privilege);
         $name = $this->session->userdata('name');
         $this->assign('name',$name);
+        $this->assign("avatar", $this->session->avatar);
         $username = $this->session->userdata('username');
         $this->assign('username',$username);
         $this->ci_smarty->display('head.html');

@@ -27,7 +27,7 @@ class Identity_Auth
 
         $password = md5($password);
 
-        $user = $this->CI->db->query("SELECT yq_user.id, group_id, yq_group.name AS gname, username, yq_user.name, password, ip, login_time FROM yq_user LEFT JOIN yq_group ON yq_user.group_id = yq_group.id WHERE username = ? AND password = ?", array($username, $password));
+        $user = $this->CI->db->query("SELECT yq_user.id, group_id, yq_group.name AS gname, username, yq_user.name, password, ip, login_time, avatar FROM yq_user LEFT JOIN yq_group ON yq_user.group_id = yq_group.id WHERE username = ? AND password = ?", array($username, $password));
 
         if ($user->num_rows() > 0) {
             $privilege = $this->get_privilege($user->row()->id);
@@ -37,6 +37,7 @@ class Identity_Auth
                 "name" => $user->row()->name,
                 "gid" => $user->row()->group_id,
                 "gname" => $user->row()->gname,
+                "avatar" => $user->row()->avatar,
                 "privilege" => $privilege ? $privilege : ""
             );
             $this->CI->session->set_userdata($userdata);
