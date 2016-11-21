@@ -75,9 +75,11 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => '27.8.44.5',
-    'username' => 'root',
-	'password' => 'masker',
+	//'hostname' => '27.8.44.5',
+    'hostname' => '[2001:250:221::1002]',
+    'username' => 'bnyq',
+	//'password' => 'masker',
+    'password' => 'eefdgewr43@@-de.',
     'database' => 'yuqing',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => 'yq_',
