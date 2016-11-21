@@ -29,18 +29,18 @@ class Common extends MY_Controller
         $role = 0;
 
         //判断是否是指派人
-        if($this->verify->is_manager()){
+        if ($this->verify->is_manager()) {
             $role = 2;
         }
 
         //判断是否是督办人
-        if($this->verify->is_watcher()){
+        if ($this->verify->is_watcher()) {
             $role = 4;
         }
 
         //判断是否是处理人
         //注意:处理人最后判断
-        if($this->verify->is_processor()){
+        if ($this->verify->is_processor()) {
             $role = 3;
         }
 
@@ -99,6 +99,33 @@ class Common extends MY_Controller
     }
 
 
+    /**
+     * 事件信息 视频下载 接口
+     * GET: 视频ID
+     */
+    public function video_download()
+    {
+        $id = $this->input->get("id");
+        if (!isset($id) || $id == null || $id == "") {
+            show_404();
+        }
+        //获取附件信息和鉴权
+        $this->load->model("Common_Model", "common");
+        $attachment = $this->common->info_video_download($id);
+        if ($attachment) {
+            if (file_exists($_SERVER['DOCUMENT_ROOT'] . $attachment["url"])) {
+                $this->load->helper("download");
+                $data = file_get_contents($_SERVER['DOCUMENT_ROOT'] . $attachment["url"]);
+                $name = $attachment["name"];
+                force_download($name, $data);
+            } else {
+                show_404("文件不存在");
+            }
+        } else {
+            show_404("文件不存在");
+        }
+    }
+
 
     /**
      * 个人信息修改接口
@@ -133,23 +160,24 @@ class Common extends MY_Controller
     /**
      * 修改密码接口
      */
-    public function change_psw(){
+    public function change_psw()
+    {
         $old = $this->input->post('old_pass');
         $new = $this->input->post('new_pass');
         $this->load->model("Common_Model", "common");
         $check = $this->common->check_old_pass($old);
-        if($check){
+        if ($check) {
             $res = $this->common->update_psw($new);
-            if($res){
+            if ($res) {
                 echo json_encode(array(
                     'res' => 1
                 ));
-            }else{
+            } else {
                 echo json_encode(array(
                     'res' => 0
                 ));
             }
-        }else{
+        } else {
             echo json_encode(array(
                 'res' => 0
             ));

@@ -174,7 +174,8 @@
                         info_list_img += '<p class="col-md-6"><img src="' + data.attachment[i].url + '" width="100%" onclick="enlarge_pic(this)"></p>';
                     }
                     if (data.attachment[i].type == 'video') {
-                        info_list_video += '<video src="' + data.attachment[i].url + '" width="100%" controls="controls" class="col-md-6"></video>';
+                        info_list_video += '<video src="' + data.attachment[i].url + '" width="100%" controls="controls" class="col-md-6"></video>' +
+                                '<a class="btn btn-primary" href="/common/video_download?id='+ data.attachment[i].id +'">点击下载视频</a>';
                     }
                 }
                 $('.info_des_img').append(info_list_img);

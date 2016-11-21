@@ -47,6 +47,7 @@
                         <{foreach $info['attachment'] AS $attachment}>
                         <{if $attachment["type"] == 'video'}>
                         <video src="<{$attachment['url']}>" width="100%" controls="controls" class="col-md-6"></video>
+                        <a class="btn btn-primary" href="/common/video_download?id=<{$attachment['id']}>">下载视频</a>
                         <{/if}>
                         <{/foreach}>
                     </div>
