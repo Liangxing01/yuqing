@@ -400,8 +400,8 @@
 		//父亲节点ID获取到了
 		var id="";
 		if(type==1){//添加小评论
-		 id=   window.sessionStorage.getItem('p_id');
-            id = (id != null ? id : value);
+		 id=   value;
+
             var comment =$.trim($("#comment"+value).val());
 			if(comment.length>200){
                 layer.msg("字数不能超过200!",{anim:6,time:1500})
@@ -420,7 +420,7 @@
 			        {"pid" : id,
 			        "comment" : comment,
 			        "eid" :eid
-			      },			    
+			      },
 		    	dataType:'json',
 		    	success:function(data){
                     var comment_item_tpl=$('script[id="comment_item"]').html();//得到评论模板
@@ -448,10 +448,10 @@
 		    			//alert('发表成功！')
 		    		}else{
 		    			alert('评论失败！');
-		    		}		    			    		
+		    		}
 		    	},
 		    	error:function(){
-		    		
+
 		    	}
 		    });
 		}
