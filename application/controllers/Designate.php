@@ -270,7 +270,7 @@ class Designate extends MY_controller
         $uid = $this->session->userdata('uid');
 
         //判断有无督办权限
-        $this->load->model("My_Model", "my_model");
+        $this->load->model("MY_Model", "my_model");
         $duban = $this->my_model->check_duban($uid,$event_id);
         if ($duban){
             $usertype = 1;
