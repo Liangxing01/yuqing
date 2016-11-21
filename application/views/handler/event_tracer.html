@@ -401,7 +401,8 @@
 		var id="";
 		if(type==1){//添加小评论
 		 id=   window.sessionStorage.getItem('p_id');
-		 var comment =$.trim($("#comment"+value).val());
+            id = (id != null ? id : value);
+            var comment =$.trim($("#comment"+value).val());
 			if(comment.length>200){
                 layer.msg("字数不能超过200!",{anim:6,time:1500})
 				return false;

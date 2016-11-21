@@ -4,7 +4,7 @@
         border: 3px solid #2a7489;
         border-radius: 5px;
         height: 15px;
-        right: -7px;
+        left: -7px;
         position: absolute;
         top: 55px;
         width: 15px;
@@ -86,19 +86,6 @@
                             <!-- BEGIN CENTERING LINE -->
                             <li class="centering-line"></li>
                             <!-- END CENTERING LINE -->
-
-                            <!-- BEGIN HIGHLIGHT TIMELINE MOMENT -->
-                            <li class="item-timeline highlight text-center" id="wc">
-                                <div class="buletan"></div>
-                                <div class="inner-content">
-                                    <h2 class="text-info"><i class="fa fa-flag-checkered"></i></h2>
-                                    <h4>事件处理完成</h4>
-                                    <p class="text-muted">2016年4月3日</p>
-                                </div>
-                                <!-- /.inner-content -->
-                            </li>
-                            <!-- END HIGHLIGHT TIMELINE MOMENT -->
-
                         </ul>
                     </div>
 
@@ -110,7 +97,7 @@
 </section>
 <script type="text/template" id="li_item">
     <li class="item-timeline item-timeline-{id}">
-        <div class="buletan_icon_flag"></div>
+        <div class="buletan_icon" style="{buletan}"></div>
         <div class="inner-content"  style="{usertype_style}">
             <div class="heading-timeline" >
                 <img alt="Avatar" class="avatar"  src="{avatar}">
@@ -133,7 +120,7 @@
                             <div class="col-xs-6 text-right">
                                 <ol>
                                     <li>
-                                        <a class="btn btn-white"><span class="text"><i class="fa fa-comments text-info"></i>{commentnum}</span></a>
+                                        <a class="btn btn-white"><span class="text"><i class="fa fa-comments text-info"></i><span id="commentnum_{id}">{commentnum}</span></span></a>
                                     </li>
                                 </ol>
                             </div>
@@ -167,7 +154,7 @@
 </script>
 <script type="text/template" id="commnet_finish">
     <li class="item-timeline highlight text-center">
-        <div class="buletan_icon"></div>
+        <div class="buletan_icon" style="right:-7px; left: auto"></div>
         <div class="inner-content">
             <h2 class="text-info"><i class="fa fa-flag-checkered"></i></h2>
             <h4>事件流完成</h4>
@@ -175,6 +162,7 @@
         </div>
         <!-- /.inner-content -->
     </li>
+    <li class="item-timeline"></li>
 </script>
 <!-- <div id="one1"></div>-->
 <!-- END SECTION -->
@@ -233,10 +221,11 @@
                             commnetlength=value.comment.length,//评论数,
                             htmlstr="";
                     if(cur_day==''||cur_day!=iday){//第一天，按天分开
-                        htmlstr+='<li class="center-timeline-cat top-center-line"><div class="inner">'+iyear+'年'+imonth+'月'+iday+'日</div></li>'
+                        htmlstr+='<li class="center-timeline-cat"><div class="inner">'+iyear+'年'+imonth+'月'+iday+'日</div></li>'
                         if(cur_day==''){ //最上面那部分时间
                             history_daytime=iyear+'-'+imonth+'-'+iday;
                         }
+                        htmlstr+='<li class="centering-line top-center-line"></li>'
                         cur_day=iday
                     }
                     var comment_item_tpl=$('script[id="comment_item"]').html();
@@ -257,7 +246,7 @@
                     var li_item_tpl = $('script[id="li_item"]').html();
                     value.daytime=getLocalTime(value.time);
                     value.commentnum=commnetlength;
-                    //添加总评论用户头像
+                    //获取评论用户头像
                     if(!value.avatar){
                         value.avatar = '/img/avatar/avatar-2.jpg';
                     }
@@ -265,11 +254,18 @@
                     value.commenthtml=comment_arr.join("");
                     if(value.usertype==1){//如果是领导把主评论放在右边,第一个与第四个为右
                         value.usertype_style="background: #d43f3a";//
+                        value.buletan="";//如果在右边不为空
+                        htmlstr+=formatTemplate(value, li_item_tpl);//加载模板
+                        htmlstr+='<li class="item-timeline item-timeline-'+value.id+'-flag"></li>';
                     }else{
                         value.usertype_style="";
+                        value.buletan="right:-7px; left: auto";
+                        htmlstr+='<li class="item-timeline item-timeline-'+value.id+'-flag"></li>';
+                        htmlstr+=formatTemplate(value, li_item_tpl);//加载模板
                     }
-                    htmlstr+=formatTemplate(value, li_item_tpl);//加载模板
                     $("#comment").append(htmlstr);
+                    $(".item-timeline-"+value.id+"").height($(".item-timeline-"+value.id+"").height())//解决动态加载文档流问题
+                    $(".item-timeline-"+value.id+"-flag").height($(".item-timeline-"+value.id+"").height());
                 });
                 //事件完成进行操作
                 if($("#done_state").val()==1){
@@ -285,16 +281,12 @@
                 }
                 //左边自动添加相关样式
                 autoDatch();
-
-
-
                 var done_state = $("#done_state").val();
                 if(done_state == 1){
                     $("textarea").attr('disabled','disabled');
                     $('input').attr("disabled","disabled");
                     $("#sjwc").hide();
                 }
-
 
             },
             error:function(){
@@ -337,7 +329,6 @@
             dataType:'json',
             success:function(data){
                 if(data.res == 1){
-
                     window.sessionStorage.setItem('p_id',data.id);
                     var li_obj=new Object();
                     li_obj.name=$("#username").val();
@@ -345,25 +336,33 @@
                     li_obj.desc=zjk;
                     li_obj.commentnum=0;
                     li_obj.commenthtml="";
+
                     //添加用户头像
                     if($('#useracter').val()){
-                    	li_obj.avatar = $('#useracter').val();
+                        li_obj.avatar = $('#useracter').val();
                     }else{
-                    	li_obj.avatar = '/img/avatar/avatar-2.jpg';
+                        li_obj.avatar = '/img/avatar/avatar-2.jpg';
                     }
+
                     li_obj.id= 'new'+Math.round(Math.random()*200);
                     var htmlstr='';
                     if($("#usertype").val()==1){//如果是领导颜色值变换下
                         li_obj.usertype_style="background: #d43f3a";
+                        li_obj.buletan="";//如果在右边不为空
+                        htmlstr+=formatTemplate(li_obj, li_item_tpl);//加载模板
+                        htmlstr+='<li class="item-timeline item-timeline-'+li_obj.id+'-flag"></li>';
                     }else{
                         li_obj.usertype_style="";
+                        li_obj.buletan="right:-7px; left: auto";
+                        htmlstr+='<li class="item-timeline item-timeline-'+li_obj.id+'-flag"></li>';
+                        htmlstr+=formatTemplate(li_obj, li_item_tpl);//加载模板
                     }
-                    htmlstr+=formatTemplate(li_obj, li_item_tpl);//加载模板
+                    // htmlstr+=formatTemplate(li_obj, li_item_tpl);//加载模板
                     if(cur_daytime==history_daytime){
                         $(".top-center-line").eq(0).after(htmlstr)
                     }else{
                         history_daytime=cur_daytime
-                        htmlstr='<li class="center-timeline-cat top-center-line"><div class="inner">'+iyear+'年'+imonth+'月'+iday+'日</div></li>'+'<li class="centering-line top-center-line" ></li>'+htmlstr;
+                        htmlstr='<li class="center-timeline-cat"><div class="inner">'+iyear+'年'+imonth+'月'+iday+'日</div></li>'+'<li class="centering-line top-center-line" ></li>'+htmlstr;
                         //console.log(htmlstr);
                         $("#comment").prepend(htmlstr);
                     }
@@ -388,6 +387,7 @@
         var id="";
         if(type==1){//添加小评论
             id=   window.sessionStorage.getItem('p_id');
+            id = (id != null ? id : value);
             var comment =$.trim($("#comment"+value).val());
             if(comment.length>200){
                 layer.msg("字数不能超过200!",{anim:6,time:1500})
@@ -419,13 +419,14 @@
                         commnetObj.name=$("#name").val();
                         commnetObj.desc=comment;
                         if($('#useracter').val()){
-                        	commnetObj.avatar = $('#useracter').val();
+                            commnetObj.avatar = $('#useracter').val();
                         }else{
-                        	commnetObj.avatar = '/img/avatar/avatar-2.jpg';
+                            commnetObj.avatar = '/img/avatar/avatar-2.jpg';
                         }
                         var strhtml=formatTemplate(commnetObj, comment_item_tpl);//得到当前字符串
                         $("#option-row"+value).after(strhtml);
                         $("#comment"+value).val('');
+                        $("#commentnum_"+value).text($("#commentnum_"+value).text()*1+1);
                         //改变最外面div的高度情况
                         //评论后，重新定义最外面高度
                         $(".item-timeline-"+value+"").height($(".item-timeline-"+value+"").height())//解决动态加载文档流问题
@@ -441,46 +442,6 @@
             });
         }
     }
-
-    /*
-     事件完成后进行的相关操作
-     * */
-    function tagier(){
-        $("#wc").hide();
-        var canshow=document.getElementById("cs");
-        if(canshow.value==1){
-            canshow.type="text";
-            $("#sjwc").click(function(){
-                var eid= document.getElementById("eid").value;
-                $.ajax({
-                    url:'/handler/confirm_done',
-                    type :'post',
-                    data : 'eid='+eid,
-                    dataType:'json',
-                    success:function(data){
-                        //console.log(data.res);
-                        if(data.res==1){
-                            layer.msg("确认完成成功！",{time:1500})
-                            var comment_finish_tpl=$('script[id="commnet_finish"]').html();
-                            var commnetObj=new Object();
-                            commnetObj.daytime=new Date().toLocaleString().replace(/:\d{1,2}$/,' ');
-                            var strhtml=formatTemplate(commnetObj, comment_finish_tpl);//得到当前字符串
-                            $("#comment").prepend(strhtml);
-                            document.getElementById("wc").style.display="";
-                            $("textarea").attr('disabled','disabled');
-                            $('input').attr("disabled","disabled");
-                        }else{
-                            document.getElementById("wc").style.display="none";
-                        }
-                    },
-                    error:function(){
-
-                    }
-                });
-            })
-        }
-    }
-    tagier();
 
     //如果状态为 已完成 所有input 不能输入
     $(document).ready(function () {
