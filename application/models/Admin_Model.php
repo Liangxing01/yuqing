@@ -31,7 +31,8 @@ class Admin_Model extends CI_Model {
             'name'     => $data['name'],
             'group_id' => $data['gid'],
             'sex'      => $data['sex'],
-            'job'      => $data['job']
+            'job'      => $data['job'],
+            "avatar"   => "/img/avatar/avatar.png"
         );
         //开始事务
         $this->db->trans_begin();
