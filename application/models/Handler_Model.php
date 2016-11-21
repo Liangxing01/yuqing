@@ -439,7 +439,7 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
             $this->db->where('event_id',$eid);
             $this->db->update('event_designate',$data1);
 
-            if($this->db->trans_status === FALSE){
+            if($this->db->trans_status() === FALSE){
                 $this->db->trans_rollback();
                 return false;
             }else{

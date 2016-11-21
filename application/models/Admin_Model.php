@@ -61,7 +61,7 @@ class Admin_Model extends CI_Model {
         );
         $this->insert_children_node($insert_data);
 
-        if($this->db->trans_status === FALSE){
+        if($this->db->trans_status() === FALSE){
             $this->db->trans_rollback();
             return false;
         }else{
@@ -98,7 +98,7 @@ class Admin_Model extends CI_Model {
         );
         $this->insert_children_node($insert_data);
 
-        if($this->db->trans_status === FALSE){
+        if($this->db->trans_status() === FALSE){
             $this->db->trans_rollback();
             return false;
         }else{
@@ -226,7 +226,7 @@ class Admin_Model extends CI_Model {
         );
         $this->insert_children_node($insert_data);
 
-        if($this->db->trans_status === FALSE){
+        if($this->db->trans_status() === FALSE){
             $this->db->trans_rollback();
             return false;
         }else{
