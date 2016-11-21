@@ -75,10 +75,10 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => '27.8.44.5',
-    'username' => 'root',
-	'password' => 'masker',
-    'database' => 'yuqing',
+	'hostname' => '127.0.0.1',
+        'username' => 'bnyq',
+	'password' => 'eefdgewr43@@-de.',
+        'database' => 'yuqing',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => 'yq_',
 	'pconnect' => FALSE,
