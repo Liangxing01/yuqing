@@ -362,7 +362,12 @@
                     li_obj.desc = zjk;
                     li_obj.commentnum = 0;
                     li_obj.commenthtml = "";
-                    li_obj.avatar = $('#useracter').val();
+                    //添加用户头像
+                    if($('#useracter').val()){
+                    	li_obj.avatar = $('#useracter').val();
+                    }else{
+                    	li_obj.avatar = '/img/avatar/avatar-2.jpg';
+                    }
                     li_obj.id = 'new' + Math.round(Math.random() * 200);
                     var htmlstr = '';
                     if ($("#usertype").val() == 1) {//如果是领导颜色值变换下
@@ -430,7 +435,11 @@
                         commnetObj.daytime = new Date().toLocaleString().replace(/:\d{1,2}$/, ' ');
                         commnetObj.name = $("#name").val();
                         commnetObj.desc = comment;
-                        commnetObj.avatar = $('#useracter').val();	//添加用户头像
+                        if($('#useracter').val()){
+                        	commnetObj.avatar = $('#useracter').val();
+                        }else{
+                        	commnetObj.avatar = '/img/avatar/avatar-2.jpg';
+                        }
                         var strhtml = formatTemplate(commnetObj, comment_item_tpl);//得到当前字符串
                         $("#option-row" + value).after(strhtml);
                         $("#comment" + value).val('');
