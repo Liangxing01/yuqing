@@ -22,6 +22,7 @@ class Welcome extends MY_Controller
         /*$weather = $this->my_model->weather();
         $this->assign($weather, null);*/
         $login = $this->my_model->get_login_list($this->session->userdata('uid'), 5);
+        $this->assign("avatar", $this->session->avatar);
         $this->assign('login', $login);
         $this->all_display('index.html');
     }
