@@ -300,7 +300,8 @@
                 success: function (data) {
                     if (data.res == 1){
                         layer.msg('添加成功!');
-                        treeObj2.refresh();
+                        treeObj.reAsyncChildNodes(null,"refresh",false);
+                        treeObj2.reAsyncChildNodes(null,"refresh",false);
                     }else {
                         layer.msg('添加失败！',{anim:6});
                     }
