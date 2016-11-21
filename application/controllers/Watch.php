@@ -88,6 +88,7 @@ class Watch extends MY_Controller {
 
         $event_id = $this->input->get('eid');
         //判断对这样事 有督办全
+        $this->load->model("My_Model", "my_model");
         $duban = $this->my_model->check_duban($uid,$event_id);
         if ($duban){
             $usertype = 1;
