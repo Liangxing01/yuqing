@@ -326,7 +326,8 @@
                 success: function (data) {
                     if (data.res == 1){
                         layer.msg('更新成功!');
-                        treeObj2.refresh();
+                        treeObj.reAsyncChildNodes(null,"refresh",false);
+                        treeObj2.reAsyncChildNodes(null,"refresh",false);
                     }else {
                         layer.msg('更新失败！',{anim:6});
                     }
