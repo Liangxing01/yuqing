@@ -100,10 +100,10 @@
 
     </style>
 </head>
-<body>
-<div class="admin_login">
+<body style="width: 100%; height: 100%; background: url(/img/mobile/logobg.png) no-repeat; background-size: 100%;">
+<!--<div class="admin_login">
     <img src="/img/mobile/logobg.png" />
-</div>
+</div>-->
 <div class="form_login" id="box">
     <div class="form_logo"><img src="/img/mobile/logo.png" width="80"></div>
 
