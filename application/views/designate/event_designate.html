@@ -328,230 +328,6 @@
 <!-- Page Script -->
 <script language="javascript">
 
-    //DataTable 表格
-    $('#info_is_handle_table').dataTable({
-        "bPaginate": true,
-        "bProcessing": false,                //是否显示正在处理提示信息。
-        "bLengthChange": false,
-        "bFilter": true,                     //是否使用内置的过滤功能。
-        "bSort": true,
-        "bInfo": true,
-        "bAutoWidth": false,
-        "bStateSave": true,
-        "iDisplayLength": 5,                //每页显示5条数据
-        "aaSorting": [[6, "desc"]],          //默认排序 第6列
-
-        "bServerSide": true,
-        "sAjaxSource": "/designate/info_is_handle_data",
-        "sServerMethod": "POST",
-
-        "aoColumns": [
-            {
-                "sTitle": "编号",
-                "mData": "id",
-                'sClass': "text-center",
-                'orderable': false
-            },
-            {
-                "sTitle": "标题",
-                "mData": "title",
-                'sClass': "text-center",
-                'orderable': false
-            },
-            {
-                "sTitle": "来源",
-                "mData": "source",
-                'sClass': "text-center",
-                'orderable': false
-            },
-            {
-                "sTitle": "类别",
-                "mData": "type",
-                'sClass': "text-center",
-                'orderable': false
-            },
-            {
-                "sTitle": "上报人",
-                "mData": "publisher",
-                'sClass': "text-center",
-                'orderable': false
-            },
-            {
-                "sTitle": "上报时间",
-                "mData": "time",
-                'sClass': "text-center",
-                "mRender": function (data) {
-                    return timeToDate(data * 1000);
-                }
-            },
-            {
-                "sTitle": "操作",
-                "mData": "id",
-                'sClass': "text-center",
-                'orderable': false,
-                "mRender": function (data, type, all) {
-                    return "<a title='查看' target='_blank' href='/designate/info_detail?id=" + data + " ' class='btn btn-info btn-xs'>查看</a>&nbsp;" +
-                            "<a title='添加' href='javascript:;' onclick='add_event_info(" + all.id + ",\"" + all.title + "\")' class='btn btn-success btn-xs'>添加</a>";
-                }
-            }
-        ],
-
-        "oLanguage": {
-            "sLengthMenu": "每页显示 _MENU_ 条记录",
-            "sInfo": "从 _START_ 到 _END_ /共 _TOTAL_ 条数据",
-            "sInfoEmpty": "没有数据",
-            "sInfoFiltered": "(从 _MAX_ 条数据中检索)",
-            "oPaginate": {
-                "sFirst": "首页",
-                "sPrevious": "前一页",
-                "sNext": "后一页",
-                "sLast": "尾页"
-            },
-            "sZeroRecords": "暂无数据",
-            "sSearch": "搜索:"
-        }
-
-    });
-    $("#event_table").dataTable({
-
-        "bPaginate": true,
-        "bProcessing": false,                //是否显示正在处理提示信息。
-        "bLengthChange": false,
-        "bFilter": true,                     //是否使用内置的过滤功能。
-        "bSort": true,
-        "bInfo": true,
-        "bAutoWidth": false,
-        "bStateSave": true,
-        "iDisplayLength": 5,                //每页显示10条数据
-        "aaSorting": [[5, "desc"], [6, "desc"]],          //默认排序 第6,7列
-
-        "bServerSide": true,
-        "sAjaxSource": "/designate/event_search_data",
-        "sServerMethod": "POST",
-
-        "aoColumns": [
-            {
-                "sTitle": "编号",
-                "mData": "id",
-                'sClass': "text-center",
-                'orderable': false
-            },
-            {
-                "sTitle": "标题",
-                "mData": "title",
-                'sClass': "text-center",
-                'orderable': false
-            },
-            {
-                "sTitle": "首派人",
-                "mData": "manager",
-                'sClass': "text-center",
-                'orderable': false
-            },
-            {
-                "sTitle": "等级",
-                "mData": "rank",
-                'sClass': "text-center",
-                'orderable': false,
-                "mRender": function (data) {
-                    switch (data) {
-                        case '一般':
-                            return "<button class='btn btn-primary btn-xs'>一般</button>";
-                            break;
-                        case '重要':
-                            return "<button class='btn btn-warning btn-xs'>重要</button>";
-                            break;
-                        case '紧急':
-                            return "<button class='btn btn-danger btn-xs'>紧急</button>";
-                            break;
-                    }
-
-                }
-            },
-            {
-                "sTitle": "牵头人(单位)",
-                "mData": "main_processor",
-                'sClass': "text-center",
-                'orderable': false,
-                "mRender": function (data, type, full) {
-                    if (data == null) {
-                        return full.main_group;
-                    }
-                    return data;
-                }
-            },
-            {
-                "sTitle": "开始时间",
-                "mData": "start_time",
-                'sClass': "text-center",
-                "mRender": function (data) {
-                    return timeToDate(data * 1000);
-                }
-            },
-            {
-                "sTitle": "结束时间",
-                "mData": "end_time",
-                'sClass': "text-center",
-                "mRender": function (data) {
-                    if (data == null) {
-                        return "";
-                    } else {
-                        return timeToDate(data * 1000);
-                    }
-                }
-            },
-            {
-                "sTitle": "状态",
-                "mData": "state",
-                'sClass': "text-center",
-                'orderable': false,
-                "mRender": function (data) {
-                    switch (data) {
-                        case '未指派':
-                            return "<button class='btn btn-info btn-xs'>未指派</button>";
-                            break;
-                        case '已指派':
-                            return "<button class='btn btn-primary btn-xs'>已指派</button>";
-                            break;
-                        case '未审核':
-                            return "<button class='btn btn-warning btn-xs'>未审核</button>";
-                            break;
-                        case '已完成':
-                            return "<button class='btn btn-success btn-xs'>已完成</button>";
-                            break;
-                    }
-                }
-            },
-            {
-                "sTitle": "操作",
-                "mData": "id",
-                'sClass': "text-center",
-                'orderable': false,
-                "mRender": function (data, type, all) {
-                    return "<a title='查看' target='_blank' href='/common/event_detail?eid=" + data + " ' class='btn btn-info btn-xs'>查看</a>&nbsp;<br>"
-                            + "<a title='添加' href='javascript:;' onclick='add_relate_event(" + all.id + ",\"" + all.title + "\")' class='btn btn-success btn-xs'>添加</a>";
-                }
-            }
-        ],
-
-        "oLanguage": {
-            "sLengthMenu": "每页显示 _MENU_ 条记录",
-            "sInfo": "从 _START_ 到 _END_ /共 _TOTAL_ 条数据",
-            "sInfoEmpty": "没有数据",
-            "sInfoFiltered": "(从 _MAX_ 条数据中检索)",
-            "oPaginate": {
-                "sFirst": "首页",
-                "sPrevious": "前一页",
-                "sNext": "后一页",
-                "sLast": "尾页"
-            },
-            "sZeroRecords": "暂无数据",
-            "sSearch": "关键字:"
-        }
-
-    });
-
-
     //事件指派 表单
     $(function () {
         $.validator.setDefaults({
@@ -614,6 +390,230 @@
         // spinner 插件
         $('#reply_time').spinner({
             value: ""
+        });
+
+
+        //DataTable 表格
+        $('#info_is_handle_table').dataTable({
+            "bPaginate": true,
+            "bProcessing": false,                //是否显示正在处理提示信息。
+            "bLengthChange": false,
+            "bFilter": true,                     //是否使用内置的过滤功能。
+            "bSort": true,
+            "bInfo": true,
+            "bAutoWidth": false,
+            "bStateSave": true,
+            "iDisplayLength": 5,                //每页显示5条数据
+            "aaSorting": [[6, "desc"]],          //默认排序 第6列
+
+            "bServerSide": true,
+            "sAjaxSource": "/designate/info_is_handle_data",
+            "sServerMethod": "POST",
+
+            "aoColumns": [
+                {
+                    "sTitle": "编号",
+                    "mData": "id",
+                    'sClass': "text-center",
+                    'orderable': false
+                },
+                {
+                    "sTitle": "标题",
+                    "mData": "title",
+                    'sClass': "text-center",
+                    'orderable': false
+                },
+                {
+                    "sTitle": "来源",
+                    "mData": "source",
+                    'sClass': "text-center",
+                    'orderable': false
+                },
+                {
+                    "sTitle": "类别",
+                    "mData": "type",
+                    'sClass': "text-center",
+                    'orderable': false
+                },
+                {
+                    "sTitle": "上报人",
+                    "mData": "publisher",
+                    'sClass': "text-center",
+                    'orderable': false
+                },
+                {
+                    "sTitle": "上报时间",
+                    "mData": "time",
+                    'sClass': "text-center",
+                    "mRender": function (data) {
+                        return timeToDate(data * 1000);
+                    }
+                },
+                {
+                    "sTitle": "操作",
+                    "mData": "id",
+                    'sClass': "text-center",
+                    'orderable': false,
+                    "mRender": function (data, type, all) {
+                        return "<a title='查看' target='_blank' href='/designate/info_detail?id=" + data + " ' class='btn btn-info btn-xs'>查看</a>&nbsp;" +
+                                "<a title='添加' href='javascript:;' onclick='add_event_info(" + all.id + ",\"" + all.title + "\")' class='btn btn-success btn-xs'>添加</a>";
+                    }
+                }
+            ],
+
+            "oLanguage": {
+                "sLengthMenu": "每页显示 _MENU_ 条记录",
+                "sInfo": "从 _START_ 到 _END_ /共 _TOTAL_ 条数据",
+                "sInfoEmpty": "没有数据",
+                "sInfoFiltered": "(从 _MAX_ 条数据中检索)",
+                "oPaginate": {
+                    "sFirst": "首页",
+                    "sPrevious": "前一页",
+                    "sNext": "后一页",
+                    "sLast": "尾页"
+                },
+                "sZeroRecords": "暂无数据",
+                "sSearch": "搜索:"
+            }
+
+        });
+        $("#event_table").dataTable({
+
+            "bPaginate": true,
+            "bProcessing": false,                //是否显示正在处理提示信息。
+            "bLengthChange": false,
+            "bFilter": true,                     //是否使用内置的过滤功能。
+            "bSort": true,
+            "bInfo": true,
+            "bAutoWidth": false,
+            "bStateSave": true,
+            "iDisplayLength": 5,                //每页显示10条数据
+            "aaSorting": [[5, "desc"], [6, "desc"]],          //默认排序 第6,7列
+
+            "bServerSide": true,
+            "sAjaxSource": "/designate/event_search_data",
+            "sServerMethod": "POST",
+
+            "aoColumns": [
+                {
+                    "sTitle": "编号",
+                    "mData": "id",
+                    'sClass': "text-center",
+                    'orderable': false
+                },
+                {
+                    "sTitle": "标题",
+                    "mData": "title",
+                    'sClass': "text-center",
+                    'orderable': false
+                },
+                {
+                    "sTitle": "首派人",
+                    "mData": "manager",
+                    'sClass': "text-center",
+                    'orderable': false
+                },
+                {
+                    "sTitle": "等级",
+                    "mData": "rank",
+                    'sClass': "text-center",
+                    'orderable': false,
+                    "mRender": function (data) {
+                        switch (data) {
+                            case '一般':
+                                return "<button class='btn btn-primary btn-xs'>一般</button>";
+                                break;
+                            case '重要':
+                                return "<button class='btn btn-warning btn-xs'>重要</button>";
+                                break;
+                            case '紧急':
+                                return "<button class='btn btn-danger btn-xs'>紧急</button>";
+                                break;
+                        }
+
+                    }
+                },
+                {
+                    "sTitle": "牵头人(单位)",
+                    "mData": "main_processor",
+                    'sClass': "text-center",
+                    'orderable': false,
+                    "mRender": function (data, type, full) {
+                        if (data == null) {
+                            return full.main_group;
+                        }
+                        return data;
+                    }
+                },
+                {
+                    "sTitle": "开始时间",
+                    "mData": "start_time",
+                    'sClass': "text-center",
+                    "mRender": function (data) {
+                        return timeToDate(data * 1000);
+                    }
+                },
+                {
+                    "sTitle": "结束时间",
+                    "mData": "end_time",
+                    'sClass': "text-center",
+                    "mRender": function (data) {
+                        if (data == null) {
+                            return "";
+                        } else {
+                            return timeToDate(data * 1000);
+                        }
+                    }
+                },
+                {
+                    "sTitle": "状态",
+                    "mData": "state",
+                    'sClass': "text-center",
+                    'orderable': false,
+                    "mRender": function (data) {
+                        switch (data) {
+                            case '未指派':
+                                return "<button class='btn btn-info btn-xs'>未指派</button>";
+                                break;
+                            case '已指派':
+                                return "<button class='btn btn-primary btn-xs'>已指派</button>";
+                                break;
+                            case '未审核':
+                                return "<button class='btn btn-warning btn-xs'>未审核</button>";
+                                break;
+                            case '已完成':
+                                return "<button class='btn btn-success btn-xs'>已完成</button>";
+                                break;
+                        }
+                    }
+                },
+                {
+                    "sTitle": "操作",
+                    "mData": "id",
+                    'sClass': "text-center",
+                    'orderable': false,
+                    "mRender": function (data, type, all) {
+                        return "<a title='查看' target='_blank' href='/common/event_detail?eid=" + data + " ' class='btn btn-info btn-xs'>查看</a>&nbsp;<br>"
+                                + "<a title='添加' href='javascript:;' onclick='add_relate_event(" + all.id + ",\"" + all.title + "\")' class='btn btn-success btn-xs'>添加</a>";
+                    }
+                }
+            ],
+
+            "oLanguage": {
+                "sLengthMenu": "每页显示 _MENU_ 条记录",
+                "sInfo": "从 _START_ 到 _END_ /共 _TOTAL_ 条数据",
+                "sInfoEmpty": "没有数据",
+                "sInfoFiltered": "(从 _MAX_ 条数据中检索)",
+                "oPaginate": {
+                    "sFirst": "首页",
+                    "sPrevious": "前一页",
+                    "sNext": "后一页",
+                    "sLast": "尾页"
+                },
+                "sZeroRecords": "暂无数据",
+                "sSearch": "关键字:"
+            }
+
         });
     });
 
@@ -935,6 +935,7 @@
 
 
 
+
 </script>
 <!-- The template to display files available for download -->
 <script id="template-download" type="text/x-tmpl">
@@ -951,6 +952,7 @@
         </td>
     </tr>
 {% } %}
+
 
 
 

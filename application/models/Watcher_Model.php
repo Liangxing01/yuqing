@@ -25,91 +25,108 @@ class Watcher_Model extends CI_Model {
 
         //查询条件构造
         $condition = array();
-        // 时间条件
-        if(!empty($pInfo['start_time'])){
-            if ($pInfo["start_time"] != 0 && $pInfo["end_time"] != 0) {
-                $condition[] = "e.start_time > " . $pInfo["start_time"] . " AND e.start_time < " . ($pInfo["end_time"] + 86400);
-            } else if ($pInfo["start_time"] != 0 && $pInfo["end_time"] == 0) {
-                $condition[] = "e.start_time >= " . $pInfo["start_time"];
-            } else if ($pInfo["start_time"] == 0 && $pInfo["end_time"] != 0) {
-                $condition[] = "e.start_time < " . ($pInfo["end_time"] + 86400);
-            }
+
+        // 开始时间条件
+        if ($pInfo["start_start"] != 0 && $pInfo["start_end"] != 0) {
+            $condition[] = "event.start_time > " . $pInfo["start_start"] . " AND event.start_time < " . ($pInfo["start_end"] + 86400);
+        } else if ($pInfo["start_start"] != 0 && $pInfo["start_end"] == 0) {
+            $condition[] = "event.start_time >= " . $pInfo["start_start"];
+        } else if ($pInfo["start_start"] == 0 && $pInfo["start_end"] != 0) {
+            $condition[] = "event.start_time < " . ($pInfo["start_end"] + 86400);
         }
 
-
-        //单位事件条件
-        if(($pInfo['is_group']) != ''){
-            if($pInfo['is_group'] == 1){
-                $condition[] = "e.group !=''";
-            }else{
-                $condition[] = "e.group";
-            }
+        // 状态条件
+        if ($pInfo["state"]) {
+            $condition[] = "event.state = '" . $pInfo["state"] . "'";
         }
 
-
-        //事件等级
-        if(!empty($pInfo['rank'])){
-            $condition[] = "e.rank = '".$pInfo['rank']."'";
+        // 等级条件
+        if ($pInfo["rank"]) {
+            $condition[] = "event.rank = '" . $pInfo["rank"] . "'";
         }
 
         $where = "";
-        foreach($condition AS $c){
-            if($condition){
+        foreach ($condition AS $c) {
+            if ($condition) {
                 $where .= $c . " AND ";
             }
         }
-
         $where = substr($where, 0, strlen($where) - 4);
 
-        if($where){
-            $data['aaData'] = $this->db->select("e.id as event_id,e.title,e.rank,e.start_time as time,
-            e.group,u.name,e.state,e.description")
-                ->from("event_watch as ea")
-                ->where('ea.watcher',$uid)
-                ->join('event as e','e.id = ea.event_id','left')
-                ->join('user as u','u.id = e.manager','left')
+        //执行查询语句
+
+        if ($where) {
+            $data['aaData'] = $this->db->select("event.id, event.title, A.name AS manager, B.name AS main_processor, C.name AS main_group, event.rank, event.state, event.start_time, event.end_time")
+                ->from("event")
+                ->join("user A", "A.id = event.manager", "left")
+                ->join("user B", "B.id = event.main_processor", "left")
+                ->join("group C", "C.id = event.group", "left")
+                ->join("event_watch D", "D.event_id = event.id", "left")
                 ->where($where)
+                ->where("D.watcher = 5")
                 ->group_start()
-                ->like('e.title',$pInfo['search'])
+                ->like("event.id", $pInfo["search"])
+                ->or_like("A.name", $pInfo["search"])
+                ->or_like("B.name", $pInfo["search"])
+                ->or_like("C.name", $pInfo["search"])
+                ->or_like("event.title", $pInfo["search"])
                 ->group_end()
-                ->limit($pInfo['length'],$pInfo['start'])
-                ->order_by('time',$pInfo['sort_type'])
+                ->order_by("start_time", $pInfo["sort_start"])
+                ->order_by("end_time", $pInfo["sort_end"])
+                ->limit($pInfo["length"], $pInfo["start"])
                 ->get()->result_array();
 
-            $total = $this->db->select("e.id as event_id,e.title,e.rank,e.start_time as time,
-            e.group,u.name,e.state,e.description")
-                ->from("event_watch as ea")
-                ->where('ea.watcher',$uid)
-                ->join('event as e','e.id = ea.event_id','left')
-                ->join('user as u','u.id = e.manager','left')
+            //查询总记录条数
+            $total = $this->db->select("event.id")
+                ->from("event")
+                ->join("user A", "A.id = event.manager", "left")
+                ->join("user B", "B.id = event.main_processor", "left")
+                ->join("group C", "C.id = event.group", "left")
+                ->join("event_watch D", "D.event_id = event.id", "left")
                 ->where($where)
+                ->where("D.watcher = $uid")
                 ->group_start()
-                ->like('e.title',$pInfo['search'])
+                ->like("event.id", $pInfo["search"])
+                ->or_like("A.name", $pInfo["search"])
+                ->or_like("B.name", $pInfo["search"])
+                ->or_like("C.name", $pInfo["search"])
+                ->or_like("event.title", $pInfo["search"])
                 ->group_end()
                 ->get()->num_rows();
-
-        }else{
-            $data['aaData'] = $this->db->select("e.id as event_id,e.title,e.rank,e.start_time as time,
-            e.group,u.name,e.state,e.description")
-                ->from("event_watch as ea")
-                ->where('ea.watcher',$uid)
-                ->join('event as e','e.id = ea.event_id','left')
-                ->join('user as u','u.id = e.manager','left')
+        } else {
+            $data['aaData'] = $this->db->select("event.id, event.title, A.name AS manager, B.name AS main_processor, C.name AS main_group, event.rank, event.state, event.start_time, event.end_time")
+                ->from("event")
+                ->join("user A", "A.id = event.manager", "left")
+                ->join("user B", "B.id = event.main_processor", "left")
+                ->join("group C", "C.id = event.group", "left")
+                ->join("event_watch D", "D.event_id = event.id", "left")
+                ->where("D.watcher = $uid")
                 ->group_start()
-                ->like('e.title',$pInfo['search'])
+                ->like("event.id", $pInfo["search"])
+                ->or_like("A.name", $pInfo["search"])
+                ->or_like("B.name", $pInfo["search"])
+                ->or_like("C.name", $pInfo["search"])
+                ->or_like("event.title", $pInfo["search"])
                 ->group_end()
-                ->limit($pInfo['length'],$pInfo['start'])
-                ->order_by('time',$pInfo['sort_type'])
+                ->order_by("start_time", $pInfo["sort_start"])
+                ->order_by("end_time", $pInfo["sort_end"])
+                ->limit($pInfo["length"], $pInfo["start"])
                 ->get()->result_array();
 
-            $total = $this->db->select("e.id as event_id,e.title,e.rank,e.start_time as time,
-            e.group,u.name,e.state,e.description")
-                ->from("event_watch as ea")
-                ->where('ea.watcher',$uid)
-                ->join('event as e','e.id = ea.event_id','left')
-                ->join('user as u','u.id = e.manager','left')
+            //查询总记录条数
+            $total = $this->db->select("event.id")
+                ->from("event")
+                ->join("user A", "A.id = event.manager", "left")
+                ->join("user B", "B.id = event.main_processor", "left")
+                ->join("group C", "C.id = event.group", "left")
+                ->join("event_watch D", "D.event_id = event.id", "left")
+                ->where("D.watcher = $uid")
                 ->group_start()
-                ->like('e.title',$pInfo['search'])
+                ->like("event.id", $pInfo["search"])
+                ->or_like("A.name", $pInfo["search"])
+                ->or_like("B.name", $pInfo["search"])
+                ->or_like("C.name", $pInfo["search"])
+                ->or_like("event.title", $pInfo["search"])
                 ->group_end()
                 ->get()->num_rows();
         }
