@@ -127,7 +127,7 @@
         <div class="buletan_icon_flag"></div>
         <div class="inner-content" style="{usertype_style}">
             <div class="heading-timeline">
-                <img alt="Avatar" class="avatar" src="/img/avatar/avatar-1.jpg">
+                <img alt="Avatar" class="avatar" src="{avatar}">
                 <div class="user-timeline-info">
                     <p> {name}
                         <small id="DataTime_{id}">{daytime}</small>
@@ -156,7 +156,7 @@
                         </div>
                     </li>
                     <li class="option-row" id="option-row{id}">
-                        <img alt="Avatar" class="avatar" src="/img/avatar/avatar-1.jpg">
+                        <img alt="Avatar" class="avatar" src="{avatar}">
                         <div class="reply">
                             <form role="form">
                                 <input placeholder="填写你的反馈..." class="form-control input-sm" id="comment{id}"
@@ -173,7 +173,7 @@
 </script>
 <script type="text/template" id="comment_item">
     <li class="option-row">
-        <img alt="Avatar" class="avatar" src="/img/avatar/avatar-2.jpg">
+        <img alt="Avatar" class="avatar" src="{avatar}">
         <div class="reply">
             <p>
                 <strong><a class="label bg-success m-l-xs">{name}</a></strong>
@@ -265,12 +265,20 @@
                         //var beforetime=parseInt((nowtime-o.time*1000)/3600000);
                         var beforetime = getLocalTime(o.time);
                         o.daytime = beforetime;
+                        //添加评论用户头像
+                        if(!o.avatar){
+                            o.avatar = '/img/avatar/avatar-2.jpg';
+                        }
                         comment_arr.push(formatTemplate(o, comment_item_tpl));
                     });
                     //console.log(comment_arr.join(""));
                     var li_item_tpl = $('script[id="li_item"]').html();
                     value.daytime = getLocalTime(value.time);
                     value.commentnum = commnetlength;
+                    //添加总评论用户头像
+                    if(!value.avatar){
+                        value.avatar = '/img/avatar/avatar-2.jpg';
+                    }
                     if (!value.desc) value.desc = "";
                     value.commenthtml = comment_arr.join("");
                     if (value.usertype == 1) {//如果是领导把主评论放在右边,第一个与第四个为右
@@ -354,6 +362,12 @@
                     li_obj.desc = zjk;
                     li_obj.commentnum = 0;
                     li_obj.commenthtml = "";
+                    //添加用户头像
+                    if($('#useracter').val()){
+                    	li_obj.avatar = $('#useracter').val();
+                    }else{
+                    	li_obj.avatar = '/img/avatar/avatar-2.jpg';
+                    }
                     li_obj.id = 'new' + Math.round(Math.random() * 200);
                     var htmlstr = '';
                     if ($("#usertype").val() == 1) {//如果是领导颜色值变换下
@@ -421,6 +435,11 @@
                         commnetObj.daytime = new Date().toLocaleString().replace(/:\d{1,2}$/, ' ');
                         commnetObj.name = $("#name").val();
                         commnetObj.desc = comment;
+                        if($('#useracter').val()){
+                        	commnetObj.avatar = $('#useracter').val();
+                        }else{
+                        	commnetObj.avatar = '/img/avatar/avatar-2.jpg';
+                        }
                         var strhtml = formatTemplate(commnetObj, comment_item_tpl);//得到当前字符串
                         $("#option-row" + value).after(strhtml);
                         $("#comment" + value).val('');

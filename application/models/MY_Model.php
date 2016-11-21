@@ -167,7 +167,7 @@ class MY_Model extends CI_Model {
         $old_avatar = $this->db->select('avatar')->from('user')
             ->where('id',$uid)
             ->get()->row_array();
-        if(!empty($old_avatar)){
+        if(!empty($old_avatar) && $old_avatar != "/img/avatar/avatar.png"){
             $old_avatar_url = $old_avatar['avatar'];
             unlink($_SERVER['DOCUMENT_ROOT'].$old_avatar_url);
         }
@@ -225,6 +225,16 @@ class MY_Model extends CI_Model {
             ->order_by('time','DESC')
             ->get()->result_array();
         return $res;
+    }
+
+    /**
+     *  获取职位
+     */
+    public function get_job(){
+        $res = $this->db->select('job')->from('user')
+            ->where('id',$this->session->userdata('uid'))
+            ->get()->row_array();
+        return $res['job'];
     }
 
 

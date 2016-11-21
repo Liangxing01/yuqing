@@ -39,6 +39,15 @@
     	.dropdown-menu.extended li a span{ margin-right: 5px; margin-left: 5px;}
     	.fa-bars:before{ content: url(../../img/logo.png);}
     	.sidebar-toggle-box{ padding-right: 10px; margin-top: 12px;}
+    	.bt{ float: left; margin-top: 18px; margin-left: 48%;  font-family: '黑体'; font-size: 16px; font-weight: 300; color: white;}
+    	@media only screen and (max-width:1024px ) {
+    		.notify-row{ margin-left: 35px;}
+    		.bt{ margin-left: 8% !important;}
+    	}
+    	@media only screen and (max-width:1440px ) {
+    		/*.notify-row{ margin-left: 35px;}*/
+    		.bt{ margin-left: 31%;}
+    	}
     </style>
 </head>
 
@@ -171,7 +180,11 @@
 
         </nav>
         <!-- END HEADER NAV -->
-
+		
+		<div class="bt">
+			<{$job}>
+		</div>
+		
         <!-- START USER LOGIN DROPDOWN  -->
 
         <div class="top-nav ">
@@ -179,7 +192,7 @@
 
                 <li class="dropdown">
                     <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                        <img alt="" src="/img/avatar1_small.jpg">
+                        <img alt="" width="29" height="29" src="<{$avatar}>">
                 <span class="username">
                   <{$name}>
                 </span>

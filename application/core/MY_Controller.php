@@ -20,12 +20,16 @@ class MY_Controller extends CI_Controller
     //共用显示header,sidebar,footer
     public function all_display($html)
     {
+        $this->load->model('MY_Model','my_model');
         $privilege = explode(",", $this->session->privilege);
         sort($privilege);
         $name = $this->session->userdata('name');
         $this->assign('name',$name);
+        $this->assign("avatar", $this->session->avatar);
         $username = $this->session->userdata('username');
         $this->assign('username',$username);
+        $job = $this->my_model->get_job();
+        $this->assign('job',$job);
         $this->ci_smarty->display('head.html');
         $this->ci_smarty->display('menu/menu_home.html');
 
