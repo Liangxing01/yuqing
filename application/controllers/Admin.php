@@ -312,5 +312,9 @@ class Admin extends MY_Controller
         echo $this->tree->get_relation_tree();
     }
 
+    public function test(){
+       echo $this->admin_model->delete_node(4);
+    }
+
 
 }
