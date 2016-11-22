@@ -104,7 +104,7 @@
         var type = $('select#type option:selected').val();
         var duplicate = $('input:radio:checked').val();
         var source = $('#source').val();
-        var layer_index = layer.load(2, {shade: true});
+        var layer_index = layer.load(2);
         $.ajax({
             type: "POST",
             data: {"id": id, "type": type, "duplicate": duplicate, "source": source},
