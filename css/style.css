@@ -6186,8 +6186,8 @@ ul.timeline li.item-timeline .heading-timeline {
 ul.timeline li.item-timeline .heading-timeline .avatar {
 	position: absolute;
 	left: 0px;
-	top: 20px;
 	width: 40px;
+	top : 10px;
 	height: 40px;
 	border-radius: 15px;
 	border: 2px solid #2a7489;
@@ -6210,7 +6210,6 @@ ul.timeline li.item-timeline .heading-timeline .avatar {
 ul.timeline-option li.option-row .avatar {
 	position: absolute;
 	left: 10px;
-	top: 20px;
 	width: 30px;
 	height: 30px;
 	border-radius: 10px;
