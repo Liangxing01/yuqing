@@ -329,7 +329,7 @@
             dataType:'json',
             success:function(data){
                 if(data.res == 1){
-                    window.sessionStorage.setItem('p_id',data.id);
+                   // window.sessionStorage.setItem('p_id',data.id);
                     var li_obj=new Object();
                     li_obj.name=$("#username").val();
                     li_obj.daytime=new Date().toLocaleString().replace(/:\d{1,2}$/,' ');
@@ -344,7 +344,8 @@
                         li_obj.avatar = '/img/avatar/avatar-2.jpg';
                     }
 
-                    li_obj.id= 'new'+Math.round(Math.random()*200);
+                    //li_obj.id= 'new'+Math.round(Math.random()*200);
+                    li_obj.id = data.id
                     var htmlstr='';
                     if($("#usertype").val()==1){//如果是领导颜色值变换下
                         li_obj.usertype_style="background: #d43f3a";
@@ -402,7 +403,8 @@
                 url:'/welcome/post_comment',
                 type:'post',
                 data :
-                {"pid" : id,
+                {
+                    "pid" : id,
                     "comment" : comment,
                     "eid" :eid
                 },
