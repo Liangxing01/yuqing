@@ -6187,6 +6187,7 @@ ul.timeline li.item-timeline .heading-timeline .avatar {
 	position: absolute;
 	left: 0px;
 	width: 40px;
+	top : 10px;
 	height: 40px;
 	border-radius: 15px;
 	border: 2px solid #2a7489;
