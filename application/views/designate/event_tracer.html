@@ -79,7 +79,7 @@
                         <div style="clear: both;"></div>
                     </header>
                     <form class="zj">
-                        <textarea cols="" rows="4" placeholder="发布你所发布的事件" class="zjk" id="zjk"></textarea>
+                        <textarea cols="" rows="4" placeholder="请输入内容" class="zjk" id="zjk"></textarea>
                         <input type="button" class="zj_button" name="zj_buttom" value="发表" />
                     </form>
                     <div class="panel-body" style="display: block;">
@@ -219,7 +219,6 @@
             success:function(data){
                 //console.log(data)
                 var cur_day="";//当前天数，用来判断哪一天
-                console.log(data)
                 $.each(data,function(i,value){
                     var myDate = new Date(value.time*1000),
                             iyear= myDate.getFullYear(),
@@ -319,6 +318,10 @@
     //总结性评论处理
     function add(){
         var zjk=document.getElementById('zjk').value;
+        if(zjk == ""){
+            layer.msg('发表内容不能为空',{anim:6,time:1500});
+            return false;
+        }
         var myDate = new Date(),
                 iyear= myDate.getFullYear(),
                 imonth= myDate.getMonth()+ 1,
@@ -377,6 +380,7 @@
                     $(".item-timeline-"+li_obj.id+"-flag").height($(".item-timeline-"+li_obj.id+"").height());
                     $("#zjk").val('');
                     autoDatch();
+                    layer.msg("发表成功！",{time:1500});
                 }else{
                     alert('评论失败！');
                 }
@@ -439,7 +443,7 @@
                         //评论后，重新定义最外面高度
                         $(".item-timeline-"+value+"").height($(".item-timeline-"+value+"").height())//解决动态加载文档流问题
                         $(".item-timeline-"+value+"-flag").height($(".item-timeline-"+value+"").height());
-                        //alert('发表成功！')
+                        layer.msg("评论成功！",{time:1500});
                     }else{
                         alert('评论失败！');
                     }
