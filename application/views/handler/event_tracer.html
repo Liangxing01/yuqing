@@ -388,6 +388,7 @@
                         $(".item-timeline-"+li_obj.id+"-flag").height($(".item-timeline-"+li_obj.id+"").height());
                         $("#zjk").val('');
                         autoDatch();
+                        layer.msg("发表成功！",{time:1500});
                     }else{
 		    			alert('评论失败！');
 		    		}
@@ -449,7 +450,7 @@
                         //评论后，重新定义最外面高度
                         $(".item-timeline-"+value+"").height($(".item-timeline-"+value+"").height())//解决动态加载文档流问题
                         $(".item-timeline-"+value+"-flag").height($(".item-timeline-"+value+"").height());
-		    			//alert('发表成功！')
+		    			layer.msg("评论成功！",{time:1500});
 		    		}else{
 		    			alert('评论失败！');
 		    		}
