@@ -135,7 +135,7 @@ class Tree_Model extends CI_Model
                 "id" => $group["id"],
                 "name" => $group["name"],
                 "isdepartment" => 0,
-                "open" => true,
+                "open" => false,
                 "children" => array()
             );
             foreach ($processors AS $processor) {
@@ -199,7 +199,7 @@ class Tree_Model extends CI_Model
                 "id" => $group["id"],
                 "name" => $group["name"],
                 "isdepartment" => 0,
-                "open" => true,
+                "open" => false,
                 "children" => array(),
                 "chkDisabled" => false
             );
@@ -265,7 +265,7 @@ class Tree_Model extends CI_Model
                 "id" => $group["id"],
                 "name" => $group["name"],
                 "isdepartment" => 0,
-                "open" => true,
+                "open" => false,
                 "children" => array()
             );
             foreach ($processors AS $processor) {
@@ -321,7 +321,7 @@ class Tree_Model extends CI_Model
                 "id" => $group["id"],
                 "name" => $group["name"],
                 "isdepartment" => 0,
-                "open" => true,
+                "open" => false,
                 "children" => array()
             );
             foreach ($processors AS $processor) {
