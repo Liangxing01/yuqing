@@ -266,13 +266,15 @@
                 if(!value.desc) value.desc="";
                 value.commenthtml=comment_arr.join("");
                 if(value.usertype==1){//如果是领导把主评论放在右边,第一个与第四个为右
-                    value.usertype_style="background: #d43f3a";//
+                    value.usertype_style="background: #ff6c60;color:#000";//
                     value.buletan="";//如果在右边不为空
+                    value.p_style="color:#000";
                     htmlstr+=formatTemplate(value, li_item_tpl);//加载模板
                     htmlstr+='<li class="item-timeline item-timeline-'+value.id+'-flag"></li>';
                 }else{
                     value.usertype_style="";
                     value.buletan="right:-7px; left: auto";
+                    value.p_style="";
                     htmlstr+='<li class="item-timeline item-timeline-'+value.id+'-flag"></li>';
                     htmlstr+=formatTemplate(value, li_item_tpl);//加载模板
                 }
