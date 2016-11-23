@@ -354,13 +354,15 @@
                     li_obj.id = data.id
                     var htmlstr='';
                     if($("#usertype").val()==1){//如果是领导颜色值变换下
-                        li_obj.usertype_style="background: #ff6c60；color:#000";
+                        li_obj.usertype_style="background: #ff6c60;color:#000";
                         li_obj.buletan="";//如果在右边不为空
+                        li_obj.p_style="color:#000";
                         htmlstr+=formatTemplate(li_obj, li_item_tpl);//加载模板
                         htmlstr+='<li class="item-timeline item-timeline-'+li_obj.id+'-flag"></li>';
                     }else{
                         li_obj.usertype_style="";
                         li_obj.buletan="right:-7px; left: auto";
+                        li_obj.p_style="";
                         htmlstr+='<li class="item-timeline item-timeline-'+li_obj.id+'-flag"></li>';
                         htmlstr+=formatTemplate(li_obj, li_item_tpl);//加载模板
                     }
