@@ -7,6 +7,7 @@ class Handler extends MY_Controller {
         parent::__construct();
         header('Access-Control-Allow-Origin:*');
         $this->load->model('Handler_Model',"handler_model");
+        $this->identity->is_authentic();
     }
 
     public function index()

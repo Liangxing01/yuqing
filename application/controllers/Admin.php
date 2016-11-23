@@ -16,6 +16,7 @@ class Admin extends MY_Controller
 
         header('Access-Control-Allow-Origin:*');
         $this->load->model('Admin_Model', "admin_model");
+        $this->identity->is_authentic();
     }
 
     //展示上报信息查看页面
