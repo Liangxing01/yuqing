@@ -291,19 +291,55 @@
       <script src="/assets/morris.js-0.4.3/raphael-min.js" ></script><!-- MORRIS  JS -->
 <script>
   get_all_msg();
+  var message = {   //title闪烁
+    time: 0,
+    title: document.title,
+    timer: null,
+    // 显示新消息提示
+    show: function () {
+      var title = message.title.replace("【　　　】", "").replace("【新消息】", "");
+      // 定时器，设置消息切换频率闪烁效果就此产生
+      message.timer = setTimeout(function () {
+        message.time++;
+        message.show();
+        if (message.time % 2 == 0) {
+          document.title = "【新消息】" + title
+        }
+        else {
+          document.title = "【　　　】" + title
+        };
+      }, 600);
+      return [message.timer, message.title];
+    },
+    // 取消新消息提示
+    clear: function () {
+      clearTimeout(message.timer);
+      document.title = message.title;
+    }
+  };
+  /*window.onblur = function(){
+    //message.show();
+  }
+  window.onfocus = function(){
+    message.clear();
+  }*/
+ //页面加载时绑定点击事件，单击取消闪烁提示
   function get_msg() {
     $.ajax({
       url:'/welcome/get_new_msg',
       type :'get',
       dataType:'json',
       success:function(data){
+        //message.show();
         if(data.res == "new_unhandle"){
+          message.show();
           layer.confirm("您有新的待处理任务获得！",{
               btn:['开始处理','取消报警'],anim:6,title:'通知'
           },function () {
               location.href = '/handler/wait_to_handle';
           },function (index) {
               layer.close(index);
+              message.clear();
               clearInterval(get_msg_timer);
           });
           var au = document.createElement("audio");
@@ -312,12 +348,14 @@
           au.play();
 
         }else if(data.res == "new_info"){
+          message.show();
           layer.confirm("您有新的上报信息获得！",{
             btn:['开始处理','取消报警'],anim:6,title:'通知'
           },function () {
             location.href = '/designate/info_not_handle';
           },function (index) {
             layer.close(index);
+            message.clear();  //取消闪烁
             clearInterval(get_msg_timer);
           });
 
