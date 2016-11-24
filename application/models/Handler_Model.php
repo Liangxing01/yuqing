@@ -663,7 +663,7 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
      */
     public function get_info_url($event_id)
     {
-        return $this->db->select("info.title, info.url")
+        return $this->db->select("info.id, info.title, info.url")
             ->from("info")
             ->join("event_info", "event_info.info_id = info.id")
             ->where("event_info.event_id", $event_id)
