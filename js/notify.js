@@ -9,9 +9,10 @@ $(function(){
         target.find('#notify_total').html('你有'+data.length+'条新提醒');
         var str='';
         $.each(data,function(index,v){
-            var i='<li><a href="#"><span class="label label-warning"><i class="fa fa-bell"></i></span>'+
+            var i='<li><a href="/common/event_detail?eid='+v.event_id+'" title="'+v.title+'">' +
+                '<p id="alarm_title">'+
                 v.title+
-                '<span class="small italic">'+
+                '</p><span class="small italic">'+
                 v.time+
                 '</span></a></li>';
                 str+=i;
