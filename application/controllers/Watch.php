@@ -84,10 +84,18 @@ class Watch extends MY_Controller {
     //交互显示事件处理进度
     public function show_tracer(){
         $this->load->model('Handler_Model','handler_model');
+
         $gid = $this->session->userdata('gid');
         $uid = $this->session->userdata('uid');
 
         $event_id = $this->input->get('eid');
+
+        //判断能不能看这个 页面
+        $this->load->model('Verify_Model','verify');
+        $ver = $this->verify->can_see_event($event_id);
+        if(!$ver){
+            show_404();
+        }
         //判断对这样事 有督办全
         $this->load->model("MY_Model", "my_model");
         $duban = $this->my_model->check_duban($uid,$event_id);

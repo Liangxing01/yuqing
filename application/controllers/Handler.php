@@ -228,17 +228,14 @@ class Handler extends MY_Controller {
         $this->load->model('MY_Model','my_model');
         $gid = $this->session->userdata('gid');
         $uid = $this->session->userdata('uid');
-        //判断有无督办权限
-        $pri = explode(",",$this->session->userdata('privilege'));
 
-        /*foreach ($pri as $one){
-            if($one == 4){
-                $usertype = 1;
-            }else{
-                $usertype = 0;
-            }
-        }*/
         $event_id = $this->input->get('eid');
+        //判断能不能看这个 页面
+        $this->load->model('Verify_Model','verify');
+        $ver = $this->verify->can_see_event($event_id);
+        if(!$ver){
+            show_404();
+        }
         //判断对这样事 有督办全
         $duban = $this->my_model->check_duban($uid,$event_id);
         if ($duban){
