@@ -11,6 +11,7 @@ class Reporter extends MY_controller
         $this->load->helper(array('form', 'url'));
         $this->load->library('session');
         $this->load->model('Report_model', 'report');
+        $this->identity->is_authentic();
     }
 
     /**
