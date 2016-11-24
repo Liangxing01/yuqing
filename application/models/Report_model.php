@@ -104,7 +104,7 @@ class Report_model extends CI_Model {
      * @return mixed
      */
     public function get_all_report($pInfo,$uid){
-        $data['aaData'] = $this->db->select("info.id,title,url,source,description,user.name As publisher,time")
+        $data['aaData'] = $this->db->select("info.id,title,url,source,description,user.name As publisher,time,state")
             ->from('info')
             ->join('user','user.id = info.publisher','left')
             ->where(array('user.id'=> (int)$uid))
@@ -113,10 +113,9 @@ class Report_model extends CI_Model {
             ->get()->result_array();
 
         //查询总记录条数
-        $total = $this->db->select("info.id,title,url,source,description,user.name As publisher,time")
+        $total = $this->db->select("id")
             ->from('info')
-            ->join('user','user.id = info.publisher','left')
-            ->where(array('user.id'=> (int)$uid))
+            ->where(array('publisher'=> (int)$uid))
             ->get()->num_rows();
 
         $data['sEcho']                = $pInfo['sEcho'];

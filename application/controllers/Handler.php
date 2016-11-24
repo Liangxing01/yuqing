@@ -228,16 +228,7 @@ class Handler extends MY_Controller {
         $this->load->model('MY_Model','my_model');
         $gid = $this->session->userdata('gid');
         $uid = $this->session->userdata('uid');
-        //判断有无督办权限
-        $pri = explode(",",$this->session->userdata('privilege'));
 
-        /*foreach ($pri as $one){
-            if($one == 4){
-                $usertype = 1;
-            }else{
-                $usertype = 0;
-            }
-        }*/
         $event_id = $this->input->get('eid');
         //判断对这样事 有督办全
         $duban = $this->my_model->check_duban($uid,$event_id);
@@ -275,6 +266,10 @@ class Handler extends MY_Controller {
         $this->assign('username',$user_info[0]['username']);
         $this->assign('useracter',$user_info[0]['avatar']);
         $this->assign('usertype',$usertype);
+
+        //获取事件信息链接
+        $links = $this->handler_model->get_info_url($event_id);
+        $this->assign("links", $links);
 
         //获取 参考文件
         $doc_arr = $this->handler_model->get_event_attachment($event_id);
@@ -410,16 +405,5 @@ class Handler extends MY_Controller {
         $data = $this->handler_model->get_done_list($pData,$uid);
         echo json_encode($data);
     }
-
-
-
-
-
-    public function test(){
-        //phpinfo();
-        //$this->handler_model->cancel_alarm_state(1,3);
-        $this->get_my_info();
-    }
-
 
 }

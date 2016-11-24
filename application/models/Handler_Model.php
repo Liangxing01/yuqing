@@ -644,11 +644,30 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
         $this->db->insert('event_log',$arr);
     }
 
+    /**
+     * 查询事件参考文件
+     * @param $eid
+     * @return mixed
+     */
     public function get_event_attachment($eid){
         $res = $this->db->select('id,event_id,name')->from('event_attachment')
             ->where('event_id',$eid)
             ->get()->result_array();
         return $res;
+    }
+
+    /**
+     * 查询事件信息url
+     * @param $event_id
+     * @return mixed
+     */
+    public function get_info_url($event_id)
+    {
+        return $this->db->select("info.title, info.url")
+            ->from("info")
+            ->join("event_info", "event_info.info_id = info.id")
+            ->where("event_info.event_id", $event_id)
+            ->get()->result_array();
     }
 
     //根据用户关键字查询待处理事件

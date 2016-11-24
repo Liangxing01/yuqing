@@ -28,6 +28,7 @@
                                     <th>来源</th>
                                     <th class="hidden-phone">提交时间</th>
                                     <th>提交人</th>
+                                    <th>状态</th>
                                     <th>操作</th>
                                 </tr>
                                 </thead>
@@ -107,6 +108,19 @@
                 "mData": "publisher",
                 'sClass': "text-center",
                 'orderable': false
+            },
+            {
+                "sTitle": "状态",
+                "mData": "state",
+                'sClass': "text-center",
+                'orderable': false,
+                "mRender": function (data) {
+                    if(data == "2"){
+                        return "已采纳";
+                    }else {
+                        return "未采纳";
+                    }
+                }
             },
             {
                 "sTitle": "操作",
