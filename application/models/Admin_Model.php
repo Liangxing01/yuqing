@@ -285,6 +285,40 @@ class Admin_Model extends CI_Model {
     }
 
 
+    public function get_user_login_log($pInfo){
+        $data['aaData'] = $this->db->select("log.id,u.name,g.name as group_name,log.ip,log.time")
+            ->from('login_log AS log')
+            ->join('user as u','u.id = log.uid')
+            ->join('group as g','g.id = u.group_id')
+            ->group_start()
+            ->like('u.name',$pInfo['search'])
+            ->or_like('g.name',$pInfo['search'])
+            ->group_end()
+            ->order_by('log.time',$pInfo['sort_type'])
+            ->limit($pInfo['length'],$pInfo['start'])
+            ->get()->result_array();
+
+        $total = $this->db->select("log.id,u.name,g.name,log.ip,log.time")
+            ->from('login_log AS log')
+            ->join('user as u','u.id = log.uid')
+            ->join('group as g','g.id = u.group_id')
+            ->group_start()
+            ->like('u.name',$pInfo['search'])
+            ->or_like('g.name',$pInfo['search'])
+            ->group_end()
+            ->order_by('log.time',$pInfo['sort_type'])
+            ->get()->num_rows();
+
+        $data['sEcho'] = $pInfo['sEcho'];
+
+        $data['iTotalDisplayRecords'] = $total;
+
+        $data['iTotalRecords'] = $total;
+
+        return $data;
+    }
+
+
 
 
 }
