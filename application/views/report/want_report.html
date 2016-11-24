@@ -277,7 +277,7 @@
     $().ready(function () {
         $("#form1").validate({
             rules: {
-                title: {required: true},
+                title: {required: true,maxlength:40},
                 url: {
                     required: true, url: true,
                     remote: {
@@ -289,7 +289,7 @@
                 description: {required: true}
             },
             messages: {
-                title: {required: "请输入标题"},
+                title: {required: "请输入标题",maxlength:"标题最多40个字"},
                 url: {required: "请输入url", url: '请输入正确的url', remote: '该url已经上报过了'},
                 source: {require: '请选择来源'},
                 description: {required: "请输入描述"}

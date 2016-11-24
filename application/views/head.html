@@ -40,7 +40,13 @@
     	.fa-bars:before{ content: url(../../img/logo.png);}
     	.sidebar-toggle-box{ padding-right: 10px; margin-top: 12px;}
     	.mc{ font-family: '黑体'; font-size: 16px; font-weight: 300; color: white; margin-top: 10px;}
-
+        #alarm_title{
+            width:210px;
+            overflow:hidden;
+            white-space:nowrap;
+            text-overflow:ellipsis;
+            -o-text-overflow:ellipsis;
+        }
     </style>
 </head>
 
@@ -116,7 +122,7 @@
 
                 <!-- START NOTIFY NOTIFICATION BAR -->
 
-                <li id="notification_bar1" class="dropdown">
+                <li id="notification_bar1" title="待处理事件提醒" class="dropdown">
                     <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                         <i class="fa fa-bell-o">
                         </i>
@@ -131,16 +137,16 @@
                             </p>
                         </li>
                         <li class="notify-all">
-                            <a href="#">
+                            <!--<a href="#">
                                 查看所有提醒
-                            </a>
+                            </a>-->
                         </li>
                     </ul>
                 </li>
                 <!-- END NOTIFY NOTIFICATION BAR -->
                 <!-- START NOTIFY NOTIFICATION BAR -->
 
-                <li id="notification_bar2" class="dropdown" style="display:none">
+                <li id="notification_bar2" title="指派事件首回提醒" class="dropdown" style="display:none">
                     <a data-toggle="dropdown" class="dropdown-toggle" >
                         <i class="fa fa-bell">
                         </i>
@@ -155,9 +161,9 @@
                             </p>
                         </li>
                         <li class="notify-all">
-                            <a href="#">
+                            <!--<a href="#">
                                 查看所有提醒
-                            </a>
+                            </a>-->
                         </li>
                     </ul>
                 </li>
