@@ -10,6 +10,12 @@
         border-top: 1px solid #dddddd;
         padding-top: 10px;
     }
+    .copy_btn{
+        margin-left:10px;
+    }
+    .sender-info p{
+        word-break: break-all;
+    }
 </style>
 <!-- BEGIN MAIN CONTENT -->
 <section id="main-content">
@@ -31,15 +37,18 @@
                         <p class="col-md-4"><strong>上报人:</strong><span><{$info['publisher']}></span></p>
                         <p class="col-md-4"><strong>类型:</strong><span><{$info['type']}></span></p>
                         <p class="col-md-4"><strong>来源:</strong><span><{$info['source']}></span></p>
-                        <p class="col-md-4"><strong>发布时间:</strong><span><{date("Y-m-d H:i:s",$info['time'])}></span></p></div>
+                        <p class="col-md-4"><strong>发布时间:</strong><span><{date("Y-m-d H:i:s",$info['time'])}></span></p>
+                        <p class="col-md-4"><strong>链接:</strong><span id="clip_1"><{$info['url']}></span>
+                            <button class="btn btn-xs btn-success copy_btn"  id="clip_yijian" data-clipboard-target="clip_1">复制</button>
+                        </p>
                 </div>
-                <div class="row">
-                    <p class="col-md-12" style="line-height: 40px;">
+
+                  <!--  <p class="col-md-12" style="line-height: 40px;">
                         <strong>链接:</strong>
                         <span id="clip_1"><{$info['url']}></span>
-                        <button class="btn btn-sm btn-success" style="margin-left: 10px;" id="clip_yijian" data-clipboard-target="clip_1">一键复制到粘贴板</button>
-                    </p>
-                </div>
+                        <button class="btn btn-sm btn-success copy_btn"  id="clip_yijian" data-clipboard-target="clip_1">一键复制到粘贴板</button>
+                    </p>-->
+
 
             </div>
             <div class="info-content">
