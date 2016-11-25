@@ -292,6 +292,7 @@ class Designate_Model extends CI_Model
                 ->limit($pInfo["length"], $pInfo["start"])
                 ->get()->result_array();
 
+
             //查询总记录条数
             $total = $this->db->select("event.id")
                 ->from("event")

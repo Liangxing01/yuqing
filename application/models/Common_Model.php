@@ -87,7 +87,7 @@ class Common_Model extends CI_Model
         if (!$check) {
             return false;
         }
-        $data = $this->db->select("l.description,l.pid,l.id,l.time,l.name,l.speaker,user.avatar")
+        $data = $this->db->select("l.description,l.pid,l.id,l.time,user.name,l.speaker,user.avatar")
             ->from('event_log AS l')
             ->where('l.event_id', $eid)
             ->join('user','l.speaker = user.id')
