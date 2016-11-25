@@ -124,6 +124,10 @@ class Watch extends MY_Controller {
         $this->assign('useracter',$user_info[0]['avatar']);
         $this->assign('usertype',$usertype);
 
+        //获取事件信息链接
+        $links = $this->handler_model->get_info_url($event_id);
+        $this->assign("links", $links);
+
         //获取 参考文件
         $doc_arr = $this->handler_model->get_event_attachment($event_id);
         $this->assign('attachment',$doc_arr);

@@ -521,6 +521,7 @@
 	tagier();
 
 
+    //上方 iframe 窗口
     $('.panel .tools .fa-chevron-up').click(function () {
         var el = jQuery(this).parents(".panel").children(".panel-body");
         if (jQuery(this).hasClass("fa-chevron-down")) {
@@ -528,17 +529,7 @@
             el.slideUp(200);
         } else {
             jQuery(this).removeClass("fa-chevron-up").addClass("fa-chevron-down");
-            var info_url = el.attr("info-url");
-            var id = $(this).attr('target');
             el.slideDown(200);
-            if($('iframe[name='+id+']').html()){
-                return false;
-            }
-           return false;
-            //alert(info_url);
-//            if (el.html() === "") {
-//                get_info_content(event_id, info_id, el);
-//            }
         }
     });
 

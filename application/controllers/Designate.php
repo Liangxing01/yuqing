@@ -305,6 +305,10 @@ class Designate extends MY_controller
         $this->assign('useracter', $user_info[0]['avatar']);
         $this->assign('usertype', $usertype);
 
+        //获取事件信息链接
+        $links = $this->handler->get_info_url($event_id);
+        $this->assign("links", $links);
+
         //获取 参考文件
         $doc_arr = $this->handler->get_event_attachment($event_id);
         $this->assign('attachment', $doc_arr);
