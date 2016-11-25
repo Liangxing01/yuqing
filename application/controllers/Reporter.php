@@ -214,12 +214,11 @@ class Reporter extends MY_controller
 
         $config=array();
         $config['upload_path'] = './uploads/temp/';
-        $config['allowed_types'] = '*';
+        $config['allowed_types'] = 'jpg|png|jpeg';
         $config['max_size'] = 10000;
         $config['max_width'] = 0;
         $config['max_height'] = 0;
         $config['encrypt_name'] = true;
-        $config['detect_mime']=false;
 
         $this->load->library('upload', $config);
 
@@ -249,12 +248,11 @@ class Reporter extends MY_controller
     public function upload_video()
     {
         $config['upload_path'] = './uploads/temp/';
-        $config['allowed_types'] = '*';
+        $config['allowed_types'] = 'mp4|rmvb|flv|avi|rm|wmv|mkv';
         $config['max_size'] = 0;
         $config['max_width'] = 0;
         $config['max_height'] = 0;
         $config['encrypt_name'] = true;
-        $config['detect_mime']=false;
 
 
         $this->load->library('upload', $config);
