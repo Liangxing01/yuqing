@@ -16,6 +16,10 @@ class Common extends MY_Controller
     public function event_detail()
     {
         $event_id = $this->input->get("eid");
+        //更新事件报警状态为0
+        $this->load->model("Common_Model","common");
+        $this->common->update_alarm_state($event_id,0);
+
         if (!isset($event_id) || $event_id == null || $event_id == "") {
             show_404();
         }

@@ -250,5 +250,18 @@ class Common_Model extends CI_Model
         return $res;
     }
 
+    public function update_alarm_state($eid,$state){
+        $res = $this->db->select('state')->from('event_alert')
+            ->where('event_id',$eid)
+            ->get()->result_array();
+        if(!empty($res)){
+            $update = array(
+                'state' => $state
+            );
+            $this->db->where('event_id',$eid);
+            $this->db->update('event_alert',$update);
+        }
+    }
+
 
 }

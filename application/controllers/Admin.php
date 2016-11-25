@@ -306,6 +306,62 @@ class Admin extends MY_Controller
         }
     }
 
+    /**
+     * 用户登录日志页面
+     */
+    public function show_login_log(){
+        $this->assign("active_title", "struct_parent");
+        $this->assign("active_parent", "login_log");
+        $this->all_display('admin/user_login_log.html');
+    }
+
+    /**
+     * 展示用户登录日志记录
+     */
+    public function user_login_data(){
+        $pData['sEcho'] = $this->input->post('psEcho', true);           //DataTables 用来生成的信息
+        $pData['start'] = $this->input->post('iDisplayStart', true);    //显示的起始索引
+        $pData['length'] = $this->input->post('iDisplayLength', true);  //每页显示的行数
+        $pData['sort_type'] = $this->input->post('sSortDir_0', true);    //结束时间排序的方向 默认 desc
+
+
+        //高级查询 关键字
+        $pData['search'] = $this->input->post('sSearch', true);         //全局搜索关键字 默认为空
+        $pData['start_start'] = $this->input->post('start_start', true);//查询事件开始时间 起始范围 默认为0
+        $pData['start_end'] = $this->input->post('start_end', true);    //查询事件开始时间 结束范围 默认为0
+        $pData['end_start'] = $this->input->post('end_start', true);    //查询事件结束时间 起始范围 默认为0
+        $pData['end_end'] = $this->input->post('end_end', true);        //查询事件结束时间 结束范围 默认为0
+
+        if ($pData['start'] == NULL) {
+            $pData['start'] = 0;
+        }
+        if ($pData['length'] == NULL) {
+            $pData['length'] = 10;
+        }
+        if ($pData['search'] == NULL) {
+            $pData['search'] = '';
+        }
+
+        if ($pData['start_start'] == NULL) {
+            $pData['sort_start'] = 0;
+        }
+        if ($pData['start_end'] == NULL) {
+            $pData['start_end'] = 0;
+        }
+        if ($pData['end_start'] == NULL) {
+            $pData['end_start'] = 0;
+        }
+        if ($pData['end_end'] == NULL) {
+            $pData['end_end'] = 0;
+        }
+
+        $data = $this->admin_model->get_user_login_log($pData);
+
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($data));
+    }
+
     //生成组织结构树
     public function tree()
     {

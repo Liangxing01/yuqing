@@ -68,7 +68,6 @@ class Verify_Model extends CI_Model
     {
         $uid = $this->session->userdata('uid');
         $_p = explode(",", $this->session->userdata('privilege'));
-
         foreach ($_p as $one) {
             switch ($one) {
                 case manager :

@@ -230,6 +230,12 @@ class Handler extends MY_Controller {
         $uid = $this->session->userdata('uid');
 
         $event_id = $this->input->get('eid');
+        //判断能不能看这个 页面
+        $this->load->model('Verify_Model','verify');
+        $ver = $this->verify->can_see_event($event_id);
+        if(!$ver){
+            show_404();
+        }
         //判断对这样事 有督办全
         $duban = $this->my_model->check_duban($uid,$event_id);
         if ($duban){

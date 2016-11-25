@@ -1,4 +1,5 @@
 <link rel="stylesheet" href="/css/common.css">
+<script language="javascript" src="/js/ZeroClipboard.min.js"></script>
 <style>
     .inbox-body {
         background: #FFF;
@@ -7,6 +8,12 @@
     .form-inbox {
         border-top: 1px solid #dddddd;
         padding-top: 10px;
+    }
+    .info_detail p{
+        word-break: break-all;
+    }
+    .copy_yijian{
+        margin-left:10px;
     }
 </style>
 <!-- BEGIN MAIN CONTENT -->
@@ -115,7 +122,7 @@
 
 <!-- Page Script -->
 <script language="javascript">
-
+    var clip_num = 1;
     $('.panel .tools .fa-chevron-up').click(function () {
         var el = jQuery(this).parents(".panel").children(".panel-body");
         if (jQuery(this).hasClass("fa-chevron-down")) {
@@ -140,15 +147,20 @@
             data: {"event_id": event_id, "info_id": info_id},
             url: "/common/get_event_info",
             success: function (data) {
+                clip_num++;
                 var info =
                         '<div class="sender-info">' +
                         '<div class="row">' +
-                        '<div class="col-md-12">' +
-                        (data.hasOwnProperty("publisher") ? '<p class="col-md-4">&nbsp;<strong>上报人:</strong><span>' + data.publisher + '</span></p>' : "") +
-                        '<p class="col-md-4">&nbsp;<strong>类型:</strong><span>' + data.type + '</span></p>' +
-                        '<p class="col-md-4">&nbsp;<strong>链接:</strong><span>' + data.url + '</span></p>' +
-                        '<p class="col-md-4">&nbsp;<strong>来源:</strong><span>' + data.source + '</span></p>' +
-                        '<p class="col-md-4">&nbsp;<strong>发布时间:</strong><span>' + timeToDate(data.time * 1000) + '</span></p>' +
+                        '<div class="col-md-12 info_detail">' +
+                        (data.hasOwnProperty("publisher") ? '<p class="col-md-4"><strong>上报人:</strong><span>' + data.publisher + '</span></p>' : "") +
+                        '<p class="col-md-4"><strong>类型:</strong><span>' + data.type + '</span></p>' +
+                        '<p class="col-md-4">'+
+                        '<strong>链接:</strong>'+
+                        '<span id="new'+clip_num+'">' + data.url + '</span>'+
+                        '<button data-clipboard-target="new'+clip_num+'" class="copy_yijian btn btn-xs btn-success">复制</button>'+
+                        '</p>' +
+                        '<p class="col-md-4"><strong>来源:</strong><span>' + data.source + '</span></p>' +
+                        '<p class="col-md-4"><strong>发布时间:</strong><span>' + timeToDate(data.time * 1000) + '</span></p>' +
                         '</div>' +
                         '</div>' +
                         '</div>' +
@@ -161,7 +173,7 @@
                         '<div class="info_des_video col-md-12"></div>' +
                         '</div>';
                 info_box.html(info);
-
+                var clip_num_yijian = new ZeroClipboard($('.copy_yijian'));//添加功能
                 //循环图片和视频
                 var info_list_img = '<h2>图片描述</h2>';    //图片
                 var info_list_video = '<h2>视频描述</h2>';  //视频

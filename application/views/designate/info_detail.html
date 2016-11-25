@@ -1,4 +1,6 @@
 <link rel="stylesheet" href="/css/common.css">
+<script src="/js/ZeroClipboard.min.js"></script>
+
 <style>
     .inbox-body {
         background: #FFF;
@@ -7,6 +9,12 @@
     .form-inbox {
         border-top: 1px solid #dddddd;
         padding-top: 10px;
+    }
+    .copy_btn{
+        margin-left:10px;
+    }
+    .sender-info p{
+        word-break: break-all;
     }
 </style>
 <!-- BEGIN MAIN CONTENT -->
@@ -25,14 +33,23 @@
             </div>
             <div class="sender-info">
                 <div class="row">
-                    <div class="col-md-12"><p class="col-md-4">
-                        &nbsp;<strong>上报人:</strong><span><{$info['publisher']}></span></p>
-                        <p class="col-md-4">&nbsp;<strong>类型:</strong><span><{$info['type']}></span></p>
-                        <p class="col-md-4">&nbsp;<strong>链接:</strong><span><{$info['url']}></span></p>
-                        <p class="col-md-4">&nbsp;<strong>来源:</strong><span><{$info['source']}></span></p>
-                        <p class="col-md-4">
-                            &nbsp;<strong>发布时间:</strong><span><{date("Y-m-d H:i:s",$info['time'])}></span></p></div>
+                    <div class="col-md-12">
+                        <p class="col-md-4"><strong>上报人:</strong><span><{$info['publisher']}></span></p>
+                        <p class="col-md-4"><strong>类型:</strong><span><{$info['type']}></span></p>
+                        <p class="col-md-4"><strong>来源:</strong><span><{$info['source']}></span></p>
+                        <p class="col-md-4"><strong>发布时间:</strong><span><{date("Y-m-d H:i:s",$info['time'])}></span></p>
+                        <p class="col-md-4"><strong>链接:</strong><span id="clip_1"><{$info['url']}></span>
+                            <button class="btn btn-xs btn-success copy_btn"  id="clip_yijian" data-clipboard-target="clip_1">复制</button>
+                        </p>
                 </div>
+
+                  <!--  <p class="col-md-12" style="line-height: 40px;">
+                        <strong>链接:</strong>
+                        <span id="clip_1"><{$info['url']}></span>
+                        <button class="btn btn-sm btn-success copy_btn"  id="clip_yijian" data-clipboard-target="clip_1">一键复制到粘贴板</button>
+                    </p>-->
+
+
             </div>
             <div class="info-content">
                 <p><strong>信息描述:</strong></p>
@@ -99,6 +116,7 @@
 <script src="/js/public.js"></script>
 <!-- Page Script -->
 <script language="javascript">
+    var client_yijian = new ZeroClipboard($('#clip_yijian'));
     $("#commit-info-btn").click(function () {
         var id = $("#info_id").val();
         var type = $('select#type option:selected').val();

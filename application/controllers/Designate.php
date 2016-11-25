@@ -269,6 +269,13 @@ class Designate extends MY_controller
         }
         $uid = $this->session->userdata('uid');
 
+        //判断能不能看这个 页面
+        $this->load->model('Verify_Model','verify');
+        $ver = $this->verify->can_see_event($event_id);
+        if(!$ver){
+            show_404();
+        }
+
         //判断有无督办权限
         $this->load->model("MY_Model", "my_model");
         $duban = $this->my_model->check_duban($uid,$event_id);

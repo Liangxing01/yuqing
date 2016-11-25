@@ -1,7 +1,11 @@
 <link rel="stylesheet" href="/css/common.css">
+<script language="JavaScript" src='/js/ZeroClipboard.min.js'></script>
 <style>
     .inbox-body {
         background: #FFF;
+    }
+    .sender-info p{
+        word-break: break-all;
     }
 </style>
 <!-- BEGIN MAIN CONTENT -->
@@ -23,11 +27,24 @@
                     <div class="col-md-12"><p class="col-md-4">
                         &nbsp;<strong>上报人:</strong><span><{$info['publisher']}></span></p>
                         <p class="col-md-4">&nbsp;<strong>类型:</strong><span><{$info['type']}></span></p>
-                        <p class="col-md-4">&nbsp;<strong>链接:</strong><span><{$info['url']}></span></p>
+
                         <p class="col-md-4">&nbsp;<strong>来源:</strong><span><{$info['source']}></span></p>
                         <p class="col-md-4">
-                            &nbsp;<strong>发布时间:</strong><span><{date("Y-m-d H:i:s",$info['time'])}></span></p></div>
+                            &nbsp;<strong>发布时间:</strong><span><{date("Y-m-d H:i:s",$info['time'])}></span></p>
+                        <p class="col-md-4">
+                            &nbsp;<strong>链接:</strong>
+                            <span id="clip_num_2"><{$info['url']}></span>
+                            <button class="btn btn-xs btn-success" id="clip_num_1" data-clipboard-target="clip_num_2">复制</button>
+                        </p>
+                    </div>
                 </div>
+                <!--<div class="row">
+                    <p class="col-md-12">
+                        <strong>链接:</strong>
+                        <span id="clip_num_2"><{$info['url']}></span>
+                        <button class="btn btn-sm btn-success" id="clip_num_1" data-clipboard-target="clip_num_2">一键复制到粘贴板</button>
+                    </p>
+                </div>-->
             </div>
             <div class="info-content">
                 <p><strong>信息描述:</strong></p>
@@ -57,3 +74,6 @@
     </section>
 </section>
 <!-- END SECTION -->
+<script>
+    var client = new ZeroClipboard($('#clip_num_1'));
+</script>
