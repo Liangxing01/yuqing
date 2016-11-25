@@ -152,11 +152,13 @@ class Welcome extends MY_Controller
     public function change_avatar()
     {
         $config['upload_path'] = './uploads/avatar/';
-        $config['allowed_types'] = 'jpg|png|jpeg';
+        //$config['allowed_types'] = 'jpg|png|jpeg';
+        $config['allowed_types'] = '*';
         $config['max_size'] = 10000;
         $config['max_width'] = 0;
         $config['max_height'] = 0;
         $config['encrypt_name'] = true;
+        $config['detect_mime']=false;
 
         $this->load->library('upload', $config);
 
