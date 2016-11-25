@@ -291,6 +291,7 @@ class Designate_Model extends CI_Model
                 ->order_by("end_time", $pInfo["sort_end"])
                 ->limit($pInfo["length"], $pInfo["start"])
                 ->get()->result_array();
+        
 
             //查询总记录条数
             $total = $this->db->select("event.id")

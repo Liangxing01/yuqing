@@ -156,10 +156,10 @@ class Admin extends MY_Controller
         if ($pData['state'] == NULL) {
             $pData['state'] = '';
         }
-        if ($pData['start_start'] == NULL) {
+        if ($pData['sort_start'] == NULL) {
             $pData['sort_start'] = 0;
         }
-        if ($pData['start_end'] == NULL) {
+        if ($pData['sort_end'] == NULL) {
             $pData['start_end'] = 0;
         }
         if ($pData['end_start'] == NULL) {
