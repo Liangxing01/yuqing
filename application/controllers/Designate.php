@@ -564,5 +564,4 @@ class Designate extends MY_controller
         $this->load->model("Designate_Model", "designate");
         echo $this->designate->get_relation_tree();
     }
-
 }
