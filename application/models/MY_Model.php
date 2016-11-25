@@ -167,7 +167,7 @@ class MY_Model extends CI_Model {
         $old_avatar = $this->db->select('avatar')->from('user')
             ->where('id',$uid)
             ->get()->row_array();
-        if(!empty($old_avatar) && $old_avatar != "/img/avatar/avatar.png"){
+        if(!empty($old_avatar) && $old_avatar['avatar'] != "/img/avatar/avatar.png"){
             $old_avatar_url = $old_avatar['avatar'];
             unlink($_SERVER['DOCUMENT_ROOT'].$old_avatar_url);
         }
