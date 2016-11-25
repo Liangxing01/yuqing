@@ -47,6 +47,22 @@
 	@media only screen and (max-width:1024px ) {
 		#sjwc{ margin-right: 0;padding: 5px 18px;}
 	}
+    /*iframe蒙层样式*/
+    .prop_box{
+        position: absolute;
+        width:100%;
+        height:100%;
+        background: rgba(0,0,0,0.2);
+    }
+    .prop_box img{
+        position: absolute;
+        top:50%;
+        left:45%;
+        transform: translate(-50%,-50%);
+        -webkit-transform: translate(-50%,-50%);
+        -moz-transform: translate(-50%,-50%);
+        -o-transform: translate(-50%,-50%);
+    }
 </style>
 <section id="main-content">
     <section class="wrapper site-min-height">
@@ -60,6 +76,7 @@
             </header>
             <div class="panel-body" info-url="<{$item['url']}>" style="display: none">
                 <!--<iframe width='100%' height="500px" name="<{$item['id']}>"></iframe>-->
+                <div class="prop_box"><img src="/js/layer/skin/default/loading-2.gif" alt=""></div>
                 <iframe width="100%" height="500px" name="<{$item['id']}>"></iframe>
             </div>
         </section>
@@ -532,7 +549,12 @@
             el.slideDown(200);
         }
     });
-
+    //遍历iframe绑定onload事件
+    $('iframe').each(function(){
+       this.onload = function(){
+           $('.prop_box').remove();
+       }
+    })
 
     //如果状态为 已完成 所有input 不能输入
     $(document).ready(function () {
@@ -544,7 +566,5 @@
         }
 
     });
-    window.onload =function(){
-        $('ifame')
-    }
+
 </script>
