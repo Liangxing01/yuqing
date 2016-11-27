@@ -563,4 +563,12 @@ class Designate extends MY_controller
         $this->load->model("Designate_Model", "designate");
         echo $this->designate->get_relation_tree();
     }
+
+    // demo Gateway
+    public function test(){
+        $this->load->library("Gateway");
+        Gateway::$registerAddress = "127.0.0.1:1238";
+       echo Gateway::getAllClientCount();
+    }
+
 }
