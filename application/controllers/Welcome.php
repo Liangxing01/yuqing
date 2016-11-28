@@ -26,6 +26,18 @@ class Welcome extends MY_Controller
         $this->assign('login', $login);
         $this->all_display('index.html');
     }
+    
+    /**
+     * 手机版首页
+     */
+    public function m_index(){
+    	$this->assign("active_title", "home_page");
+        $this->assign("active_parent", "home_parent");
+        $login = $this->my_model->get_login_list($this->session->userdata('uid'), 5);
+        $this->assign("avatar", $this->session->avatar);
+        $this->assign('login', $login);
+        $this->m_all_display('m_index.html');
+    }
 
 
     /*
