@@ -285,11 +285,34 @@
                 pri += $(this).val()+",";
             }
         });
-        pri = pri.substring(0,pri.length - 1)
+        pri = pri.substring(0,pri.length - 1);
 
+        var user_is_repeat = false;
+        //判断用户名是否重复
+        $.ajax({
+            url: "/admin/check_username",
+            method:"post",
+            dataType:"json",
+            async:false,
+            data:{
+                "username" :  $("#username").val(),
+                "uid" :uid ? uid: ''
+            },
+            success:function (data) {
+                if(data.res == 0){
+                    //用户名重复
+                    layer.msg("用户名已存在",{anim:6,time:1500});
+                    user_is_repeat = true;
+                }
+            }
+        });
 
+        if(user_is_repeat){
+            return false;
+        }
 
         if($(that).attr('id')== 'submit'){
+
             $.ajax({
                 url: "/admin/add_person",
                 method: "post",
