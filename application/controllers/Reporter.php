@@ -24,9 +24,28 @@ class Reporter extends MY_controller
         $this->all_display("report/want_report.html");
 //        $this->all_display("report/little.html");
     }
+    
+    /**
+     * 手机版 我要提交 页面
+     */
+    public function m_wantReport(){
+    	$this->assign("active_title", "report_parent");
+        $this->assign("active_parent", "want_report");
+        $this->m_all_display("report/m_want_report.html");
+    }
 
     /**
      * 提交列表，视图载入
+     */
+    public function m_reportRecording()
+    {
+        $this->assign("active_title", "report_parent");
+        $this->assign("active_parent", "report_recording");
+        $this->m_all_display("report/m_report_record.html");
+    }
+    
+    /**
+     * 手机版 提交列表，视图载入
      */
     public function reportRecording()
     {
@@ -124,7 +143,25 @@ class Reporter extends MY_controller
         $this->assign("active_parent", "report_recording");
         $this->all_display("report/info_detail.html");
     }
+    
+    /**
+     * 信息详情 手机页面载入
+     */
+    public function m_show_detail()
+    {
+        $info_id = $this->input->get("id", true);
+        if (!isset($info_id) || $info_id == null || $info_id == "") {
+            show_404();
+        }
 
+        $this->load->model("Designate_Model", "designate");
+        $info = $this->designate->get_info($info_id);
+        $this->assign("info", $info);
+        $this->assign("active_title", "report_parent");
+        $this->assign("active_parent", "report_recording");
+        $this->m_all_display("report/m_info_detail.html");
+    }
+	
     /**
      * 修改时判断url是否重复
      * 判断是否和自己已经提交过的其它事件重复
