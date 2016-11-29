@@ -147,9 +147,16 @@ class Designate extends MY_controller
      */
     public function get_processor_tree()
     {
+        $id = $this->input->post("id");
         $this->load->model("Tree_Model", "tree");
+
+        if (!isset($id) || $id == null || $id == "") {
+            $nodes = $this->tree->get_processor_group_tree();
+        }else{
+            $nodes = $this->tree->get_processor_nodes($id);
+        }
         $this->output->set_content_type('application/json')
-            ->set_output($this->tree->get_processor_tree());
+            ->set_output($nodes);
     }
 
 
@@ -269,18 +276,18 @@ class Designate extends MY_controller
         $uid = $this->session->userdata('uid');
 
         //判断能不能看这个 页面
-        $this->load->model('Verify_Model','verify');
+        $this->load->model('Verify_Model', 'verify');
         $ver = $this->verify->can_see_event($event_id);
-        if(!$ver){
+        if (!$ver) {
             show_404();
         }
 
         //判断有无督办权限
         $this->load->model("MY_Model", "my_model");
-        $duban = $this->my_model->check_duban($uid,$event_id);
-        if ($duban){
+        $duban = $this->my_model->check_duban($uid, $event_id);
+        if ($duban) {
             $usertype = 1;
-        }else{
+        } else {
             $usertype = 0;
         }
 
@@ -565,10 +572,23 @@ class Designate extends MY_controller
     }
 
     // demo Gateway
-    public function test(){
+    public function test($uid = 1)
+    {
         $this->load->library("Gateway");
-        Gateway::$registerAddress = "127.0.0.1:1238";
-       echo Gateway::getAllClientCount();
+        Gateway::$registerAddress = $this->config->item("VM_registerAddress");
+        $user_online = Gateway::isUidOnline($uid);
+        if ($user_online == 0) {
+            echo "该用户不在线";
+        }
+        Gateway::sendToUid($uid, "我是管理员,你在干嘛?");
+    }
+
+
+    public function count_user()
+    {
+        $this->load->library("Gateway");
+        Gateway::$registerAddress = $this->config->item("VM_registerAddress");
+        echo Gateway::getAllClientCount();
     }
 
 }

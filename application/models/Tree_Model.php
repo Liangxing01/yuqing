@@ -109,47 +109,93 @@ class Tree_Model extends CI_Model
      * 获得处理人(单位)数据
      * @return Json字符串
      */
-    public function get_processor_tree()
+    public function get_processor_group_tree()
     {
-        $processor_group = $this->db->select("user.group_id AS id, group.name AS name")
-            ->join("user_privilege", "user.id = user_privilege.uid", "left")
-            ->join("group", "group.id = user.group_id", "left")
-            ->where("user_privilege.pid", 3)
-            ->group_by("user.group_id")
-            ->get("user")->result_array();
+        $processor_group_id = $this->get_processor_group_id();
 
-        $processors = $this->db->select("user.id, user.name, user.group_id")
-            ->join("user_privilege", "user.id = user_privilege.uid", "left")
-            ->where("user_privilege.pid", 3)
-            ->get("user")->result_array();
+        $group_tree_nodes = $this->db->select("name, lft, rgt, type, uid")
+            ->where_in("uid", $processor_group_id)
+            ->where("type", 0)
+            ->or_where("name", "组织关系")
+            ->or_where("type", 2)
+            ->order_by("lft", "asc")
+            ->get("relation")->result_array();
 
-        $tree = array(
-            "id" => 0,
-            "name" => "处理人(单位)",
-            "open" => true,
-            "children" => array()
-        );
+        // 以一个空的$right栈开始
+        $right = array();
 
-        foreach ($processor_group AS $group) {
-            $group_node = array(
-                "id" => $group["id"],
-                "name" => $group["name"],
-                "isdepartment" => 0,
-                "open" => false,
-                "children" => array()
-            );
-            foreach ($processors AS $processor) {
-                if ($group["id"] == $processor["group_id"]) {
-                    $tree_node = array(
-                        "id" => $processor["id"],
-                        "name" => $processor["name"],
-                        "isdepartment" => 1
-                    );
-                    $group_node["children"][] = $tree_node;
+        $tree_json = "";
+        // 生成 Ztree Json树
+        foreach ($group_tree_nodes AS $node) {
+            // 检查栈里面有没有元素
+            if (count($right) > 0) {
+                // 检查我们是否需要从栈中删除一个节点
+                while ($right[count($right) - 1]["rgt"] < $node['rgt']) {
+                    if ($right[count($right) - 1]["rgt"] - $right[count($right) - 1]["lft"] != 1) {
+                        $tree_json .= "]},";
+                    } else {
+                        $tree_json .= "},";
+                    }
+                    array_pop($right);
                 }
 
+                //判断分类节点
+                if ($node["type"] == 2) {
+                    $tree_json .= "{name: '" . $node["name"] . "',id:" . $node["uid"] . ",nocheck:true" . ",isdepartment:" . $node["type"] . ",icon:'/assets/ztree/zTreeStyle/img/group.png',open:false,children:[";
+                } else {
+                    $tree_json .= "{name: '" . $node["name"] . "',id:" . $node["uid"] . ",isParent:true" . ",isdepartment:" . $node["type"] . ",icon:'/assets/ztree/zTreeStyle/img/group.png',open:false,children:[";
+                }
+
+            } else {
+                //根节点
+                $tree_json .= "{name:'处理人(单位)'";
+                if ($node["rgt"] - $node["lft"] != 1) {
+                    $tree_json .= ",id:0,open:true,children:[";
+                }
             }
-            $tree["children"][] = $group_node;
+
+            // 把这个节点添加到栈中
+            $right[] = $node;
+        }
+
+        //闭合括号
+        while (!empty($right)) {
+            if ($right[count($right) - 1]["rgt"] - $right[count($right) - 1]["lft"] != 1) {
+                $tree_json .= "]}";
+            } else {
+                $tree_json .= "}";
+            }
+            array_pop($right);
+        }
+
+        $tree_json = str_replace(",]", "]", $tree_json);
+        return $tree_json;
+    }
+
+
+    /**
+     * 查询节点下的
+     * @param $node_id
+     * @return Json 字符串
+     */
+    public function get_processor_nodes($node_id)
+    {
+        $root = $this->db->select("name, lft, rgt, type, uid")
+            ->where(array("uid" => $node_id, "type !=" => 1))
+            ->get("relation")->row_array();
+
+        $tree_nodes = $this->db->select("name, lft, rgt, type, relation.uid")
+            ->join("user_privilege", "user_privilege.uid = relation.uid", "left")
+            ->where(array("type" => 1, "lft>" => $root["lft"], "rgt<" => $root["rgt"], "user_privilege.pid" => 3))
+            ->get("relation")->result_array();
+
+        $tree = [];
+        foreach ($tree_nodes AS $node) {
+            $tree[] = array(
+                "id" => $node["uid"],
+                "name" => $node["name"],
+                "isdepartment" => $node["type"]
+            );
         }
         return json_encode($tree);
     }
@@ -344,6 +390,28 @@ class Tree_Model extends CI_Model
             $tree["children"][] = $group_node;
         }
         return json_encode($tree);
+    }
+
+
+    /**
+     * 获得 处理人单位id
+     * @return array
+     */
+    protected function get_processor_group_id()
+    {
+        $processor_group = $this->db->select("yq_group.id AS id, yq_group.name AS name")
+            ->join("user_group", "user_group.gid = group.id")
+            ->join("user", "user_group.uid = user.id")
+            ->join("user_privilege", "user.id = user_privilege.uid", "left")
+            ->where(array("user_privilege.pid" => 3, "user_group.is_exist" => 1))
+            ->group_by("group.id")
+            ->get("group")->result_array();
+
+        $group_id = array();
+        foreach ($processor_group AS $item) {
+            $group_id[] = $item["id"];
+        }
+        return $group_id;
     }
 
 }

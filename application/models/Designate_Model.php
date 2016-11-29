@@ -706,6 +706,32 @@ class Designate_Model extends CI_Model
         }
 
 
+        // TODO 事件消息推送数据
+        $event_msg = array();
+        foreach ($processors["user"] AS $user) {
+            $event_msg[] = array(
+                "title" => $data["title"],
+                "type" => 1,    //指派消息类型
+                "send_uid" => $user,
+                "send_gid" => null,
+                "time" => $time,
+                "url" => "/common/event_detail?eid=" . $event_id,
+                "state" => 0    //消息未读
+            );
+        }
+        foreach ($processors["group"] AS $group) {
+            $event_msg[] = array(
+                "title" => $data["title"],
+                "type" => 1,    //指派消息类型
+                "send_uid" => null,
+                "send_gid" => $group,
+                "time" => $time,
+                "url" => "/common/event_detail?eid=" . $event_id,
+                "state" => 0    //消息未读
+            );
+        }
+
+
         //数据分表操作
         //事件信息关联
         if (!empty($event_info)) {
@@ -737,6 +763,11 @@ class Designate_Model extends CI_Model
         if (!empty($event_alert)) {
             $this->db->insert_batch("event_alert", $event_alert);
         }
+        // TODO 事件消息
+        if (!empty($event_msg)) {
+            $this->db->insert_batch("business_msg", $event_msg);
+        }
+
 
         // 事件指派事务提交
         if ($this->db->trans_status() === FALSE) {
@@ -744,6 +775,18 @@ class Designate_Model extends CI_Model
             return false;
         } else {
             $this->db->trans_commit();
+            //TODO 业务信息推送
+            try {
+                $this->load->library("Gateway");
+                Gateway::$registerAddress = $this->config->item("VM_registerAddress");
+                $user_online = Gateway::isUidOnline($uid);
+                if ($user_online == 0) {
+                    echo "该用户不在线";
+                }
+                Gateway::sendToUid($uid, "我是管理员,你在干嘛?");
+            } catch (Exception $e) {
+
+            }
             return true;
         }
     }
