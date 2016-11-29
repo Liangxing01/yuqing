@@ -174,73 +174,6 @@
     treeObj = $.fn.zTree.init($("#treePartment"), setting);
 
 
-    /*//提交按钮
-    $("#submit").click(function () {
-        var nodes = treeObj.getCheckedNodes(true);//获取到被选中的集成
-
-        //表单验证
-        if(!$("#username").val()){
-            layer.msg('请输入用户名');
-            $("#username").focus();
-            return false;
-        }
-        if(!$("#pass").val()){
-            layer.msg('请输入密码');
-            $("#pass").focus();
-            return false;
-        }
-        if(!$("#name").val()){
-            layer.msg("请输入你的姓名");
-            $('#name').focus();
-            return false;
-        }
-        if(!$("input[type='checkbox']:checked").length){
-            layer.msg("请勾选权限");
-            return false;
-        }
-        if (nodes.length == 0) {//没有选中
-            layer.msg("请选择一个单位",{anim:6,time:1000})
-            return false;
-        }else if(nodes.length > 1){
-            layer.msg("最多选择一个单位",{anim:6,time:1000})
-            return false;
-        }
-
-        var pri = "";
-        $("input[type=checkbox]").each(function(){
-            if(this.checked){
-                pri += $(this).val()+",";
-            }
-        });
-        pri = pri.substring(0,pri.length - 1)
-
-
-
-
-
-        $.ajax({
-            url: "/admin/add_person",
-            method: "post",
-            dataType : 'json',
-            data: {
-                "username": $("#username").val(),
-                "password": $("#pass").val(),
-                "name" : $("#name").val(),
-                "sex" : $("input[name='sex']:checked").val(),
-                "privilege" : pri,
-                'gid':nodes[0].id,
-            },
-            success: function (data) {
-                if (data.res == 1){
-                    layer.msg('添加成功!');
-                    treeObj2.refresh();
-                }else {
-                    layer.msg('添加失败！',{anim:6});
-                }
-            }
-        });
-
-    });*/
 
 
     function sub_or_up(that){
@@ -274,9 +207,6 @@
         if (nodes.length == 0) {//没有选中
             layer.msg("请选择一个单位",{anim:6,time:1000})
             return false;
-        }else if(nodes.length > 1){
-            layer.msg("最多选择一个单位",{anim:6,time:1000})
-            return false;
         }
 
         var pri = "";
@@ -285,9 +215,15 @@
                 pri += $(this).val()+",";
             }
         });
-        pri = pri.substring(0,pri.length - 1)
+        pri = pri.substring(0,pri.length - 1);
 
 
+
+        //获取所有单位的id
+        var gids = [];
+        for(i in nodes){
+            gids.push(nodes[i].id);
+        }
 
         if($(that).attr('id')== 'submit'){
             $.ajax({
@@ -300,7 +236,7 @@
                     "name" : $("#name").val(),
                     "sex" : $("input[name='sex']:checked").val(),
                     "privilege" : pri,
-                    'gid':nodes[0].id,
+                    'gid':gids,
                     "job":$("#job").val()
                 },
                 success: function (data) {
@@ -326,7 +262,7 @@
                     "name" : $("#name").val(),
                     "sex" : $("input[name='sex']:checked").val(),
                     "privilege" : pri,
-                    'gid':nodes[0].id,
+                    'gid':gids,
                     'uid':uid,
                     "job":$("#job").val()
                 },
@@ -435,7 +371,11 @@
                         }
                     }
                    // treeObj.getNodeByTId('1').children[0].checked = true;
-                    treeObj.getNodeByParam('id',data.group_id,null).checked = true;
+
+                    for(gid in data.group_id){
+                        treeObj.getNodeByParam('id',data.group_id[gid],null).checked = true;
+                    }
+
                     treeObj.refresh();
                 }
             }

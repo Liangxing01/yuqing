@@ -136,13 +136,17 @@ LEFT JOIN yq_user as u on u.id = a.manager LEFT JOIN yq_type as t on t.id = i.ty
  e.id = a.event_id
 WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
         $gid = $this->session->userdata('gid');
+        if(empty($gid)){
+            return false;
+        }
         if($where){
             $data['aaData'] = $this->db->select('a.event_id as id,a.time AS zptime,a.group,a.description,
         e.title,u.name as zpname,a.event_id as eid,e.rank')->from('event_designate AS a')
                 ->where('a.state','未处理')
                 ->group_start()
                 ->where('a.processor',$processorID)
-                ->or_where('a.group',$gid)
+                //->or_where('a.group',$gid)
+                ->or_where_in('a.group',explode(',',$gid))
                 ->group_end()
                 ->where($where)
                 ->join('user as u','u.id = a.manager','left')
@@ -162,7 +166,7 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
                 ->where('a.state','未处理')
                 ->group_start()
                 ->where('a.processor',$processorID)
-                ->or_where('a.group',$gid)
+                ->or_where_in('a.group',explode(',',$gid))
                 ->group_end()
                 ->where($where)
                 ->join('user as u','u.id = a.manager','left')
@@ -188,7 +192,7 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
                 ->where('a.state','未处理')
                 ->group_start()
                 ->where('a.processor',$processorID)
-                ->or_where('a.group',$gid)
+                ->or_where_in('a.group',explode(',',$gid))
                 ->group_end()
                 ->join('user as u','u.id = a.manager','left')
                 ->join('event as e','e.id = a.event_id','left')
@@ -204,7 +208,7 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
                 ->where('a.state','未处理')
                 ->group_start()
                 ->where('a.processor',$processorID)
-                ->or_where('a.group',$gid)
+                ->or_where_in('a.group',explode(',',$gid))
                 ->group_end()
                 ->join('user as u','u.id = a.manager','left')
                 ->join('event as e','e.id = a.event_id','left')
@@ -265,7 +269,10 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
         if($where){
             $data['aaData'] = $this->db->select('a.id,a.event_id,b.title,u.name as zpname,a.time,a.state,b.rank')
                 ->from('event_designate as a')
+                ->group_start()
                 ->where('a.processor',$processorID)
+                ->or_where_in('a.group',explode(',',$this->session->userdata('gid')))
+                ->group_end()
                 ->where('a.state','处理中')
                 ->where($where)
                 ->join('event as b','a.event_id = b.id','left')
@@ -279,7 +286,10 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
 
             $total = $this->db->select('a.id,a.event_id,b.title,u.name as zpname,a.time,a.state,b.rank')
                 ->from('event_designate as a')
+                ->group_start()
                 ->where('a.processor',$processorID)
+                ->or_where_in('a.group',explode(',',$this->session->userdata('gid')))
+                ->group_end()
                 ->where('a.state','处理中')
                 ->where($where)
                 ->join('event as b','a.event_id = b.id','left')
@@ -291,7 +301,10 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
         }else{
             $data['aaData'] = $this->db->select('a.id,a.event_id,b.title,u.name as zpname,a.time,a.state,b.rank')
                 ->from('event_designate as a')
+                ->group_start()
                 ->where('a.processor',$processorID)
+                ->or_where_in('a.group',explode(',',$this->session->userdata('gid')))
+                ->group_end()
                 ->where('a.state','处理中')
                 ->join('event as b','a.event_id = b.id','left')
                 ->join('user as u','a.manager = u.id','left')
@@ -304,7 +317,10 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
 
             $total = $this->db->select('a.id,a.event_id,b.title,u.name as zpname,a.time,a.state,b.rank')
                 ->from('event_designate as a')
+                ->group_start()
                 ->where('a.processor',$processorID)
+                ->or_where_in('a.group',explode(',',$this->session->userdata('gid')))
+                ->group_end()
                 ->where('a.state','处理中')
                 ->join('event as b','a.event_id = b.id','left')
                 ->join('user as u','a.manager = u.id','left')
@@ -362,7 +378,7 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
     public function check_done_btn($gid,$eid){
         $this->db->select('main_processor,group');
         $main_id = $this->db->get_where('event',array('id'=>$eid))->row();
-        if($main_id->group == $gid || $main_id->main_processor == $this->session->userdata('uid')){
+        if(in_array($main_id->group,explode(',',$gid))  || $main_id->main_processor == $this->session->userdata('uid')){
             return true;
         }else{
             return false;
@@ -461,7 +477,10 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
             ->or_where('e.state','已完成')
             ->join('event_designate AS ed','ed.event_id = e.id')
             ->join('user as u','u.id = ed.manager')
+            ->group_start()
             ->where('ed.processor',$processorID)
+            ->or_where_in('ed.group',explode(',',$this->session->userdata('gid')))
+            ->group_end()
             ->group_start()
             ->like('e.title',$pInfo['search'])
             ->or_like('e.rank',$pInfo['search'])
@@ -476,7 +495,10 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
             ->or_where('e.state','已完成')
             ->join('event_designate AS ed','ed.event_id = e.id')
             ->join('user as u','u.id = ed.manager')
+            ->group_start()
             ->where('ed.processor',$processorID)
+            ->or_where_in('ed.group',explode(',',$this->session->userdata('gid')))
+            ->group_end()
             ->group_start()
             ->like('e.title',$pInfo['search'])
             ->or_like('e.rank',$pInfo['search'])
@@ -562,7 +584,7 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
                 ->join('user as u','u.id = ed.manager','left')
                 ->group_start()
                 ->where('ed.processor',$processorID)
-                ->or_where('ed.group',$gid)
+                ->or_where_in('ed.group',explode(',',$this->session->userdata('gid')))
                 ->group_end()
                 ->where($where)
                 ->group_start()
@@ -578,7 +600,7 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
                 ->join('user as u','u.id = ed.manager','left')
                 ->group_start()
                 ->where('ed.processor',$processorID)
-                ->or_where('ed.group',$gid)
+                ->or_where_in('ed.group',explode(',',$this->session->userdata('gid')))
                 ->group_end()
                 ->where($where)
                 ->group_start()
@@ -593,7 +615,7 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
                 ->join('user as u','u.id = ed.manager','left')
                 ->group_start()
                 ->where('ed.processor',$processorID)
-                ->or_where('ed.group',$gid)
+                ->or_where_in('ed.group',explode(',',$this->session->userdata('gid')))
                 ->group_end()
                 ->group_start()
                 ->like('e.title',$pInfo['search'])
@@ -608,7 +630,7 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
                 ->join('user as u','u.id = ed.manager','left')
                 ->group_start()
                 ->where('ed.processor',$processorID)
-                ->or_where('ed.group',$gid)
+                ->or_where_in('ed.group',explode(',',$this->session->userdata('gid')))
                 ->group_end()
                 ->group_start()
                 ->like('e.title',$pInfo['search'])

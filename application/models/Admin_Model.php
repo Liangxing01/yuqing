@@ -22,6 +22,7 @@ class Admin_Model extends CI_Model {
     }
 
     /**
+     * 添加用户
      * @param $data
      */
     public function add_person($data){
@@ -29,7 +30,6 @@ class Admin_Model extends CI_Model {
             'username' => $data['username'],
             'password' => md5($data['password']),
             'name'     => $data['name'],
-            'group_id' => $data['gid'],
             'sex'      => $data['sex'],
             'job'      => $data['job'],
             "avatar"   => "/img/avatar/avatar.png"
@@ -39,7 +39,19 @@ class Admin_Model extends CI_Model {
 
         $this->db->insert('user',$userInfo);
         $uid = $this->db->insert_id();
-        //$res2 = false;
+
+        //插入 用户单位表，多单位
+        $ug_query = array();
+        foreach ($data['gid'] as $one){
+            $one_query = array(
+                'uid' => $uid,
+                'gid' => $one,
+                'is_exist' => 1
+            );
+            array_push($ug_query,$one_query);
+        }
+        $this->db->insert_batch('user_group',$ug_query);
+
 
         //插入权限表
         $pri = $data['privilege'];
@@ -53,14 +65,17 @@ class Admin_Model extends CI_Model {
         }
 
         //插入组织结构
-        $insert_data = array(
-            'uid'   => $uid,
-            'name'  => $data['name'],
-            'parent_id' => $data['gid'],
-            'type'  => 1
+        foreach ($data['gid'] as $gid){
+            $insert_data = array(
+                'uid'   => $uid,
+                'name'  => $data['name'],
+                'parent_id' => $gid,
+                'type'  => 1
 
-        );
-        $this->insert_children_node($insert_data);
+            );
+            $this->insert_children_node($insert_data);
+        }
+
 
         if($this->db->trans_status() === FALSE){
             $this->db->trans_rollback();
@@ -94,7 +109,7 @@ class Admin_Model extends CI_Model {
             'uid'   => $uid,
             'name'  => $data['groupname'],
             'parent_id' => $data['gid'],
-            'type'  => 0
+            'type'  => $data['type']
 
         );
         $this->insert_children_node($insert_data);
@@ -152,20 +167,36 @@ class Admin_Model extends CI_Model {
         }
     }
 
+    /**
+     * @param $uid
+     * @return mixed
+     * 获取组信息
+     */
     public function get_group_info($uid){
-        $res = $this->db->select('name')->from('group')
-            ->where('id',$uid)
+        $res = $this->db->select('group.name,r.type')->from('group')
+            ->where('group.id',$uid)
+            ->join('relation as r','r.uid ='.$uid.' and type != 1')
             ->get()->row_array();
         return $res;
     }
 
+    /**
+     * @param $uid
+     * @return array
+     * 获取用户信息
+     */
     public function get_user_info($uid){
-        $res = $this->db->select('u.group_id,u.username,u.name,u.sex,up.pid,u.job')->from('user as u')
+        $res = $this->db->select('ug.gid as group_id,u.username,u.name,u.sex,up.pid,u.job')->from('user as u')
             ->join('user_privilege as up','up.uid ='.$uid,'left')
+            ->join('user_group as ug','ug.uid = '.$uid)
             ->where('u.id',$uid)
             ->get()->result_array();
+        $gids = array();
+        foreach ($res as $one){
+            array_push($gids,$one['group_id']);
+        }
         $arr = array(
-            'group_id' => $res[0]['group_id'],
+            'group_id' => $gids,
             'username' => $res[0]['username'],
             'name'     => $res[0]['name'],
             'sex'      => $res[0]['sex'],
@@ -180,6 +211,20 @@ class Admin_Model extends CI_Model {
     }
 
     /**
+     * 算法：比较两个数组 返回 增加/删除的 字段
+     */
+    public function compare_array($arr1,$arr2){
+        $add_arr = array_diff($arr1,$arr2);
+        $del_arr = array_diff($arr2,$arr1);
+        $res_arr = array(
+            'add' => $add_arr,
+            'del' => $del_arr
+        );
+        return $res_arr;
+    }
+
+
+    /**
      *更新用户信息
      *
      */
@@ -190,7 +235,7 @@ class Admin_Model extends CI_Model {
             'sex'      => $data['sex'],
             'name'     => $data['name'],
             'job'      => $data['job'],
-            'group_id' => $data['gid']
+            //'group_id' => $data['gid']
         );
 
         $pri_arr = explode(",",$data['privilege']);
@@ -200,6 +245,43 @@ class Admin_Model extends CI_Model {
         //更新user表
         $this->db->where('id',$data['uid']);
         $this->db->update('user',$update_info);
+
+        //更新用户单位表，先对比找出 不同的字段，进行更新
+        $old_data = $this->db->select('gid')
+            ->from('user_group')
+            ->where('uid',$data['uid'])
+            ->where('is_exist',1)
+            ->get()->result_array();
+        $old_gids =array();
+        foreach ($old_data as $old){
+            array_push($old_gids,$old['gid']);
+        }
+        $diff_arr = $this->compare_array($data['gid'],$old_gids);
+
+        //1、删除多余的 用户单位对应关系，更新 is_exist 字段为0
+        if(!empty($diff_arr['del'])){
+            foreach ($diff_arr['del'] as $del){
+                $update_data = array(
+                    'is_exist' => 0
+                );
+                $this->db->where('uid',$data['uid']);
+                $this->db->where('gid',$del);
+                $this->db->update('user_group',$update_data);
+            }
+        }
+
+        //2、插入新的用户单位关系
+        if(!empty($diff_arr['add'])){
+            foreach ($diff_arr['add'] as $new){
+                $new_data = array(
+                    'gid' => $new,
+                    'uid' => $data['uid'],
+                    'is_exist' => 1
+                );
+                $this->db->insert('user_group',$new_data);
+            }
+        }
+
 
         //更新权限表
         //1、删除权限
@@ -219,14 +301,17 @@ class Admin_Model extends CI_Model {
         $this->db->delete('relation',array('uid'=>$data['uid'],'type' => 1));
 
         //插入组织结构
-        $insert_data = array(
-            'uid'   => $data['uid'],
-            'name'  => $data['name'],
-            'parent_id' => $data['gid'],
-            'type'  => 1
+        foreach ($data['gid'] as $gid){
+            $insert_data = array(
+                'uid'   => $data['uid'],
+                'name'  => $data['name'],
+                'parent_id' => $gid,
+                'type'  => 1
 
-        );
-        $this->insert_children_node($insert_data);
+            );
+            $this->insert_children_node($insert_data);
+        }
+
 
         if($this->db->trans_status() === FALSE){
             $this->db->trans_rollback();

@@ -370,7 +370,21 @@ class Admin extends MY_Controller
     }
 
     public function test(){
-       echo $this->admin_model->delete_node(4);
+       $a = array(
+           '1'
+       );
+        $b = array(
+            '1','4'
+        );
+
+        $add_arr = array_diff($a,$b);
+        $del_arr = array_diff($b,$a);
+        $res_arr = array(
+            'add' => $add_arr,
+            'del' => $del_arr
+        );
+
+        var_dump($res_arr);
     }
 
 

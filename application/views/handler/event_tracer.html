@@ -130,7 +130,7 @@
                                 <!-- /.inner-content -->
                             </li>
                             <!-- END HIGHLIGHT TIMELINE MOMENT -->
-                            
+
                         </ul>
                     </div>
                    
@@ -223,6 +223,7 @@
 <input type="hidden" name="usertype" value="<{$usertype}>" id="usertype"/>
 
 <script>
+
 	var eid=document.getElementById('eid').value,
          history_daytime="";//用来存时间抽上最上面的时间，用来判断总结性评论是新添加，还是在下面插入
 	$("input[name='zj_buttom']").click(function(){
@@ -533,7 +534,9 @@
 			    	}
 				});
 			})
-		}
+		}else{
+            $("#sjwc").hide();
+        }
 	}  	
 	tagier();
 
