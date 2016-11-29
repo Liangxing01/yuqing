@@ -73,25 +73,36 @@
 		    -webkit-line-clamp: 7;
 		    -webkit-box-orient: vertical;
 		}
-		.pic_ms{
+		/*.pic_ms{
 			width: 100%;
 			
 		}
 		.pic_ms ul{
 			width: 100%;
-			height: 100px;
+			height: 110px;
 			padding-top: 10px;
 			overflow: hidden;
 		}
 		.pic_ms ul li{
 			float: left;
-			height: 100px;			
+			height: 100px;	
+			line-height: 110px;		
 			margin: 5px;
 			display: block;
 		}
 		.pic_ms ul li img{
 			width: 131px;
 			height: 100px;
+		}*/
+		.swiper-container{
+			margin-top: 10px;
+			margin-bottom: 10px;
+		}
+		#tp img{
+			width: 110px ;
+			height: 84px;
+			display: block;
+			
 		}
 
     }
@@ -135,7 +146,7 @@
                     
                     <div class="ms">
                     	<span>图片描述：</span>
-                    	<div class="pic_ms">
+                    	<!--<div class="pic_ms">
                     		<ul>
                     			<li><img src="../../../img/pic_01.jpg"></li>
                     			<li><img src="../../../img/pic_01.jpg"></li>
@@ -144,7 +155,45 @@
                     			<li><img src="../../../img/pic_01.jpg"></li>
                     		</ul>
                     	</div>
-                    	<div style="clear: both;"></div>
+                    	<div style="clear: both;"></div>-->
+                    	<div class="swiper-container">
+					        <div class="swiper-wrapper" id="tp">
+					            <div class="swiper-slide"><a href="">
+					            	<img src="../../../img/pic_01.jpg">
+					            </a></div>
+					            <div class="swiper-slide"><a href="">
+					            	<img src="../../../img/pic_01.jpg">
+					            </a></div>
+					            <div class="swiper-slide"><a href="">
+					            	<img src="../../../img/pic_01.jpg">
+					            </a></div>
+					            <div class="swiper-slide"><a href="">
+					            	<img src="../../../img/pic_01.jpg">
+					            </a></div>
+					            <div class="swiper-slide"><a href="">
+					            	<img src="../../../img/pic_01.jpg">
+					            </a></div>
+					            <div class="swiper-slide"><a href="">
+					            	<img src="../../../img/pic_01.jpg">
+					            </a></div>
+					            <div class="swiper-slide"><a href="">
+					            	<img src="../../../img/pic_01.jpg">
+					            </a></div>
+					            <div class="swiper-slide"><a href="">
+					            	<img src="../../../img/pic_01.jpg">
+					            </a></div>
+					            <div class="swiper-slide"><a href="">
+					            	<img src="../../../img/pic_01.jpg">
+					            </a></div>
+					            <div class="swiper-slide"><a href="">
+					            	<img src="../../../img/pic_01.jpg">
+					            </a></div>
+					            
+					        </div>
+					        <!-- Add Pagination -->
+					        <!--<div class="swiper-pagination"></div>-->
+					    </div>
+		    
                     </div>
                     <div class="ms">
                     	<span>视频描述：</span>
@@ -164,5 +213,13 @@
         <!-- END WRAPPER  -->
     </section>
     <!-- END MAIN CONTENT -->
-
+    <script src="/js/swiper.min.js"></script>
 </section>
+    <script>
+    var swiper = new Swiper('.swiper-container', {
+        pagination: '.swiper-pagination',
+        slidesPerView: 3,
+        paginationClickable: true,
+        spaceBetween: 10
+    });
+    </script>
