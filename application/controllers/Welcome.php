@@ -253,9 +253,17 @@ class Welcome extends MY_Controller
         $this->my_model->insert_msg($data);
     }
 
+
+    /**
+     * 首页 最新消息接口
+     * Json 字符串 [ {"title": "标题", "type": "1", "url": "跳转链接", "时间": "unix时间戳"} ]
+     * 说明: 类型 0 = 信息上报消息; 1 = 事件指派消息; 2 = 事件督办消息
+     */
     public function get_msg(){
         $res = $this->my_model->get_msg();
-        echo json_encode($res);
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output($res);
     }
 
 

@@ -215,17 +215,34 @@ class MY_Model extends CI_Model {
 
     }
 
+
     public function insert_msg($data){
         $this->db->insert('msg',$data);
     }
 
-    public function get_msg(){
-        $res = $this->db->select('name,msg,url')->from('msg')
-            ->limit(5)
-            ->order_by('time','DESC')
-            ->get()->result_array();
-        return $res;
+
+    /**
+     * 首页最新消息接口
+     * @return Json 字符串 [ {"title": "标题", "type": "1", "url": "跳转链接", "时间": "unix时间戳"} ]
+     * 说明: 类型 0 = 信息上报消息; 1 = 事件指派消息; 2 = 事件督办消息
+     */
+    public function get_msg()
+    {
+        $uid = $this->session->uid;
+        $gid = $this->session->gid;
+        $result = array();
+        if ($gid != "") {
+            $group_id = explode(",", $gid);
+            $result = $this->db->select('title, type, url, time')
+                ->where("send_uid", $uid)
+                ->or_where_in("send_gid", $group_id)
+                ->limit(5)
+                ->order_by('time', 'DESC')
+                ->get("business_msg")->result_array();
+        }
+        return json_encode($result);
     }
+
 
     /**
      *  获取职位
