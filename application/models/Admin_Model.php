@@ -186,27 +186,35 @@ class Admin_Model extends CI_Model {
      * 获取用户信息
      */
     public function get_user_info($uid){
-        $res = $this->db->select('ug.gid as group_id,u.username,u.name,u.sex,up.pid,u.job')->from('user as u')
-            ->join('user_privilege as up','up.uid ='.$uid,'left')
+        $res = $this->db->select('ug.gid as group_id, u.username, u.name, u.sex, u.job')->from('user as u')
             ->join('user_group as ug','ug.uid = '.$uid)
-            ->where('u.id',$uid)
+            ->where(array('u.id' => $uid, "ug.is_exist" => 1))
             ->get()->result_array();
+
+        //获取组id
         $gids = array();
         foreach ($res as $one){
             array_push($gids,$one['group_id']);
         }
+        //获取权限
+        $privilege_res = $this->db->select("user.id , user_privilege.pid")
+            ->join("user_privilege", "user_privilege.uid = user.id", "left")
+            ->where("user.id", $uid)
+            ->get("user")->result_array();
+        $privileges = "";
+        foreach ($privilege_res as $one) {
+            $privileges .= $one['pid'].",";
+        }
+        $privileges = substr($privileges,0,strlen($privileges) - 1);
+
         $arr = array(
             'group_id' => $gids,
             'username' => $res[0]['username'],
             'name'     => $res[0]['name'],
             'sex'      => $res[0]['sex'],
             'job'      => $res[0]['job'],
-            'pid'      => ""
+            'pid'      => $privileges
         );
-        foreach ($res as $one) {
-            $arr['pid'] .= $one['pid'].",";
-        }
-        $arr['pid'] = substr($arr['pid'],0,strlen($arr['pid']) - 1);
         return $arr;
     }
 
@@ -247,14 +255,18 @@ class Admin_Model extends CI_Model {
         $this->db->update('user',$update_info);
 
         //更新用户单位表，先对比找出 不同的字段，进行更新
-        $old_data = $this->db->select('gid')
+        $old_data = $this->db->select('gid, is_exist')
             ->from('user_group')
             ->where('uid',$data['uid'])
-            ->where('is_exist',1)
             ->get()->result_array();
         $old_gids =array();
+        $is_exist = array(); //以前添加过的用户组
         foreach ($old_data as $old){
-            array_push($old_gids,$old['gid']);
+            if($old["is_exist"] == 1){
+                array_push($old_gids,$old['gid']);
+            }else{
+                array_push($is_exist,$old['gid']);
+            }
         }
         $diff_arr = $this->compare_array($data['gid'],$old_gids);
 
@@ -273,12 +285,16 @@ class Admin_Model extends CI_Model {
         //2、插入新的用户单位关系
         if(!empty($diff_arr['add'])){
             foreach ($diff_arr['add'] as $new){
-                $new_data = array(
-                    'gid' => $new,
-                    'uid' => $data['uid'],
-                    'is_exist' => 1
-                );
-                $this->db->insert('user_group',$new_data);
+                if(in_array($new, $is_exist)){
+                    $this->db->where("gid", $new)->update("user_group", array("is_exist" => 1));
+                }else{
+                    $new_data = array(
+                        'gid' => $new,
+                        'uid' => $data['uid'],
+                        'is_exist' => 1
+                    );
+                    $this->db->insert('user_group',$new_data);
+                }
             }
         }
 

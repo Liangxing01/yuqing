@@ -655,7 +655,7 @@
         async: {
             enable: true,
             url: "/designate/get_event_processor_tree?eid=<{$event_id}>",
-            autoParam: ["id", "name=n", "level=lv"]
+            autoParam: ["id", "name=n", "level=lv", "is_group_event=group"]
             // dataFilter: filter
         },
         callback: {

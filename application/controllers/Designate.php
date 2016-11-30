@@ -152,7 +152,7 @@ class Designate extends MY_controller
 
         if (!isset($id) || $id == null || $id == "") {
             $nodes = $this->tree->get_processor_group_tree();
-        }else{
+        } else {
             $nodes = $this->tree->get_processor_nodes($id);
         }
         $this->output->set_content_type('application/json')
@@ -166,12 +166,21 @@ class Designate extends MY_controller
     public function get_event_processor_tree()
     {
         $event_id = $this->input->get("eid");
+        $node_id = $this->input->post("id");
+        $is_group_event = $this->input->post("group");
         if (!isset($event_id) || $event_id == null || $event_id == "") {
             show_404();
         }
         $this->load->model("Tree_Model", "tree");
+
+        //判断是否获取子节点
+        if (!isset($node_id) || $node_id == null || $node_id == "") {
+            $nodes = $this->tree->get_event_processor_tree($event_id);
+        } else {
+            $nodes = $this->tree->get_event_processor_node($node_id, $event_id, $is_group_event);
+        }
         $this->output->set_content_type('application/json')
-            ->set_output($this->tree->get_event_processor_tree($event_id));
+            ->set_output($nodes);
     }
 
 

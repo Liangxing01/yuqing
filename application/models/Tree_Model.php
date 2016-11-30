@@ -174,7 +174,7 @@ class Tree_Model extends CI_Model
 
 
     /**
-     * 查询节点下的
+     * 查询子节点
      * @param $node_id
      * @return Json 字符串
      */
@@ -208,95 +208,180 @@ class Tree_Model extends CI_Model
      */
     public function get_event_processor_tree($event_id)
     {
-        //处理单位
-        $processor_group = $this->db->select("user.group_id AS id, group.name AS name")
-            ->join("user_privilege", "user.id = user_privilege.uid", "left")
-            ->join("group", "group.id = user.group_id", "left")
-            ->where("user_privilege.pid", 3)
-            ->group_by("user.group_id")
-            ->get("user")->result_array();
-        //处理人
-        $processors = $this->db->select("user.id, user.name, user.group_id")
-            ->join("user_privilege", "user.id = user_privilege.uid", "left")
-            ->where("user_privilege.pid", 3)
-            ->get("user")->result_array();
+        //处理单位id
+        $processor_group_id = $this->get_processor_group_id();
 
-
-        //事件已指派单位
-        $event_group = $this->db->select("group.name, group.id")->join("event_designate", "group.id = event_designate.group", "left")
+        //事件已指派单位(单位事件)
+        $event_group = $this->db->select("group.id")
+            ->join("event_designate", "group.id = event_designate.group", "left")
             ->where("event_id", $event_id)
             ->get("group")->result_array();
-        //事件已指派人
-        $event_processors = $this->db->select("user.name, user.id, user.group_id")->join("event_designate", "user.id = event_designate.processor", "left")
-            ->where("event_id", $event_id)
-            ->get("user")->result_array();
+        //事件已指派人单位(事件处理人的单位)
+        $event_processor_group = $this->db->select("user_group.gid")
+            ->join("event_designate", "event_designate.processor = user_group.uid", "left")
+            ->where("event_designate.event_id", $event_id)
+            ->group_by("user_group.gid")
+            ->get("user_group")->result_array();
 
-
-        //生成 Json 树
-        $tree = array(
-            "id" => 0,
-            "name" => "处理人(单位)",
-            "open" => true,
-            "children" => array()
-        );
-
-        foreach ($processor_group AS $group) {
-            $group_node = array(
-                "id" => $group["id"],
-                "name" => $group["name"],
-                "isdepartment" => 0,
-                "open" => false,
-                "children" => array(),
-                "chkDisabled" => false
-            );
-            //设置已指派单位
-            $group_is_processor = false;
-            foreach ($event_group AS $event_g) {
-                if ($event_g["id"] == $group["id"]) {
-                    $group_node["chkDisabled"] = true;
-                    $group_is_processor = true;
-                }
+        //不可选 组织
+        $unchose_group = array();
+        $is_group_event = array();  //单位事件标记
+        foreach ($event_group AS $item) {
+            if (!in_array($item["id"], $unchose_group) && in_array($item["id"], $processor_group_id)) {
+                $unchose_group[] = $item["id"];
             }
-            //设置已指派处理人
-            foreach ($processors AS $processor) {
-                if ($group["id"] == $processor["group_id"]) {
-                    $tree_node = array(
-                        "id" => $processor["id"],
-                        "name" => $processor["name"],
-                        "isdepartment" => 1,
-                        "chkDisabled" => $group_is_processor    //所属单位被指派 默认该单位的人为不可选
-                    );
-                    foreach ($event_processors AS $event_p) {
-                        if ($event_p["id"] == $processor["id"]) {
-                            $tree_node["chkDisabled"] = true;
-                            $group_node["chkDisabled"] = true;  //单位所属被指派 默认该单位不可选
-                        }
+            $is_group_event[] = $item["id"];
+        }
+        foreach ($event_processor_group AS $item) {
+            if (!in_array($item["gid"], $unchose_group) && in_array($item["gid"], $processor_group_id)) {
+                $unchose_group[] = $item["gid"];
+            }
+        }
+
+        $group_tree_nodes = $this->db->select("name, lft, rgt, type, uid")
+            ->where_in("uid", $processor_group_id)
+            ->where("type", 0)
+            ->or_where("name", "组织关系")
+            ->or_where("type", 2)
+            ->order_by("lft", "asc")
+            ->get("relation")->result_array();
+
+        // 以一个空的$right栈开始
+        $right = array();
+
+        $tree_json = "";
+        // 生成 Ztree Json树
+        foreach ($group_tree_nodes AS $node) {
+            // 检查栈里面有没有元素
+            if (count($right) > 0) {
+                // 检查我们是否需要从栈中删除一个节点
+                while ($right[count($right) - 1]["rgt"] < $node['rgt']) {
+                    if ($right[count($right) - 1]["rgt"] - $right[count($right) - 1]["lft"] != 1) {
+                        $tree_json .= "]},";
+                    } else {
+                        $tree_json .= "},";
                     }
-                    $group_node["children"][] = $tree_node;
+                    array_pop($right);
+                }
+
+                //判断分类节点
+                if ($node["type"] == 2) {
+                    $tree_json .= "{name: '" . $node["name"] . "',id:" . $node["uid"] . ",nocheck:true" . ",isdepartment:" . $node["type"];
+                } else {
+                    $tree_json .= "{name: '" . $node["name"] . "',id:" . $node["uid"] . ",isParent:true" . ",isdepartment:" . $node["type"];
+                }
+                //判断是否可选
+                if (in_array($node["uid"], $unchose_group)) {
+                    $tree_json .= ",chkDisabled:true";
+                }
+                //判断是否单位事件
+                if (in_array($node["uid"], $is_group_event)) {
+                    $tree_json .= ",is_group_event:1";
+                } else {
+                    $tree_json .= ",is_group_event:0";
+                }
+                $tree_json .= ",icon:'/assets/ztree/zTreeStyle/img/group.png',open:false,children:[";
+
+            } else {
+                //根节点
+                $tree_json .= "{name:'处理人(单位)'";
+                if ($node["rgt"] - $node["lft"] != 1) {
+                    $tree_json .= ",id:0,open:true,children:[";
                 }
             }
-            $tree["children"][] = $group_node;
+
+            // 把这个节点添加到栈中
+            $right[] = $node;
+        }
+
+        //闭合括号
+        while (!empty($right)) {
+            if ($right[count($right) - 1]["rgt"] - $right[count($right) - 1]["lft"] != 1) {
+                $tree_json .= "]}";
+            } else {
+                $tree_json .= "}";
+            }
+            array_pop($right);
+        }
+
+        $tree_json = str_replace(",]", "]", $tree_json);
+        return $tree_json;
+    }
+
+
+    /**
+     * @param $node_id - 根节点id
+     * @param $event_id - 事件id
+     * @param $is_group_event - 是否单位事件
+     * @return Json字符串
+     */
+    public function get_event_processor_node($node_id, $event_id, $is_group_event)
+    {
+
+        //查询根节点
+        $root = $this->db->select("name, lft, rgt, type, uid")
+            ->where(array("uid" => $node_id, "type !=" => 1))
+            ->get("relation")->row_array();
+
+        //查询子节点
+        $tree_nodes = $this->db->select("name, lft, rgt, type, relation.uid")
+            ->join("user_privilege", "user_privilege.uid = relation.uid", "left")
+            ->where(array("type" => 1, "lft>" => $root["lft"], "rgt<" => $root["rgt"], "user_privilege.pid" => 3))
+            ->get("relation")->result_array();
+
+        //查询事件处理人
+        $event_processors = $this->db->select("processor")
+            ->where(array("event_designate.event_id" => $event_id, "processor !=" => null))
+            ->get("event_designate")->result_array();
+
+        //不可选
+        $unchoose_processor = array();
+        foreach ($event_processors AS $item) {
+            $unchoose_processor[] = $item["processor"];
+        }
+
+        //生成 Ztree Json树
+        $tree = [];
+        //单位事件 所有子节点不可选
+        if ($is_group_event) {
+            foreach ($tree_nodes AS $node) {
+                $tree[] = array(
+                    "id" => $node["uid"],
+                    "name" => $node["name"],
+                    "isdepartment" => $node["type"],
+                    "chkDisabled" => "true"
+                );
+            }
+        } else {
+            foreach ($tree_nodes AS $node) {
+                $tree_node = array(
+                    "id" => $node["uid"],
+                    "name" => $node["name"],
+                    "isdepartment" => $node["type"],
+                    "chkDisabled" => "false"
+                );
+                if (in_array($node["uid"], $unchoose_processor)) {
+                    $tree_node["chkDisabled"] = "true";
+                }
+                $tree[] = $tree_node;
+            }
         }
         return json_encode($tree);
     }
 
 
     /**
-     * 获得督办人数据
+     * 获得督办人树
      * @return Json字符串
      */
     public function get_watcher_tree()
     {
-        $processor_group = $this->db->select("user.group_id AS id, group.name AS name")
-            ->join("user_privilege", "user.id = user_privilege.uid", "left")
-            ->join("group", "group.id = user.group_id", "left")
-            ->where("user_privilege.pid", 4)
-            ->group_by("user.group_id")
-            ->get("user")->result_array();
+        $watcher_group = $this->get_watcher_group();
 
-        $processors = $this->db->select("user.id, user.name, user.group_id")
+        $watchers = $this->db->select("user.id, user.name, user_group.gid AS group_id")
             ->join("user_privilege", "user.id = user_privilege.uid", "left")
-            ->where("user_privilege.pid", 4)
+            ->join("user_group", "user_group.uid = user.id", "left")
+            ->where(array("user_privilege.pid" => 4, "user_group.is_exist" => 1))
             ->get("user")->result_array();
 
         $tree = array(
@@ -306,7 +391,7 @@ class Tree_Model extends CI_Model
             "children" => array()
         );
 
-        foreach ($processor_group AS $group) {
+        foreach ($watcher_group AS $group) {
             $group_node = array(
                 "id" => $group["id"],
                 "name" => $group["name"],
@@ -314,7 +399,7 @@ class Tree_Model extends CI_Model
                 "open" => false,
                 "children" => array()
             );
-            foreach ($processors AS $processor) {
+            foreach ($watchers AS $processor) {
                 if ($group["id"] == $processor["group_id"]) {
                     $tree_node = array(
                         "id" => $processor["id"],
@@ -323,7 +408,6 @@ class Tree_Model extends CI_Model
                     );
                     $group_node["children"][] = $tree_node;
                 }
-
             }
             $tree["children"][] = $group_node;
         }
@@ -338,20 +422,18 @@ class Tree_Model extends CI_Model
      */
     public function get_event_watcher_tree($event_id)
     {
-        $processor_group = $this->db->select("user.group_id AS id, group.name AS name")
+        $watcher_group = $this->get_watcher_group();
+
+        $watchers = $this->db->select("user.id, user.name, user_group.gid AS group_id")
             ->join("user_privilege", "user.id = user_privilege.uid", "left")
-            ->join("group", "group.id = user.group_id", "left")
-            ->where("user_privilege.pid", 4)
-            ->group_by("user.group_id")
+            ->join("user_group", "user_group.uid = user.id", "left")
+            ->where(array("user_privilege.pid" => 4, "user_group.is_exist" => 1))
             ->get("user")->result_array();
 
-        $processors = $this->db->select("user.id, user.name, user.group_id")
-            ->join("user_privilege", "user.id = user_privilege.uid", "left")
-            ->where("user_privilege.pid", 4)
-            ->get("user")->result_array();
 
         //事件已督办人
-        $event_watchers = $this->db->select("user.name, user.id, user.group_id")->join("event_watch", "user.id = event_watch.watcher", "left")
+        $event_watchers = $this->db->select("user.id")
+            ->join("event_watch", "user.id = event_watch.watcher", "left")
             ->where("event_id", $event_id)
             ->get("user")->result_array();
 
@@ -362,7 +444,7 @@ class Tree_Model extends CI_Model
             "children" => array()
         );
 
-        foreach ($processor_group AS $group) {
+        foreach ($watcher_group AS $group) {
             $group_node = array(
                 "id" => $group["id"],
                 "name" => $group["name"],
@@ -370,17 +452,17 @@ class Tree_Model extends CI_Model
                 "open" => false,
                 "children" => array()
             );
-            foreach ($processors AS $processor) {
-                if ($group["id"] == $processor["group_id"]) {
+            foreach ($watchers AS $item) {
+                if ($group["id"] == $item["group_id"]) {
                     $tree_node = array(
-                        "id" => $processor["id"],
-                        "name" => $processor["name"],
+                        "id" => $item["id"],
+                        "name" => $item["name"],
                         "isdepartment" => 1,
                         "chkDisabled" => false
                     );
                     //设置事件已督办人
                     foreach ($event_watchers AS $watcher) {
-                        if ($watcher["id"] == $processor["id"]) {
+                        if ($watcher["id"] == $item["id"]) {
                             $tree_node["chkDisabled"] = true;
                         }
                     }
@@ -412,6 +494,23 @@ class Tree_Model extends CI_Model
             $group_id[] = $item["id"];
         }
         return $group_id;
+    }
+
+
+    /**
+     * 获得 督办人单位
+     * @return array
+     */
+    protected function get_watcher_group()
+    {
+        $watcher_group = $this->db->select("yq_group.id AS id, yq_group.name AS name")
+            ->join("user_group", "user_group.gid = group.id")
+            ->join("user", "user_group.uid = user.id")
+            ->join("user_privilege", "user.id = user_privilege.uid", "left")
+            ->where(array("user_privilege.pid" => 4, "user_group.is_exist" => 1))
+            ->group_by("group.id")
+            ->get("group")->result_array();
+        return $watcher_group;
     }
 
 }
