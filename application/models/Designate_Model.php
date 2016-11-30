@@ -730,6 +730,17 @@ class Designate_Model extends CI_Model
                 "state" => 0    //消息未读
             );
         }
+        foreach ($watchers AS $watcher) {
+            $event_msg[] = array(
+                "title" => $data["title"],
+                "type" => 2,    //督办消息类型
+                "send_uid" => $watcher,
+                "send_gid" => null,
+                "time" => $time,
+                "url" => "/common/event_detail?eid=" . $event_id,
+                "state" => 0    //消息未读
+            );
+        }
 
 
         //数据分表操作
@@ -777,15 +788,31 @@ class Designate_Model extends CI_Model
             $this->db->trans_commit();
             //TODO 业务信息推送
             try {
+                //连接消息服务器
                 $this->load->library("Gateway");
                 Gateway::$registerAddress = $this->config->item("VM_registerAddress");
-                $user_online = Gateway::isUidOnline($uid);
-                if ($user_online == 0) {
-                    echo "该用户不在线";
-                }
-                Gateway::sendToUid($uid, "我是管理员,你在干嘛?");
-            } catch (Exception $e) {
 
+                //业务消息推送
+                //用户 事件指派消息推送
+                foreach ($event_msg AS $msg) {
+                    if ($msg["send_uid"] !== null) {
+                        Gateway::sendToUid($msg["send_uid"], json_encode(array(
+                            "title" => $msg["title"],
+                            "type" => $msg["type"],
+                            "time" => $msg["time"],
+                            "url" => $msg["url"]
+                        )));
+                    } else {
+                        Gateway::sendToGroup($msg["send_gid"], json_encode(array(
+                            "title" => $msg["title"],
+                            "type" => $msg["type"],
+                            "time" => $msg["time"],
+                            "url" => $msg["url"]
+                        )));
+                    }
+                }
+            } catch (Exception $e) {
+                
             }
             return true;
         }
