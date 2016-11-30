@@ -386,6 +386,10 @@ class Admin_Model extends CI_Model {
     }
 
 
+    /**获取用户登录日志
+     * @param $pInfo
+     * @return mixed
+     */
     public function get_user_login_log($pInfo){
         $data['aaData'] = $this->db->select("log.id,u.name,g.name as group_name,log.ip,log.time")
             ->from('login_log AS log')
@@ -417,6 +421,29 @@ class Admin_Model extends CI_Model {
         $data['iTotalRecords'] = $total;
 
         return $data;
+    }
+
+    /**
+     * @param $uid
+     * @param $username
+     * @return bool
+     * 用户名是否重复
+     */
+    public function username_is_repeat($uid,$username){
+        $uid_row = $this->db->select('id')->from('user')
+            ->where('username',$username)
+            ->get()->row_array();
+        if(empty($uid_row)){
+            //没有重复
+            return false;
+        }else{
+            $id = $uid_row['id'];
+            if($uid != "" && $id == $uid){
+                return false;
+            }else{
+                return true;
+            }
+        }
     }
 
 

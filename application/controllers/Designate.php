@@ -439,7 +439,17 @@ class Designate extends MY_controller
         $this->assign("active_parent", "event_search");
         $this->all_display("designate/event_search.html");
     }
-
+    
+    
+	/**
+     * 事件跟踪列表 手机  视图载入
+     */
+    public function m_event_search()
+    {
+        $this->assign("active_title", "designate_parent");
+        $this->assign("active_parent", "event_search");
+        $this->m_all_display("designate/m_event_search.html");
+    }
 
     /**
      * 事件检索列表分页 数据接口

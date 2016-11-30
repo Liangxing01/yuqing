@@ -1,0 +1,375 @@
+<style type="text/css">
+
+    @media only screen and (min-width: 768px ) {
+        #title, #url, #description {
+            border: none !important;
+            text-indent: inherit !important;
+            padding-left: 0px !important;
+        }
+
+        .col-sm-11 {
+            padding-left: 0px;
+        }
+
+        .col-xs-9 {
+            padding-left: 0px;
+        }
+
+        select {
+            border: solid 1px #d9d9d9;
+            border-radius: 6px;
+            padding: 5px 10px;
+        }
+
+        select::-ms-expand {
+            display: none;
+        }
+
+        textarea {
+            padding-left: 0px !important;
+            resize: none;
+        }
+    }
+
+    @media only screen and (min-width: 320px) and (max-width: 768px) {
+        .sidebar-toggle-box {
+            padding-right: 15px !important;
+        }
+
+        .top-nav ul.top-menu > li > a{
+				padding: 0px;
+		}
+		.top-nav .dropdown-menu.extended.logout{
+				top:30px
+		}
+
+        /*.top-nav ul.top-menu > li > a {
+            padding: 2px !important;
+            margin-top: 5px;
+            font-size: 0.8em;
+        }*/
+
+        .form-horizontal.tasi-form .form-group {
+            padding-bottom: 10px !important;
+            margin-bottom: 10px !important;
+        }
+
+        .col-xs-3 {
+            padding-right: 0px;
+            font-weight: bold;
+            color: #000000;
+        }
+
+        .col-xs-9 {
+            padding-left: 0px;
+        }
+
+        #file_name {
+            padding-top: 7px;
+        }
+
+        select {
+            margin-top: 4px;
+        }
+        .fileinput-button {
+		    border: 0px ;
+		    background: none;
+		}
+		.wrapper{
+			padding: 0px;
+			margin-top: 40px;
+		}
+		.btn-success{
+			width: 100%;
+		    background-color: #72d0eb;
+		    border-color: #72d0eb;
+		    border-radius:initial;
+		    color: #FFFFFF;
+		}
+		
+		.panel{
+			margin-bottom: 5px;
+		}
+		.panel-heading{
+			border-color: #eff2f7;
+		    font-size: 16px;
+		    font-weight: 300;
+		    padding: 10px 15px;
+		    border-bottom: 1px solid #eff2f7;
+
+		}
+    }
+
+    #title, #url, #description {
+        border: none !important;
+        padding-left: 0 !important;
+    }
+
+    .col-sm-11 {
+        padding-left: 0px;
+    }
+
+    #submit1 {
+        background: #72d0eb;
+        border: none !important;
+        border-radius: inherit;
+    }
+
+    textarea {
+        resize: none;
+    }
+
+    .preview img {
+        width: 15%;
+    }
+
+    .icon-title{
+        line-height: 25px;
+    }
+
+    .icon-title img{
+        margin-right: 5px;
+    }
+
+    .error {
+        font-size: 0.9em;
+        color: #FF4500;
+    }
+</style>
+
+<!-- BEGIN MAIN CONTENT -->
+<section id="main-content">
+    <!-- BEGIN WRAPPER  -->
+    <section class="wrapper">
+        <!-- BEGIN ROW  -->
+        <div class="row">
+            <div class="col-lg-12">
+                <section class="panel">
+                    <header class="panel-heading">
+                        <span class="icon-title"><strong>我要提交</strong></span>
+                    </header>
+                    <div class="panel-body">
+                        <form id="form1" class="form-horizontal tasi-form layui-form" enctype="multipart/form-data">
+                            <input type="hidden" id="id" name="id"/>
+                            <div class="form-group">
+                                <label class="col-xs-3 col-sm-1 control-label">标题</label>
+                                <div class="col-xs-9 col-sm-11">
+                                    <input type="text" name="title" id="title" required lay-verify="required"
+                                           placeholder="请输入标题" autocomplete="off" class="form-control layui-input">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-xs-3 col-sm-1 control-label">URL</label>
+                                <div class="col-xs-9 col-sm-11">
+                                    <input type="text" name="url" id="url" required placeholder="请输入事件来源的网址"
+                                           autocomplete="off" class="form-control layui-input">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-xs-3 col-sm-1 control-label">截图</label>
+                                <div class="col-xs-9 col-sm-11">
+                                <input name="file" class="fileinput-button" type="file" id="pic" multiple>
+                                <table role="presentation" class="table table-striped">
+                                    <tbody id="pic_files"></tbody>
+                                </table>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-xs-3 col-sm-1 control-label">视频</label>
+                                <div class="col-xs-9 col-sm-11">
+                                <input name="file" class="fileinput-button" type="file" id="video" multiple>
+                                <table role="presentation" class="table table-striped">
+                                    <tbody id="video_files"></tbody>
+                                </table>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-xs-3 col-sm-1 control-label">来源</label>
+                                <div class="col-xs-9 col-sm-11">
+                                    <select name="city" lay-verify="" id="source" name="source"
+                                            onchange="active.changeSelect(this)">
+                                        <option value="天涯">天涯</option>
+                                        <option value="大渝网">大渝网</option>
+                                        <option value="问政平台">问政平台</option>
+                                        <option value="看巴南APP">看巴南APP</option>
+                                        <option value="微博">微博</option>
+                                        <option value="微信">微信</option>
+                                        <option value="线下">线下</option>
+                                        <option value="other">其它</option>
+                                        <input type="text" id="other" name="other" style="display:none"/>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-xs-3 col-sm-1 control-label">描述</label>
+                                <div class="col-sm-11 col-xs-9">
+                                    <textarea rows="4" type="text" name="description" id="description" required
+                                              lay-verify="required" placeholder="请输入事件描述" autocomplete="off"
+                                              class="form-control layui-input"></textarea>
+                                </div>
+                            </div>
+                            
+                        </form>
+
+                    </div>
+                    <div class="text-center ">
+                                <!--<button id="submit1" class="btn btn-success btn-lg col-sm-12" onclick="active.setTop()">提交</button>-->
+                                <input type="submit" value="提交" class="btn btn-success btn-lg col-sm-12">
+                    </div>
+
+                </section>
+
+            </div>
+        </div>
+        </div>
+        <!-- END WRAPPER  -->
+    </section>
+    <!-- END MAIN CONTENT -->
+
+</section>
+
+<script src="/js/jquery.validate.min.js"></script>
+<script id="template-upload" type="text/x-tmpl">
+{% for (var i=0, file; file=o.files[i]; i++) { %}
+    <tr class="template-upload fade">
+        <td>
+            <span class="preview"></span>
+        </td>
+        <td>
+            <p class="name">{%=file.name%}</p>
+            <strong class="error text-danger"></strong>
+        </td>
+        <td>
+            <p class="size">Processing...</p>
+            <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="progress-bar progress-bar-success" style="width:0%;"></div></div>
+        </td>
+        <td>
+            {% if (!i && !o.options.autoUpload) { %}
+                <button class="btn btn-primary start" disabled>
+                    <span>开始</span>
+                </button>
+            {% } %}
+            {% if (!i) { %}
+                <button class="btn btn-warning cancel">
+                    <span>取消</span>
+                </button>
+            {% } %}
+        </td>
+    </tr>
+{% } %}
+
+
+</script>
+<!-- The template to display files available for download -->
+<script id="template-download" type="text/x-tmpl">
+{% for (var i=0, file; file=o.files[i]; i++) { %}
+    <tr class="template-download fade">
+        <td>
+            <span class="preview">
+                {% if (file.isPic) { %}
+                    <img src="{%=file.url%}">
+                {% } %}
+            </span>
+        </td>
+        <td>
+            <p class="name">
+                    <span>{%=file.name%}提交成功！</span>
+        </td>
+        <td>
+            <button class="cancle-file" data-url="{%=file.url%}">取消上传</button>
+        </td>
+        <td>
+        </td>
+    </tr>
+{% } %}
+
+
+</script>
+<script src="/js/upload_file/load-image.js"></script>
+<script src="/js/upload_file/tmpl.js"></script>
+<script src="/js/upload_file/vendor/jquery.ui.widget.js"></script>
+<!-- The basic File Upload plugin -->
+<script src="/js/upload_file/jquery.fileupload.js"></script>
+<!-- The File Upload processing plugin -->
+<script src="/js/upload_file/jquery.fileupload-process.js"></script>
+<script src="/js/upload_file/jquery.fileupload-validate.js"></script>
+<script src="/js/upload_file/jquery.fileupload-ui.js"></script>
+<!-- The File Upload image preview & resize plugin -->
+<script src="/js/upload_file/jquery.fileupload-image.js"></script>
+<!-- The main application script -->
+<script src="/js/upload_file/report.js"></script>
+<script>
+
+    // jq validate 插件初始化
+    $.validator.setDefaults({
+        submitHandler: function () {
+            report_commit();
+        }
+    });
+    $().ready(function () {
+        $("#form1").validate({
+            rules: {
+                title: {required: true,maxlength:40},
+                url: {
+                    required: true, url: true,
+                    remote: {
+                        url: '/reporter/judge_url',
+                        type: 'post'
+                    }
+                },
+                source: {required: true},
+                description: {required: true}
+            },
+            messages: {
+                title: {required: "请输入标题",maxlength:"标题最多40个字"},
+                url: {required: "请输入url", url: '请输入正确的url', remote: '该url已经上报过了'},
+                source: {require: '请选择来源'},
+                description: {required: "请输入描述"}
+            }
+        });
+    });
+
+    function report_commit() {
+        var title = $("#title").val();
+        var url = $("#url").val();
+        var source = $("#source").val();
+        var description = $("#description").val();
+        var id = $("#id").val();
+        var other = $("#other").val();
+        var file = window.FILES;
+        if (file.length == 0) {
+            file = ""
+        }
+
+        $.ajax({
+            url: "/reporter/reportOrUpdate",
+            method: "post",
+            dataType: 'json',
+            data: {
+                "title": title,
+                "url": url,
+                "source": source,
+                "description": description,
+                "id": id,
+                'other': other,
+                'attachment': file
+            },
+            success: function (data) {
+                if (data.res == 1) {
+                    layer.msg('上报成功!');
+                    location.href = '/reporter/reportRecording'
+                } else {
+                    layer.msg('上报失败！', {anim: 6});
+                }
+            }
+        });
+    }
+
+    var active = {
+        changeSelect: function () {
+            $("#source").val() == 'other' ? $("#other").css("display", "block") : $("#other").css("display", "none");
+        }
+    }
+
+</script>

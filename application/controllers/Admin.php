@@ -307,6 +307,26 @@ class Admin extends MY_Controller
     }
 
     /**
+     * 判断用户名是否重复
+     * post: username
+     *       uid 用户id
+     */
+    public function check_username(){
+        $username = $this->input->post('username');
+        $uid = $this->input->post('uid');
+        $check = $this->admin_model->username_is_repeat($uid,$username);
+        if($check){
+            echo json_encode(array(
+                'res' => 0
+            ));
+        }else{
+            echo json_encode(array(
+                'res' => 1
+            ));
+        }
+    }
+
+    /**
      * 用户登录日志页面
      */
     public function show_login_log(){
