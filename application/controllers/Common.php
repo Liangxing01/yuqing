@@ -187,4 +187,11 @@ class Common extends MY_Controller
             ));
         }
     }
+
+    /**
+     * 文件流转页面 展示
+     */
+    public function show_doc_trans(){
+        $this->all_display("document_trans.html");
+    }
 }

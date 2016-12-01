@@ -974,4 +974,21 @@ class Designate_Model extends CI_Model
             return false;
         }
     }
+
+    /**
+     * @param $url
+     * 检查url是否重复
+     */
+    public function check_url($url,$id){
+        $res = $this->db->select('id')->from('info')
+            ->where('url',$url)
+            ->where('id !='.$id)
+            ->get()->num_rows();
+        if($res >= 1){
+            //重复了
+            return true;
+        }else{
+            return false;
+        }
+    }
 }
