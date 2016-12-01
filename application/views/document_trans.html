@@ -1,0 +1,525 @@
+<style type="text/css">
+	*{ margin:0; padding:0}
+	ul{
+		list-style: none;
+	}
+	.clear{ 
+		clear: both;
+	}
+	.tab{
+		width: 100%;
+		margin: -10px auto 0 auto;
+		background: white;
+		border-right: 1px solid #d9d9d9;
+	}
+	.tab .tab_menu{
+		border-bottom: 1px solid #d9d9d9;
+		height: 41px;
+		width:100%; 
+		background: #e0dede;
+	}
+	.tab .tab_menu ul li{
+		float: left;
+		width: 50%;
+		text-align: center;
+		line-height: 40px;
+		border-right: 1px #d9d9d9 solid;
+		color: #2e2e2e;
+	}
+	.tab .tab_menu ul li:last-child{
+		border-right:none;
+	
+	}
+	.tab .tab_menu ul li.on{
+		background: #ffffff;
+	}
+	.tab .tab_box > div{
+		width: 98%;
+		min-height: 200px;		
+		display: none; 
+		margin-left: 2%;
+	}
+	.tab .tab_box > div:first-child{
+		display: block;
+	}
+	.tab_box ul li{
+		border-bottom: 1px solid #d9d9d9;
+		display:inline-block;
+		width: 100%;
+		padding: 5px 0px;
+	}
+	.tab_box ul li:last-child{
+		border-bottom: none;
+	}
+	.tab_box_left{
+		
+		width: 50px;
+		height: 50px;
+		line-height: 50px;
+		font-size: 14px;
+		border-radius: 50%;
+		background: #f0735e;
+		color: white;
+		text-align: center;
+		margin: auto;
+	}
+	.tab_box_right{
+		
+		height: 50px;
+	}
+	.tab_box_right p{
+		width: 100%;
+		float: left;
+		margin-bottom: 0px;
+		line-height: 25px;
+		color: #2e2e2e;
+	}
+	
+	.My_cloud_disk{
+		background: white;
+		width: 100%;
+		margin: 10px auto auto auto;
+		padding: 10px;
+	}
+	.My_cloud_disk_title{
+		line-height: 40px;
+		border-bottom: 1px solid #d9d9d9;
+		font-size: 14px;
+		color: #2e2e2e;
+	}
+	.My_cloud_disk_nr{
+		border-bottom: 1px solid #d9d9d9;
+		padding: 15px 0;
+		
+	}
+	.My_cloud_disk_nr .My_cloud_disk_nr_list{
+		float: left;
+		width: 50%;
+		display: block;
+		overflow: hidden;
+		
+	}
+	.My_cloud_disk_nr1{
+		width: 45px;
+		height: 45px;
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		float: left;
+		text-align: center;
+		line-height: 45px;
+		font-size: 25px;
+		border-radius: 4px;
+		border: 1px solid #e5e5e5;
+		text-transform:capitalize;
+	}
+	.My_cloud_disk_nr_text1{
+		width: 75%;
+		float: right;		
+		overflow: hidden;
+	    text-overflow: ellipsis;
+	    display: -webkit-box;
+	    -webkit-line-clamp: 2;
+	    -webkit-box-orient: vertical;
+	    
+	}
+	.My_cloud_disk_nr1 i{
+		font-style: normal;
+		font-size: 14px;
+		font-weight: 600;
+	}
+	.My_cloud_disk_nr p{ 
+		width: 90%;
+		margin:15px auto;
+		border-bottom: 1px solid #d9d9d9;
+	}
+	
+	.template {
+		width: 55%;
+		float: left;
+		margin: 15px 0px 10px 0;
+	}
+	.template_title{
+		background: white;	
+		line-height: 40px;
+		border-bottom: 1px solid #d9d9d9;
+		text-indent: 10px;	
+		color: #2e2e2e;
+	}
+	.template_list{
+		
+		min-height: 80px;
+		FILTER: progid:DXImageTransform.Microsoft.Gradient(gradientType=0,startColorStr=#dfdfdf,endColorStr=#f5f6f5); /*IE*/     
+	    background:-moz-linear-gradient(right,#dfdfdf,#f5f6f5);/*火狐*/     
+	    background:-webkit-gradient(linear, 0% 0%, 100% 0%,from(#f5f6f5), to(#dfdfdf));/*谷歌*/             
+	    background-image: -webkit-gradient(linear,left bottom,left top,color-start(0, #f5f6f5),color-stop(1, #dfdfdf));/* Safari & Chrome*/    
+	    FILTER:progid:DXImageTransform.Microsoft.Gradient(gradientType=0,startColorStr=#dfdfdf,endColorStr=#f5f6f5); /*IE 6 7 8*/     
+	    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#dfdfdf', endColorstr='#f5f6f5')"; /* IE8 */   	    
+	    background: linear-gradient(to right, #f5f6f5 , #dfdfdf); /*ie9 标准的语法 */		
+	}
+	.template_list ul li{
+		border-bottom: 1px solid white;
+		height: 55px;		
+		display: block;
+	}
+	.template_list ul li .template_list_left{
+		float: left;
+		width: 55px;
+		height: 55px;
+		border: 5px solid white;
+		text-align: center;
+		line-height: 45px;
+		font-size: 18px;
+		color: #f0972f;
+		font-family: "黑体";
+		font-weight: 600;
+	}
+	.template_list ul li .template_list_left:nth-child(odd){
+		float: left;
+	}
+	.template_list ul li .template_list_left:nth-child(even){
+		float: right;
+	}
+	.template_list ul li .template_list_right{
+		float: left;
+		line-height: 55px;
+		color: #2e2e2e;
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		text-decoration: underline;
+	}
+	
+	.notice {
+		width: 43%;
+		float: right;
+		margin: 15px 0px 10px 0;
+		background: white;
+	}
+	.notice_title{
+		background: white;	
+		line-height: 40px;
+		width: 100%;
+		text-align: center;
+		border-bottom: 1px solid #d9d9d9;
+		text-indent: 10px;	
+		color: #2e2e2e;
+	}
+	.notice_list{
+		min-height: 80px;
+	}
+	.notice_list ul li{
+		width: 96%;
+		margin:12px auto;
+		background: url(../../img/notice_bg.png) center no-repeat;
+		background-size: 100% 100%;
+		overflow: hidden;
+		white-space: nowrap;
+		height: 40px;
+		line-height: 40px;
+		text-indent: 2.0em;
+		text-overflow: ellipsis;
+	}
+	.notice_list ul li a{
+		color: #2E2E2E;
+	}
+	.notice_list ul li a span{
+		color: #91d8ec;
+	}
+	@media only screen and (min-width:1440px ) {
+		.notice_list ul li{
+			text-indent: 3.2em;
+		}
+	}
+
+</style>
+<section id="main-content">
+    <section class="wrapper site-min-height">
+        <!-- BEGIN ROW  -->
+        <div class="row">
+            <div class="col-lg-12">
+                <section class="panel" style="background: none; border-top: 2px solid #2a8ba7;">                    
+                	<div class="col-lg-5 col-md-5" style=" padding: 0px;">
+                		<div class="tab">
+							<div class="tab_menu">
+								<ul>
+									<li class="on">收件箱（12份文档）</li>
+									<li>已发送</li>
+									
+								</ul>
+							</div>
+							<div class="tab_box">
+								<!--收件箱 -->
+								<div>
+									<ul>
+										<li><a href="">
+											<div class="col-lg-2 col-md-2">
+												<div class=" tab_box_left">哟</div>
+											</div>
+											<div class="col-lg-10 col-md-10 tab_box_right">
+												<p><strong style="float: left;">哟西</strong><span style="float: right;">12月1日</span></p>
+												<p>关于什么与什么文档.doc</p>
+											</div>
+											<div class="clear"></div>
+										</a></li>
+										<li><a href="">
+											<div class="col-lg-2 col-md-2">
+												<div class=" tab_box_left">哟</div>
+											</div>
+											<div class="col-lg-10 col-md-10 tab_box_right">
+												<p><strong style="float: left;">哟西</strong><span style="float: right;">12月1日</span></p>
+												<p>关于什么与什么文档.doc</p>
+											</div>
+											<div class="clear"></div>
+										</a></li>
+										<li><a href="">
+											<div class="col-lg-2 col-md-2">
+												<div class=" tab_box_left">哟</div>
+											</div>
+											<div class="col-lg-10 col-md-10 tab_box_right">
+												<p><strong style="float: left;">哟西</strong><span style="float: right;">12月1日</span></p>
+												<p>关于什么与什么文档.doc</p>
+											</div>
+											<div class="clear"></div>
+										</a></li>
+										<li><a href="">
+											<div class="col-lg-2 col-md-2">
+												<div class=" tab_box_left">哟</div>
+											</div>
+											<div class="col-lg-10 col-md-10 tab_box_right">
+												<p><strong style="float: left;">哟西</strong><span style="float: right;">12月1日</span></p>
+												<p>关于什么与什么文档.doc</p>
+											</div>
+											<div class="clear"></div>
+										</a></li>
+										<li><a href="">
+											<div class="col-lg-2 col-md-2">
+												<div class=" tab_box_left">哟</div>
+											</div>
+											<div class="col-lg-10 col-md-10 tab_box_right">
+												<p><strong style="float: left;">哟西</strong><span style="float: right;">12月1日</span></p>
+												<p>关于什么与什么文档.doc</p>
+											</div>
+											<div class="clear"></div>
+										</a></li>
+										<li><a href="">
+											<div class="col-lg-2 col-md-2">
+												<div class=" tab_box_left">哟</div>
+											</div>
+											<div class="col-lg-10 col-md-10 tab_box_right">
+												<p><strong style="float: left;">哟西</strong><span style="float: right;">12月1日</span></p>
+												<p>关于什么与什么文档.doc</p>
+											</div>
+											<div class="clear"></div>
+										</a></li>
+										<li><a href="">
+											<div class="col-lg-2 col-md-2">
+												<div class=" tab_box_left">哟</div>
+											</div>
+											<div class="col-lg-10 col-md-10 tab_box_right">
+												<p><strong style="float: left;">哟西</strong><span style="float: right;">12月1日</span></p>
+												<p>关于什么与什么文档.doc</p>
+											</div>
+											<div class="clear"></div>
+										</a></li>
+										<li><a href="">
+											<div class="col-lg-2 col-md-2">
+												<div class=" tab_box_left">哟</div>
+											</div>
+											<div class="col-lg-10 col-md-10 tab_box_right">
+												<p><strong style="float: left;">哟西</strong><span style="float: right;">12月1日</span></p>
+												<p>关于什么与什么文档.doc</p>
+											</div>
+											<div class="clear"></div>
+										</a></li>
+									</ul>
+								</div>
+								<!--收件箱 end -->
+								
+								<!--已发送 -->
+								<div>
+									<ul>
+										<li><a href="">
+											<div class="col-lg-2 col-md-2">
+												<div class=" tab_box_left">哟2</div>
+											</div>
+											<div class="col-lg-10 col-md-10 tab_box_right">
+												<p><strong style="float: left;">哟西</strong><span style="float: right;">12月1日</span></p>
+												<p>关于什么与什么文档.doc</p>
+											</div>
+											<div class="clear"></div>
+										</a></li>
+										<li><a href="">
+											<div class="col-lg-2 col-md-2">
+												<div class=" tab_box_left">哟</div>
+											</div>
+											<div class="col-lg-10 col-md-10 tab_box_right">
+												<p><strong style="float: left;">哟西</strong><span style="float: right;">12月1日</span></p>
+												<p>关于什么与什么文档.doc</p>
+											</div>
+											<div class="clear"></div>
+										</a></li>
+										<li><a href="">
+											<div class="col-lg-2 col-md-2">
+												<div class=" tab_box_left">哟</div>
+											</div>
+											<div class="col-lg-10 col-md-10 tab_box_right">
+												<p><strong style="float: left;">哟西</strong><span style="float: right;">12月1日</span></p>
+												<p>关于什么与什么文档.doc</p>
+											</div>
+											<div class="clear"></div>
+										</a></li>
+										<li><a href="">
+											<div class="col-lg-2 col-md-2">
+												<div class=" tab_box_left">哟</div>
+											</div>
+											<div class="col-lg-10 col-md-10 tab_box_right">
+												<p><strong style="float: left;">哟西</strong><span style="float: right;">12月1日</span></p>
+												<p>关于什么与什么文档.doc</p>
+											</div>
+											<div class="clear"></div>
+										</a></li>
+										<li><a href="">
+											<div class="col-lg-2 col-md-2">
+												<div class=" tab_box_left">哟</div>
+											</div>
+											<div class="col-lg-10 col-md-10 tab_box_right">
+												<p><strong style="float: left;">哟西</strong><span style="float: right;">12月1日</span></p>
+												<p>关于什么与什么文档.doc</p>
+											</div>
+											<div class="clear"></div>
+										</a></li>
+										<li><a href="">
+											<div class="col-lg-2 col-md-2">
+												<div class=" tab_box_left">哟</div>
+											</div>
+											<div class="col-lg-10 col-md-10 tab_box_right">
+												<p><strong style="float: left;">哟西</strong><span style="float: right;">12月1日</span></p>
+												<p>关于什么与什么文档.doc</p>
+											</div>
+											<div class="clear"></div>
+										</a></li>
+										<li><a href="">
+											<div class="col-lg-2 col-md-2">
+												<div class=" tab_box_left">哟</div>
+											</div>
+											<div class="col-lg-10 col-md-10 tab_box_right">
+												<p><strong style="float: left;">哟西</strong><span style="float: right;">12月1日</span></p>
+												<p>关于什么与什么文档.doc</p>
+											</div>
+											<div class="clear"></div>
+										</a></li>
+										<li><a href="">
+											<div class="col-lg-2 col-md-2">
+												<div class=" tab_box_left">哟</div>
+											</div>
+											<div class="col-lg-10 col-md-10 tab_box_right">
+												<p><strong style="float: left;">哟西</strong><span style="float: right;">12月1日</span></p>
+												<p>关于什么与什么文档.doc</p>
+											</div>
+											<div class="clear"></div>
+										</a></li>
+									</ul>
+								</div>
+								<!--已发送 end-->
+								
+							</div>
+						</div>
+                	</div>
+                	
+                	<div class="col-lg-7 col-md-7 ">
+                		<div class="My_cloud_disk">
+                			<div class="My_cloud_disk_title">我的云盘</div>
+                			<div class="My_cloud_disk_nr">              				
+                				<div class="My_cloud_disk_nr_list"><a href="">
+                					<div class="My_cloud_disk_nr1" style="color: #3199e7;">w</div>
+                					<div class="My_cloud_disk_nr_text1" style="color: #3199e7;">巴南基金用途上报.doc</div>
+                					<div class="clear"></div>
+                				</a></div>
+                				<div class="My_cloud_disk_nr_list"><a href="">
+                					<div class="My_cloud_disk_nr1" style="color: #68cc4d;">e<i>x</i></div>
+                					<div class="My_cloud_disk_nr_text1" style="color: #68cc4d;">巴南基金用途上报.doc</div>
+                					<div class="clear"></div>
+                				</a></div>
+                				<div class="clear"></div>
+                				<p></p>
+                				<div class="My_cloud_disk_nr_list"><a href="">
+                					<div class="My_cloud_disk_nr1" style="color: #f28a39;">p</div>
+                					<div class="My_cloud_disk_nr_text1" style="color: #f28a39;">巴南基金用途上报.doc</div>
+                					<div class="clear"></div>
+                				</a></div>
+                				<div class="My_cloud_disk_nr_list"><a href="">
+                					<div class="My_cloud_disk_nr1" style="color: #ff193f;">p<i>DF</i></div>
+                					<div class="My_cloud_disk_nr_text1" style="color: #ff193f;">巴南基金用途上报.doc</div>
+                					<div class="clear"></div>
+                				</a></div>
+                				<div class="clear"></div>
+                			</div>                		
+                		</div>
+                		
+						<div class="template">
+	                			<div class="template_title">公文模板（4份）</div>
+	                			<div class="template_list">
+	                				<ul>
+	                					<li><a href="">
+	                						<div class="template_list_left col-md-3 col-lg-2">01</div>
+	                						<div class="template_list_right col-md-9 col-lg-10">巴南基金用途上报公文模版.doc</div>
+	                					</a></li>
+	                					<li><a href="">
+	                						<div class="template_list_right col-md-9 col-lg-10">巴南基金用途上报公文模版.doc</div>
+	                						<div class="template_list_left col-md-3 col-lg-2">02</div>	
+	                					</a></li>
+	                					<li><a href="">
+	                						<div class="template_list_left col-md-3 col-lg-2">03</div>
+	                						<div class="template_list_right col-md-9 col-lg-10">巴南基金用途上报公文模版.doc</div>
+	                					</a></li>
+	                					<li><a href="">
+	                						<div class="template_list_right col-md-9 col-lg-10">巴南基金用途上报公文模版.doc</div>
+	                						<div class="template_list_left col-md-3 col-lg-2" style="padding-right:-10px;">04</div>	
+	                					</a></li>
+	                				</ul>
+	                			</div>
+	                	</div>
+	                	
+	                	<div class="notice">
+	                			<div class="notice_title">通知</div>
+	                			<div class="notice_list">
+	                				<ul>
+	                					<li><a href="">
+	                						<span>01</span>
+	                						什么鬼什么鬼什么鬼什么鬼
+	                					</a></li>
+	                					<li><a href="">
+	                						<span>02</span>
+	                						什么鬼什么鬼什么鬼什么鬼
+	                					</a></li>
+	                					<li><a href="">
+	                						<span>03</span>
+	                						什么鬼什么鬼什么鬼什么鬼
+	                					</a></li>
+	                					<li><a href="">
+	                						<span>04</span>
+	                						什么鬼什么鬼什么鬼什么鬼
+	                					
+	                				</ul>
+	                			</div>
+	                	</div>
+	                	
+                	</div>
+                    
+
+                </section>
+            </div>
+        </div>
+        <!-- END ROW  -->
+    </section>
+</section>
+<script>
+	$(function(){
+		$(".tab_menu ul li").click(function(){
+			$(this).addClass("on").siblings().removeClass("on"); //切换选中的按钮高亮状态
+			var index=$(this).index(); //获取被按下按钮的索引值，需要注意index是从0开始的
+			$(".tab_box > div").eq(index).show().siblings().hide(); //在按钮选中时在下面显示相应的内容，同时隐藏不需要的框架内容
+		});
+	});
+</script>
