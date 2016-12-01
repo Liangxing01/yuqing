@@ -130,6 +130,25 @@ class Designate extends MY_controller
         }
     }
 
+    /**
+     * 判断提交的url是否重复
+     */
+    public function check_url(){
+        $url = $this->input->post('url');
+        $id  = $this->input->post('id');
+        $this->load->model("Designate_Model", "designate");
+        $res = $this->designate->check_url($url,$id);
+        if($res){
+            echo json_encode(array(
+                'res' => 1
+            ));
+        }else{
+            echo json_encode(array(
+                'res' => 0
+            ));
+        }
+    }
+
 
     /**
      * 事件指派 视图载入

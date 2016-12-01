@@ -38,8 +38,10 @@
                         <p class="col-md-4"><strong>类型:</strong><span><{$info['type']}></span></p>
                         <p class="col-md-4"><strong>来源:</strong><span><{$info['source']}></span></p>
                         <p class="col-md-4"><strong>发布时间:</strong><span><{date("Y-m-d H:i:s",$info['time'])}></span></p>
-                        <p class="col-md-4"><strong>链接:</strong><span id="clip_1"><{$info['url']}></span>
+                        <p class="col-md-4"><strong>链接:</strong><span id="clip_1">
+                            <{$info['url']}></span>
                             <button class="btn btn-xs btn-success copy_btn"  id="clip_yijian" data-clipboard-target="clip_1">复制</button>
+                            <span id="repeat_warning" class="col-md-12" style="display:none;color: red;font-size: 12px;">注意:该链接已经有人提交过了</span>
                         </p>
                 </div>
 
@@ -116,6 +118,28 @@
 <script src="/js/public.js"></script>
 <!-- Page Script -->
 <script language="javascript">
+    //检查url是否重复
+    function check_url_repeat() {
+        var url = "<{$info['url']}>";
+        var id = $("#info_id").val();
+        $.ajax({
+            type: "POST",
+            data: {"url": url,"id":id},
+            dataType:'json',
+            url: "/designate/check_url",
+            success: function (data) {
+                if(data.res == '1'){
+                    $("#repeat_warning").css('display','block');
+                    $("input[name = 'duplicate']")[1].checked = true;
+                }else{
+                    $("input[name = 'duplicate']")[0].checked = true;
+                }
+            }
+        });
+
+    }
+    check_url_repeat();
+
     var client_yijian = new ZeroClipboard($('#clip_yijian'));
     $("#commit-info-btn").click(function () {
         var id = $("#info_id").val();
