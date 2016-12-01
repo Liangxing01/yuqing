@@ -8,7 +8,7 @@ class Reporter extends MY_controller
     public function __construct()
     {
         parent::__construct();
-        $this->load->helper(array('form', 'url'));
+        $this->load->helper(array('form', 'url', "public"));
         $this->load->library('session');
         $this->load->model('Report_model', 'report');
         $this->identity->is_authentic();
@@ -21,37 +21,28 @@ class Reporter extends MY_controller
     {
         $this->assign("active_title", "report_parent");
         $this->assign("active_parent", "want_report");
-        $this->all_display("report/want_report.html");
-//        $this->all_display("report/little.html");
+        if (isMobile()) {
+            //手机版 我要提交 页面
+            $this->m_all_display("report/m_want_report.html");
+        } else {
+            $this->all_display("report/want_report.html");
+        }
     }
-    
-    /**
-     * 手机版 我要提交 页面
-     */
-    public function m_wantReport(){
-    	$this->assign("active_title", "report_parent");
-        $this->assign("active_parent", "want_report");
-        $this->m_all_display("report/m_want_report.html");
-    }
+
 
     /**
      * 提交列表，视图载入
-     */
-    public function m_reportRecording()
-    {
-        $this->assign("active_title", "report_parent");
-        $this->assign("active_parent", "report_recording");
-        $this->m_all_display("report/m_report_record.html");
-    }
-    
-    /**
-     * 手机版 提交列表，视图载入
      */
     public function reportRecording()
     {
         $this->assign("active_title", "report_parent");
         $this->assign("active_parent", "report_recording");
-        $this->all_display("report/report_recording.html");
+        if (isMobile()) {
+            //手机版 提交列表 页面
+            $this->m_all_display("report/m_report_record.html");
+        } else {
+            $this->all_display("report/report_recording.html");
+        }
     }
 
     /**
@@ -71,7 +62,7 @@ class Reporter extends MY_controller
         $data = array('id' => $id, 'title' => $title, 'source' => $source, 'url' => $url, 'description' => $description, 'uid' => $uid, 'time' => $_SERVER['REQUEST_TIME']);
         $nu = $this->report->add_or_update($data);
         //插入附件信息
-        if($attachment != ""){
+        if ($attachment != "") {
             $this->insert_attachment($attachment, $nu['id']);
         }
 
@@ -141,27 +132,15 @@ class Reporter extends MY_controller
         $this->assign("info", $info);
         $this->assign("active_title", "report_parent");
         $this->assign("active_parent", "report_recording");
-        $this->all_display("report/info_detail.html");
-    }
-    
-    /**
-     * 信息详情 手机页面载入
-     */
-    public function m_show_detail()
-    {
-        $info_id = $this->input->get("id", true);
-        if (!isset($info_id) || $info_id == null || $info_id == "") {
-            show_404();
+        if(isMobile()){
+            //信息详情 手机页面载入
+            $this->all_display("report/m_info_detail.html");
+        }else{
+            $this->all_display("report/info_detail.html");
         }
-
-        $this->load->model("Designate_Model", "designate");
-        $info = $this->designate->get_info($info_id);
-        $this->assign("info", $info);
-        $this->assign("active_title", "report_parent");
-        $this->assign("active_parent", "report_recording");
-        $this->m_all_display("report/m_info_detail.html");
     }
-	
+
+
     /**
      * 修改时判断url是否重复
      * 判断是否和自己已经提交过的其它事件重复
@@ -249,7 +228,7 @@ class Reporter extends MY_controller
     public function upload_pic()
     {
 
-        $config=array();
+        $config = array();
         $config['upload_path'] = './uploads/temp/';
         $config['allowed_types'] = 'jpg|png|jpeg';
         $config['max_size'] = 10000;
@@ -259,7 +238,7 @@ class Reporter extends MY_controller
 
         $this->load->library('upload', $config);
 
-       if (!$this->upload->do_upload('file')) {
+        if (!$this->upload->do_upload('file')) {
             $error = $this->upload->display_errors();
             $res = array(
                 'res' => 0, 'info' => $error

@@ -133,16 +133,17 @@ class Designate extends MY_controller
     /**
      * 判断提交的url是否重复
      */
-    public function check_url(){
+    public function check_url()
+    {
         $url = $this->input->post('url');
-        $id  = $this->input->post('id');
+        $id = $this->input->post('id');
         $this->load->model("Designate_Model", "designate");
-        $res = $this->designate->check_url($url,$id);
-        if($res){
+        $res = $this->designate->check_url($url, $id);
+        if ($res) {
             echo json_encode(array(
                 'res' => 1
             ));
-        }else{
+        } else {
             echo json_encode(array(
                 'res' => 0
             ));
@@ -454,21 +455,17 @@ class Designate extends MY_controller
      */
     public function event_search()
     {
+        $this->load->helper(array("public"));
         $this->assign("active_title", "designate_parent");
         $this->assign("active_parent", "event_search");
-        $this->all_display("designate/event_search.html");
+        if (isMobile()) {
+            //事件跟踪列表 手机  视图载入
+            $this->m_all_display("designate/m_event_search.html");
+        } else {
+            $this->all_display("designate/event_search.html");
+        }
     }
-    
-    
-	/**
-     * 事件跟踪列表 手机  视图载入
-     */
-    public function m_event_search()
-    {
-        $this->assign("active_title", "designate_parent");
-        $this->assign("active_parent", "event_search");
-        $this->m_all_display("designate/m_event_search.html");
-    }
+
 
     /**
      * 事件检索列表分页 数据接口
