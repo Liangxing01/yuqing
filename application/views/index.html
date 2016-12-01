@@ -12,9 +12,34 @@
 	.tq1 p{ font-size: 1.4em;  color: #72d0eb; margin: 0px;}
 	.xx{ background: url(../../img/xxjl.png) no-repeat 0;}
 	.xxt{ font-size: 2.0em; color: white;}
+    .demo-lx{text-align:center;text-decoration: blink}
+    @media only screen and (min-width: 768px) {
+      #msg tr td a{
+        width:220px;
+      }
+    }
+    @media only screen and (max-width: 375px) {
+      #msg tr td a{
+        width:50px;
+      }
+    }
+    @media only screen and (max-width: 768px) {
+      #msg tr td a{
+        width:150px;
+      }
+    }
+
+    #msg tr td a{
+      display: inline-block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: red;
+    }
 </style>
       <!-- BEGIN MAIN CONTENT -->
       <link href="/css/tasks.css" rel="stylesheet"><!-- TASK CSS-->
+<script language="javascript" src="/js/public.js"></script>
       
       <section id="main-content">
 	  <!-- BEGIN WRAPPER  -->
@@ -178,57 +203,36 @@
                 </div>
                 <table class="table table-hover personal-task">
                   <tbody id="msg">
-
                     <tr>
-                      <td>
-                        1
-                      </td>
-                      <td style="text-align: left;">
-                        <span id="td1"></span>
-                        <a id="a1" href="" style="color: red;"></a>
-                      </td>
+                      <td>1</td>
+                      <td>类型：指派</td>
+                      <td><a href="javascript:void(0)">标题一</a></td>
+                      <td><span class="badge bg-important">2016-12-10 10:30:15</span></td>
                     </tr>
-
                     <tr>
-                      <td>
-                        2
-                      </td>
-                      <td style="text-align: left;">
-                        <span id="td2"></span>
-                        <a id="a2" href="" style="color: red;"></a>
-                      </td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
                     </tr>
-
                     <tr>
-                      <td>
-                        3
-                      </td>
-                      <td style="text-align: left;">
-                        <span id="td3"></span>
-                        <a id="a3" href="" style="color: red;"></a>
-                      </td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
                     </tr>
-
                     <tr>
-                      <td>
-                        4
-                      </td>
-                      <td style="text-align: left;">
-                        <span id="td4"></span>
-                        <a id="a4" href="" style="color: red;"></a>
-                      </td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
                     </tr>
-
                     <tr>
-                      <td>
-                        5
-                      </td>
-                      <td  style="text-align: left;">
-                        <span id="td5"></span>
-                        <a id="a5" href="" style="color: red;"></a>
-                      </td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
                     </tr>
-
                   </tbody>
                 </table>
               </section>
@@ -290,7 +294,7 @@
 <script src="/js/count.js"></script>
       <script src="/assets/morris.js-0.4.3/raphael-min.js" ></script><!-- MORRIS  JS -->
 <script>
-  get_all_msg();
+  //get_all_msg();
   var message = {   //title闪烁
     time: 0,
     title: document.title,
@@ -370,20 +374,22 @@
       }
     });
   }
-  var get_msg_timer = setInterval(get_msg,3000);
+//  var get_msg_timer = setInterval(get_msg,3000);
 
-  function get_all_msg() {
+  /*function get_all_msg() {
     $.ajax({
-      url:'/welcome/get_msg',
-      type :'get',
-      dataType:'json',
+
       success:function(data){
-        var json = eval(data);
-        for(var i = 0; i< 5 ;i++){
+        console.log(data);
+       /!* var json = eval(data);
+        if(json){
+          for(var i = 0; i< 5 ;i++){
             $("#td"+(i+1)).html(json[i].name+':'+json[i].msg+"  ");
             $("#a"+(i+1)).attr('href',json[i].url);
-          $("#a"+(i+1)).html("加入视频会议！");
-            /*var tr = $("<tr></tr>");
+            $("#a"+(i+1)).html("加入视频会议！");
+        }*!/
+
+            /!*var tr = $("<tr></tr>");
             var fir_td = $("<td></td>");
             var sec_td = $("<td></td>");
             sec_td.attr('style','text-align: left');
@@ -397,16 +403,14 @@
             sec_td.append(url);
             tr.append(fir_td);
             tr.append(sec_td);
-            $("#msg").append(tr);*/
-        }
-
-      },
+            $("#msg").append(tr);*!/
+        },
       error:function(){
 
       }
     });
-  }
-  var get_all_msg_timer = setInterval(get_all_msg,4000);
+  }*/
+ // var get_all_msg_timer = setInterval(get_all_msg,4000);
 </script>
 <script>
   function open_meeting() {
