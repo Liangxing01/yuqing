@@ -17,6 +17,7 @@ class Welcome extends MY_Controller
      */
     public function index()
     {
+        $this->load->helper(array("public"));
         $this->assign("active_title", "home_page");
         $this->assign("active_parent", "home_parent");
         /*$weather = $this->my_model->weather();
@@ -24,7 +25,12 @@ class Welcome extends MY_Controller
         $login = $this->my_model->get_login_list($this->session->userdata('uid'), 5);
         $this->assign("avatar", $this->session->avatar);
         $this->assign('login', $login);
-        $this->all_display('index.html');
+        if(isMobile()){
+            $this->m_all_display("m_index.html");
+        }else{
+            $this->all_display('index.html');
+        }
+
     }
     
     /**

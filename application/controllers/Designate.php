@@ -438,21 +438,17 @@ class Designate extends MY_controller
      */
     public function event_search()
     {
+        $this->load->helper(array("public"));
         $this->assign("active_title", "designate_parent");
         $this->assign("active_parent", "event_search");
-        $this->all_display("designate/event_search.html");
+        if (isMobile()) {
+            //事件跟踪列表 手机  视图载入
+            $this->m_all_display("designate/m_event_search.html");
+        } else {
+            $this->all_display("designate/event_search.html");
+        }
     }
-    
-    
-	/**
-     * 事件跟踪列表 手机  视图载入
-     */
-    public function m_event_search()
-    {
-        $this->assign("active_title", "designate_parent");
-        $this->assign("active_parent", "event_search");
-        $this->m_all_display("designate/m_event_search.html");
-    }
+
 
     /**
      * 事件检索列表分页 数据接口
@@ -583,14 +579,6 @@ class Designate extends MY_controller
         $this->output
             ->set_content_type('application/json')
             ->set_output(json_encode($data));
-    }
-
-
-    // demo TODO
-    public function tree()
-    {
-        $this->load->model("Designate_Model", "designate");
-        echo $this->designate->get_relation_tree();
     }
 
 }
