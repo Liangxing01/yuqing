@@ -87,7 +87,7 @@ class MY_Controller extends CI_Controller
                     $this->ci_smarty->display('menu/menu_publisher.html');
                     break;
                 case 2 :
-                    $this->ci_smarty->display('menu/menu_manager.html');
+                    $this->ci_smarty->display('menu/m_menu_manager.html');
                     break;
                 case 3 :
                     $this->ci_smarty->display('menu/menu_processor.html');

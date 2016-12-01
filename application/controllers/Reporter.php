@@ -31,7 +31,7 @@ class Reporter extends MY_controller
     }
 
     /**
-     * 手机版 提交列表，视图载入
+     * 提交列表，视图载入
      */
     public function reportRecording()
     {
@@ -116,6 +116,24 @@ class Reporter extends MY_controller
             ->set_content_type('application/json')
             ->set_output(json_encode($data));
     }
+
+
+    /**
+     * 移动端 提交记录 滚动加载 数据接口
+     * post: (int)page
+     */
+    public function scroll_record_data()
+    {
+        $page_num = $this->input->post("page");        //页码
+        if (!isset($page_num) || $page_num == null || $page_num == "") {
+            show_404();
+        }
+        $result = $this->report->scroll_record_pagination($page_num);
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output($result);
+    }
+
 
     /**
      * 信息详情 页面载入

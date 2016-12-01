@@ -127,6 +127,27 @@ class Report_model extends CI_Model {
         return $data;
     }
 
+
+    /**
+     * 移动端 提交记录 分页数据
+     * @param $page_num 当前页码
+     * @return string Json字符串
+     */
+    public function scroll_record_pagination($page_num)
+    {
+        $length = 10; //默认查10条记录
+        $start = ($page_num - 1) * $length;
+        $uid = $this->session->uid;
+        $result = $this->db->select("info.id, title, url, time")
+            ->join("user", "user.id = info.publisher", "left")
+            ->where(array("user.id" => $uid))
+            ->limit($length, $start)
+            ->order_by("time", "desc")
+            ->get("info")->result_array();
+        return json_encode($result);
+    }
+
+
     /**
      * 获取详细记录
      * @param $id 记录id
