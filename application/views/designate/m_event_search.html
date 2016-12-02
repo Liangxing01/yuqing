@@ -1,4 +1,9 @@
 <style type="text/css">
+	#main-content:after{
+		content: '';
+		display: block;
+		clear: both;
+	}
 	 @media only screen and (min-width: 320px) and (max-width: 768px) {
 	 	
 	 	.wrapper{ padding: 0; margin-top: 40px;}
@@ -8,7 +13,10 @@
 	 		padding-top: 5px;
 	 		padding-bottom: 5px;
 	 	}
-	 	#left{
+		 .load_more{
+			 padding-top:10px;
+		 }
+	 	.track_left{
 	 		 
 	 		width: 40px; 
 	 		height:40px; 
@@ -20,7 +28,7 @@
 	 		font-size: 1.6em;
 	 		background: #009e96;
 	 	}
-	 	#right{
+	 	.track_right{
 	 		float: right; 
 	 		width: 50px; 
 	 		height: 25px; 
@@ -31,16 +39,16 @@
 	 		text-align: center;
 	 		line-height: 25px;
 	 	}
-	 	#right a{
+	 	.track_right a{
 	 		display: block;
 	 		color: white;
 	 	}
-	 	#middle{
+	 	.track_middle{
 	 		margin: 0 50px 0 40px; 
-	 		width: 100%; 
+	 		/*width: 100%; */
 	 		height: 40px;
 	 	}
-	 	#middle p{
+	 	.track_middle p{
 	 		margin-bottom: 0px;
 	 		/*text-indent: 1em;*/
 	 		color: #212121;
@@ -58,11 +66,15 @@
 
 		}
 		.lb{ width: 100%;}
-		#middle p .left_left{ 
+		.track_middle p .left_left{
 			float: left;
 			margin-left: 10px;
+			width:140px;
+			text-overflow: ellipsis;
+			overflow: hidden;
+			white-space: nowrap;
 		}
-		#middle p .right_right{ 
+		.track_middle p .right_right{
 			float: right;
 			/*padding: 2px 5px 2px 0px;*/
 			margin-right: 10px;
@@ -71,11 +83,21 @@
 			display: block;
 			width: 40px;
 			border-radius: 4px;
-			
-			
+
+
 		}
 		 
 	 }
+	@media only screen and (min-width:350px) and (max-width: 390px){
+		.track_middle .left_left{
+			width: 190px !important;
+		}
+	}
+	@media only screen and (min-width:390px) and (max-width: 450px){
+		.track_middle .left_left{
+			width: 230px !important;
+		}
+	}
 </style>
 <section id="main-content">
     <section class="wrapper">
@@ -83,132 +105,78 @@
         	<header class="panel-heading">
             <span class="icon-title"><strong>事件追踪</strong></span>
             </header>
-        	<div class="lb">
-				<div style="padding: 0px 10px;">2016-11-28&nbsp;11:32:55</div>
-				<div class="col-xs-12 one">
-					<div id="left">5</div>
-					<div id="right" ><a>查看</a></div>
-					<div id="middle">
-						<p >
-							<span class="left_left">test</span> 
-							<span class="right_right">等级</span>
-						</p>
-						<br />
-						<p >
-							<span class="left_left" style="color: #b2b2b2;">http://www.baidu.com</span> 
-							<span class="right_right" style=" background: #f66f6f; color: white; ">紧急</span>
-						</p>
-					</div>
-					
-				</div>
-			</div>
-			
-			<div  class="lb">
-				<div style="padding: 0px 10px;">2016-11-28&nbsp;11:32:55</div>
-				<div class="col-xs-12 one">
-					<div id="left" >4</div>
-					<div id="right" ><a>查看</a></div>
-					<div id="middle">
-						<p >
-							<span class="left_left">test</span> 
-							<span class="right_right">等级</span>
-						</p>
-						<br />
-						<p >
-							<span class="left_left" style="color: #b2b2b2;">http://www.baidu.com</span> 
-							<span class="right_right" style=" background: #77f683; color: white; ">一般</span>
-						</p>
-					</div>
-					
-				</div>
-			</div>
-			
-			<div  class="lb">
-				<div style="padding: 0px 10px;">2016-11-28&nbsp;11:32:55</div>
-				<div class="col-xs-12 one">
-					<div id="left">3</div>
-					<div id="right" ><a>查看</a></div>
-					<div id="middle">
-						<p >
-							<span class="left_left">test</span> 
-							<span class="right_right">等级</span>
-						</p>
-						<br />
-						<p >
-							<span class="left_left" style="color: #b2b2b2;">http://www.baidu.com</span> 
-							<span class="right_right" style=" background: #fbdb47;  color: white;">重要</span>
-						</p>						
-					</div>
-					
-				</div>
-			</div>
-			
-			<div class="lb">
-				<div style="padding: 0px 10px;">2016-11-28&nbsp;11:32:55</div>
-				<div class="col-xs-12 one">
-					<div id="left">5</div>
-					<div id="right" ><a>查看</a></div>
-					<div id="middle">
-						<p >
-							<span class="left_left">test</span> 
-							<span class="right_right">等级</span>
-						</p>
-						<br />
-						<p >
-							<span class="left_left" style="color: #b2b2b2;">http://www.baidu.com</span> 
-							<span class="right_right" style=" background: #f66f6f;  color: white;">紧急</span>
-						</p>
-					</div>
-					
-				</div>
-			</div>
-			
-			<div  class="lb">
-				<div style="padding: 0px 10px;">2016-11-28&nbsp;11:32:55</div>
-				<div class="col-xs-12 one">
-					<div id="left">2</div>
-					<div id="right" ><a>查看</a></div>
-					<div id="middle">
-						<p >
-							<span class="left_left">test</span> 
-							<span class="right_right">等级</span>
-						</p>
-						<br />
-						<p >
-							<span class="left_left" style="color: #b2b2b2;">http://www.baidu.com</span> 
-							<span class="right_right" style=" background: #77f683;  color: white;">一般</span>
-						</p>
-					</div>
-					
-				</div>
-			</div>
-			
-			<div  class="lb">
+			<!--<div  class="lb">
 				<div style="padding: 0px 10px;">2016-11-28&nbsp;11:32:55</div>
 				<div class="col-xs-12 one">
 					<div id="left" >1</div>
 					<div id="right" ><a>查看</a></div>
 					<div id="middle">
 						<p >
-							<span class="left_left">test</span> 
+							<span class="left_left">test</span>
 							<span class="right_right">等级</span>
 						</p>
 						<br />
 						<p >
-							<span class="left_left" style="color: #b2b2b2;">http://www.baidu.com</span> 
+							<span class="left_left" style="color: #b2b2b2;">http://www.baidu.com</span>
 							<span class="right_right" style=" background: #fbdb47; color: white;">重要</span>
 						</p>
 					</div>
-					
+
 				</div>
-			</div>
-			
-			
-            
+			</div>-->
 			<div style="height: 5px;  clear: both;"></div>
         <!-- END ROW  -->
     </section>
+	<div class="col-xs-12 load_more">
+		<button class="btn btn-sm btn-info" style="width:100%;margin-bottom:10px" onclick="track_ajax()">加载更多</button>
+		<p style="text-align: center;display:none ">暂无更多数据</p>
+	</div>
 </section>
 <!-- END SECTION -->
+<script language="javascript" src="/js/public.js"></script>
+<script>
+	var isLoad_Track = true;
+	var	Track_page = 1;
+	function track_ajax(){
+		if(isLoad_Track){
+			$.ajax({
+				type:'POST',
+				data:{
+					page:Track_page
+				},
+				url:'/designate/scroll_event_data',
+				dataType:'json',
+				success:function(data){
+					var Track_list = '';
+					Track_page++;
+					var len = data.length;
+					if(len){
+						for(var i=0;i<len;i++){
+							Track_list += '<div class="lb">';
+							Track_list += '<div style="padding: 0px 10px;">'+timeToDate(data[i].start_time*1000)+'</div>';
+							Track_list += '<div class="col-xs-12 one">';
+							Track_list += '<div class="track_left" >'+data[i].id+'</div>';
+							Track_list += '<div class="track_right" ><a href="/common/event_detail?eid='+data[i].id+'">查看</a></div>';
+							Track_list += '<div class="track_middle">';
+							Track_list += '<p><span class="left_left">'+data[i].title+'</span>';
+							Track_list += '<span class="right_right">等级</span></p><br>';
+							Track_list += '<p><span class="left_left" style="color: #b2b2b2;">牵头人(单位):'+(data[i].processor?data[i].processor:data[i].group)+'</span>';
+							Track_list += '<span class="right_right" style=" background: #fbdb47; color: white;">'+data[i].rank+'</span></p>'
+							Track_list += '</div></div></div>';
+						}
+						$('.wrapper').append(Track_list);
+					}else{
+						isLoad_Track = false;
+						layer.msg('暂无更多数据');
+						$(".load_more button").hide();
+						$('.load_more p').show();
+					}
+
+				}
+			})
+		}
+	}
+	track_ajax();
+</script>
 
 

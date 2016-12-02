@@ -16,6 +16,17 @@
 	 		padding-top: 5px;
 	 		padding-bottom: 5px;
 	 	}
+		.load_more{
+			padding-top:10px;
+		}
+		.load_more button{
+			width: 100%;
+			margin-bottom: 10px;
+		}
+		.load_more	p{
+			display:none;
+			text-align: center;
+		}
 	 	.info_left{
 	 		 
 	 		width: 40px; 
@@ -95,7 +106,10 @@
         <!-- END ROW  -->
     </section>
     <div style="height: 5px; clear: both;"></div>
-    <div class="col-xs-12"><button class="btn btn-info btn-sm" style="width: 100%;margin: 10px 0;" onclick="info_ajax()">加载更多</button></div>
+    <div class="col-xs-12 load_more">
+		<button class="btn btn-info btn-sm" onclick="info_ajax()">加载更多</button>
+		<p>暂无更多数据</p>
+	</div>
 </section>
 <!-- END SECTION -->
 <script language="javascript" src="/js/public.js"></script>
@@ -131,6 +145,8 @@
 					}else{
 						isLoad_info = false;
 						layer.msg("暂无更多数据");
+						$('.load_more button').hide();
+						$('.load_more p').show();
 					}
 				}
 			})
@@ -138,9 +154,5 @@
 
 	}
 	info_ajax();
-	/*$(window).scroll(function(){
-		if($(document).scrollTop()+screen.height == $(document.body).height()){
-			info_ajax();
-		}
-	})*/
+
 </script>
