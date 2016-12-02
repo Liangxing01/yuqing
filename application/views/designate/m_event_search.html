@@ -117,7 +117,7 @@
 						</p>
 						<br />
 						<p >
-							<span class="left_left" style="color: #b2b2b2;">http://www.baidu.com</span>
+							<span class="left_left" style="color: #b2b2b2;">http://www.dddd.com</span>
 							<span class="right_right" style=" background: #fbdb47; color: white;">重要</span>
 						</p>
 					</div>
@@ -161,7 +161,14 @@
 							Track_list += '<p><span class="left_left">'+data[i].title+'</span>';
 							Track_list += '<span class="right_right">等级</span></p><br>';
 							Track_list += '<p><span class="left_left" style="color: #b2b2b2;">牵头人(单位):'+(data[i].processor?data[i].processor:data[i].group)+'</span>';
-							Track_list += '<span class="right_right" style=" background: #fbdb47; color: white;">'+data[i].rank+'</span></p>'
+							switch (data[i].rank){
+								case "一般":
+									Track_list += '<span class="right_right label label-primary">'+data[i].rank+'</span></p>';break;
+								case "重要":
+									Track_list += '<span class="right_right label label-warning">'+data[i].rank+'</span></p>';break;
+								case "紧急":
+									Track_list += '<span class="right_right label label-danger">'+data[i].rank+'</span></p>';break;
+							}
 							Track_list += '</div></div></div>';
 						}
 						$('.wrapper').append(Track_list);
