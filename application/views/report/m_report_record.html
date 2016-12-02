@@ -1,6 +1,11 @@
 <style type="text/css">
+	#main-content:after{
+		content: '';
+		display: block;
+		clear: both;
+	}
 	 @media only screen and (min-width: 320px) and (max-width: 768px) {
-	 	
+	 		
 	 	.wrapper{ padding: 0; margin-top: 40px;}
 	 	.one{
 	 		background: white;
@@ -83,9 +88,11 @@
         	<header class="panel-heading">
             <span class="icon-title"><strong>提交记录</strong></span>
            </header>
-			<div style="height: 5px; clear: both;"></div>
+			
         <!-- END ROW  -->
     </section>
+    <div style="height: 5px; clear: both;"></div>
+    <div class="col-xs-12"><button class="btn btn-info btn-sm" style="width: 100%;margin: 10px 0;" onclick="info_ajax()">加载更多</button></div>
 </section>
 <!-- END SECTION -->
 <script language="javascript" src="/js/public.js"></script>
@@ -120,7 +127,7 @@
 						$('.wrapper').append(info_list);
 					}else{
 						isLoad_info = false;
-						$('.wrapper').append('<div style="text-align:center">暂无更多数据</div>');
+						layer.msg("暂无更多数据");
 					}
 				}
 			})
@@ -128,9 +135,9 @@
 
 	}
 	info_ajax();
-	$(window).scroll(function(){
+	/*$(window).scroll(function(){
 		if($(document).scrollTop()+screen.height == $(document.body).height()){
 			info_ajax();
 		}
-	})
+	})*/
 </script>
