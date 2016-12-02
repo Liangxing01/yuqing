@@ -54,8 +54,13 @@ class Common extends MY_Controller
         $this->assign("role", $role);
         $this->assign("event", $event);
 
+        $this->load->helper(array("public"));
+        if(isMobile()){
+            $this->all_display("designate/m_event_detail.html");
 
-        $this->all_display("designate/event_detail.html");
+        }else{
+            $this->all_display("designate/event_detail.html");
+        }
     }
 
 
