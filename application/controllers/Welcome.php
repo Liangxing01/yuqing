@@ -9,6 +9,7 @@ class Welcome extends MY_Controller
         parent::__construct();
         $this->load->model('MY_Model', 'my_model');
         $this->identity->is_authentic();
+        $this->load->helper(array("public"));
     }
 
 
@@ -17,7 +18,6 @@ class Welcome extends MY_Controller
      */
     public function index()
     {
-        $this->load->helper(array("public"));
         $this->assign("active_title", "home_page");
         $this->assign("active_parent", "home_parent");
         /*$weather = $this->my_model->weather();
@@ -142,7 +142,11 @@ class Welcome extends MY_Controller
         $this->assign("active_parent", "manage_parent");
         $data = $this->get_my_info();
         $this->assign('userinfo', $data);
-        $this->all_display("user_info.html");
+        if (isMobile()) {
+            $this->m_all_display("user_info.html");
+        } else {
+            $this->all_display("user_info.html");
+        }
     }
 
 
@@ -211,7 +215,11 @@ class Welcome extends MY_Controller
     {
         $this->assign("active_title", "change_psw");
         $this->assign("active_parent", "manage_parent");
-        $this->all_display("change_psw.html");
+        if (isMobile()) {
+            $this->m_all_display("change_psw.html");
+        } else {
+            $this->all_display("change_psw.html");
+        }
     }
 
 

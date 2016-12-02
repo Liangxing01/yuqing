@@ -23,8 +23,7 @@ class Reporter extends MY_controller
         $this->assign("active_parent", "want_report");
         if (isMobile()) {
             //手机版 我要提交 页面
-//            $this->m_all_display("report/m_want_report.html");
-            $this->all_display("report/want_report.html");
+            $this->m_all_display("report/m_want_report.html");
         } else {
             $this->all_display("report/want_report.html");
         }

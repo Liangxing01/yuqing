@@ -329,7 +329,7 @@ class Designate_Model extends CI_Model
     {
         $length = 10; //默认查出10条记录
         $start = ($page_num - 1) * 10;
-        $result = $this->db->select("id, title, rank, user.name AS processor, group.name, state")
+        $result = $this->db->select("event.id, title, rank, user.name AS processor, group.name AS group, state")
             ->join("user", "user.id = event.main_processor", "left")
             ->join("group", "group.id = event.group", "left")
             ->limit($length, $start)
