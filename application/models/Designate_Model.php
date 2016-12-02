@@ -881,7 +881,7 @@ class Designate_Model extends CI_Model
             $this->db->insert_batch("event_info", $event_info);
         }
         //事件关联
-        if (!empty($relate_event)) {
+        if (!empty($event_relate)) {
             $this->db->insert_batch("event_relate", $event_relate);
         }
         //事件指派
