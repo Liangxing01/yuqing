@@ -8,7 +8,7 @@
 	 		padding-top: 5px;
 	 		padding-bottom: 5px;
 	 	}
-	 	#left{
+	 	.info_left{
 	 		 
 	 		width: 40px; 
 	 		height:40px; 
@@ -19,7 +19,7 @@
 	 		color: white; 	 		
 	 		font-size: 1.6em;
 	 	}
-	 	#right{
+	 	.info_right{
 	 		float: right; 
 	 		width: 50px; 
 	 		height: 25px; 
@@ -30,19 +30,23 @@
 	 		text-align: center;
 	 		line-height: 25px;
 	 	}
-	 	#right a{
+	 	.info_right a{
 	 		display: block;
 	 		color: white;
 	 	}
-	 	#middle{
+	 	.info_middle{
 	 		margin: 0 50px 0 40px; 
 	 		width: 100%; 
 	 		height: 40px;
 	 	}
-	 	#middle p{
+	 	.info_middle p{
 	 		margin-bottom: 0px;
 	 		text-indent: 1em;
 	 		color: #212121;
+			width:180px;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
 	 	}
 	 	.panel-heading{
 			border-color: #eff2f7;
@@ -54,7 +58,15 @@
 
 		}
 		.lb{ width: 100%; }
-		
+		.no_info_result{
+			text-algin:center;
+			padding:10px 0;
+		}
+		 .no_info_result:befor{
+			 content: '';
+			 display: block;
+			 clear: both;
+		 }
 	 }
 </style>
 <section id="main-content">
@@ -63,87 +75,181 @@
         	<header class="panel-heading">
             <span class="icon-title"><strong>提交记录</strong></span>
             </header>
-        	<div  class="lb">
-				<div style="padding: 0px 10px;">2016-11-28&nbsp;11:32:55</div>
-				<div class="col-xs-12 one">
-					<div id="left" style="background: #f66f6f;">5</div>
-					<div id="right" ><a>查看</a></div>
-					<div id="middle">
-						<p >test</p>
-						<p style="color: #b2b2b2;">http://www.baidu.com</p>
-					</div>
-					
-				</div>
-			</div>
-			
-			<div  class="lb">
-				<div style="padding: 0px 10px;">2016-11-28&nbsp;11:32:55</div>
-				<div class="col-xs-12 one">
-					<div id="left" style="background: #77f683;">5</div>
-					<div id="right" ><a>查看</a></div>
-					<div id="middle">
-						<p >test</p>
-						<p style="color: #b2b2b2;">http://www.baidu.com</p>
-					</div>
-					
-				</div>
-			</div>
-			
-			<div  class="lb">
-				<div style="padding: 0px 10px;">2016-11-28&nbsp;11:32:55</div>
-				<div class="col-xs-12 one">
-					<div id="left" style="background: #fbdb47;">5</div>
-					<div id="right" ><a>查看</a></div>
-					<div id="middle">
-						<p >test</p>
-						<p style="color: #b2b2b2;">http://www.baidu.com</p>
-					</div>
-					
-				</div>
-			</div>
-			
-			<div  class="lb">
-				<div style="padding: 0px 10px;">2016-11-28&nbsp;11:32:55</div>
-				<div class="col-xs-12 one">
-					<div id="left" style="background: #f66f6f;">5</div>
-					<div id="right" ><a>查看</a></div>
-					<div id="middle">
-						<p >test</p>
-						<p style="color: #b2b2b2;">http://www.baidu.com</p>
-					</div>
-					
-				</div>
-			</div>
-			
-			<div class="lb">
-				<div style="padding: 0px 10px;">2016-11-28&nbsp;11:32:55</div>
-				<div class="col-xs-12 one">
-					<div id="left" style="background: #77f683;">5</div>
-					<div id="right" ><a>查看</a></div>
-					<div id="middle">
-						<p >test</p>
-						<p style="color: #b2b2b2;">http://www.baidu.com</p>
-					</div>
-					
-				</div>
-			</div>
-			
-			<div class="lb">
-				<div style="padding: 0px 10px;">2016-11-28&nbsp;11:32:55</div>
-				<div class="col-xs-12 one">
-					<div id="left" style="background: #fbdb47;">5</div>
-					<div id="right" ><a>查看</a></div>
-					<div id="middle">
-						<p >test</p>
-						<p style="color: #b2b2b2;">http://www.baidu.com</p>
-					</div>
-					
-				</div>
-			</div>
-            
+		<!--<div  class="lb">
+            <div style="padding: 0px 10px;">2016-11-28&nbsp;11:32:55</div>
+            <div class="col-xs-12 one">
+                <div id="left" style="background: #f66f6f;">5</div>
+                <div id="right" ><a>查看</a></div>
+                <div id="middle">
+                    <p >test</p>
+                    <p style="color: #b2b2b2;">http://www.baidu.com</p>
+                </div>
+
+            </div>
+        </div>
+
+        <div  class="lb">
+            <div style="padding: 0px 10px;">2016-11-28&nbsp;11:32:55</div>
+            <div class="col-xs-12 one">
+                <div id="left" style="background: #77f683;">5</div>
+                <div id="right" ><a>查看</a></div>
+                <div id="middle">
+                    <p >test</p>
+                    <p style="color: #b2b2b2;">http://www.baidu.com</p>
+                </div>
+
+            </div>
+        </div>
+
+        <div  class="lb">
+            <div style="padding: 0px 10px;">2016-11-28&nbsp;11:32:55</div>
+            <div class="col-xs-12 one">
+                <div id="left" style="background: #fbdb47;">5</div>
+                <div id="right" ><a>查看</a></div>
+                <div id="middle">
+                    <p >test</p>
+                    <p style="color: #b2b2b2;">http://www.baidu.com</p>
+                </div>
+
+            </div>
+        </div>
+
+        <div  class="lb">
+            <div style="padding: 0px 10px;">2016-11-28&nbsp;11:32:55</div>
+            <div class="col-xs-12 one">
+                <div id="left" style="background: #f66f6f;">5</div>
+                <div id="right" ><a>查看</a></div>
+                <div id="middle">
+                    <p >test</p>
+                    <p style="color: #b2b2b2;">http://www.baidu.com</p>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="lb">
+            <div style="padding: 0px 10px;">2016-11-28&nbsp;11:32:55</div>
+            <div class="col-xs-12 one">
+                <div id="left" style="background: #77f683;">5</div>
+                <div id="right" ><a>查看</a></div>
+                <div id="middle">
+                    <p >test</p>
+                    <p style="color: #b2b2b2;">http://www.baidu.com</p>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="lb">
+            <div style="padding: 0px 10px;">2016-11-28&nbsp;11:32:55</div>
+            <div class="col-xs-12 one">
+                <div id="left" style="background: #fbdb47;">5</div>
+                <div id="right" ><a>查看</a></div>
+                <div id="middle">
+                    <p >test</p>
+                    <p style="color: #b2b2b2;">http://www.baidu.com</p>
+                </div>
+
+            </div>
+        </div>
+    <div class="lb">
+        <div style="padding: 0px 10px;">2016-11-28&nbsp;11:32:55</div>
+        <div class="col-xs-12 one">
+            <div id="left" style="background: #fbdb47;">5</div>
+            <div id="right" ><a>查看</a></div>
+            <div id="middle">
+                <p >test</p>
+                <p style="color: #b2b2b2;">http://www.baidu.com</p>
+            </div>
+
+        </div>
+    </div>
+    <div class="lb">
+        <div style="padding: 0px 10px;">2016-11-28&nbsp;11:32:55</div>
+        <div class="col-xs-12 one">
+            <div id="left" style="background: #fbdb47;">5</div>
+            <div id="right" ><a>查看</a></div>
+            <div id="middle">
+                <p >test</p>
+                <p style="color: #b2b2b2;">http://www.baidu.com</p>
+            </div>
+
+        </div>
+    </div>
+    <div class="lb">
+        <div style="padding: 0px 10px;">2016-11-28&nbsp;11:32:55</div>
+        <div class="col-xs-12 one">
+            <div id="left" style="background: #fbdb47;">5</div>
+            <div id="right" ><a>查看</a></div>
+            <div id="middle">
+                <p >test</p>
+                <p style="color: #b2b2b2;">http://www.baidu.com</p>
+            </div>
+
+        </div>
+    </div>
+    <div class="lb">
+        <div style="padding: 0px 10px;">2016-11-28&nbsp;11:32:55</div>
+        <div class="col-xs-12 one">
+            <div id="left" style="background: #fbdb47;">5</div>
+            <div id="right" ><a>查看</a></div>
+            <div id="middle">
+                <p >test</p>
+                <p style="color: #b2b2b2;">http://www.baidu.com</p>
+            </div>
+
+        </div>
+    </div>-->
 			<div style="height: 5px; clear: both;"></div>
         <!-- END ROW  -->
     </section>
 </section>
 <!-- END SECTION -->
+<script language="javascript" src="/js/public.js"></script>
+<script>
+	var isLoad_info = true;	//判断是否继续发送请求
+	var page_info = 1;		//当前页码
+	function info_ajax(){
+		if(isLoad_info){
+			$.ajax({
+				type:'POST',
+				data:{
+					page:page_info
+				},
+				url:'/reporter/scroll_record_data',
+				dataType:'json',
+				success:function(data){
+					page_info++;
+					var info_list = '';
+					var len = data.length;
+					if(len){
+						for(var i = 0;i<len;i++){
+							info_list += '<div class="lb">';
+							info_list += '<div style="padding:0 10px">'+timeToDate(data[i].time*1000)+'</div>';
+							info_list += '<div class="col-xs-12 one">';
+							info_list += '<div class="info_left" style="background: #fbdb47;">'+data[i].id+'</div>';
+							info_list += '<div class="info_right" ><a href=/reporter/show_detail?id="'+data[i].id+'">查看</a></div>';
+							info_list += '<div class="info_middle">';
+							info_list += '<p >'+data[i].title+'</p>';
+							info_list += '<p style="color: #b2b2b2;">'+data[i].url+'</p>';
+							info_list += '</div></div></div>';
+						}
+						$('.wrapper').append(info_list);
+					}else{
+						isLoad_info = false;
+						$('.wrapper').append('<div style="text-align:center">暂无更多数据</div>');
+					}
+				}
+			})
+		}
 
+	}
+	info_ajax();
+	$(window).scroll(function(){
+		console.log($(document).scrollTop()+":"+$(document.body).height()+':');
+		if($(document).scrollTop()+screen.height == $(document.body).height()){
+			info_ajax();
+		}
+
+	})
+</script>
