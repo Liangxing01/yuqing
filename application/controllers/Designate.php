@@ -133,16 +133,17 @@ class Designate extends MY_controller
     /**
      * 判断提交的url是否重复
      */
-    public function check_url(){
+    public function check_url()
+    {
         $url = $this->input->post('url');
-        $id  = $this->input->post('id');
+        $id = $this->input->post('id');
         $this->load->model("Designate_Model", "designate");
-        $res = $this->designate->check_url($url,$id);
-        if($res){
+        $res = $this->designate->check_url($url, $id);
+        if ($res) {
             echo json_encode(array(
                 'res' => 1
             ));
-        }else{
+        } else {
             echo json_encode(array(
                 'res' => 0
             ));
@@ -288,18 +289,18 @@ class Designate extends MY_controller
         $uid = $this->session->userdata('uid');
 
         //判断能不能看这个 页面
-        $this->load->model('Verify_Model','verify');
+        $this->load->model('Verify_Model', 'verify');
         $ver = $this->verify->can_see_event($event_id);
-        if(!$ver){
+        if (!$ver) {
             show_404();
         }
 
         //判断有无督办权限
         $this->load->model("MY_Model", "my_model");
-        $duban = $this->my_model->check_duban($uid,$event_id);
-        if ($duban){
+        $duban = $this->my_model->check_duban($uid, $event_id);
+        if ($duban) {
             $usertype = 1;
-        }else{
+        } else {
             $usertype = 0;
         }
 
@@ -510,6 +511,24 @@ class Designate extends MY_controller
         $this->output
             ->set_content_type('application/json')
             ->set_output(json_encode($data));
+    }
+
+
+    /**
+     * 移动端 事件追踪 滚动加载 数据接口
+     * post: (int)page
+     */
+    public function scroll_event_data()
+    {
+        $page_num = $this->input->post("page");        //页码
+        if (!isset($page_num) || $page_num == null || $page_num == "") {
+            show_404();
+        }
+        $this->load->model("Designate_Model", "designate");
+        $result = $this->designate->scroll_event_pagination($page_num);
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output($result);
     }
 
 
