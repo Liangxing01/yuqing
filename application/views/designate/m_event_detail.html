@@ -1,0 +1,176 @@
+<style type="text/css">
+
+    @media only screen and (min-width: 320px) and (max-width: 768px) {
+        .sidebar-toggle-box {
+            padding-right: 15px !important;
+        }
+
+        .top-nav ul.top-menu > li > a{
+				padding: 0px;
+		}
+		.top-nav .dropdown-menu.extended.logout{
+				top:30px
+		}
+
+
+		.wrapper{
+			padding: 0px;
+			margin-top: 40px;
+		}
+
+
+		.panel{
+			margin-bottom: 5px;
+		}
+		.panel-heading{
+			border-color: #eff2f7;
+		    font-size: 16px;
+		    font-weight: 300;
+		    padding: 10px 15px;
+		    border-bottom: 1px solid #eff2f7;
+
+		}
+		.two{
+			padding: 10px 15px;
+			border-bottom: 1px solid #F3F3F3;
+		}
+		.two p{
+			margin: 0;
+			line-height: 30px;
+		}
+		.two p .two_left{
+			float: left;
+			width: 30%;
+			overflow: hidden;
+			
+		}
+		.two p .two_right{
+			float: right;
+			width: 70%;
+			text-align: right;
+			overflow: hidden;
+		}
+		.fz{
+			border: none;
+			background: #77f683;
+			height: 30px;
+			width: 60px;
+			line-height: 30px;
+		}
+		div p{
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+		.info_detail_1{
+			background: rgb(67,198,192);
+			padding: 5px;
+			margin-top: 5px;
+			border-radius: 4px;
+			overflow: hidden;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+		}
+		.info_detail_1 a{
+			color:#fff;
+			font-size: 16px;
+		}
+		.info_detail_1 b{
+			overflow: hidden;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+			width:240px;
+			display: inline-block;
+			white-space: nowrap;
+			font-weight: normal;
+			font-size: 14px;
+		}
+    }
+	@media only screen and (min-width: 320px) and (max-width: 380px){
+		.info_detail_1 b{
+			width: 350px !important;
+		}
+	}
+
+	@media only screen  and (min-width: 381px) and (max-width: 420px) {
+		.info_detail_1 b{
+			width: 390px !important;
+		}
+	}
+
+</style>
+
+<!-- BEGIN MAIN CONTENT -->
+<section id="main-content">
+    <!-- BEGIN WRAPPER  -->
+    <section class="wrapper">
+        <!-- BEGIN ROW  -->
+            <div class="col-lg-12" style="padding: 0;">
+                <section class="panel">
+                    <header class="panel-heading">
+                        <span class="icon-title"><strong>事件详情</strong></span>
+                    </header>
+
+                    <div style="font-size: 16px; color: #000000; border-bottom: 1px solid #f3f3f3; padding: 0px 15px; line-height: 30px;"><{$event['title']}> </div>
+
+				<div class="col-xs-6">
+					<p>首派人：<{$event['manager']}></p>
+				</div>
+				<div class="col-xs-6">
+					<p>事件等级：<{$event['rank']}></p>
+				</div>
+				<div class="col-xs-6">
+					<{if $event['reply_time'] == ''}>
+					<p>首回时间：不限制</p>
+					<{else}>
+					<p>首回时间：<{$event['reply_time']}>分钟</p>
+					<{/if}>
+				</div>
+				<div class="col-xs-6">
+					<{if $event["main_processor"] != ''}>
+					<p>牵头人：<{$event['main_processor']}></p>
+					<{/if}>
+					<{if $event["main_group"] != ''}>
+					<p>牵头单位：<{$event['main_group']}></p>
+					<{/if}>
+				</div>
+				<div class="col-xs-12">
+					<p>开始时间：<{date("Y-m-d H:i:s",$event['start_time'])}></p>
+				</div>
+				<div class="col-xs-6">
+					<p>状态：<{$event['state']}></p>
+				</div>
+				<{if $event["end_time"] != ''}>
+				<div class="col-xs-6">
+					<p>结束时间：<{date("Y-m-d H:i:s",$event['end_time'])}></p>
+				</div>
+				<{/if}>
+
+                <div class="col-xs-12">
+                	关联事件：
+					<{foreach $event["relate_event"] AS $r}>
+					<a href="/common/event_detail?eid=<{$r['id']}>"><span class="btn btn-primary btn-xs"><{$r['title']}></span></a>
+					<{foreachelse}>
+					无
+					<{/foreach}>
+                </div>
+				<div class="col-xs-12">
+					<strong>事件描述:</strong>
+					<p style="border-bottom: 1px solid #DDDCDC;"><{$event['description']}></p>
+					<h5>事件信息</h5>
+				</div>
+					<{foreach $event['info'] AS $info}>
+					<div class="col-xs-12 info_detail_1">
+						<a href="/reporter/show_detail?id=<{$info['id']}>"> <b><{$info['title']}> </b></a>
+					</div>
+					<{/foreach}>
+
+					<div style="height: 5px; clear: both;"></div>
+                </section>
+
+            </div>
+        <!-- END WRAPPER  -->
+    </section>
+    <!-- END MAIN CONTENT -->
+    <script src="/js/swiper.min.js"></script>
+</section>

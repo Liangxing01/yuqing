@@ -117,6 +117,25 @@ class Reporter extends MY_controller
             ->set_output(json_encode($data));
     }
 
+
+    /**
+     * 移动端 提交记录 滚动加载 数据接口
+     * post: (int)page
+     */
+    public function scroll_record_data()
+    {
+        $page_num = $this->input->post("page");        //页码
+        if (!isset($page_num) || $page_num == null || $page_num == "") {
+            show_404();
+        }
+
+        $result = $this->report->scroll_record_pagination($page_num);
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output($result);
+    }
+
+
     /**
      * 信息详情 页面载入
      */
@@ -132,10 +151,10 @@ class Reporter extends MY_controller
         $this->assign("info", $info);
         $this->assign("active_title", "report_parent");
         $this->assign("active_parent", "report_recording");
-        if(isMobile()){
+        if (isMobile()) {
             //信息详情 手机页面载入
-            $this->all_display("report/m_info_detail.html");
-        }else{
+            $this->m_all_display("report/m_info_detail.html");
+        } else {
             $this->all_display("report/info_detail.html");
         }
     }

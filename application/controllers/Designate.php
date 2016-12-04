@@ -531,6 +531,24 @@ class Designate extends MY_controller
 
 
     /**
+     * 移动端 事件追踪 滚动加载 数据接口
+     * post: (int)page
+     */
+    public function scroll_event_data()
+    {
+        $page_num = $this->input->post("page");        //页码
+        if (!isset($page_num) || $page_num == null || $page_num == "") {
+            show_404();
+        }
+        $this->load->model("Designate_Model", "designate");
+        $result = $this->designate->scroll_event_pagination($page_num);
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output($result);
+    }
+
+
+    /**
      * 上报信息检索 视图载入
      */
     public function info_search()

@@ -4,7 +4,7 @@
 <head>
     <!-- BEGIN META -->
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
     <meta name="description" content="">
     <meta name="author" content="Olive Enterprise">
     <!-- END META -->
@@ -61,7 +61,9 @@
         	.header, .footer{
 				min-height: 40px;
 			}
-			
+			#main-content{
+				padding-bottom: 70px;
+			}
 			a.logo{
 				margin-top: 8px;
 				color: white;
@@ -80,6 +82,10 @@
 			margin-top: 5px;
 			display: none !important;
 			}
+            .site-footer{
+                position: fixed;
+                bottom: 0px;
+            }
 
         }
     </style>

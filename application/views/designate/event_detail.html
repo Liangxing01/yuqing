@@ -52,7 +52,7 @@
                         <{if $event['reply_time'] == ''}>
                         <p class="col-md-4"><strong>首回时间:</strong><span>&nbsp;不限制</span></p>
                         <{else}>
-                        <p class="col-md-4"><strong>首回时间:</strong><span>&nbsp;<{$event['reply_time']}></span></p>
+                        <p class="col-md-4"><strong>首回时间:</strong><span>&nbsp;<{$event['reply_time']}>分钟</span></p>
                         <{/if}>
                         <{if $event["main_processor"] != ''}>
                         <p class="col-md-4"><strong>牵头人:</strong><span>&nbsp;<{$event['main_processor']}></span></p>

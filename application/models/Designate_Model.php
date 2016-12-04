@@ -321,6 +321,26 @@ class Designate_Model extends CI_Model
 
 
     /**
+     * 移动端 提交记录 分页数据
+     * @param $page_num 当前页码
+     * @return string Json字符串
+     */
+    public function scroll_event_pagination($page_num)
+    {
+        $length = 10; //默认查出10条记录
+        $start = ($page_num - 1) * 10;
+        $result = $this->db->select("event.id, title, rank, user.name AS processor, group.name AS group, state, start_time")
+            ->join("user", "user.id = event.main_processor", "left")
+            ->join("group", "group.id = event.group", "left")
+            ->limit($length, $start)
+            ->order_by("start_time", "desc")
+            ->get("event")->result_array();
+
+        return json_encode($result);
+    }
+
+
+    /**
      * 上报信息检索 分页数据
      * @param $pInfo
      * @return array
@@ -931,7 +951,7 @@ class Designate_Model extends CI_Model
             $this->db->insert_batch("event_info", $event_info);
         }
         //事件关联
-        if (!empty($relate_event)) {
+        if (!empty($event_relate)) {
             $this->db->insert_batch("event_relate", $event_relate);
         }
         //事件指派
@@ -1050,15 +1070,16 @@ class Designate_Model extends CI_Model
      * @param $url
      * @return bool true = 重复; false = 不重复;
      */
-    public function check_url($url,$id){
+    public function check_url($url, $id)
+    {
         $res = $this->db->select('id')->from('info')
-            ->where('url',$url)
-            ->where('id !='.$id)
+            ->where('url', $url)
+            ->where('id !=' . $id)
             ->get()->num_rows();
-        if($res >= 1){
+        if ($res >= 1) {
             //重复了
             return true;
-        }else{
+        } else {
             return false;
         }
     }

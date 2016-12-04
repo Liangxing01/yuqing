@@ -9,6 +9,7 @@ class Welcome extends MY_Controller
         parent::__construct();
         $this->load->model('MY_Model', 'my_model');
         $this->identity->is_authentic();
+        $this->load->helper(array("public"));
     }
 
 
@@ -30,18 +31,6 @@ class Welcome extends MY_Controller
         }else{
             $this->all_display('index.html');
         }
-    }
-    
-    /**
-     * 手机版首页
-     */
-    public function m_index(){
-    	$this->assign("active_title", "home_page");
-        $this->assign("active_parent", "home_parent");
-        $login = $this->my_model->get_login_list($this->session->userdata('uid'), 5);
-        $this->assign("avatar", $this->session->avatar);
-        $this->assign('login', $login);
-        $this->m_all_display('m_index.html');
     }
 
 
@@ -141,7 +130,11 @@ class Welcome extends MY_Controller
         $this->assign("active_parent", "manage_parent");
         $data = $this->get_my_info();
         $this->assign('userinfo', $data);
-        $this->all_display("user_info.html");
+        if (isMobile()) {
+            $this->m_all_display("user_info.html");
+        } else {
+            $this->all_display("user_info.html");
+        }
     }
 
 
@@ -210,7 +203,11 @@ class Welcome extends MY_Controller
     {
         $this->assign("active_title", "change_psw");
         $this->assign("active_parent", "manage_parent");
-        $this->all_display("change_psw.html");
+        if (isMobile()) {
+            $this->m_all_display("change_psw.html");
+        } else {
+            $this->all_display("change_psw.html");
+        }
     }
 
 
