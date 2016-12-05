@@ -807,32 +807,28 @@ class Designate_Model extends CI_Model
         } else {
             $this->db->trans_commit();
             //TODO 业务信息推送
-            try {
-                //连接消息服务器
-                $this->load->library("Gateway");
-                Gateway::$registerAddress = $this->config->item("VM_registerAddress");
+            //连接消息服务器
+            $this->load->library("Gateway");
+            Gateway::$registerAddress = $this->config->item("VM_registerAddress");
 
-                //业务消息推送
-                //用户 事件指派消息推送
-                foreach ($event_msg AS $msg) {
-                    if ($msg["send_uid"] !== null) {
-                        Gateway::sendToUid($msg["send_uid"], json_encode(array(
-                            "title" => $msg["title"],
-                            "type" => $msg["type"],
-                            "time" => $msg["time"],
-                            "url" => $msg["url"]
-                        )));
-                    } else {
-                        Gateway::sendToGroup($msg["send_gid"], json_encode(array(
-                            "title" => $msg["title"],
-                            "type" => $msg["type"],
-                            "time" => $msg["time"],
-                            "url" => $msg["url"]
-                        )));
-                    }
+            //业务消息推送
+            //用户 事件指派消息推送
+            foreach ($event_msg AS $msg) {
+                if ($msg["send_uid"] !== null) {
+                    Gateway::sendToUid($msg["send_uid"], json_encode(array(
+                        "title" => $msg["title"],
+                        "type" => $msg["type"],
+                        "time" => $msg["time"],
+                        "url" => $msg["url"]
+                    )));
+                } else {
+                    Gateway::sendToGroup($msg["send_gid"], json_encode(array(
+                        "title" => $msg["title"],
+                        "type" => $msg["type"],
+                        "time" => $msg["time"],
+                        "url" => $msg["url"]
+                    )));
                 }
-            } catch (Exception $e) {
-                log_message("error", $e->getMessage());
             }
             return true;
         }
