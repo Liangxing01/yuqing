@@ -457,8 +457,10 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
     public function get_done_list($pInfo,$processorID){
         $data['aaData'] = $this->db->select("e.id,e.title,e.rank,u.name as zpname,e.state,e.end_time")
             ->from('event AS e')
+            ->group_start()
             ->where('e.state','未审核')
             ->or_where('e.state','已完成')
+            ->group_end()
             ->join('event_designate AS ed','ed.event_id = e.id')
             ->join('user as u','u.id = ed.manager')
             ->where('ed.processor',$processorID)
@@ -472,8 +474,10 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
 
         $total = $this->db->select("e.id,e.title,e.rank,u.name as zpname,e.state,e.end_time")
             ->from('event AS e')
+            ->group_start()
             ->where('e.state','未审核')
             ->or_where('e.state','已完成')
+            ->group_end()
             ->join('event_designate AS ed','ed.event_id = e.id')
             ->join('user as u','u.id = ed.manager')
             ->where('ed.processor',$processorID)
