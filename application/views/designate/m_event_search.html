@@ -27,14 +27,14 @@
 	 		color: white; 	 		
 	 		font-size: 1.6em;
 	 		background: #009e96;
+	 		margin-top: 10px;
 	 	}
 	 	.track_right{
 	 		float: right; 
 	 		width: 50px; 
-	 		height: 25px; 
-	 		background: #70c8f0; 
+	 		/*height: 25px;*/ 
 	 		color: white;
-	 		margin-top: 8px;
+	 		/*margin-top: 8px;*/
 	 		border-radius: 4px;
 	 		text-align: center;
 	 		line-height: 25px;
@@ -42,11 +42,14 @@
 	 	.track_right a{
 	 		display: block;
 	 		color: white;
+	 		background: #70c8f0; 
+	 		margin-top: 5px;
 	 	}
 	 	.track_middle{
 	 		margin: 0 50px 0 40px; 
 	 		/*width: 100%; */
 	 		height: 40px;
+	 		margin-top: 10px;
 	 	}
 	 	.track_middle p{
 	 		margin-bottom: 0px;
@@ -156,7 +159,8 @@
 							Track_list += '<div style="padding: 0px 10px;">'+timeToDate(data[i].start_time*1000)+'</div>';
 							Track_list += '<div class="col-xs-12 one">';
 							Track_list += '<div class="track_left" >'+data[i].id+'</div>';
-							Track_list += '<div class="track_right" ><a href="/common/event_detail?eid='+data[i].id+'">查看</a></div>';
+							Track_list += '<div class="track_right" ><a href="/common/event_detail?eid='+data[i].id+'">查看</a>';
+							Track_list += '<a href="/designate/event_tracer?eid='+data[i].id+'">追踪</a></div>';
 							Track_list += '<div class="track_middle">';
 							Track_list += '<p><span class="left_left">'+data[i].title+'</span>';
 							Track_list += '<span class="right_right">等级</span></p><br>';
