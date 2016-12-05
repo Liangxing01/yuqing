@@ -712,6 +712,7 @@ class Designate_Model extends CI_Model
                     "uid" => $u,
                     "title" => $data["title"],
                     "state" => 1,
+                    "type" => 0,   //报警类型
                     "time" => $time + $data["reply_time"] * 60
                 );
             }
@@ -721,6 +722,7 @@ class Designate_Model extends CI_Model
                 "uid" => $manager,
                 "title" => $data["title"],
                 "state" => 1,
+                "type" => 1,    //报警类型
                 "time" => $time + $data["reply_time"] * 60
             );
         }
