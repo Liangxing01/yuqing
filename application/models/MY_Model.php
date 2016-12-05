@@ -134,14 +134,26 @@ class MY_Model extends CI_Model {
 
     //获取用户个人信息
     public function get_user_info($uid){
-        $data = $this->db->select('u.group_id,u.username,u.name,u.sex,u.avatar,group.name as group_name')->from('user AS u')
-            ->join('group','group.id = u.group_id','left')
+        $data = $this->db->select('u.username,u.name,u.sex,u.avatar')->from('user AS u')
             ->where('u.id',$uid)
             ->get()->result_array();
+
+        //查询所属单位
+        $dep_data = $this->db->select('g.name')
+            ->from('group as g')
+            ->join('user_group as ug','ug.uid ='.$uid)
+            ->where('g.id = ug.gid')
+            ->get()->result_array();
+        $deps = "";
+        foreach ($dep_data as $dep){
+            $deps .= $dep['name']." ";
+        }
+        $data[0]['group_name'] = $deps;
         return $data;
 
     }
 
+    //判断对这件事 是否有督办权
     public function check_duban($uid,$event_id){
         $res = $this->db->select('watcher')->from('event_watch')
             ->where('event_id',$event_id)
