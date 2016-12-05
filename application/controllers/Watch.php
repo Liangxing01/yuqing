@@ -83,6 +83,8 @@ class Watch extends MY_Controller {
 
     //交互显示事件处理进度
     public function show_tracer(){
+        $this->load->helper(array("public"));
+
         $this->load->model('Handler_Model','handler_model');
 
         $gid = $this->session->userdata('gid');
@@ -139,6 +141,10 @@ class Watch extends MY_Controller {
         //获取 参考文件
         $doc_arr = $this->handler_model->get_event_attachment($event_id);
         $this->assign('attachment',$doc_arr);
+
+        if(isMobile()){
+            $this->m_all_display("watch/event_tracer.html");
+        }
         $this->all_display("watch/event_tracer.html");
     }
 

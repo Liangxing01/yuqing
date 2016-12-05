@@ -282,6 +282,8 @@ class Designate extends MY_controller
      */
     public function event_tracer()
     {
+        $this->load->helper(array("public"));
+
         $event_id = $this->input->get('eid');
         if (!isset($event_id) || $event_id == null || $event_id == "") {
             show_404();
@@ -341,7 +343,13 @@ class Designate extends MY_controller
 
         $this->assign("active_title", "designate_parent");
         $this->assign("active_parent", "event_search");
-        $this->all_display("designate/event_tracer.html");
+
+        if(isMobile()){
+            $this->m_all_display("designate/event_tracer.html");
+        }else{
+            $this->all_display("designate/event_tracer.html");
+        }
+
     }
 
 

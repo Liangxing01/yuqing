@@ -143,6 +143,7 @@ class Handler extends MY_Controller {
         $this->assign("active_parent","handle_parent");
         $this->assign("title",$title);
         $this->assign("eid",$event_id);
+
         $this->all_display('handler/event_tracer.html');
     }
 
@@ -225,6 +226,8 @@ class Handler extends MY_Controller {
 
     //交互显示事件处理进度
     public function show_tracer(){
+        $this->load->helper(array("public"));
+
         $this->load->model('MY_Model','my_model');
         $gid = $this->session->userdata('gid');
         $uid = $this->session->userdata('uid');
@@ -280,7 +283,12 @@ class Handler extends MY_Controller {
         //获取 参考文件
         $doc_arr = $this->handler_model->get_event_attachment($event_id);
         $this->assign('attachment',$doc_arr);
-        $this->all_display("handler/event_tracer.html");
+        if(isMobile()){
+            $this->m_all_display("handler/event_tracer.html");
+        }else{
+            $this->all_display("handler/event_tracer.html");
+        }
+
     }
 
     //显示事件检索页面
