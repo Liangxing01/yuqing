@@ -42,11 +42,16 @@
 	.tab .tab_box > div:first-child{
 		display: block;
 	}
+	.tab_box div ul{
+		height: 488px;
+		overflow-x: auto;
+	}
 	.tab_box div ul li a{
 		border-bottom: 1px solid #d9d9d9;
 		display:block;
 		width: 100%;
 		padding: 5px 0px;
+		position: relative;
 	}
 	.tab_box div ul li:last-child{
 		border-bottom: none;
@@ -54,6 +59,9 @@
 	.tab_box div ul li a:hover{
 		background: #f6f6f6;
 		
+	}
+	.tab_box div ul li a:hover button{
+		display: block;
 	}
 	.tab_box_left{
 		
@@ -71,6 +79,7 @@
 		
 		height: 50px;
 	}
+	
 	.tab_box_right p{
 		width: 100%;
 		float: left;
@@ -78,6 +87,18 @@
 		line-height: 25px;
 		color: #2e2e2e;
 	}
+	.tab_box div ul li a button{
+		position: absolute;
+		top: 20px;
+		right: 20%;
+		background: #81c522;
+		border: none;
+		padding: 5px 10px;
+		color: white;
+		border-radius: 8px;
+		display: none;
+	}
+	
 	
 	.My_cloud_disk{
 		background: white;
@@ -161,6 +182,10 @@
 	    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#dfdfdf', endColorstr='#f5f6f5')"; /* IE8 */   	    
 	    background: linear-gradient(to right, #f5f6f5 , #dfdfdf); /*ie9 标准的语法 */		
 	}
+	.template_list ul {
+		height: 232px;
+		overflow-y: auto;
+	}
 	.template_list ul li{
 		border-bottom: 1px solid white;
 		height: 58px;		
@@ -212,6 +237,10 @@
 	}
 	.notice_list{
 		min-height: 80px;
+	}
+	.notice_list ul {
+		height: 220px;
+		overflow-y: auto;
 	}
 	.notice_list ul li{
 		width: 96%;
@@ -271,6 +300,7 @@
 												<p>关于什么与什么文档.doc</p>
 											</div>
 											<div class="clear"></div>
+											<button>下载</button>
 										</a></li>
 										<li><a href="">
 											<div class="col-lg-2 col-md-2">
@@ -281,6 +311,7 @@
 												<p>关于什么与什么文档.doc</p>
 											</div>
 											<div class="clear"></div>
+											<button>下载</button>
 										</a></li>
 										<li><a href="">
 											<div class="col-lg-2 col-md-2">
@@ -291,6 +322,7 @@
 												<p>关于什么与什么文档.doc</p>
 											</div>
 											<div class="clear"></div>
+											<button>下载</button>
 										</a></li>
 										<li><a href="">
 											<div class="col-lg-2 col-md-2">
@@ -301,6 +333,7 @@
 												<p>关于什么与什么文档.doc</p>
 											</div>
 											<div class="clear"></div>
+											<button>下载</button>
 										</a></li>
 										<li><a href="">
 											<div class="col-lg-2 col-md-2">
@@ -311,6 +344,7 @@
 												<p>关于什么与什么文档.doc</p>
 											</div>
 											<div class="clear"></div>
+											<button>下载</button>
 										</a></li>
 										<li><a href="">
 											<div class="col-lg-2 col-md-2">
@@ -321,6 +355,7 @@
 												<p>关于什么与什么文档.doc</p>
 											</div>
 											<div class="clear"></div>
+											<button>下载</button>
 										</a></li>
 										<li><a href="">
 											<div class="col-lg-2 col-md-2">
@@ -331,6 +366,7 @@
 												<p>关于什么与什么文档.doc</p>
 											</div>
 											<div class="clear"></div>
+											<button>下载</button>
 										</a></li>
 										<li><a href="">
 											<div class="col-lg-2 col-md-2">
@@ -341,6 +377,29 @@
 												<p>关于什么与什么文档.doc</p>
 											</div>
 											<div class="clear"></div>
+											<button>下载</button>
+										</a></li>
+										<li><a href="">
+											<div class="col-lg-2 col-md-2">
+												<div class=" tab_box_left">哟</div>
+											</div>
+											<div class="col-lg-10 col-md-10 tab_box_right">
+												<p><strong style="float: left;">哟西</strong><span style="float: right;">12月1日</span></p>
+												<p>关于什么与什么文档.doc</p>
+											</div>
+											<div class="clear"></div>
+											<button>下载</button>
+										</a></li>
+										<li><a href="">
+											<div class="col-lg-2 col-md-2">
+												<div class=" tab_box_left">哟</div>
+											</div>
+											<div class="col-lg-10 col-md-10 tab_box_right">
+												<p><strong style="float: left;">哟西</strong><span style="float: right;">12月1日</span></p>
+												<p>关于什么与什么文档.doc</p>
+											</div>
+											<div class="clear"></div>
+											<button>下载</button>
 										</a></li>
 									</ul>
 								</div>
@@ -358,6 +417,7 @@
 												<p>关于什么与什么文档.doc</p>
 											</div>
 											<div class="clear"></div>
+											<button>下载</button>
 										</a></li>
 										<li><a href="">
 											<div class="col-lg-2 col-md-2">
@@ -368,6 +428,7 @@
 												<p>关于什么与什么文档.doc</p>
 											</div>
 											<div class="clear"></div>
+											<button>下载</button>
 										</a></li>
 										<li><a href="">
 											<div class="col-lg-2 col-md-2">
@@ -378,6 +439,7 @@
 												<p>关于什么与什么文档.doc</p>
 											</div>
 											<div class="clear"></div>
+											<button>下载</button>
 										</a></li>
 										<li><a href="">
 											<div class="col-lg-2 col-md-2">
@@ -388,6 +450,7 @@
 												<p>关于什么与什么文档.doc</p>
 											</div>
 											<div class="clear"></div>
+											<button>下载</button>
 										</a></li>
 										<li><a href="">
 											<div class="col-lg-2 col-md-2">
@@ -398,6 +461,7 @@
 												<p>关于什么与什么文档.doc</p>
 											</div>
 											<div class="clear"></div>
+											<button>下载</button>
 										</a></li>
 										<li><a href="">
 											<div class="col-lg-2 col-md-2">
@@ -408,6 +472,7 @@
 												<p>关于什么与什么文档.doc</p>
 											</div>
 											<div class="clear"></div>
+											<button>下载</button>
 										</a></li>
 										<li><a href="">
 											<div class="col-lg-2 col-md-2">
@@ -418,6 +483,7 @@
 												<p>关于什么与什么文档.doc</p>
 											</div>
 											<div class="clear"></div>
+											<button>下载</button>
 										</a></li>
 										<li><a href="">
 											<div class="col-lg-2 col-md-2">
@@ -428,6 +494,29 @@
 												<p>关于什么与什么文档.doc</p>
 											</div>
 											<div class="clear"></div>
+											<button>下载</button>
+										</a></li>
+										<li><a href="">
+											<div class="col-lg-2 col-md-2">
+												<div class=" tab_box_left">哟</div>
+											</div>
+											<div class="col-lg-10 col-md-10 tab_box_right">
+												<p><strong style="float: left;">哟西</strong><span style="float: right;">12月1日</span></p>
+												<p>关于什么与什么文档.doc</p>
+											</div>
+											<div class="clear"></div>
+											<button>下载</button>
+										</a></li>
+										<li><a href="">
+											<div class="col-lg-2 col-md-2">
+												<div class=" tab_box_left">哟</div>
+											</div>
+											<div class="col-lg-10 col-md-10 tab_box_right">
+												<p><strong style="float: left;">哟西</strong><span style="float: right;">12月1日</span></p>
+												<p>关于什么与什么文档.doc</p>
+											</div>
+											<div class="clear"></div>
+											<button>下载</button>
 										</a></li>
 									</ul>
 								</div>
@@ -439,7 +528,7 @@
                 	
                 	<div class="col-lg-7 col-md-7 ">
                 		<div class="My_cloud_disk">
-                			<div class="My_cloud_disk_title">我的云盘</div>
+                			<div class="My_cloud_disk_title">我的云盘<a href="" style="float: right;">进入云盘</a></div>
                 			<div class="My_cloud_disk_nr">              				
                 				<div class="My_cloud_disk_nr_list"><a href="">
                 					<div class="My_cloud_disk_nr1" style="color: #3199e7;">w</div>
@@ -472,20 +561,36 @@
 	                			<div class="template_list">
 	                				<ul>
 	                					<li><a href="">
-	                						<div class="template_list_left col-md-4 col-lg-2">01</div>
-	                						<div class="template_list_right col-md-8 col-lg-10">巴南基金用途上报公文模版.doc</div>
+	                						<div class="template_list_left col-md-4 col-lg-3">01</div>
+	                						<div class="template_list_right col-md-8 col-lg-9">巴南基金用途上报公文模版.doc</div>
 	                					</a></li>
 	                					<li><a href="">
-	                						<div class="template_list_right col-md-8 col-lg-10">巴南基金用途上报公文模版.doc</div>
-	                						<div class="template_list_left col-md-4 col-lg-2">02</div>	
+	                						<div class="template_list_right col-md-8 col-lg-9">巴南基金用途上报公文模版.doc</div>
+	                						<div class="template_list_left col-md-4 col-lg-3">02</div>	
 	                					</a></li>
 	                					<li><a href="">
-	                						<div class="template_list_left col-md-4 col-lg-2">03</div>
-	                						<div class="template_list_right col-md-8 col-lg-10">巴南基金用途上报公文模版.doc</div>
+	                						<div class="template_list_left col-md-4 col-lg-3">03</div>
+	                						<div class="template_list_right col-md-8 col-lg-9">巴南基金用途上报公文模版.doc</div>
 	                					</a></li>
 	                					<li><a href="">
-	                						<div class="template_list_right col-md-8 col-lg-10">巴南基金用途上报公文模版.doc</div>
-	                						<div class="template_list_left col-md-4 col-lg-2" style="padding-right:-10px;">04</div>	
+	                						<div class="template_list_right col-md-8 col-lg-9">巴南基金用途上报公文模版.doc</div>
+	                						<div class="template_list_left col-md-4 col-lg-3" style="padding-right:-10px;">04</div>	
+	                					</a></li>
+	                					<li><a href="">
+	                						<div class="template_list_left col-md-4 col-lg-3">01</div>
+	                						<div class="template_list_right col-md-8 col-lg-9">巴南基金用途上报公文模版.doc</div>
+	                					</a></li>
+	                					<li><a href="">
+	                						<div class="template_list_right col-md-8 col-lg-9">巴南基金用途上报公文模版.doc</div>
+	                						<div class="template_list_left col-md-4 col-lg-3">02</div>	
+	                					</a></li>
+	                					<li><a href="">
+	                						<div class="template_list_left col-md-4 col-lg-3">03</div>
+	                						<div class="template_list_right col-md-8 col-lg-9">巴南基金用途上报公文模版.doc</div>
+	                					</a></li>
+	                					<li><a href="">
+	                						<div class="template_list_right col-md-8 col-lg-9">巴南基金用途上报公文模版.doc</div>
+	                						<div class="template_list_left col-md-4 col-lg-3" style="padding-right:-10px;">04</div>	
 	                					</a></li>
 	                				</ul>
 	                			</div>
@@ -495,6 +600,30 @@
 	                			<div class="notice_title">通知</div>
 	                			<div class="notice_list">
 	                				<ul>
+	                					<li><a href="">
+	                						<span>01</span>
+	                						什么鬼什么鬼什么鬼什么鬼
+	                					</a></li>
+	                					<li><a href="">
+	                						<span>02</span>
+	                						什么鬼什么鬼什么鬼什么鬼
+	                					</a></li>
+	                					<li><a href="">
+	                						<span>03</span>
+	                						什么鬼什么鬼什么鬼什么鬼
+	                					</a></li>
+	                					<li><a href="">
+	                						<span>04</span>
+	                						什么鬼什么鬼什么鬼什么鬼
+	                					</a></li>
+	                					<li><a href="">
+	                						<span>05</span>
+	                						什么鬼什么鬼什么鬼什么鬼
+	                					</a></li>
+	                					<li><a href="">
+	                						<span>06</span>
+	                						什么鬼什么鬼什么鬼什么鬼
+	                					</a></li>
 	                					<li><a href="">
 	                						<span>01</span>
 	                						什么鬼什么鬼什么鬼什么鬼
