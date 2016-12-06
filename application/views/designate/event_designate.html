@@ -149,7 +149,7 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <label class="col-md-1 col-sm-1 control-label">分钟(最小10分钟)</label>
+                                                    <label class="col-md-1 col-sm-1 control-label">分钟</label>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-md-2 col-sm-2 control-label">关联事件:</br>
@@ -707,9 +707,9 @@
         var watcher = $("#input_con_checkman").val();
 
         if(reply_time && reply_time < 10){
-            layer.msg("首回时间最小为10分钟", {anim:6, time:1000}, function(){
-                return false;
-            });
+            layer.msg("首回时间最小为10分钟", {anim:6, time:1000});
+            layer.close(layer_index);
+            return false;
         }
 
         $.ajax({

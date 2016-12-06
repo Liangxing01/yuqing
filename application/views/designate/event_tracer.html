@@ -1,3 +1,5 @@
+<!-- DATETIMEPICKER PLUGIN CSS -->
+<link rel="stylesheet" type="text/css" href="/assets/bootstrap-datetimepicker/css/datetimepicker.css">
 <style type="text/css">
     .buletan_icon{
         background: #2a7489 none repeat scroll 0 0;
@@ -114,6 +116,10 @@
                             <span class="">事件追踪</span>
                         </div>
 
+                        <!--<label for="reply_time">首回世间:</label>-->
+                        <!--<input type="text" name="reply_time" id="reply_time" readonly>-->
+                        <!--<button class="btn btn-info btn-xs" onclick="commit_reply_time();">确认</button>-->
+
                         <div class="cankao">
                             <span>参考文档：</span>
 
@@ -156,6 +162,9 @@
         <!-- END ROW  -->
     </section>
 </section>
+<!-- BOOTSTRAP DATETIMEPICKER JS  -->
+<script src="/assets/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js"></script>
+<script src="/assets/bootstrap-datetimepicker/js/bootstrap-datetimepicker.zh-CN.js"></script>
 <script type="text/template" id="li_item">
     <li class="item-timeline item-timeline-{id}">
         <div class="buletan_icon" style="{buletan}"></div>
@@ -239,6 +248,17 @@
 <input type="hidden" name="usertype" value="<{$usertype}>" id="usertype"/>
 <script src="/js/public.js"></script>
 <script>
+
+    //首回时间 选择控件
+    var datepicker = {
+        startDate: "2016-12-04 21:05",  //事件开始日期
+        todayBtn: "linked",
+        autoclose: true,
+        minuteStep: 1,
+        language: 'zh-CN'
+    };
+//    $('#reply_time').datetimepicker(datepicker);
+
     var eid=document.getElementById('eid').value,
             history_daytime="";//用来存时间抽上最上面的时间，用来判断总结性评论是新添加，还是在下面插入
     $("input[name='zj_buttom']").click(function(){
@@ -542,6 +562,32 @@
                 }
             }
         });
+    }
+
+
+    // 提交事件 首回时间
+    function commit_reply_time() {
+        var reply_time = $("#reply_time").val();
+        var eid = $("#eid").val();
+        if (reply_time) {
+            $.ajax({
+                url: '/designate/event_reply_time',
+                type: 'post',
+                data: {"eid": eid, "reply_time": reply_time},
+                dataType: 'json',
+                success: function (data) {
+                    if (data == 1) {
+                        layer.msg("操作成功", {time: 1000}, function () {
+                            refresh();
+                        });
+                    } else {
+                        layer.msg("操作失败", {anim: 6, time: 1000});
+                    }
+                }
+            })
+        } else {
+            layer.msg("请选择时间", {anim: 6, time: 1000});
+        }
     }
 
 

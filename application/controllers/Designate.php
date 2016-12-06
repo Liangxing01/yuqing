@@ -388,6 +388,30 @@ class Designate extends MY_controller
 
 
     /**
+     * 事件 首回时间
+     */
+    public function event_reply_time(){
+        $event_id = $this->input->post("eid");
+        $reply_time = $this->input->post("reply_time");
+        if (!isset($event_id) || $event_id == null || $event_id == "") {
+            show_404();
+        }
+        if (!isset($reply_time) || $reply_time == null || $reply_time == "") {
+            show_404();
+        }
+
+        $reply_time = strtotime($reply_time);
+        $this->load->model("Designate_Model", "designate");
+        $result = $this->designate->commit_event_reply_time($event_id, $reply_time);
+        if ($result) {
+            echo 1;
+        } else {
+            echo 0;
+        }
+    }
+
+
+    /**
      * 事件重启
      */
     public function event_restart()
