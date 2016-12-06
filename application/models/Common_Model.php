@@ -263,5 +263,139 @@ class Common_Model extends CI_Model
         }
     }
 
+    /**
+     * @param $file_data
+     * 插入上传文件信息
+     */
+    public function insert_file_info($file_data){
+        $finfo = array(
+            'old_name' => $file_data['orig_name'],
+            'new_name' => $file_data['file_name'],
+            'type'     => $file_data['file_type'],
+            'size'     => $file_data['file_size'],
+            'upload_time' => time(),
+            'loc'      => '/uploads/file/' . $file_data['file_name']
+        );
+        //开始运行事务
+        $this->db->trans_begin();
+
+        $this->db->insert('file',$finfo);
+        $fid = $this->db->insert_id();
+
+        $fuser = array(
+            'fid' => $fid,
+            'uid' => $this->session->userdata('uid')
+        );
+        $this->db->insert('file_user',$fuser);
+
+        if($this->db->trans_status() === FALSE){
+            $this->db->trans_rollback();
+            return false;
+        }else{
+            $this->db->trans_commit();
+            return true;
+        }
+    }
+
+
+    /**
+     * @param $q
+     * @return array
+     * 分页获取 用户云盘的文档信息
+     */
+    public function get_files_info($q){
+        $uid = $this->session->userdata('uid');
+        $res = array();
+        $res['files'] = $this->db->select('f.old_name,f.size,f.upload_time,f.id')
+            ->from('file as f')
+            ->join('file_user as fu','fu.uid ='.$uid)
+            ->like('f.old_name',$q['search'])
+            ->limit($q['length'],$q['start'])
+            ->order_by('f.upload_time','DESC')
+            ->get()->result_array();
+
+        $res['num'] = $this->db->select('f.old_name,f.size,f.upload_time,f.id')
+            ->from('file as f')
+            ->join('file_user as fu','fu.uid ='.$uid)
+            ->like('f.old_name',$q['search'])
+            ->get()->num_rows();
+
+        return $res;
+
+    }
+
+    /**
+     * @param $fid
+     * @return bool
+     * 云盘 文件下载
+     */
+    public function file_download($fid){
+        //判断是否属于该用户的文件
+        $uid = $this->session->userdata('uid');
+        $check = $this->db->select('id')->from('file_user')
+            ->where('uid',$uid)
+            ->where('fid',$fid)
+            ->get()->result_array();
+        if(empty($check)){
+            return false;
+        }
+
+        //查出该文件的信息
+        $res = $this->db->select('loc as url,old_name as name')
+            ->from('file')
+            ->where('id',$fid)
+            ->get()
+            ->row_array();
+        return $res;
+    }
+
+
+    /**
+     * @param $del_arr
+     * 删除 云盘文件
+     */
+    public function del_file($del_arr){
+        $uid = $this->session->userdata('uid');
+        //开始运行事务
+        $this->db->trans_begin();
+
+        foreach ($del_arr as $del){
+
+            //判断该 文件 是否属于这个人
+            $check = $this->db->select('id')->from('file_user')
+                ->where('uid',$uid)
+                ->where('fid',$del)
+                ->get()->result_array();
+            if(empty($check)){
+                return false;
+            }else{
+                //删除file_user 表数据
+                $this->db->where('fid',$del);
+                $this->db->delete('file_user');
+
+                //删除本地文件
+                //查询出路径
+                $file_info = $this->db->select('loc')->from('file')
+                    ->where('id',$del)
+                    ->get()->row_array();
+
+                @unlink($_SERVER['DOCUMENT_ROOT'] . $file_info['loc']);
+
+
+            }
+        }
+
+        if($this->db->trans_status() === FALSE){
+            $this->db->trans_rollback();
+            $res = false;
+        }else{
+            $this->db->trans_commit();
+            $res = true;
+        }
+
+        return $res;
+    }
+
+
 
 }
