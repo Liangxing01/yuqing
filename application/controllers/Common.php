@@ -193,10 +193,28 @@ class Common extends MY_Controller
         }
     }
 
+
     /**
-     * 文件流转页面 展示
+     * 邮件页面 展示
      */
-    public function show_doc_trans(){
+    public function show_emails(){
+        $this->assign("active_title", "file_trans");
+        $this->assign("active_parent", "file_parent");
         $this->all_display("document_trans.html");
     }
+
+    /**
+     * 我的云盘 页面 显示
+     */
+
+    public function show_my_pan(){
+        $this->assign("active_title", "my_pan");
+        $this->assign("active_parent", "file_parent");
+        $this->all_display("my_pan.html");
+    }
+
+
+
+
+
 }
