@@ -25,6 +25,11 @@ class Login extends MY_controller
 
     }
 
+    public function m_app()
+    {
+        $this->load->view("download_app.html");
+    }
+
 
     /**
      * 登陆验证
