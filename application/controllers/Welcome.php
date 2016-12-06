@@ -74,10 +74,7 @@ class Welcome extends MY_Controller
     {
         $uid = $this->session->userdata('uid');
         $pri = explode(",", $this->session->userdata('privilege'));
-        $alarm_arr = array(
-            'zp_alarm' => array(),
-            'processor_alarm' => array()
-        );
+        $alarm_arr = array();
         foreach ($pri as $one) {
             switch ($one) {
                 //指派人提醒
