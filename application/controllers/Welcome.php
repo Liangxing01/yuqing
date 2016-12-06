@@ -80,10 +80,12 @@ class Welcome extends MY_Controller
         );
         foreach ($pri as $one) {
             switch ($one) {
+                //指派人提醒
                 case 2 :
                     $zp_alarm = $this->my_model->get_desi_alert($uid);
                     $alarm_arr['zp_alarm'] = $zp_alarm;
                     break;
+                //处理人提醒
                 case 3 :
                     $processor_alarm = $this->my_model->get_processor_alert($uid);
                     $alarm_arr['processor_alarm'] = $processor_alarm;

@@ -110,25 +110,47 @@ class MY_Model extends CI_Model {
      * 获取 处理人事件报警 提示
      */
     public function get_processor_alert($uid){
-        $data = $this->db->select('ea.title,ea.event_id,from_unixtime(ea.time) time')->from('event_alert as ea')
+        $data = $this->db->select('ea.id,ea.title,ea.event_id,from_unixtime(ea.time) time')->from('event_alert as ea')
             ->where('ea.uid',$uid)
             ->where('ea.time - unix_timestamp(now()) < 300')// 时间小于5分钟开始报警
+            ->where('ea.time - unix_timestamp(now()) > 0')
+            ->where("type", 3)
             ->where('ea.state',1)
-            ->limit(6)
             ->get()->result_array();
+
+        //取消报警
+        $msg_id = array();
+        foreach ($data AS $item) {
+            $msg_id[] = $item["id"];
+        }
+        if (!empty($msg_id)) {
+            $this->db->where_in("id", $msg_id)->update("event_alert", array("state" => 0));
+        }
+
         return $data;
     }
 
     /*
      * 获取 指派人事件报警 超时报警
      */
-    public function get_desi_alert($uid){
-        $data = $this->db->select('ea.title,ea.event_id,from_unixtime(ea.time) time')->from('event_alert as ea')
-            ->where('ea.uid',$uid)
+    public function get_desi_alert($uid)
+    {
+        $data = $this->db->select('ea.id,ea.title,ea.event_id,from_unixtime(ea.time) time')->from('event_alert as ea')
+            ->where('ea.uid', $uid)
             ->where('unix_timestamp(now()) > ea.time')// 超时开始报警
-            ->where('ea.state',1)
-            ->limit(6)
+            ->where('ea.state', 1)
+            ->where("type", 4)
             ->get()->result_array();
+
+        //取消报警
+        $msg_id = array();
+        foreach ($data AS $item) {
+            $msg_id[] = $item["id"];
+        }
+        if (!empty($msg_id)) {
+            $this->db->where_in("id", $msg_id)->update("event_alert", array("state" => 0));
+        }
+
         return $data;
     }
 
