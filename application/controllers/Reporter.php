@@ -52,24 +52,23 @@ class Reporter extends MY_controller
     public function reportOrUpdate()
     {
         $data = $this->input->post();
-        $id = $data['id'];
         $title = $data['title'];
         $url = $data['url'];
         $source = $data['source'] == 'other' ? $data['other'] : $data['source'];
         $description = $data['description'];
         $attachment = $data['attachment'];
         $uid = $this->session->userdata('uid');
-        $data = array('id' => $id, 'title' => $title, 'source' => $source, 'url' => $url, 'description' => $description, 'uid' => $uid, 'time' => time());
-        $nu = $this->report->add_info($data);
-        //插入附件信息
-        if ($attachment != "") {
-            $this->insert_attachment($attachment, $nu['id']);
+        $data = array('title' => $title, 'source' => $source, 'url' => $url, 'description' => $description, 'uid' => $uid);
+        $result = $this->report->add_info($data);
+        if($result !== false){
+            //插入附件信息
+            if ($attachment != "") {
+                $this->insert_attachment($attachment, $result);
+            }
+            echo json_encode(array("res" => 1));
+        }else{
+            echo json_encode(array("res" => 0));
         }
-
-        $res = array(
-            "res" => $nu['nu']
-        );
-        echo json_encode($res);
     }
 
     /**
@@ -219,14 +218,13 @@ class Reporter extends MY_controller
     /**
      * 修改页面 视图加载
      */
-
-    public function edit()
-    {
-        $id = $this->input->get('id');
-        $info = $this->report->get_detail_by_id($id);
-        $this->assign("info", $info);
-        $this->all_display("report/edit_report.html");
-    }
+//    public function edit()
+//    {
+//        $id = $this->input->get('id');
+//        $info = $this->report->get_detail_by_id($id);
+//        $this->assign("info", $info);
+//        $this->all_display("report/edit_report.html");
+//    }
 
 
     /**
