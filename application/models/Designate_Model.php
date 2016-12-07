@@ -711,7 +711,7 @@ class Designate_Model extends CI_Model
                     "event_id" => $event_id,
                     "uid" => $u,
                     "title" => $data["title"],
-                    "state" => 1,
+                    "state" => 2,
                     "type" => 3,   //报警类型
                     "time" => $time + $data["reply_time"] * 60
                 );
@@ -721,7 +721,7 @@ class Designate_Model extends CI_Model
                 "event_id" => $event_id,
                 "uid" => $manager,
                 "title" => $data["title"],
-                "state" => 1,
+                "state" => 2,
                 "type" => 4,    //报警类型
                 "time" => $time + $data["reply_time"] * 60
             );

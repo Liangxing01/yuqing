@@ -109,13 +109,21 @@ class MY_Model extends CI_Model {
     /*
      * 获取 处理人事件报警 提示
      */
-    public function get_processor_alert($uid){
+    public function get_processor_alert($uid)
+    {
         $data = $this->db->select('ea.id,ea.title,ea.event_id,from_unixtime(ea.time) time')->from('event_alert as ea')
-            ->where('ea.uid',$uid)
-            ->where('ea.time - unix_timestamp(now()) < 300')// 时间小于5分钟开始报警
-            ->where('ea.time - unix_timestamp(now()) > 0')
-            ->where("type", 3)
-            ->where('ea.state',1)
+            ->where(array('ea.uid' => $uid, "type" => 3))
+            ->group_start()
+                ->group_start()
+                ->where(array(
+                    "ea.time - unix_timestamp(now()) >" => 0,
+                    "ea.time - unix_timestamp(now()) <" => 300, //5分钟内报警
+                    "state" => 2))
+                ->group_end()
+                ->or_group_start()
+                ->where('ea.state', 1)
+                ->group_end()
+            ->group_end()
             ->get()->result_array();
 
         //取消报警
@@ -124,7 +132,7 @@ class MY_Model extends CI_Model {
             $msg_id[] = $item["id"];
         }
         if (!empty($msg_id)) {
-            $this->db->where_in("id", $msg_id)->update("event_alert", array("state" => 0));
+            $this->db->where_in("id", $msg_id)->update("event_alert", array("state" => 1));
         }
 
         return $data;
@@ -136,10 +144,17 @@ class MY_Model extends CI_Model {
     public function get_desi_alert($uid)
     {
         $data = $this->db->select('ea.id,ea.title,ea.event_id,from_unixtime(ea.time) time')->from('event_alert as ea')
-            ->where('ea.uid', $uid)
-            ->where('unix_timestamp(now()) > ea.time')// 超时开始报警
-            ->where('ea.state', 1)
-            ->where("type", 4)
+            ->where(array('ea.uid' => $uid, "type" => 4))
+            ->group_start()
+                ->group_start()
+                ->where(array(
+                    'unix_timestamp(now()) >' => 'ea.time', // 超时开始报警
+                    "state" => 2))
+                ->group_end()
+                ->or_group_start()
+                ->where('ea.state', 1)
+                ->group_end()
+            ->group_end()
             ->get()->result_array();
 
         //取消报警
@@ -148,7 +163,7 @@ class MY_Model extends CI_Model {
             $msg_id[] = $item["id"];
         }
         if (!empty($msg_id)) {
-            $this->db->where_in("id", $msg_id)->update("event_alert", array("state" => 0));
+            $this->db->where_in("id", $msg_id)->update("event_alert", array("state" => 1));
         }
 
         return $data;
