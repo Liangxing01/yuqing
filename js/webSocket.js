@@ -16,14 +16,15 @@ function reload_num(){
     })
 }
 function get_webSocket_msg(){
-    var client_socket = new WebSocket('ws://192.168.0.130:3000');
+    var client_socket = new WebSocket('ws://192.168.0.127:3000');
     client_socket.onopen = function(){
-        console.log("服务器已连接");
-        var json = {'token':'d5f6ced3528dca7c56a1d0a30987e55c'};
+         console.log("服务器已连接");
+        var cookie = getCookie('p_token');
+        var json = {'token':cookie};
         client_socket.send(JSON.stringify(json));
     }
     client_socket.onmessage =function(ev){
-        console.log(ev.data);
+         console.log(ev.data);
         var data = $.parseJSON(ev.data);
         if(data){
             var list = '';
@@ -36,21 +37,26 @@ function get_webSocket_msg(){
                         list += '<td><span class="label label-primary">事件指派</span></td>';break;
                     case 2:
                         list += '<td><span class="label label-danger">事件督办</span></td>';break;
+                    case 3:
+                        beforetime_info(data.title);return;//事件首回提醒
+                    case 4:
+                        overtime_info(data.title);return;//超时提醒
                 };
                 list += '<td><a href="'+data.url+'">'+data.title+'</a></td>';
                 list += '<td><span class="badge bg-important">'+timeToDate(data.time*1000)+'</span></td>';
             $('#msg').prepend(list);
             $('#msg tr:eq(5)').remove();
             reload_num();
+
             layer.open({
                 title: '你有新的短消息',
-                content: '<a class="'+data.url+'" href="">点击查看</a>',
-                area:['200px','150px'],
+                content: '<a class="" href="'+data.url+'">点击查看</a>',
+                area:['300px','250px'],
                 offset:'rb',
                 btn:['确定'],
                 btnAlign:'c',
                 shade:0,
-                time:3000,
+                time:15000,
                 skin:'demo-lx',
                 tipsMore:true
             });
@@ -60,6 +66,36 @@ function get_webSocket_msg(){
         console.log("服务器已关闭");
     }
 
+}
+//超时提醒
+function overtime_info(content){
+    layer.open({
+        title: ['超时提醒','color:#fff;background:red'],
+        content: '<p>'+content+'</p><a class="" href="">点击查看</a>',
+        area:['200px','150px'],
+        offset:'rb',
+        btn:['确定'],
+        btnAlign:'c',
+        shade:0,
+        time:15000,
+        skin:'demo-lx',
+        tipsMore:true
+    });
+}
+//事件首回提醒
+function beforetime_info(content){
+    layer.open({
+        title: ['事件首回提醒','color:#fff;background:blue'],
+        content: '<p>'+content+'</p><a class="" href="">点击查看</a>',
+        area:['200px','150px'],
+        offset:'rb',
+        btn:['确定'],
+        btnAlign:'c',
+        shade:0,
+        time:15000,
+        skin:'demo-lx',
+        tipsMore:true
+    });
 }
 //获取历史记录消息
 function get_all_msg(){
@@ -93,4 +129,19 @@ function get_all_msg(){
 
         }
     })
+}
+//获取cookie值
+function getCookie(name){
+    if(document.cookie.length>0){
+        var begin = document.cookie.indexOf(name+'=');
+        if(begin != -1){
+            begin += name.length+1;
+            var end = document.cookie.indexOf(";",begin);
+            if(end == -1){
+                end = document.cookie.length;
+            }
+            return  decodeURIComponent(document.cookie.substring(begin,end));
+        }
+    }
+    return null;
 }
