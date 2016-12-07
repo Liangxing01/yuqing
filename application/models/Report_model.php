@@ -11,11 +11,11 @@ class Report_model extends CI_Model {
     }
 
     /**
-     * 添加事件或更新
-     * @param $arr 事件相关数据
+     * 添加事件信息
+     * @param $arr 事件信息
      * @return mixed 影响条数
      */
-    public function add_or_update($arr){
+    public function add_info($arr){
         $dup = 0;
         if ($arr['url'] !== null){
             $judge = $this->db->select("*")

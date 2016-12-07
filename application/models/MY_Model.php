@@ -148,7 +148,7 @@ class MY_Model extends CI_Model {
             ->group_start()
                 ->group_start()
                 ->where(array(
-                    'unix_timestamp(now()) >' => 'ea.time', // 超时开始报警
+                    'unix_timestamp(now()) - ea.time >' => 0, // 超时开始报警
                     "state" => 2))
                 ->group_end()
                 ->or_group_start()

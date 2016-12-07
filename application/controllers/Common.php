@@ -12,6 +12,7 @@ class Common extends MY_Controller
 
     /**
      * 事件详情页面 视图载入
+     * GET: eid, option(可选)
      */
     public function event_detail()
     {
