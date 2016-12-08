@@ -1,6 +1,8 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+require_once 'Gateway.php';
+
 class Identity_Auth
 {
 
@@ -120,6 +122,9 @@ class Identity_Auth
     //注销用户
     public function destroy()
     {
+        if (isset($_COOKIE["client_id"])) {
+            Gateway::closeClient($_COOKIE["client_id"]); //关闭websocket 连接
+        }
         session_destroy();
         setcookie("p_token", "", $expire = time() - 1, $path = "/");
         redirect(base_url("/login"));

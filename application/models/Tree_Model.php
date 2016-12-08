@@ -416,6 +416,92 @@ class Tree_Model extends CI_Model
 
 
     /**
+     * 获得 在线状态
+     */
+    public function get_online_tree()
+    {
+        //连接消息服务器
+        $this->load->library("Gateway");
+        Gateway::$registerAddress = $this->config->item("VM_registerAddress");
+
+        //生成 组织关系树
+        $root = $this->db->query("SELECT lft, rgt FROM yq_relation WHERE name='组织关系'")->first_row('array');
+
+        // 以一个空的$right栈开始
+        $right = array();
+
+        // 获得root节点的所有子节点
+        $sql = "SELECT name, lft, rgt, type, uid FROM yq_relation WHERE lft BETWEEN ? AND ? ORDER BY lft ASC";
+        $result = $this->db->query($sql, array($root['lft'], $root['rgt']))->result_array();
+
+        $tree_json = "";
+        // 显示
+        foreach ($result AS $row) {
+            // 检查栈里面有没有元素
+            if (count($right) > 0) {
+
+                // 检查我们是否需要从栈中删除一个节点
+                while ($right[count($right) - 1]["rgt"] < $row['rgt']) {
+                    if ($right[count($right) - 1]["rgt"] - $right[count($right) - 1]["lft"] != 1) {
+                        $tree_json .= "]},";
+                    } else {
+                        $tree_json .= "},";
+                    }
+                    array_pop($right);
+                }
+
+                //判断用户节点是否在线
+                $online = 0;      //无状态
+                if ($row["type"] == 1) {
+                    if (Gateway::isUidOnline($row["uid"]) == 0) {
+                        $online = 2; //不在线
+                    } else {
+                        $online = 1; //在线
+                    }
+                }
+
+                //判断是否为父节点
+                if ($row["rgt"] - $row["lft"] != 1) {
+                    if ($row["type"] == 0) {
+                        $tree_json .= "{name: '" . $row["name"] . "',id:" . $row["uid"] . ",online:" . $online . ",isdepartment:" . $row["type"] . ",icon:'/assets/ztree/zTreeStyle/img/group.png',open:false,children:[";
+                    } else {
+                        $tree_json .= "{name: '" . $row["name"] . "',id:" . $row["uid"] . ",online:" . $online . ",isdepartment:" . $row["type"] . ",icon:'/assets/ztree/zTreeStyle/img/admin.png',open:false,children:[";
+                    }
+                } else {
+                    if ($row["type"] == 0) {
+                        $tree_json .= "{name: '" . $row["name"] . "',id:" . $row["uid"] . ",online:" . $online . ",isdepartment:" . $row["type"] . ",icon:'/assets/ztree/zTreeStyle/img/group.png'";
+                    } else {
+                        $tree_json .= "{name: '" . $row["name"] . "',id:" . $row["uid"] . ",online:" . $online . ",isdepartment:" . $row["type"] . ",icon:'/assets/ztree/zTreeStyle/img/admin.png'";
+                    }
+                }
+
+            } else {
+                $tree_json .= "{name:'" . $row["name"] . "'";
+                if ($row["rgt"] - $row["lft"] != 1) {
+                    $tree_json .= ",id:0,open:true,children:[";
+                }
+            }
+
+            // 把这个节点添加到栈中
+            $right[] = $row;
+        }
+
+        //闭合括号
+        while (!empty($right)) {
+            if ($right[count($right) - 1]["rgt"] - $right[count($right) - 1]["lft"] != 1) {
+                $tree_json .= "]}";
+            } else {
+                $tree_json .= "}";
+            }
+            array_pop($right);
+        }
+
+        $tree_json = str_replace(",]", "]", $tree_json);
+        return $tree_json;
+    }
+
+
+    /**
      * 获得督办人数据
      * @param $event_id
      * @return Json字符串

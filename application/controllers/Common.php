@@ -203,9 +203,9 @@ class Common extends MY_Controller
      * 邮件页面 展示
      */
     public function show_emails(){
-        $this->assign("active_title", "file_trans");
+        $this->assign("active_title", "email_sys");
         $this->assign("active_parent", "file_parent");
-        $this->all_display("document_trans.html");
+        $this->all_display("email_sys.html");
     }
 
     /**
@@ -219,6 +219,10 @@ class Common extends MY_Controller
     }
 
     /**
+     * -----------------------我的云盘 功能 接口------------------------
+     */
+
+    /**
      * 接口：用户上传文档
      * 格式：doc pdf ppt excel
      */
@@ -228,7 +232,7 @@ class Common extends MY_Controller
         $config['upload_path'] = './uploads/file/';
         //$config['allowed_types'] = 'doc|docx|ppt|pdf|pptx|xlsx|word';
         $config['allowed_types'] = '*';
-        $config['max_size'] = 0;
+        $config['max_size'] = 500000;
         $config['max_width'] = 0;
         $config['max_height'] = 0;
         $config['encrypt_name'] = true;
@@ -246,10 +250,14 @@ class Common extends MY_Controller
         } else {
             $data = array('upload_data' => $this->upload->data());
             $upload_data = $data['upload_data'];
+
+            $upload_data['loc'] = '/uploads/file/' . $upload_data['file_name'];
+            $fid = $this->common->insert_file_info($upload_data);
+
             $res = array(
-                'res' => 1
+                'res' => 1,
+                'fid' => $fid
             );
-            $this->common->insert_file_info($upload_data);
             echo json_encode($res);
 
         }
@@ -315,6 +323,194 @@ class Common extends MY_Controller
             ));
         }
     }
+
+    /**
+     * ----------------------邮件功能接口------------------------
+     */
+
+    /**
+     * 写邮件 接口
+     * 参数：邮件字段 附件
+     */
+    public function write_email(){
+        $this->load->model("Common_Model", "common");
+        $email_info = array(
+            'title' => $this->input->post('title'),
+            'body'  => $this->input->post('body'),
+            'priority_level' => $this->input->post('priority_level')
+        );
+
+        $receiveID = array(
+            'uids' => explode(',',$this->input->post('uids')),
+            'gids' => explode(',',$this->input->post('gids'))
+        );
+
+        $attID = explode(',',$this->input->post('attID'));
+
+        $res = $this->common->insert_email($email_info,$receiveID,$attID);
+        if($res){
+            echo json_encode(array(
+                'res' => 1
+            ));
+        }else{
+            echo json_encode(array(
+                'res' => 0
+            ));
+        }
+    }
+
+    /**
+     *收件箱  邮件 信息 查看 功能
+     */
+    public function rec_email_detail(){
+        $this->load->model("Common_Model", "common");
+        $eid = $this->input->get('id');
+        if (!isset($id) || $id == null || $id == "") {
+            show_404();
+        }
+
+        $email_info = $this->common->rece_email_detail($eid);
+
+        if($email_info == false){
+            show_404();
+        }else{
+            $this->assign('info',$email_info['info']);
+            $this->assign('att', $email_info['att']);
+
+        }
+
+
+    }
+
+    /**
+     * 发件箱 邮件信息查看 功能
+     */
+    public function send_email_detail(){
+        $this->load->model('Common_Model','common');
+        $eid = $this->input->get('id');
+        if (!isset($id) || $id == null || $id == "") {
+            show_404();
+        }
+
+
+        $email_info = $this->common->send_email_detail($eid);
+
+        if($email_info == false){
+            show_404();
+        }else{
+            $this->assign('info',$email_info['info']);
+            $this->assign('att', $email_info['att']);
+
+        }
+
+
+    }
+
+    /**
+     * 接口：获取 邮件是否阅读 状态
+     */
+    public function get_has_read(){
+        $this->load->model('Common_Model','common');
+        $eid = $this->input->get('id');
+        if (!isset($id) || $id == null || $id == "") {
+            show_404();
+        }
+
+        $user_read_state = $this->common->get_read_state($eid);
+
+        echo json_encode($user_read_state);
+    }
+
+    /**
+     * 接口：邮件 附件上传接口
+     */
+    public function email_att_upload(){
+        $this->load->model("Common_Model","common");
+        $config = array();
+        $config['upload_path'] = './uploads/eUploads/';
+        $config['allowed_types'] = 'doc|docx|ppt|pdf|pptx|xlsx|word|rar|zip|jpeg|png|jpg';
+        $config['max_size'] = 1000000;//大小限制100M
+        $config['max_width'] = 0;
+        $config['max_height'] = 0;
+        $config['encrypt_name'] = true;
+
+        $this->load->library('upload', $config);
+
+        if (!$this->upload->do_upload('file')) {
+            $error = $this->upload->display_errors();
+            $res = array(
+                'res' => 0, 'info' => $error
+            );
+            echo json_encode($res);
+        } else {
+            $data = array('upload_data' => $this->upload->data());
+            $upload_data = $data['upload_data'];
+            //生成 文件保存 路径
+            $upload_data['loc'] = '/uploads/eUploads/' . $upload_data['file_name'];
+            $fid = $this->common->insert_file_info($upload_data);
+
+            $res = array(
+                'res' => 1,
+                'fid' => $fid
+            );
+            echo json_encode($res);
+
+        }
+    }
+
+
+    /**
+     * 接口：邮件 附件删除
+     */
+    public function del_att(){
+        $this->load->model("Common_Model","common");
+        $fid = $this->input->get('fid');
+        $res = $this->common->del_file($fid);
+        if($res){
+            echo json_encode(array(
+                'res' => 1
+            ));
+        }else{
+            echo json_encode(array(
+                'res' => 0
+            ));
+        }
+    }
+
+
+    /**
+     * 接口：邮件附件 下载
+     */
+    public function att_download(){
+        $fid = $this->input->get('fid');
+        $eid = $this->input->get('eid');
+        if (!isset($id) || $id == null || $id == "") {
+            show_404();
+        }
+        //获取文件信息和鉴权
+        $this->load->model("Common_Model", "common");
+        $attachment = $this->common->att_download($fid,$eid);
+        if ($attachment) {
+            if (file_exists($_SERVER['DOCUMENT_ROOT'] . $attachment["loc"])) {
+                $this->load->helper("download");
+                $data = file_get_contents($_SERVER['DOCUMENT_ROOT'] . $attachment["loc"]);
+                $name = $attachment["name"];
+                force_download($name, $data);
+            } else {
+                show_404("文件不存在");
+            }
+        } else {
+            show_404("文件不存在");
+        }
+    }
+
+    /**
+     * 分页 显示 发件箱 邮件
+     */
+    public function get_all_sends(){
+
+    }
+
 
 
 
