@@ -365,7 +365,7 @@ class Common extends MY_Controller
     public function rec_email_detail(){
         $this->load->model("Common_Model", "common");
         $eid = $this->input->get('id');
-        if (!isset($id) || $id == null || $id == "") {
+        /*if (!isset($id) || $id == null || $id == "") {
             show_404();
         }
 
@@ -377,7 +377,10 @@ class Common extends MY_Controller
             $this->assign('info',$email_info['info']);
             $this->assign('att', $email_info['att']);
 
-        }
+        }*/
+        $this->assign("active_title", "email_sys");
+        $this->assign("active_parent", "file_parent");
+        $this->all_display("email/rec_detail.html");
 
 
     }
@@ -508,7 +511,20 @@ class Common extends MY_Controller
      * 分页 显示 发件箱 邮件
      */
     public function get_all_sends(){
+        $this->load->model('Common_Model','common');
+        $query_data = $this->input->post();
+        $email_info = $this->common->get_send_emails_info($query_data);
+        echo json_encode($email_info);
+    }
 
+    /**
+     * 分页显示 收件箱 邮件
+     */
+    public function get_all_rec(){
+        $this->load->model('Common_Model','common');
+        $query_data = $this->input->post();
+        $email_info = $this->common->get_rec_emails_info($query_data);
+        echo json_encode($email_info);
     }
 
 
