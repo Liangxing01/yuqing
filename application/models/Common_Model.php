@@ -308,8 +308,9 @@ class Common_Model extends CI_Model
         $uid = $this->session->userdata('uid');
         $res = array();
         $res['files'] = $this->db->select('f.old_name as file_name,f.size,f.upload_time,f.id')
-            ->from('file as f')
-            ->join('file_user as fu','fu.uid ='.$uid)
+            ->from('file_user as fu')
+            ->join('file as f','f.id = fu.fid')
+            ->where('fu.uid',$uid)
             ->like('f.old_name',$q['search'])
             ->limit($q['length'],$q['start'])
             ->order_by('f.upload_time','DESC')
