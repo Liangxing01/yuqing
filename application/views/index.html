@@ -294,7 +294,7 @@
 <script src="/js/count.js"></script>
       <script src="/assets/morris.js-0.4.3/raphael-min.js" ></script><!-- MORRIS  JS -->
 <script>
-  //get_all_msg();
+  get_all_msg();
   var message = {   //title闪烁
     time: 0,
     title: document.title,
@@ -376,41 +376,39 @@
   }
 //  var get_msg_timer = setInterval(get_msg,3000);
 
-  /*function get_all_msg() {
+  //获取历史记录消息
+  function get_all_msg(){
     $.ajax({
-
+      url:'/welcome/get_msg',
+      type :'get',
+      dataType:'json',
       success:function(data){
-        console.log(data);
-       /!* var json = eval(data);
-        if(json){
-          for(var i = 0; i< 5 ;i++){
-            $("#td"+(i+1)).html(json[i].name+':'+json[i].msg+"  ");
-            $("#a"+(i+1)).attr('href',json[i].url);
-            $("#a"+(i+1)).html("加入视频会议！");
-        }*!/
-
-            /!*var tr = $("<tr></tr>");
-            var fir_td = $("<td></td>");
-            var sec_td = $("<td></td>");
-            sec_td.attr('style','text-align: left');
-            fir_td.append(i+1);
-            var url = $("<a></a>")
-            url.attr('style','color:red');
-            url.attr('href',json[i].url);
-            url.attr('target','_blank');
-            url.append("点击加入视频会议！");
-            sec_td.append(json[i].name+':'+json[i].msg+"  ");
-            sec_td.append(url);
-            tr.append(fir_td);
-            tr.append(sec_td);
-            $("#msg").append(tr);*!/
-        },
-      error:function(){
+        if(data){
+          var len = data.length;
+          var list = '';
+          for(var i = 0;i<len;i++){
+            list += '<tr>';
+            list += '<td></td>';
+            switch(data[i].type){
+              case '0':
+                list += '<td><span class="label label-info">信息上报</span></td>';break;
+              case '1':
+                list += '<td><span class="label label-primary">事件指派</span></td>';break;
+              case '2':
+                list += '<td><span class="label label-danger">事件督办</span></td>';break;
+            };
+            list += '<td><a href="'+data[i].url+'">'+data[i].title+'</a></td>';
+            list += '<td><span class="badge bg-important">'+timeToDate(data[i].time*1000)+'</span></td>';
+          }
+          $('#msg').html(list);
+          reload_num();
+        }else{
+          $('#msg').html('<tr><td style="text-align: center">暂无历史消息</td></tr>')
+        }
 
       }
-    });
-  }*/
- // var get_all_msg_timer = setInterval(get_all_msg,4000);
+    })
+  }
 </script>
 <script>
   function open_meeting() {
