@@ -1,0 +1,68 @@
+<!-- Ztree CSS -->
+<link rel="stylesheet" href="/assets/ztree/zTreeStyle/zTreeStyle.css">
+<!-- Common CSS -->
+<link rel="stylesheet" href="/css/common.css">
+<!-- BEGIN MAIN CONTENT -->
+<section id="main-content">
+    <section class="wrapper site-min-height">
+        <div class="row">
+            <div class="col-md-12">
+                <section class="panel">
+                    <header class="panel-heading">
+                        <span class="label label-primary">用户在线状态</span>
+                    </header>
+                    <div class="panel-body">
+                        <ul class="nav prod-cat ztree" id="online_tree">
+                            数据加载中……
+                        </ul>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </section>
+</section>
+<!-- END SECTION -->
+
+<!-- Public Function -->
+<script language="javascript" src="/js/public.js"></script>
+<!-- Ztree --->
+<script src="/assets/ztree/jquery.ztree.all.min.js"></script>
+
+<!-- Page Script -->
+<script>
+    /**
+     * Ztree && MultiSelect 插件
+     */
+    var onlineTree;
+
+    var setting = {
+        async: {
+            enable: true,
+            url: "/designate/get_online_tree",
+            autoParam: ["id", "name=n", "level=lv"]
+            // dataFilter: filter
+        }
+    };
+
+    function zTreeOnAsyncSuccess(event, treeId, treeNode, msg) {
+        //去掉组织结构的选择项
+        var rootNode = processorTree.getNodeByParam("id", 0, null);//得到组织结构树
+        rootNode.nocheck = true;
+        processorTree.refresh();//更改属性后，刷新界面
+    }
+    //当节点选中时选择
+    function zTreeCheck(event, treeId, treeNode) {
+        if (treeNode.isdepartment == 1) {//个人
+            treeNode.getParentNode().checked = false;
+            //   console.log(treeNode.getParentNode());
+        } else if (treeNode.isdepartment == 0) {//单位
+            var children_arr = treeNode.children;
+            for (var i in children_arr) {
+                children_arr[i].checked = false;
+            }
+        }
+        processorTree.refresh();
+    }
+    onlineTree = $.fn.zTree.init($("#online_tree"), setting);
+
+</script>

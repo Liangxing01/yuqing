@@ -125,39 +125,6 @@ function beforetime_info(data){
         tipsMore:true
     });
 }
-//获取历史记录消息
-function get_all_msg(){
-    $.ajax({
-        url:'/welcome/get_msg',
-        type :'get',
-        dataType:'json',
-        success:function(data){
-            if(data){
-                var len = data.length;
-                var list = '';
-                for(var i = 0;i<len;i++){
-                    list += '<tr>';
-                    list += '<td></td>';
-                    switch(data[i].type){
-                        case '0':
-                            list += '<td><span class="label label-info">信息上报</span></td>';break;
-                        case '1':
-                            list += '<td><span class="label label-primary">事件指派</span></td>';break;
-                        case '2':
-                            list += '<td><span class="label label-danger">事件督办</span></td>';break;
-                    };
-                    list += '<td><a href="'+data[i].url+'">'+data[i].title+'</a></td>';
-                    list += '<td><span class="badge bg-important">'+timeToDate(data[i].time*1000)+'</span></td>';
-                }
-                $('#msg').html(list);
-                reload_num();
-            }else{
-                $('#msg').html('<tr><td style="text-align: center">暂无历史消息</td></tr>')
-            }
-
-        }
-    })
-}
 //获取cookie值
 function getCookie(name){
     if(document.cookie.length>0){

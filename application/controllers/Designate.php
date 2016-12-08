@@ -650,9 +650,17 @@ class Designate extends MY_controller
 
 
     /**
+     * 用户在线 视图载入
+     */
+    public function online_tree(){
+        $this->all_display("designate/online_user.html");
+    }
+
+
+    /**
      * 统计在线情况
      */
-    public function online_tree_data()
+    public function get_online_tree()
     {
         $this->load->model("Tree_Model", "tree");
         $tree_data = $this->tree->get_online_tree();

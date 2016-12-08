@@ -42,13 +42,13 @@ class Tree_Model extends CI_Model
 
                 //判断是否为父节点
                 if ($row["rgt"] - $row["lft"] != 1) {
-                    if ($row["type"] == 0) {
+                    if ($row["type"] == 0 || $row["type"] == 2) {
                         $tree_json .= "{name: '" . $row["name"] . "',id:" . $row["uid"] . ",isdepartment:" . $row["type"] . ",icon:'/assets/ztree/zTreeStyle/img/group.png',open:false,children:[";
                     } else {
                         $tree_json .= "{name: '" . $row["name"] . "',id:" . $row["uid"] . ",isdepartment:" . $row["type"] . ",icon:'/assets/ztree/zTreeStyle/img/admin.png',open:false,children:[";
                     }
                 } else {
-                    if ($row["type"] == 0) {
+                    if ($row["type"] == 0 || $row["type"] == 2) {
                         $tree_json .= "{name: '" . $row["name"] . "',id:" . $row["uid"] . ",isdepartment:" . $row["type"] . ",icon:'/assets/ztree/zTreeStyle/img/group.png'";
                     } else {
                         $tree_json .= "{name: '" . $row["name"] . "',id:" . $row["uid"] . ",isdepartment:" . $row["type"] . ",icon:'/assets/ztree/zTreeStyle/img/admin.png'";
@@ -452,26 +452,29 @@ class Tree_Model extends CI_Model
 
                 //判断用户节点是否在线
                 $online = 0;      //无状态
+                $icon = ""; //状态图标
                 if ($row["type"] == 1) {
                     if (Gateway::isUidOnline($row["uid"]) == 0) {
                         $online = 2; //不在线
+                        $icon = "";
                     } else {
                         $online = 1; //在线
+                        $icon = "_online";
                     }
                 }
 
                 //判断是否为父节点
                 if ($row["rgt"] - $row["lft"] != 1) {
-                    if ($row["type"] == 0) {
+                    if ($row["type"] == 0 || $row["type"] == 2) {
                         $tree_json .= "{name: '" . $row["name"] . "',id:" . $row["uid"] . ",online:" . $online . ",isdepartment:" . $row["type"] . ",icon:'/assets/ztree/zTreeStyle/img/group.png',open:false,children:[";
                     } else {
-                        $tree_json .= "{name: '" . $row["name"] . "',id:" . $row["uid"] . ",online:" . $online . ",isdepartment:" . $row["type"] . ",icon:'/assets/ztree/zTreeStyle/img/admin.png',open:false,children:[";
+                        $tree_json .= "{name: '" . $row["name"] . "',id:" . $row["uid"] . ",online:" . $online . ",isdepartment:" . $row["type"] . ",icon:'/assets/ztree/zTreeStyle/img/admin" . $icon . ".png',open:false,children:[";
                     }
                 } else {
-                    if ($row["type"] == 0) {
+                    if ($row["type"] == 0 || $row["type"] == 2) {
                         $tree_json .= "{name: '" . $row["name"] . "',id:" . $row["uid"] . ",online:" . $online . ",isdepartment:" . $row["type"] . ",icon:'/assets/ztree/zTreeStyle/img/group.png'";
                     } else {
-                        $tree_json .= "{name: '" . $row["name"] . "',id:" . $row["uid"] . ",online:" . $online . ",isdepartment:" . $row["type"] . ",icon:'/assets/ztree/zTreeStyle/img/admin.png'";
+                        $tree_json .= "{name: '" . $row["name"] . "',id:" . $row["uid"] . ",online:" . $online . ",isdepartment:" . $row["type"] . ",icon:'/assets/ztree/zTreeStyle/img/admin" . $icon . ".png'";
                     }
                 }
 
