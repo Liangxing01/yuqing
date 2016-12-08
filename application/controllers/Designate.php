@@ -7,6 +7,7 @@ class Designate extends MY_controller
     public function __construct()
     {
         parent::__construct();
+        $this->load->model("Designate_Model", "designate");
         $this->identity->is_authentic();
     }
 
@@ -46,7 +47,6 @@ class Designate extends MY_controller
             $pData['search'] = '';
         }
 
-        $this->load->model("Designate_Model", "designate");
         $data = $this->designate->info_not_handle_pagination($pData);
 
         $this->output
@@ -79,7 +79,6 @@ class Designate extends MY_controller
             $pData['search'] = '';
         }
 
-        $this->load->model("Designate_Model", "designate");
         $data = $this->designate->info_is_handle_pagination($pData);
 
         $this->output
@@ -98,7 +97,6 @@ class Designate extends MY_controller
             show_404();
         }
 
-        $this->load->model("Designate_Model", "designate");
         //设置信息为已查看状态
         $this->designate->set_info_seen($info_id);
         $info = $this->designate->get_info($info_id);
@@ -121,7 +119,6 @@ class Designate extends MY_controller
             show_404();
         }
 
-        $this->load->model("Designate_Model", "designate");
         $result = $this->designate->info_commit($data);
         if ($result) {
             echo 1;
@@ -137,7 +134,7 @@ class Designate extends MY_controller
     {
         $url = $this->input->post('url');
         $id = $this->input->post('id');
-        $this->load->model("Designate_Model", "designate");
+
         $res = $this->designate->check_url($url, $id);
         if ($res) {
             echo json_encode(array(
@@ -246,7 +243,6 @@ class Designate extends MY_controller
         $data["watcher"] = $this->input->post("watcher", true);               //督办人
         $data["attachment"] = $this->input->post("attachment", true);         //附件
 
-        $this->load->model("Designate_Model", "designate");
         $result = $this->designate->event_designate($data);
         if ($result) {
             echo 1;   //指派成功
@@ -323,7 +319,7 @@ class Designate extends MY_controller
         }
 
         $this->load->model("Handler_Model", "handler");
-        $this->load->model("Designate_Model", "designate");
+
         $einfo = $this->handler->get_title_by_eid($event_id);
         $done_btn = $this->designate->check_done_btn($event_id);   //事件审核按钮
         $this->assign('title', $einfo['title']);
@@ -377,7 +373,6 @@ class Designate extends MY_controller
         $flag = $this->input->post("flag");
         $eid = $this->input->post("eid");
 
-        $this->load->model("Designate_Model", "designate");
         $result = $this->designate->event_confirm_done($eid, $flag);
         if ($result) {
             echo 1;
@@ -401,7 +396,7 @@ class Designate extends MY_controller
         }
 
         $reply_time = strtotime($reply_time);
-        $this->load->model("Designate_Model", "designate");
+
         $result = $this->designate->commit_event_reply_time($event_id, $reply_time);
         if ($result) {
             echo 1;
@@ -420,7 +415,7 @@ class Designate extends MY_controller
         if (!isset($event_id) || $event_id == null || $event_id == "") {
             show_404();
         }
-        $this->load->model("Designate_Model", "designate");
+
         $result = $this->designate->event_restart($event_id);
         if ($result) {
             echo 1;
@@ -439,7 +434,7 @@ class Designate extends MY_controller
         if (!isset($event_id) || $event_id == null || $event_id == "") {
             show_404();
         }
-        $this->load->model("Designate_Model", "designate");
+
         $main = $this->designate->get_event_main($event_id);    //获得牵头人(单位)
         $event = $this->designate->get_event($event_id);        //获取事件详情
 
@@ -471,7 +466,6 @@ class Designate extends MY_controller
         $data["relate_event"] = $this->input->post("relate_event", true);     //关联事件ID
         $data["info_id"] = $this->input->post("info_id", true);               //事件信息ID
 
-        $this->load->model("Designate_Model", "designate");
         $result = $this->designate->event_alter($data);
         //返回结果
         if ($result) {
@@ -553,7 +547,6 @@ class Designate extends MY_controller
             $pData['end_end'] = 0;
         }
 
-        $this->load->model("Designate_Model", "designate");
         $data = $this->designate->event_search_pagination($pData);
 
         $this->output
@@ -572,7 +565,7 @@ class Designate extends MY_controller
         if (!isset($page_num) || $page_num == null || $page_num == "") {
             show_404();
         }
-        $this->load->model("Designate_Model", "designate");
+
         $result = $this->designate->scroll_event_pagination($page_num);
         $this->output
             ->set_content_type('application/json')
@@ -585,7 +578,6 @@ class Designate extends MY_controller
      */
     public function info_search()
     {
-        $this->load->model("Designate_Model", "designate");
         $type_list = $this->designate->get_info_type();  //获取类别列表
         $this->assign("active_title", "designate_parent");
         $this->assign("active_parent", "info_search");
@@ -640,7 +632,6 @@ class Designate extends MY_controller
             $pData['duplicate'] = "";
         }
 
-        $this->load->model("Designate_Model", "designate");
         $data = $this->designate->info_search_pagination($pData);
 
         $this->output
@@ -673,7 +664,6 @@ class Designate extends MY_controller
     // demo TODO
     public function tree()
     {
-        $this->load->model("Designate_Model", "designate");
         echo $this->designate->get_relation_tree();
     }
 
@@ -686,7 +676,10 @@ class Designate extends MY_controller
         if ($user_online == 0) {
             echo "该用户不在线";
         }
-        Gateway::sendToUid($uid, "我是管理员,你在干嘛?");
+        $clients = Gateway::getClientIdByUid($uid);
+        foreach($clients AS $client){
+            var_dump(Gateway::getSession($client));
+        }
     }
 
 

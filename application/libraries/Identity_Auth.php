@@ -34,8 +34,6 @@ class Identity_Auth
             //更新用户认证token
             $token = md5($user->row()->username . time());
             $this->CI->db->where("id", $user->row()->id)->update("user", array("token" => $token));
-            //用户认证token存到cookie中
-            setcookie("p_token", $token, $expire = 0, $path = "/");
 
             //用户认证session
             $privilege = $this->get_privilege($user->row()->id);
@@ -47,10 +45,13 @@ class Identity_Auth
                 "gid" => $group["id"],
                 "gname" => $group["name"],
                 "avatar" => $user->row()->avatar,
-                "privilege" => $privilege ? $privilege : ""
+                "privilege" => $privilege ? $privilege : "",
+                "p_token" => $token     //pc端webscoket认证token
             );
             $this->CI->session->set_userdata($userdata);
 
+            //下线不合法用户
+//            $this->unofficial_offline();
             return true;
         } else {
             return false;
@@ -107,11 +108,59 @@ class Identity_Auth
         return $info;
     }
 
+    /**
+     * 绑定websocket client_id 到 uid
+     * @param $client_id
+     */
+    public function bind_uid($client_id)
+    {
+        try {
+            //连接消息服务器
+            Gateway::$registerAddress = $this->CI->config->item("VM_registerAddress");
+            //绑定client_id到uid
+            Gateway::bindUid($client_id, $this->CI->session->uid);
+            //添加到用户组
+            $user_group = explode(",", $this->CI->session->gid);
+            foreach ($user_group AS $group_id) {
+                Gateway::joinGroup($client_id, $group_id);
+            }
+            //更新client认证token
+            Gateway::setSession($client_id, array("p_token" => $this->CI->session->p_token, "uid" => $this->CI->session->uid));
+        } catch (Exception $e) {
+            log_message("error", $e->getMessage());
+        }
+    }
+
+    //下线不合法用户
+    public function unofficial_offline()
+    {
+        try {
+            //连接消息服务器
+            Gateway::$registerAddress = $this->CI->config->item("VM_registerAddress");
+            //获取所有client
+            $clients = Gateway::getClientIdByUid($this->CI->session->uid);
+            foreach ($clients AS $client) {
+                $client_session = Gateway::getSession($client);
+                if ($client_session["p_token"] != $this->CI->session->p_token) {
+                    Gateway::closeClient($client);
+                }
+            }
+        } catch (Exception $e) {
+            log_message("error", $e->getMessage());
+        }
+    }
 
     //检测用户认证信息
     public function is_authentic()
     {
-        if ($this->CI->session->has_userdata("uid")) {
+//        $this->CI->load->database();
+        if ($this->CI->session->has_userdata("p_token") && $this->CI->session->has_userdata("uid")) {
+            //token 单用户登陆验证
+//            $result = $this->CI->db->select("token")->where("id", $this->CI->session->uid)->get("user")->row();
+//            if ($result->token != $this->CI->session->p_token) {
+//                redirect(base_url("/login"));
+//                exit(0);
+//            }
             return true;
         } else {
             redirect(base_url("/login"));
@@ -122,11 +171,7 @@ class Identity_Auth
     //注销用户
     public function destroy()
     {
-        if (isset($_COOKIE["client_id"])) {
-            Gateway::closeClient($_COOKIE["client_id"]); //关闭websocket 连接
-        }
         session_destroy();
-        setcookie("p_token", "", $expire = time() - 1, $path = "/");
         redirect(base_url("/login"));
         exit(0);
     }
