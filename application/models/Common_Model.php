@@ -601,6 +601,7 @@ class Common_Model extends CI_Model
         //判断是否属于该邮件的文件
         $check = $this->db->select('id')->from('email_attachment')
             ->where('eid',$eid)
+            ->where('id',$fid)
             ->get()->row_array();
         if(empty($check)){
             return false;
@@ -610,6 +611,78 @@ class Common_Model extends CI_Model
             ->from('email_attachment')
             ->where('id',$fid)
             ->get()->row_array();
+        return $res;
+    }
+
+    /**
+     * 分页显示 发件箱 列表
+     */
+    public function get_send_emails_info($q){
+        $uid = $this->session->userdata('uid');
+        $res = array();
+        $res['emails'] = $this->db->select('e.id,e.title,e.priority_level,e.time')
+            ->from('email as e')
+            ->where('e.sender',$uid)
+            ->group_start()
+            ->like('e.title',$q['search'])
+            ->or_like('e.priority_level',$q['search'])
+            ->group_end()
+            ->limit($q['length'],$q['start'])
+            ->order_by('e.time','DESC')
+            ->get()->result_array();
+
+
+        $res['num'] = $this->db->select('e.id,e.title,e.priority_level,e.time')
+            ->from('email as e')
+            ->where('e.sender',$uid)
+            ->group_start()
+            ->like('e.title',$q['search'])
+            ->or_like('e.priority_level',$q['search'])
+            ->group_end()
+            ->get()->num_rows();
+
+        return $res;
+    }
+
+    /**
+     * 分页显示 收件箱 列表
+     */
+    public function get_rec_emails_info($q){
+        $uid  = $this->session->userdata('uid');
+        $gids = $this->session->userdata('gid');
+        $gid_arr = explode(',',$gids);
+        $res = array();
+        $res['emails'] = $this->db->select('e.id,e.title,u.name as sender_name,e.priority_level,e.time')
+            ->from('email as e')
+            ->join('email_user as eu','eu.email_id = e.id')
+            ->join('user as u','u.id = e.sender')
+            ->group_start()
+            ->where('eu.receiver_id',$uid)
+            ->or_where_in('eu.receiver_gid',$gid_arr)
+            ->group_end()
+            ->group_start()
+            ->like('e.title',$q['search'])
+            ->or_like('u.name',$q['search'])
+            ->group_end()
+            ->limit($q['length'],$q['start'])
+            ->order_by('e.time','DESC')
+            ->get()->result_array();
+
+
+        $res['num'] = $this->db->select('e.id,e.title,u.name as sender_name,e.priority_level,e.time')
+            ->from('email as e')
+            ->join('email_user as eu','eu.email_id = e.id')
+            ->join('user as u','u.id = e.sender')
+            ->group_start()
+            ->where('eu.receiver_id',$uid)
+            ->or_where_in('eu.receiver_gid',$gid_arr)
+            ->group_end()
+            ->group_start()
+            ->like('e.title',$q['search'])
+            ->or_like('u.name',$q['search'])
+            ->group_end()
+            ->get()->num_rows();
+
         return $res;
     }
 
