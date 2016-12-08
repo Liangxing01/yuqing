@@ -266,6 +266,7 @@ class Common_Model extends CI_Model
     /**
      * @param $file_data
      * 插入上传文件信息
+     * return fid文件id
      */
     public function insert_file_info($file_data){
         $finfo = array(
@@ -274,7 +275,7 @@ class Common_Model extends CI_Model
             'type'     => $file_data['file_type'],
             'size'     => $file_data['file_size'],
             'upload_time' => time(),
-            'loc'      => '/uploads/file/' . $file_data['file_name']
+            'loc'      => $file_data['loc']
         );
         //开始运行事务
         $this->db->trans_begin();
@@ -293,7 +294,7 @@ class Common_Model extends CI_Model
             return false;
         }else{
             $this->db->trans_commit();
-            return true;
+            return $fid;
         }
     }
 
@@ -306,17 +307,19 @@ class Common_Model extends CI_Model
     public function get_files_info($q){
         $uid = $this->session->userdata('uid');
         $res = array();
-        $res['files'] = $this->db->select('f.old_name,f.size,f.upload_time,f.id')
-            ->from('file as f')
-            ->join('file_user as fu','fu.uid ='.$uid)
+        $res['files'] = $this->db->select('f.old_name as file_name,f.size,f.upload_time,f.id')
+            ->from('file_user as fu')
+            ->join('file as f','f.id = fu.fid')
+            ->where('fu.uid',$uid)
             ->like('f.old_name',$q['search'])
             ->limit($q['length'],$q['start'])
             ->order_by('f.upload_time','DESC')
             ->get()->result_array();
 
-        $res['num'] = $this->db->select('f.old_name,f.size,f.upload_time,f.id')
-            ->from('file as f')
-            ->join('file_user as fu','fu.uid ='.$uid)
+        $res['num'] = $this->db->select('f.old_name as file_name,f.size,f.upload_time,f.id')
+            ->from('file_user as fu')
+            ->join('file as f','f.id = fu.fid')
+            ->where('fu.uid',$uid)
             ->like('f.old_name',$q['search'])
             ->get()->num_rows();
 
@@ -365,7 +368,7 @@ class Common_Model extends CI_Model
             $check = $this->db->select('id')->from('file_user')
                 ->where('uid',$uid)
                 ->where('fid',$del)
-                ->get()->result_array();
+                ->get()->row_array();
             if(empty($check)){
                 return false;
             }else{
@@ -395,6 +398,222 @@ class Common_Model extends CI_Model
 
         return $res;
     }
+
+
+    /**
+     * ---------------------邮件 功能-------------------------
+     */
+
+    /**
+     * @param $einfo
+     * @param $receID
+     * @param $attID
+     * @return bool
+     * 写入 邮件信息
+     */
+    public function insert_email($einfo,$rec,$attID){
+        $einfo['sender'] = $this->session->userdata('uid');
+        $einfo['time']   = time();
+
+        //开始运行事务
+        $this->db->trans_begin();
+
+        //插入email信息表
+        $this->db->insert('email',$einfo);
+        $eid = $this->db->insert_id();
+
+        //插入附件信息表，先通过fid 找到file表的信息，然后插入到 email_attach 表里面
+        $att_arr = array();
+        foreach ($attID as $att){
+            $file_info = $this->db->select('old_name as file_name,type,size,upload_time,loc')
+                ->from('file')
+                ->where('id',$att)
+                ->get()->row_array();
+            $file_info['eid'] = $eid;
+            $file_info['is_exist'] = 1;
+            array_push($att_arr,$file_info);
+        }
+
+        $this->db->insert_batch('email_attachment',$att_arr);
+
+        //插入email_user表
+
+        //分别遍历 gid uid组
+        if(!empty($rec['uids'])){
+            $uid_arr = array();
+            foreach ($rec['uids'] as $uid){
+                $uid_one = array(
+                    'email_id' => $eid,
+                    'receiver_id' => $uid,
+                    'state'    => 0
+                );
+                array_push($uid_arr,$uid_one);
+            }
+
+            $this->db->insert_batch('email_user',$uid_arr);
+        }
+
+        if(!empty($rec['gids'])){
+            $gid_arr = array();
+            foreach ($rec['gids'] as $gid){
+                $gid_one = array(
+                    'email_id' => $eid,
+                    'receiver_gid' => $gid,
+                    'state'    => 0
+                );
+                array_push($gid_arr,$gid_one);
+            }
+
+            $this->db->insert_batch('email_user',$gid_arr);
+        }
+
+
+        if($this->db->trans_status() === FALSE){
+            $this->db->trans_rollback();
+            $res = false;
+        }else{
+            $this->db->trans_commit();
+            $res = true;
+        }
+
+        return $res;
+
+    }
+
+    /**
+     * 查看 收件箱 邮件
+     * 参数：eid
+     */
+    public function rece_email_detail($eid){
+        //判断邮件是否属于这个人或他的单位
+        $uid  = $this->session->userdata('uid');
+        $gids = $this->session->userdata('gid');
+        $gid_arr = explode(',',$gids);
+        //判断收件权
+        $check_rece= $this->db->select('id')
+            ->from('email_user')
+            ->where('email_id',$eid)
+            ->group_start()
+            ->where('receiver_id',$uid)
+            ->or_where_in('receiver_gid',$gid_arr)
+            ->group_end()
+            ->get()->row_array();
+
+        if(!empty($check_rece)){
+            //查询邮件信息
+            $info = $this->db->select('*')
+                ->from('email')
+                ->where('id',$eid)
+                ->get()->row_array();
+
+            $att = $this->db->select('*')
+                ->from('email_attachment')
+                ->where('eid',$eid)
+                ->get()->row_array();
+
+            $res = array(
+                'info' => $info,
+                'att'  => $att
+            );
+
+            //更新阅读状态为已读
+            $update_state = array(
+                'state' => 1
+            );
+            $this->db->where('email_id',$eid);
+            $this->db->update('email_user',$update_state);
+
+            return $res;
+
+        }else{
+            return false;
+        }
+    }
+
+
+    /**
+     * 发件箱 邮件 详情
+     */
+    public function send_email_detail($eid){
+        //判断邮件是否属于这个人
+        $uid  = $this->session->userdata('uid');
+        //判断是否 是他 发送的邮件
+        $check_send = $this->db->select('id')
+            ->from('email')
+            ->where('sender',$uid)
+            ->get()->result_array();
+
+        if(!empty($check_send)){
+            //查询邮件信息
+            $info = $this->db->select('*')
+                ->from('email')
+                ->where('id',$eid)
+                ->get()->row_array();
+
+            $att = $this->db->select('*')
+                ->from('email_attachment')
+                ->where('eid',$eid)
+                ->get()->row_array();
+
+            $res = array(
+                'info' => $info,
+                'att'  => $att
+            );
+            return $res;
+        }else{
+            return false;
+        }
+
+    }
+
+    /**
+     * 获取用户 阅读邮件 状态
+     */
+    public function get_read_state($eid){
+        //查询 用户 是否 阅读
+        $user_read = $this->db->select('eu.receiver_id as uid,eu.state,u.name')
+            ->from('email_user as eu')
+            ->join('user as u','u.id = eu.receiver_id')
+            ->where('eu.email_id',$eid)
+            ->get()->result_array();
+
+        //查询 组是否有人阅读
+        $group_read = $this->db->select('eu.receiver_gid as gid,eu.state,g.name')
+            ->from('email_user as eu')
+            ->join('group as g','g.id = eu.receiver_gid')
+            ->where('eu.email_id',$eid)
+            ->get()->result_array();
+
+        $res = array(
+            'user_read_state' => $user_read,
+            'group_read_state' => $group_read
+        );
+
+        return $res;
+    }
+
+    /**
+     * @param $fid
+     * @return bool
+     * 云盘 文件下载
+     */
+    public function att_download($fid,$eid){
+        //判断是否属于该邮件的文件
+        $check = $this->db->select('id')->from('email_attachment')
+            ->where('eid',$eid)
+            ->get()->row_array();
+        if(empty($check)){
+            return false;
+        }
+        //查出该文件的信息
+        $res = $this->db->select('loc,file_name as name')
+            ->from('email_attachment')
+            ->where('id',$fid)
+            ->get()->row_array();
+        return $res;
+    }
+
+
 
 
 
