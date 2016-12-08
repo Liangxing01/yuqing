@@ -2,7 +2,7 @@
  * Created by LX on 2016/11/30.
  */
 $(function(){
-    get_all_msg();
+    //get_all_msg();
     get_webSocket_msg();
 })
 
@@ -38,9 +38,9 @@ function get_webSocket_msg(){
                     case 2:
                         list += '<td><span class="label label-danger">事件督办</span></td>';break;
                     case 3:
-                        beforetime_info(data.title);return;//事件首回提醒
+                        beforetime_info(data);return;//事件首回提醒
                     case 4:
-                        overtime_info(data.title);return;//超时提醒
+                        overtime_info(data);return;//超时提醒
                 };
                 list += '<td><a href="'+data.url+'">'+data.title+'</a></td>';
                 list += '<td><span class="badge bg-important">'+timeToDate(data.time*1000)+'</span></td>';
@@ -68,10 +68,22 @@ function get_webSocket_msg(){
 
 }
 //超时提醒
-function overtime_info(content){
+function overtime_info(data){
+    var val = $('#notification_bar2 .bar_num').html();
+    $('#notification_bar2 .bar_num').html(val+1);
+    $('#notification_bar2 .bar_num').show();
+    var val2 = $('#notification_bar2 .notify_total span').html();
+    $('#notification_bar2 .notify_total span').html(val2+1);
+    var str = '';
+    str += '<li>';
+    str += '<a href="/common/event_detail?eid="'+data.event_id+'" title="'+data.title+'">';
+    str += '<p class="alarm_title"'+data.title+'></p>';
+    str += '<span class="small italic">'+data.time+'</span>';
+    str += '</a></li>';
+    $('#notification_bar2').find('.notify-all').before(str);
     layer.open({
         title: ['超时提醒','color:#fff;background:red'],
-        content: '<p>'+content+'</p><a class="" href="">点击查看</a>',
+        content: '<p>'+data.title+'</p><a  href="javascript:void(0)">点击查看</a>',
         area:['200px','150px'],
         offset:'rb',
         btn:['确定'],
@@ -82,11 +94,27 @@ function overtime_info(content){
         tipsMore:true
     });
 }
-//事件首回提醒
-function beforetime_info(content){
+/*
+*   功能：事件首回提醒
+*   参数：content  数据
+*
+* */
+function beforetime_info(data){
+    var val = $('#notification_bar1 .bar_num').html();
+    $('#notification_bar1 .bar_num').html(val+1);
+    $('#notification_bar1 .bar_num').show();
+    var val2 = $('#notification_bar1 .notify_total span').html();
+    $('#notification_bar1 .notify_total span').html(val2+1);
+    var str = '';
+        str += '<li>';
+        str += '<a href="/common/event_detail?eid="'+data.event_id+'" title="'+data.title+'">';
+        str += '<p class="alarm_title"'+data.title+'></p>';
+        str += '<span class="small italic">'+data.time+'</span>';
+        str += '</a></li>';
+    $('#notification_bar1').find('.notify-all').before(str);
     layer.open({
         title: ['事件首回提醒','color:#fff;background:blue'],
-        content: '<p>'+content+'</p><a class="" href="">点击查看</a>',
+        content: '<p>'+data.title+'</p><a class="" href="">点击查看</a>',
         area:['200px','150px'],
         offset:'rb',
         btn:['确定'],

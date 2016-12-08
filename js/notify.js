@@ -1,25 +1,24 @@
 $(function(){
-   
-    /*setInterval("get_notify()",600000);
-    get_notify();*/
     get_notify();
 })
 
 
 function showNotify(data,target)
 {
-    var notice=target.find('#bar_num');
-    if (data.length==0) notice.hide();
+    var notice=target.find('.bar_num');
+    if (data.length==0) {
+        notice.hide();
+    }
     else{
         notice.html(data.length);
         notice.show();
     }
-    target.find('#notify_total').html("你有<label>"+data.length+"</label>新信息");
+    target.find('.notify_total').html("你有<span>"+data.length+"</span>新信息");
     
     var str='';
     $.each(data,function(index,v){
         var i='<li><a href="/common/event_detail?eid='+v.event_id+'" title="'+v.title+'">' +
-            '<p id="alarm_title">'+
+            '<p class="alarm_title">'+
             v.title+
             '</p><span class="small italic">'+
             v.time+

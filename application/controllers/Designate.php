@@ -649,6 +649,19 @@ class Designate extends MY_controller
     }
 
 
+    /**
+     * 统计在线情况
+     */
+    public function online_tree_data()
+    {
+        $this->load->model("Tree_Model", "tree");
+        $tree_data = $this->tree->get_online_tree();
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output($tree_data);
+    }
+
+
     // demo TODO
     public function tree()
     {

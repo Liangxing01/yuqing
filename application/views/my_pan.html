@@ -28,9 +28,9 @@
 	.file-search-text{
 		display: block;
 	    width: 100%;
-	    height: 48px;
+	    height: 40px;
 	    padding: 10px 12px;
-	    font-size: 16px;
+	    font-size: 14px;
 	    color: #555;	    
     }
 	.file-search{
@@ -54,6 +54,7 @@
     	font-size: 14px;
     	color: #000000;
     }
+
     table tr:last-child{
     	border-bottom: none;
     }
@@ -61,22 +62,22 @@
     	cursor:pointer; 
     	background: #f6f6f6;
     }
-    table tr:hover button{
-    	display: block;
+	table tr td:nth-child(4) a{
+		visibility: hidden;
+	}
+    table tr:hover td:nth-child(4) a{
+    	visibility: visible;
     }
     table tr td{
     	padding: 10px;
     }
-    table tr td button{
-    	right: 80px;
-    	margin-top: -27px;
+    table tr td a{
+
     	background: #57c7e6;
 		border: none;
 		padding: 10px 20px;
 		color: white;
-		display: none;
-		position: absolute;
-		
+		visibility:hidden;		
     }
     table tr td span i{
 		font-style: normal;
@@ -137,71 +138,90 @@
                     <div class="panel-body">
                     	
 		            	<div class="text-btn">
-		            		<button class="btn btn-lg upload"><img src="../../img/upload.png" />上传</button>
-		            		<button class="btn btn-lg del"><img src="../../img/del.png" />删除</button>
-		            		<button class="btn btn-lg send"><img src="../../img/send.png" />发送</button>
+		            		<button class="btn btn-md upload"><img src="../../img/upload.png" />上传</button>
+		            		<button class="btn btn-md del"><img src="../../img/del.png" />删除</button>
+		            		<button class="btn btn-md send"><img src="../../img/send.png" />发送</button>
 	            			<input type="text"  class="file-search-text file-search"  placeholder="搜索你的文件" />		            				            		
 		            	</div>
                 		
             			<div class="My_pan_title">全部文件<span style="float: right;">已全部加载，共3个文件</span></div>
             			
-            			<div class="My_pan_list"> 
-            				
-            				<table border='0'cellspacing="0" cellpadding="0" width="100%" > 
-            					<tr> 
-            						<td width="50%">
-            							<input name="" type="checkbox" class="file-chexkbox" value="" />
-            							文档名
-            						</td> 
-            						<td width="25%">大小</td> 
-            						<td width="25%">时间</td> 
-            					</tr> 
-            					<tr> 
-            						<td >
-            							<input name="" type="checkbox" class="file-chexkbox" value="" />
-            							<span class="file-file file-word">w</span>
-            							你的多情出卖我的爱情赔了我的命.docx 
-            						</td> 
-            						<td>3.9M</td> 
-            						<td >2016-12-6&nbsp;15:35:35<button>下载</button></td>  
-            					</tr> 
-            					<tr> 
-            						<td >
-            							<input name="" type="checkbox" class="file-chexkbox" value="" />
-            							<span class="file-file file-ex">e<i>x</i></span>
-            							你的多情出卖我的爱情赔了我的命.docx 
-            						</td> 
-            						<td>3.9M</td> 
-            						<td >2016-12-6&nbsp;15:35:35<button>下载</button></td>  
-            					</tr> 
-            					<tr> 
-            						<td >
-            							<input name="" type="checkbox" class="file-chexkbox" value="" />
-            							<span class="file-file file-p">p</span>
-            							你的多情出卖我的爱情赔了我的命.docx 
-            						</td> 
-            						<td>3.9M</td> 
-            						<td >2016-12-6&nbsp;15:35:35<button>下载</button></td>  
-            					</tr> 
-            					<tr> 
-            						<td >
-            							<input name="" type="checkbox" class="file-chexkbox" value="" />
-            							<span class="file-file file-pdf">p<i>DF</i></span>
-            							你的多情出卖我的爱情赔了我的命.docx 
-            						</td> 
-            						<td>3.9M</td> 
-            						<td >2016-12-6&nbsp;15:35:35<button>下载</button></td>   
-            					</tr>
-            					<tr> 
-            						<td >
-            							<input name="" type="checkbox" class="file-chexkbox" value="" />
-            							<span class="file-file file-pdf">p<i>DF</i></span>
-            							你的多情出卖我的爱情赔了我的命.docx 
-            						</td> 
-            						<td>3.9M</td> 
-            						<td >2016-12-6&nbsp;15:35:35<button>下载</button></td>   
-            					</tr>
-            				</table>
+            			<div class="My_pan_list">
+						<table border='0'cellspacing="0" cellpadding="0" width="100%" >
+							<thead>
+								<tr>
+									<th width="50%">
+										<input name="" type="checkbox" class="file-chexkbox" value="" />
+										文档名
+									</th>
+									<th width="10%">大小</th>
+									<th width="30%">时间</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td >
+										<input name="" type="checkbox" class="file-chexkbox" value="" />
+										<span class="file-file file-word">w</span>
+										你的多情出卖我的爱情赔了我的命.docx
+									</td>
+									<td>3.9M</td>
+									<td >2016-12-6&nbsp;15:35:35</td>
+									<td>
+										<a href="" class="btn btn-info btn-sm">下載</a>
+									</td>
+								</tr>
+								<tr>
+									<td >
+										<input name="" type="checkbox" class="file-chexkbox" value="" />
+										<span class="file-file file-ex">e<i>x</i></span>
+										你的多情出卖我的爱情赔了我的命.docx
+									</td>
+									<td>3.9M</td>
+									<td >2016-12-6&nbsp;15:35:35</td>
+									<td>
+										<a href="" class="btn btn-info btn-sm">下載</a>
+									</td>
+								</tr>
+								<tr>
+									<td >
+										<input name="" type="checkbox" class="file-chexkbox" value="" />
+										<span class="file-file file-p">p</span>
+										你的多情出卖我的爱情赔了我的命.docx
+									</td>
+									<td>3.9M</td>
+									<td >2016-12-6&nbsp;15:35:35</td>
+									<td>
+										<a href="" class="btn btn-sm btn-info">下載</a>
+									</td>
+								</tr>
+								<tr>
+									<td >
+										<input name="" type="checkbox" class="file-chexkbox" value="" />
+										<span class="file-file file-pdf">p<i>DF</i></span>
+										你的多情出卖我的爱情赔了我的命.docx
+									</td>
+									<td>3.9M</td>
+									<td >2016-12-6&nbsp;15:35:35</td>
+									<td>
+										<a href="" class="btn btn-sm btn-info">下載</a>
+									</td>
+								</tr>
+								<tr>
+									<td >
+										<input name="" type="checkbox" class="file-chexkbox" value="" />
+										<span class="file-file file-pdf">p<i>DF</i></span>
+										你的多情出卖我的爱情赔了我的命.docx
+									</td>
+									<td>3.9M</td>
+									<td >2016-12-6&nbsp;15:35:35</td>
+									<td>
+										<a href="" class="btn btn-sm btn-info">下載</a>
+									</td>
+								</tr>
+							</tbody>
+						</table>
             				
             			</div> 
             			
@@ -227,3 +247,13 @@
         <!-- END ROW  -->
     </section>
 </section>
+<script>
+	$.ajax({
+		url:'/common/get_all_files',
+		type:'POST',
+		dataType:'json',
+		success:function(data){
+			console.log(data);
+		}
+	})
+</script>
