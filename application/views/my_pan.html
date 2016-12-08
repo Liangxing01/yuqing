@@ -1,134 +1,3 @@
-<style>
-	button img{
-		margin-right: 5px;
-	}
-	.text-btn{
-		float: left;
-		width: 100%;
-		margin-bottom: 15px;
-	}
-	.del,.upload{
-		float: left;
-		margin-right: 10px;
-			
-	}
-	.send,.file-search{
-		float: right;
-		margin-left: 10px;		
-	}
-	.upload,.send{
-		background: #57c7e6;
-		color: white;	
-	}
-	.del{
-		background: white;
-		color: #57c7e6;
-		border: 1px solid  #57c7e6;
-	}
-	.file-search-text{
-		display: block;
-	    width: 100%;
-	    height: 40px;
-	    padding: 10px 12px;
-	    font-size: 14px;
-	    color: #555;	    
-    }
-	.file-search{
-	    width: 300px;
-	    border: none;
-	    box-shadow: none;	    
-    	border-radius: 20px;
-	    background: #f1f2f4 url(../../img/file-search.png) no-repeat center right 10px ;
-	    padding: 0 35px 0 15px;
-    }
-    
-    .My_pan_title{
-    	width: 100%;
-    	line-height: 30px;
-    	font-size: 16px;
-    	color: #000000;
-    }
-    table tr{
-    	border-bottom: 1px solid #eaf0f2;
-    	display: table-row;
-    	font-size: 14px;
-    	color: #000000;
-    }
-
-    table tr:last-child{
-    	border-bottom: none;
-    }
-    table tr:hover{  
-    	cursor:pointer; 
-    	background: #f6f6f6;
-    }
-	table tr td:nth-child(4) a{
-		visibility: hidden;
-	}
-    table tr:hover td:nth-child(4) a{
-    	visibility: visible;
-    }
-    table tr td{
-    	padding: 10px;
-    }
-    table tr td a{
-
-    	background: #57c7e6;
-		border: none;
-		padding: 10px 20px;
-		color: white;
-		visibility:hidden;		
-    }
-    table tr td span i{
-		font-style: normal;
-		font-size: 18px;
-	}
-    .file-file{
-    	line-height: 50px;
-    	width: 50px;
-    	height: 50px;
-    	text-align: center;
-    	vertical-align: middle;
-    	font-size: 34px;
-    	border: 1px solid #e5e5e5;
-    	border-radius: 8px;
-    	text-transform:capitalize; 
-    	display: inline-block; 
-    	margin: auto 5px;
-    }
-    .file-word{
-    	color:rgb(84,158,251);    	 	
-    }
-    .file-ex{
-    	color:rgb(125,186,41);
-    }
-    .file-p{
-    	color:rgb(244,157,82);
-    }
-    .file-pdf{
-    	color:rgb(239,110,100);
-    }
-    
-	.my_pan_page{
-		width: 100%;
-		margin:20px auto;
-		text-align: center;
-	}
-	.my_pan_page a{
-		border: 1px solid #57c7e6;
-		background: #57c7e6;
-		padding: 3px 8px;
-		color: white;
-		font-size: 14px;
-	}
-	.my_pan_page a:hover{
-		background: white;
-		border: 1px solid #57c7e6;
-		color: #57c7e6;
-	}
-
-</style>
-
 <section id="main-content">
     <section class="wrapper site-min-height">
         <!-- BEGIN ROW  -->
@@ -141,17 +10,20 @@
 		            		<button class="btn btn-md upload"><img src="../../img/upload.png" />上传</button>
 		            		<button class="btn btn-md del"><img src="../../img/del.png" />删除</button>
 		            		<button class="btn btn-md send"><img src="../../img/send.png" />发送</button>
-	            			<input type="text"  class="file-search-text file-search"  placeholder="搜索你的文件" />		            				            		
+							<button class="btn btn-md btn-info add_search" onclick="search_files()">搜索</button>
+	            			<input type="text"  class="file-search-text file-search"  placeholder="搜索你的文件" />
 		            	</div>
                 		
-            			<div class="My_pan_title">全部文件<span style="float: right;">已全部加载，共3个文件</span></div>
+            			<div class="My_pan_title">全部文件<span style="float: right;">已全部加载，共<span class="all">3</span>个文件</span></div>
             			
             			<div class="My_pan_list">
-						<table border='0'cellspacing="0" cellpadding="0" width="100%" >
+						<table border='0' cellspacing="0" cellpadding="0" width="100%" class="file_name" >
 							<thead>
 								<tr>
 									<th width="50%">
-										<input name="" type="checkbox" class="file-chexkbox" value="" />
+										<div class="choose_all">
+											<input name="" type="checkbox" class="file-chexkbox all_choose" value="" />全选
+										</div>
 										文档名
 									</th>
 									<th width="10%">大小</th>
@@ -160,19 +32,7 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr>
-									<td >
-										<input name="" type="checkbox" class="file-chexkbox" value="" />
-										<span class="file-file file-word">w</span>
-										你的多情出卖我的爱情赔了我的命.docx
-									</td>
-									<td>3.9M</td>
-									<td >2016-12-6&nbsp;15:35:35</td>
-									<td>
-										<a href="" class="btn btn-info btn-sm">下載</a>
-									</td>
-								</tr>
-								<tr>
+								<!--<tr>
 									<td >
 										<input name="" type="checkbox" class="file-chexkbox" value="" />
 										<span class="file-file file-ex">e<i>x</i></span>
@@ -183,77 +43,22 @@
 									<td>
 										<a href="" class="btn btn-info btn-sm">下載</a>
 									</td>
-								</tr>
-								<tr>
-									<td >
-										<input name="" type="checkbox" class="file-chexkbox" value="" />
-										<span class="file-file file-p">p</span>
-										你的多情出卖我的爱情赔了我的命.docx
-									</td>
-									<td>3.9M</td>
-									<td >2016-12-6&nbsp;15:35:35</td>
-									<td>
-										<a href="" class="btn btn-sm btn-info">下載</a>
-									</td>
-								</tr>
-								<tr>
-									<td >
-										<input name="" type="checkbox" class="file-chexkbox" value="" />
-										<span class="file-file file-pdf">p<i>DF</i></span>
-										你的多情出卖我的爱情赔了我的命.docx
-									</td>
-									<td>3.9M</td>
-									<td >2016-12-6&nbsp;15:35:35</td>
-									<td>
-										<a href="" class="btn btn-sm btn-info">下載</a>
-									</td>
-								</tr>
-								<tr>
-									<td >
-										<input name="" type="checkbox" class="file-chexkbox" value="" />
-										<span class="file-file file-pdf">p<i>DF</i></span>
-										你的多情出卖我的爱情赔了我的命.docx
-									</td>
-									<td>3.9M</td>
-									<td >2016-12-6&nbsp;15:35:35</td>
-									<td>
-										<a href="" class="btn btn-sm btn-info">下載</a>
-									</td>
-								</tr>
+								</tr>-->
 							</tbody>
 						</table>
             				
             			</div> 
             			
-            			<div class="my_pan_page">
-            				<a  href="#" id="btn1">首页</a>
-							<a  href="#" id="btn2">上一页</a>
-							<a  href="#" id="btn_page">1</a>
-							<a  href="#" id="btn_page">2</a>
-							<a  href="#" id="btn_page">3</a>
-							<a  href="#" id="btn_page">4</a>
-							<a  href="#" id="btn_page">5</a>
-							<a  href="#" id="btn2">上一页</a>
-							<a  href="#" id="btn3">下一页</a>
-							<a  href="#" id="btn4">尾页</a> 
-            			</div>
-               		
-                		
+            			<ul class="my_pan_page">
+							<li class="index"><a href="javascript:void(0)">首页</a></li>
+							<li class="prev"><a href="javascript:void(0)">上一页</a></li>
+							<li class="special"><input type="text" value="1">/<span class="total">12</span><a href="javascript: goto_page()">跳转</a></li>
+							<li class="next"><a href="javascript:void(0)">下一页</a></li>
+							<li class="last"><a href="javascript:void(0)">尾页</a></li>
+            			</ul>
 		            </div>
-
                 </section>
             </div>
         </div>
-        <!-- END ROW  -->
     </section>
 </section>
-<script>
-	$.ajax({
-		url:'/common/get_all_files',
-		type:'POST',
-		dataType:'json',
-		success:function(data){
-			console.log(data);
-		}
-	})
-</script>
