@@ -1,0 +1,261 @@
+<style>
+	.fa{
+		font-weight: 600;
+	}
+	.table-inbox tr td .fa-circle{
+		color: #d5d5d5;
+	}
+	.table-inbox tr td .fa-circle.inbox-started,.table-inbox tr td .fa-circle:hover{
+		color: #ff133a;
+	}
+	.attachment-mail ul li a{
+		border: 1px solid #dddddd;
+		display: block;
+	}
+	
+</style>
+	
+<!-- BEGIN MAIN CONTENT -->
+         <section id="main-content">
+		 <!-- BEGIN WRAPPER  -->
+            <section class="wrapper">
+               <div class="mail-box">
+                  <aside class="sm-side">
+				     <!-- INBOX HEADER -->
+                     <div class="user-head">
+                        <a href="javascript:;" class="inbox-avatar">
+                        <img src="../../img/email-head.png" width="64" height="60" alt="">
+                        </a>
+                        <div class="user-name">
+                           <h5><a href="#">某某某</a></h5>
+                           <span><a href="#">pruthvi@tripzmate.com</a></span>
+                        </div>
+                        <!--<a href="javascript:;" class="mail-dropdown pull-right">
+                        <i class="fa fa-chevron-down"></i>
+                        </a>-->
+                     </div>
+					 <!-- INBOX HEADER -->
+					 <!-- INBOX BODY -->
+                     <div class="inbox-body">
+                        <a class="btn btn-compose" data-toggle="modal" href="#myModal">
+                        <img src="../../img/write_email.png" width="30" />写邮件
+                        </a>
+                        <div class="modal fade" id="myModal" >
+                           <div class="modal-dialog">
+                              <div class="modal-content">
+                                 <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                    <h4 class="modal-title">写邮件</h4>
+                                 </div>
+                                 <div class="modal-body">
+                                    <form class="form-horizontal" role="form">
+                                       <div class="form-group">
+                                          <label class="col-lg-2 control-label">致</label>
+                                          <div class="col-lg-10">
+                                             <input type="text" class="form-control" id="inputEmail1" placeholder="">
+                                          </div>
+                                       </div>
+                                       <div class="form-group">
+                                          <label class="col-lg-2 control-label">转发/密送</label>
+                                          <div class="col-lg-10">
+                                             <input type="text" class="form-control" id="cc" placeholder="">
+                                          </div>
+                                       </div>
+                                       <div class="form-group">
+                                          <label class="col-lg-2 control-label">主题</label>
+                                          <div class="col-lg-10">
+                                             <input type="text" class="form-control" id="inputPassword1" placeholder="">
+                                          </div>
+                                       </div>
+                                       <div class="form-group">
+                                          <label class="col-lg-2 control-label">正文</label>
+                                          <div class="col-lg-10">
+                                             <textarea name="" id="test" class="form-control" cols="30" rows="10"></textarea>
+                                          </div>
+                                       </div>
+                                       <div class="form-group">
+                                          <div class="col-lg-offset-2 col-lg-10">
+                                             <span class="btn green fileinput-button">
+                                             <i class="fa fa-plus fa fa-white"></i>
+                                             <span>附件</span>
+                                             <input type="file" multiple="" name="files[]">
+                                             </span>
+                                             <button type="submit" class="btn btn-send">发送</button>
+                                          </div>
+                                       </div>
+                                    </form>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+					 <!-- INBOX HEADER -->
+					 <!-- INBOX NAV -->
+                     <ul class="inbox-nav inbox-divider">
+                        <li class="active">
+                           <a href="#"><i class="fa fa-inbox"></i> 收件箱 <span class="label label-danger pull-right">2</span></a>
+                        </li>
+                        <li>
+                           <a href="#"><i class="fa fa-envelope-o"></i> 发件箱<span class="label label-success pull-right">2</span></a>
+                        </li>
+                        <li>
+                           <a href="#"><i class=" fa fa-trash-o"></i> 垃圾箱<span class="label label-info pull-right">30</span></a>
+                        </li>
+                     </ul>                  
+                     <div class="inbox-body text-center">
+                        <div class="btn-group">
+                           <a href="javascript:;" class="btn mini btn-danger">
+                           <i class="fa fa-power-off"></i>
+                           </a>
+                        </div>
+                        <div class="btn-group">
+                           <a href="javascript:;" class="btn mini btn-primary">
+                           <i class="fa fa-cogs"></i>
+                           </a>
+                        </div>
+                     </div>
+                  </aside>
+                  
+                  
+				  <aside class="lg-side">
+                     <div class="inbox-head">
+                        <h3>邮件内容</h3>
+                        <form class="pull-right position" action="#">
+                           <div class="input-append">
+                              <input type="text" placeholder="搜索你的邮件" class="sr-input">
+                              <button type="button" class="btn sr-btn"><i class="fa fa-search"></i></button>
+                           </div>
+                        </form>
+                     </div>
+                     <div class="inbox-body">
+                        <div class="heading-inbox row">
+                           <div class="col-md-8">
+                              <div class="compose-btn">
+                                 <a class="btn btn-sm btn-info" href="#"><i class="fa fa-reply"></i> 回复</a>
+                                 <!--<button title="" data-placement="top" data-toggle="tooltip" type="button" data-original-title="打印" class="btn  btn-sm tooltips"><i class="fa fa-print"></i> </button>-->
+                                 <button title="" data-placement="top" data-toggle="tooltip" data-original-title="草稿箱" class="btn btn-sm tooltips"><i class="fa fa-trash-o"></i></button>
+                              </div>
+                           </div>
+                           <div class="col-md-4 text-right">
+                              <p class="date"> 2016-12-8&nbsp;17:22</p>
+                           </div>
+                           <div class="col-md-12">
+                              <h4>
+                                 标题标题标题标题标题标题标题
+                              </h4>
+                           </div>
+                        </div>
+                        <div class="sender-info">
+                           <div class="row">
+                              <div class="col-md-12">
+                                 <img alt="" src="../../img/email-head.png">
+                                 <strong>发件人名字</strong>
+                                 <span>[bmpcom9401@gmail.com]</span>
+                                 to
+                                 <strong>ME</strong>
+                                 <!--<a class="sender-dropdown " href="javascript:;">
+                                 <i class="fa fa-chevron-down"></i>
+                                 </a>-->
+                              </div>
+                           </div>
+                        </div>
+                        <div class="view-mail">
+                           <p>内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容</p>
+                           <p>内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容
+                              
+                           </p>
+                           <p>内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容</p>
+                        </div>
+                        <div class="attachment-mail">
+                           <p>
+                              <span><i class="fa fa-paperclip"></i> 添加附件 &mdash; 图片或者文档或者视频</span>
+                              <!--<a href="#">所有附件下载</a>
+                              |
+                              <a href="#">查看所有图片</a>-->
+                           </p>
+                           <ul>
+                              <li>
+                                 <a href="#" class="atch-thumb">
+                                 <img src="../../../img/email_img.png" alt="img" />
+                                 </a>
+                                 <div class="file-name">
+                                    名字名字名字.jpg
+                                 </div>
+                                 <!--<span>40KB</span>
+                                 <div class="links">
+                                    <a href="#">View</a> -
+                                    <a href="#">Download</a>
+                                 </div>-->
+                              </li>
+                              <li>
+                                 <a href="#" class="atch-thumb">
+                                 <img src="../../../img/email_word.png" alt="img" />
+                                 </a>
+                                 <div class="file-name">
+                                    名字名字名字名字.docx
+                                 </div>
+                                 <!--<span>30KB</span>
+                                 <div class="links">
+                                    <a href="#">View</a> -
+                                    <a href="#">Download</a>
+                                 </div>-->
+                              </li>
+                              <li>
+                                 <a href="#" class="atch-thumb">
+                                 <img src="../../../img/email_excel.png" alt="img" />
+                                 </a>
+                                 <div class="file-name">
+                                    名字名字名字名字.xlsx
+                                 </div>
+                                 <!--<span>30KB</span>
+                                 <div class="links">
+                                    <a href="#">View</a> -
+                                    <a href="#">Download</a>
+                                 </div>-->
+                              </li>
+                              <li>
+                                 <a href="#" class="atch-thumb">
+                                 <img src="../../../img/email_ppt.png" alt="img" />
+                                 </a>
+                                 <div class="file-name">
+                                    名字名字名字名字.pptx
+                                 </div>
+                                 <!--<span>30KB</span>
+                                 <div class="links">
+                                    <a href="#">View</a> -
+                                    <a href="#">Download</a>
+                                 </div>-->
+                              </li>
+                              <li>
+                                 <a href="#" class="atch-thumb">
+                                 <img src="../../../img/email_pdf.png" alt="img" />
+                                 </a>
+                                 <div class="file-name">
+                                    名字名字名字名字.pdf
+                                 </div>
+                                 <!--<span>30KB</span>
+                                 <div class="links">
+                                    <a href="#">View</a> -
+                                    <a href="#">Download</a>
+                                 </div>-->
+                              </li>
+                           </ul>
+                        </div>
+                        <!--<div class="compose-btn pull-left">
+                           <a class="btn btn-sm btn-info" href="#"><i class="fa fa-reply"></i> Reply</a>
+                           <button class="btn btn-sm "><i class="fa fa-arrow-right"></i> Forward</button>
+                           <button title="" data-placement="top" data-toggle="tooltip" type="button" data-original-title="Print" class="btn  btn-sm tooltips"><i class="fa fa-print"></i> </button>
+                           <button title="" data-placement="top" data-toggle="tooltip" data-original-title="Trash" class="btn btn-sm tooltips"><i class="fa fa-trash-o"></i></button>
+                        </div>-->
+                     </div>
+                  </aside>
+
+				  
+				  
+				  
+               </div>
+            </section>
+			<!-- END WRAPPER  -->
+         </section>
+         
+
