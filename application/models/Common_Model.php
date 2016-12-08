@@ -307,7 +307,7 @@ class Common_Model extends CI_Model
     public function get_files_info($q){
         $uid = $this->session->userdata('uid');
         $res = array();
-        $res['files'] = $this->db->select('f.old_name,f.size,f.upload_time,f.id')
+        $res['files'] = $this->db->select('f.old_name as file_name,f.size,f.upload_time,f.id')
             ->from('file as f')
             ->join('file_user as fu','fu.uid ='.$uid)
             ->like('f.old_name',$q['search'])
@@ -315,9 +315,10 @@ class Common_Model extends CI_Model
             ->order_by('f.upload_time','DESC')
             ->get()->result_array();
 
-        $res['num'] = $this->db->select('f.old_name,f.size,f.upload_time,f.id')
-            ->from('file as f')
-            ->join('file_user as fu','fu.uid ='.$uid)
+        $res['num'] = $this->db->select('f.old_name as file_name,f.size,f.upload_time,f.id')
+            ->from('file_user as fu')
+            ->join('file as f','f.id = fu.fid')
+            ->where('fu.uid',$uid)
             ->like('f.old_name',$q['search'])
             ->get()->num_rows();
 
