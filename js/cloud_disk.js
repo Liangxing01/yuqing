@@ -67,6 +67,7 @@ function upload_btn(){
             success:function(data){
                 if(data.res){
                     layer.msg(data.msg);
+                    window.location.reload();
                 }else{
                     layer.msg(data.msg,{anim:6});
                 }
@@ -185,13 +186,13 @@ $(function(){
 
     //首页
     $('.my_pan_page .index').click(function(){
-        get_all_files(1);
+        get_all_files(0);
         $('.special input').val(1);
     })
 
     //尾页
     $('.my_pan_page .last').click(function(){
-        get_all_files(($('.special .total').html()-1)*5+1);
+        get_all_files(($('.special .total').html()-1)*5);
         $('.special input').val($('.special .total').html());
     })
 
