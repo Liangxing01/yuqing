@@ -235,21 +235,11 @@ $(function(){
                 arr.push($(this).attr('data-id'));
             })
             var str = arr.join(',');
-            $.ajax({
-                url:'/common/del_file',
-                type:'POST',
-                data:{
-                    del_id:str
-                },
-                success:function(data){
-                    if(data.res*1){
-                        layer.msg('删除成功');
-                    }else{
-                        layer.msg('删除失败');
-                        window.location.reload();
-                    }
-                }
-            })
+           var isClose = layer.confirm('执行此操作不可复原',{icon: 3, title:'提示'},function(){
+               delete_files(str);
+               layer.close(isClose);
+            });
+
         }else{
             layer.msg("请至少勾选一项");
         }
@@ -257,4 +247,22 @@ $(function(){
     })
 })
 
-
+//删除
+function delete_files(str){
+    $.ajax({
+        url:'/common/del_file',
+        type:'POST',
+        data:{
+            del_id:str
+        },
+        dataType:'json',
+        success:function(data){
+            if(data.res*1){
+                layer.msg('删除成功');
+                window.location.reload();
+            }else{
+                layer.msg('删除失败');
+            }
+        }
+    })
+}

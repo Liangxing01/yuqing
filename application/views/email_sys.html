@@ -8,6 +8,12 @@
 	.table-inbox tr td .fa-circle.inbox-started,.table-inbox tr td .fa-circle:hover{
 		color: #ff133a;
 	}
+   .index_num_rec,.index_num_send{
+      color: red;
+   }
+   .disabled_click{
+
+   }
 </style>
 	
 <!-- BEGIN MAIN CONTENT -->
@@ -97,12 +103,12 @@
                                  </a>
                               </div>
                               <ul class="unstyled inbox-pagination">
-                                 <li>共<span class="page_num_rec">12</span>页</li>
+                                 <li>页数<span class="index_num_rec">1</span>/<span class="page_num_rec"></span></li>
                                  <li>
-                                    <a href="#" class="np-btn"><i class="fa fa-angle-left  pagination-left"></i></a>
+                                    <a href="javascript:get_prev_page('res')" class="np-btn"><i class="fa fa-angle-left  pagination-left"></i></a>
                                  </li>
                                  <li>
-                                    <a href="#" class="np-btn"><i class="fa fa-angle-right pagination-right"></i></a>
+                                    <a href="javascript:get_next_page('res')" class="np-btn"><i class="fa fa-angle-right pagination-right"></i></a>
                                  </li>
                               </ul>
                            </div>
@@ -142,14 +148,14 @@
                                  <input type="checkbox" class="mail-checkbox mail-group-checkbox">
                                  <div class="btn-group">
                                     <a class="btn mini all" href="#" data-toggle="dropdown">
-                                       筛选
-                                       <i class="fa fa-angle-down "></i>
+                                       全选
+                                       <!--<i class="fa fa-angle-down "></i>-->
                                     </a>
-                                    <ul class="dropdown-menu">
+                                   <!-- <ul class="dropdown-menu">
                                        <li><a href="#"> 无</a></li>
                                        <li><a href="#"> 已读</a></li>
                                        <li><a href="#">未读</a></li>
-                                    </ul>
+                                    </ul>-->
                                  </div>
                               </div>
                               <div class="btn-group">
@@ -158,12 +164,12 @@
                                  </a>
                               </div>
                               <ul class="unstyled inbox-pagination">
-                                 <li>共<span class="page_num_send">12</span>页</li>
+                                 <li>页数<span class="index_num_send">1</span>/<span class="page_num_send"></span></li>
                                  <li>
-                                    <a href="#" class="np-btn"><i class="fa fa-angle-left  pagination-left"></i></a>
+                                    <a href="javascript:get_prev_page('sed')" class="np-btn"><i class="fa fa-angle-left  pagination-left"></i></a>
                                  </li>
                                  <li>
-                                    <a href="#" class="np-btn"><i class="fa fa-angle-right pagination-right"></i></a>
+                                    <a href="javascript:get_next_page('sed')" class="np-btn"><i class="fa fa-angle-right pagination-right"></i></a>
                                  </li>
                               </ul>
                            </div>
@@ -405,4 +411,57 @@
       })
    }
 
+   //上一页
+   function get_prev_page(str){
+      if(str == 'res'){
+         var index = $('.index_num_rec').html();
+         if(index == 1){
+            layer.msg('当前为第一页');
+            return;
+         }else{
+            receive_message((index-1)*15,'','all');
+            $('.index_num_rec').html(index+1);
+            return;
+         }
+      }
+
+      if(str == 'sed'){
+         var index = $('.index_num_send').html();
+         if(index == 1){
+            layer.msg('当前为第一页');
+            return;
+         }else{
+            get_all_send((index-1)*15,'','all');
+            return;
+         }
+      }
+   }
+   //下一页
+   function get_next_page(str){
+      if(str == 'res'){
+         var index = $('.index_num_rec').html();
+         var total = $('.page_num_rec').html();
+         if(index+1>total){
+            layer.msg('当前为最后一页');
+            return false;
+         }else{
+            receive_message((index+1)*15,'','all');
+            return false;
+         }
+      }
+
+      if(str == 'sed'){
+         var index = $('.index_num_send').html();
+         var total = $('.page_num_send').html();
+         if(index+1>total){
+            layer.msg('当前为最后一页');
+            return false;
+         }else{
+            $('.index_num_send').html((index+1)*1);
+            get_all_send((index+1)*15,'','all');
+            return false;
+         }
+      }
+
+   }
 </script>
