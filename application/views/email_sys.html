@@ -8,8 +8,6 @@
 	.table-inbox tr td .fa-circle.inbox-started,.table-inbox tr td .fa-circle:hover{
 		color: #ff133a;
 	}
-
-	
 </style>
 	
 <!-- BEGIN MAIN CONTENT -->
@@ -88,15 +86,15 @@
                      </div>
 					 <!-- INBOX HEADER -->
 					 <!-- INBOX NAV -->
-                     <ul class="inbox-nav inbox-divider">
+                     <ul class="inbox-nav inbox-divider msg_nav">
                         <li class="active">
-                           <a href="#"><i class="fa fa-inbox"></i> 收件箱 <span class="label label-danger pull-right">2</span></a>
+                           <a href="javascript:void(0)" name="receive_msg"><i class="fa fa-inbox"></i> 收件箱 <span class="label label-danger pull-right">2</span></a>
                         </li>
                         <li>
-                           <a href="#"><i class="fa fa-envelope-o"></i> 发件箱<span class="label label-success pull-right">2</span></a>
+                           <a href="javascript:void(0)" name="send_msg"><i class="fa fa-envelope-o"></i> 发件箱<span class="label label-success pull-right">2</span></a>
                         </li>
                         <li>
-                           <a href="#"><i class=" fa fa-trash-o"></i> 垃圾箱<span class="label label-info pull-right">30</span></a>
+                           <a href="javascript:void(0)" name="dustbin"><i class=" fa fa-trash-o"></i> 垃圾箱<span class="label label-info pull-right">30</span></a>
                         </li>
                      </ul>                  
                      <div class="inbox-body text-center">
@@ -113,74 +111,172 @@
                      </div>
                   </aside>
 				  <!-- INBOX MAIL CONTAINER -->
-                  <aside class="lg-side">
-                     <div class="inbox-head">
-                        <h3>收件箱</h3>
-                        <form class="pull-right position" action="#">
-                           <div class="input-append">
-                              <input type="text" placeholder="搜索你的邮件" class="sr-input">
-                              <button type="button" class="btn sr-btn"><i class="fa fa-search"></i></button>
-                           </div>
-                        </form>
-                     </div>
-                     <div class="inbox-body">
-                        <div class="mail-option">
-                           <div class="chk-all">
-                              <input type="checkbox" class="mail-checkbox mail-group-checkbox">
-                              <div class="btn-group">
-                                 <a class="btn mini all" href="#" data-toggle="dropdown">
-                                 全选
-                                 <i class="fa fa-angle-down "></i>
-                                 </a>
-                                 <ul class="dropdown-menu">
-                                    <li><a href="#"> 无</a></li>
-                                    <li><a href="#"> 已读</a></li>
-                                    <li><a href="#">未读</a></li>
-                                 </ul>
+                  <div class="main_section">
+                     <aside class="lg-side" id="receive_msg">
+                        <div class="inbox-head">
+                           <h3>收件箱</h3>
+                           <form class="pull-right position" action="#">
+                              <div class="input-append">
+                                 <input type="text" placeholder="搜索你的邮件" class="sr-input">
+                                 <button type="button" class="btn sr-btn"><i class="fa fa-search receive_search"></i></button>
                               </div>
-                           </div>
-                           <div class="btn-group">
-                              <a class="btn mini tooltips" href="#" data-toggle="dropdown" data-placement="top" data-original-title="Refresh">
-                              <i class=" fa fa-refresh"></i>
-                              </a>
-                           </div>
-                           <!--<div class="btn-group hidden-phone">
-                              <a class="btn mini blue" href="#" data-toggle="dropdown">
-                              更多
-                              <i class="fa fa-angle-down "></i>
-                              </a>
-                              <ul class="dropdown-menu">
-                                 <li><a href="#"><i class="fa fa-pencil"></i> 标记为已读</a></li>
-                                 <li><a href="#"><i class="fa fa-ban"></i> 垃圾邮件</a></li>
-                                 <li class="divider"></li>
-                                 <li><a href="#"><i class="fa fa-trash-o"></i> 删除</a></li>
-                              </ul>
-                           </div>
-                           <div class="btn-group">
-                              <a class="btn mini blue" href="#" data-toggle="dropdown">
-                              移到
-                              <i class="fa fa-angle-down "></i>
-                              </a>
-                              <ul class="dropdown-menu">
-                                 <li><a href="#"><i class="fa fa-pencil"></i> 标记为已读</a></li>
-                                 <li><a href="#"><i class="fa fa-ban"></i> 垃圾文件</a></li>
-                                 <li class="divider"></li>
-                                 <li><a href="#"><i class="fa fa-trash-o"></i> 删除</a></li>
-                              </ul>
-                           </div>-->
-                           <ul class="unstyled inbox-pagination">
-                              <li><span>共12页</span></li>
-                              <li>
-                                 <a href="#" class="np-btn"><i class="fa fa-angle-left  pagination-left"></i></a>
-                              </li>
-                              <li>
-                                 <a href="#" class="np-btn"><i class="fa fa-angle-right pagination-right"></i></a>
-                              </li>
-                           </ul>
+                           </form>
                         </div>
-                        <table class="table table-inbox table-hover">
-                           <tbody>
-                              <tr class="unread">
+                        <div class="inbox-body">
+                           <div class="mail-option">
+                              <div class="chk-all">
+                                 <input type="checkbox" class="mail-checkbox mail-group-checkbox">
+                                 <div class="btn-group">
+                                    <a class="btn mini all" href="#" data-toggle="dropdown">
+                                       筛选
+                                       <i class="fa fa-angle-down "></i>
+                                    </a>
+                                    <ul class="dropdown-menu hasRead">
+                                       <li><a href="javascript:receive_message(0,'','all')"> 无</a></li>
+                                       <li><a href="javascript:receive_message(0,'',1)"> 已读</a></li>
+                                       <li><a href="javascript:receive_message(0,'',0)">未读</a></li>
+                                    </ul>
+                                 </div>
+                              </div>
+                              <div class="btn-group">
+                                 <a class="btn mini tooltips" href="#" data-toggle="dropdown" data-placement="top" data-original-title="Refresh">
+                                    <i class=" fa fa-refresh "></i>
+                                 </a>
+                              </div>
+                              <ul class="unstyled inbox-pagination">
+                                 <li>共<span class="page_num_rec">12</span>页</li>
+                                 <li>
+                                    <a href="#" class="np-btn"><i class="fa fa-angle-left  pagination-left"></i></a>
+                                 </li>
+                                 <li>
+                                    <a href="#" class="np-btn"><i class="fa fa-angle-right pagination-right"></i></a>
+                                 </li>
+                              </ul>
+                           </div>
+                           <table class="table table-inbox table-hover receive_msg">
+                              <tbody>
+                                 <!--<tr class="unread">
+                                    <td class="inbox-small-cells">
+                                       <input type="checkbox" class="mail-checkbox">
+                                    </td>
+                                    <td class="inbox-small-cells hidden-phone"><i class="fa fa-circle"></i></td>
+                                    <td class="view-message  dont-show">发件人名字</td>
+                                    <td class="view-message ">主题主题主题</td>
+                                    <td class="view-message  inbox-small-cells"><i class="fa fa-paperclip"></i></td>
+                                    <td class="view-message  text-right">2016-12-8&nbsp;15:38</td>
+                                 </tr>-->
+                              </tbody>
+                           </table>
+                        </div>
+                     </aside>
+                     <!-- INBOX MAIL CONTAINER -->
+
+
+                     <!-- 发件箱 -->
+                     <aside class="lg-side" id="send_msg" style="display: none;">
+                        <div class="inbox-head">
+                           <h3>发件箱</h3>
+                           <form class="pull-right position" action="#">
+                              <div class="input-append">
+                                 <input type="text" placeholder="搜索你的邮件" class="sr-input">
+                                 <button type="button" class="btn sr-btn"><i class="fa fa-search send_search"></i></button>
+                              </div>
+                           </form>
+                        </div>
+                        <div class="inbox-body">
+                           <div class="mail-option">
+                              <div class="chk-all">
+                                 <input type="checkbox" class="mail-checkbox mail-group-checkbox">
+                                 <div class="btn-group">
+                                    <a class="btn mini all" href="#" data-toggle="dropdown">
+                                       筛选
+                                       <i class="fa fa-angle-down "></i>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                       <li><a href="#"> 无</a></li>
+                                       <li><a href="#"> 已读</a></li>
+                                       <li><a href="#">未读</a></li>
+                                    </ul>
+                                 </div>
+                              </div>
+                              <div class="btn-group">
+                                 <a class="btn mini tooltips" href="#" data-toggle="dropdown" data-placement="top" data-original-title="Refresh">
+                                    <i class=" fa fa-refresh"></i>
+                                 </a>
+                              </div>
+                              <ul class="unstyled inbox-pagination">
+                                 <li>共<span class="page_num_send">12</span>页</li>
+                                 <li>
+                                    <a href="#" class="np-btn"><i class="fa fa-angle-left  pagination-left"></i></a>
+                                 </li>
+                                 <li>
+                                    <a href="#" class="np-btn"><i class="fa fa-angle-right pagination-right"></i></a>
+                                 </li>
+                              </ul>
+                           </div>
+                           <table class="table table-inbox table-hover send_msg">
+                              <tbody>
+                                 <tr>
+                                    <td class="inbox-small-cells"><input type="checkbox" class="mail-checkbox"></td>
+                                    <td class="view-message  dont-show">发件人名字</td>
+                                    <td class="view-message ">主题主题主题</td>
+                                    <td class="view-message  inbox-small-cells"><i class="fa fa-paperclip"></i></td>
+                                    <td class="view-message  text-right">2016-12-8&nbsp;15:38</td>
+                                 </tr>
+                              </tbody>
+                           </table>
+                        </div>
+                     </aside>
+                     <!-- 发件箱 end -->
+
+
+
+                     <!-- 垃圾箱 -->
+                     <aside class="lg-side" id="dustbin" style="display: none;">
+                        <div class="inbox-head">
+                           <h3>垃圾箱</h3>
+                           <form class="pull-right position" action="#">
+                              <div class="input-append">
+                                 <input type="text" placeholder="搜索你的邮件" class="sr-input">
+                                 <button type="button" class="btn sr-btn"><i class="fa fa-search"></i></button>
+                              </div>
+                           </form>
+                        </div>
+                        <div class="inbox-body">
+                           <div class="mail-option">
+                              <div class="chk-all">
+                                 <input type="checkbox" class="mail-checkbox mail-group-checkbox">
+                                 <div class="btn-group">
+                                    <a class="btn mini all" href="#" data-toggle="dropdown">
+                                       全选
+                                       <i class="fa fa-angle-down "></i>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                       <li><a href="#"> 无</a></li>
+                                       <li><a href="#"> 已读</a></li>
+                                       <li><a href="#">未读</a></li>
+                                    </ul>
+                                 </div>
+                              </div>
+                              <div class="btn-group">
+                                 <a class="btn mini tooltips" href="#" data-toggle="dropdown" data-placement="top" data-original-title="Refresh">
+                                    <i class=" fa fa-refresh"></i>
+                                 </a>
+                              </div>
+
+                              <ul class="unstyled inbox-pagination">
+                                 <li>共<span class="page_num_del">12</span>页</li>
+                                 <li>
+                                    <a href="#" class="np-btn"><i class="fa fa-angle-left  pagination-left"></i></a>
+                                 </li>
+                                 <li>
+                                    <a href="#" class="np-btn"><i class="fa fa-angle-right pagination-right"></i></a>
+                                 </li>
+                              </ul>
+                           </div>
+                           <table class="table table-inbox table-hover del_msg">
+                              <tbody>
+                              <!--<tr class="unread">
                                  <td class="inbox-small-cells">
                                     <input type="checkbox" class="mail-checkbox">
                                  </td>
@@ -189,610 +285,171 @@
                                  <td class="view-message ">主题主题主题</td>
                                  <td class="view-message  inbox-small-cells"><i class="fa fa-paperclip"></i></td>
                                  <td class="view-message  text-right">2016-12-8&nbsp;15:38</td>
-                              </tr>
-                              <tr class="">
-                                 <td class="inbox-small-cells">
-                                    <input type="checkbox" class="mail-checkbox">
-                                 </td>
-                                 <td class="inbox-small-cells hidden-phone"><i class="fa fa-circle inbox-started"></i></td>
-                                 <td class="view-message dont-show">名字名字<span class="label label-danger pull-right">高优先</span></td>
-                                 <td class="view-message">主题主题</td>
-                                 <td class="view-message inbox-small-cells"><i class="fa fa-paperclip"></i></td>
-                                 <td class="view-message text-right">2016-12-8&nbsp;15:38</td>
-                              </tr>
-                              <tr class="">
-                                 <td class="inbox-small-cells">
-                                    <input type="checkbox" class="mail-checkbox">
-                                 </td>
-                                 <td class="inbox-small-cells hidden-phone"><i class="fa fa-circle"></i></td>
-                                 <td class="view-message dont-show">Facebook <span class="label label-success pull-right">一般</span></td>
-                                 <td class="view-message view-message">Dolor sit amet, consectetuer adipiscing</td>
-                                 <td class="view-message inbox-small-cells"><i class="fa fa-paperclip"></i></td>
-                                 <td class="view-message text-right">2016-12-8&nbsp;15:38</td>
-                              </tr>
-                              <tr class="">
-                                 <td class="inbox-small-cells">
-                                    <input type="checkbox" class="mail-checkbox">
-                                 </td>
-                                 <td class="inbox-small-cells hidden-phone"><i class="fa fa-circle"></i></td>
-                                 <td class="view-message dont-show">Chintan</td>
-                                 <td class="view-message view-message">Lorem ipsum dolor sit amet</td>
-                                 <td class="view-message inbox-small-cells"></td>
-                                 <td class="view-message text-right">June 13</td>
-                              </tr>
-                              <tr class="">
-                                 <td class="inbox-small-cells">
-                                    <input type="checkbox" class="mail-checkbox">
-                                 </td>
-                                 <td class="inbox-small-cells hidden-phone"><i class="fa fa-circle"></i></td>
-                                 <td class="view-message dont-show">Facebook <span class="label label-info pull-right">家庭</span></td>
-                                 <td class="view-message view-message">Dolor sit amet, consectetuer adipiscing</td>
-                                 <td class="view-message inbox-small-cells"></td>
-                                 <td class="view-message text-right">March 24</td>
-                              </tr>
-                              <tr class="">
-                                 <td class="inbox-small-cells">
-                                    <input type="checkbox" class="mail-checkbox">
-                                 </td>
-                                 <td class="inbox-small-cells hidden-phone"><i class="fa fa-circle inbox-started"></i></td>
-                                 <td class="view-message dont-show">Chintan <span class="label label-primary pull-right">社交</span></td>
-                                 <td class="view-message">Lorem ipsum dolor sit amet</td>
-                                 <td class="view-message inbox-small-cells"></td>
-                                 <td class="view-message text-right">March 09</td>
-                              </tr>
-                              <tr class="">
-                                 <td class="inbox-small-cells">
-                                    <input type="checkbox" class="mail-checkbox">
-                                 </td>
-                                 <td class="inbox-small-cells hidden-phone"><i class="fa fa-circle inbox-started"></i></td>
-                                 <td class="dont-show">Facebook</td>
-                                 <td class="view-message">Dolor sit amet, consectetuer adipiscing</td>
-                                 <td class="view-message inbox-small-cells"><i class="fa fa-paperclip"></i></td>
-                                 <td class="view-message text-right">May 14</td>
-                              </tr>
-                              <tr class="">
-                                 <td class="inbox-small-cells">
-                                    <input type="checkbox" class="mail-checkbox">
-                                 </td>
-                                 <td class="inbox-small-cells hidden-phone"><i class="fa fa-circle"></i></td>
-                                 <td class="view-message dont-show">Parth</td>
-                                 <td class="view-message">Lorem ipsum dolor sit amet</td>
-                                 <td class="view-message inbox-small-cells"><i class="fa fa-paperclip"></i></td>
-                                 <td class="view-message text-right">February 25</td>
-                              </tr>
-                              <tr class="">
-                                 <td class="inbox-small-cells">
-                                    <input type="checkbox" class="mail-checkbox">
-                                 </td>
-                                 <td class="inbox-small-cells hidden-phone"><i class="fa fa-circle"></i></td>
-                                 <td class="dont-show">Facebook</td>
-                                 <td class="view-message view-message">Dolor sit amet, consectetuer adipiscing</td>
-                                 <td class="view-message inbox-small-cells"></td>
-                                 <td class="view-message text-right">March 14</td>
-                              </tr>
-                              <tr class="">
-                                 <td class="inbox-small-cells">
-                                    <input type="checkbox" class="mail-checkbox">
-                                 </td>
-                                 <td class="inbox-small-cells hidden-phone"><i class="fa fa-circle"></i></td>
-                                 <td class="view-message dont-show">Dulal <span class="label label-primary pull-right">公司</span></td>
-                                 <td class="view-message">Lorem ipsum dolor sit amet</td>
-                                 <td class="view-message inbox-small-cells"></td>
-                                 <td class="view-message text-right">April 07</td>
-                              </tr>
-                              <tr class="">
-                                 <td class="inbox-small-cells">
-                                    <input type="checkbox" class="mail-checkbox">
-                                 </td>
-                                 <td class="inbox-small-cells hidden-phone"><i class="fa fa-circle"></i></td>
-                                 <td class="view-message dont-show">Twitter</td>
-                                 <td class="view-message">Dolor sit amet, consectetuer adipiscing</td>
-                                 <td class="view-message inbox-small-cells"></td>
-                                 <td class="view-message text-right">July 14</td>
-                              </tr>
-                              <tr class="">
-                                 <td class="inbox-small-cells">
-                                    <input type="checkbox" class="mail-checkbox">
-                                 </td>
-                                 <td class="inbox-small-cells hidden-phone"><i class="fa fa-circle inbox-started"></i></td>
-                                 <td class="view-message dont-show">Parth</td>
-                                 <td class="view-message">Lorem ipsum dolor sit amet</td>
-                                 <td class="view-message inbox-small-cells"></td>
-                                 <td class="view-message text-right">August 10</td>
-                              </tr>
-                              <tr class="">
-                                 <td class="inbox-small-cells">
-                                    <input type="checkbox" class="mail-checkbox">
-                                 </td>
-                                 <td class="inbox-small-cells hidden-phone"><i class="fa fa-circle"></i></td>
-                                 <td class="view-message dont-show">Facebook</td>
-                                 <td class="view-message view-message">Dolor sit amet, consectetuer adipiscing</td>
-                                 <td class="view-message inbox-small-cells"><i class="fa fa-paperclip"></i></td>
-                                 <td class="view-message text-right">April 14</td>
-                              </tr>
-                              <tr class="">
-                                 <td class="inbox-small-cells">
-                                    <input type="checkbox" class="mail-checkbox">
-                                 </td>
-                                 <td class="inbox-small-cells hidden-phone"><i class="fa fa-circle"></i></td>
-                                 <td class="view-message dont-show">Chintan</td>
-                                 <td class="view-message">Lorem ipsum dolor sit amet</td>
-                                 <td class="view-message inbox-small-cells"><i class="fa fa-paperclip"></i></td>
-                                 <td class="view-message text-right">June 16</td>
-                              </tr>
-                              <tr class="">
-                                 <td class="inbox-small-cells">
-                                    <input type="checkbox" class="mail-checkbox">
-                                 </td>
-                                 <td class="inbox-small-cells hidden-phone"><i class="fa fa-circle inbox-started"></i></td>
-                                 <td class="view-message dont-show">Parth</td>
-                                 <td class="view-message">Lorem ipsum dolor sit amet</td>
-                                 <td class="view-message inbox-small-cells"></td>
-                                 <td class="view-message text-right">August 10</td>
-                              </tr>
-                              
-                           </tbody>
-                        </table>
-                     </div>
-                  </aside>
-				  <!-- INBOX MAIL CONTAINER -->
-				  
-				  
-				  <!-- 发件箱 -->
-                  <aside class="lg-side" style="display: none;">
-                     <div class="inbox-head">
-                        <h3>发件箱</h3>
-                        <form class="pull-right position" action="#">
-                           <div class="input-append">
-                              <input type="text" placeholder="搜索你的邮件" class="sr-input">
-                              <button type="button" class="btn sr-btn"><i class="fa fa-search"></i></button>
-                           </div>
-                        </form>
-                     </div>
-                     <div class="inbox-body">
-                        <div class="mail-option">
-                           <div class="chk-all">
-                              <input type="checkbox" class="mail-checkbox mail-group-checkbox">
-                              <div class="btn-group">
-                                 <a class="btn mini all" href="#" data-toggle="dropdown">
-                                 全选
-                                 <i class="fa fa-angle-down "></i>
-                                 </a>
-                                 <ul class="dropdown-menu">
-                                    <li><a href="#"> 无</a></li>
-                                    <li><a href="#"> 已读</a></li>
-                                    <li><a href="#">未读</a></li>
-                                 </ul>
-                              </div>
-                           </div>
-                           <div class="btn-group">
-                              <a class="btn mini tooltips" href="#" data-toggle="dropdown" data-placement="top" data-original-title="Refresh">
-                              <i class=" fa fa-refresh"></i>
-                              </a>
-                           </div>
-                           <!--<div class="btn-group hidden-phone">
-                              <a class="btn mini blue" href="#" data-toggle="dropdown">
-                              更多
-                              <i class="fa fa-angle-down "></i>
-                              </a>
-                              <ul class="dropdown-menu">
-                                 <li><a href="#"><i class="fa fa-pencil"></i> 标记为已读</a></li>
-                                 <li><a href="#"><i class="fa fa-ban"></i> 垃圾邮件</a></li>
-                                 <li class="divider"></li>
-                                 <li><a href="#"><i class="fa fa-trash-o"></i> 删除</a></li>
-                              </ul>
-                           </div>
-                           <div class="btn-group">
-                              <a class="btn mini blue" href="#" data-toggle="dropdown">
-                              移到
-                              <i class="fa fa-angle-down "></i>
-                              </a>
-                              <ul class="dropdown-menu">
-                                 <li><a href="#"><i class="fa fa-pencil"></i> 标记为已读</a></li>
-                                 <li><a href="#"><i class="fa fa-ban"></i> 垃圾文件</a></li>
-                                 <li class="divider"></li>
-                                 <li><a href="#"><i class="fa fa-trash-o"></i> 删除</a></li>
-                              </ul>
-                           </div>-->
-                           <ul class="unstyled inbox-pagination">
-                              <li><span>共12页</span></li>
-                              <li>
-                                 <a href="#" class="np-btn"><i class="fa fa-angle-left  pagination-left"></i></a>
-                              </li>
-                              <li>
-                                 <a href="#" class="np-btn"><i class="fa fa-angle-right pagination-right"></i></a>
-                              </li>
-                           </ul>
+                              </tr>-->
+                              </tbody>
+                           </table>
                         </div>
-                        <table class="table table-inbox table-hover">
-                           <tbody>
-                              <tr class="unread">
-                                 <td class="inbox-small-cells">
-                                    <input type="checkbox" class="mail-checkbox">
-                                 </td>
-                                 <td class="inbox-small-cells hidden-phone"><i class="fa fa-circle"></i></td>
-                                 <td class="view-message  dont-show">发件人名字</td>
-                                 <td class="view-message ">主题主题主题</td>
-                                 <td class="view-message  inbox-small-cells"><i class="fa fa-paperclip"></i></td>
-                                 <td class="view-message  text-right">2016-12-8&nbsp;15:38</td>
-                              </tr>
-                              <tr class="">
-                                 <td class="inbox-small-cells">
-                                    <input type="checkbox" class="mail-checkbox">
-                                 </td>
-                                 <td class="inbox-small-cells hidden-phone"><i class="fa fa-circle inbox-started"></i></td>
-                                 <td class="view-message dont-show">名字名字<span class="label label-danger pull-right">高优先</span></td>
-                                 <td class="view-message">主题主题</td>
-                                 <td class="view-message inbox-small-cells"><i class="fa fa-paperclip"></i></td>
-                                 <td class="view-message text-right">2016-12-8&nbsp;15:38</td>
-                              </tr>
-                              <tr class="">
-                                 <td class="inbox-small-cells">
-                                    <input type="checkbox" class="mail-checkbox">
-                                 </td>
-                                 <td class="inbox-small-cells hidden-phone"><i class="fa fa-circle"></i></td>
-                                 <td class="view-message dont-show">Facebook <span class="label label-success pull-right">一般</span></td>
-                                 <td class="view-message view-message">Dolor sit amet, consectetuer adipiscing</td>
-                                 <td class="view-message inbox-small-cells"><i class="fa fa-paperclip"></i></td>
-                                 <td class="view-message text-right">2016-12-8&nbsp;15:38</td>
-                              </tr>
-                              <tr class="">
-                                 <td class="inbox-small-cells">
-                                    <input type="checkbox" class="mail-checkbox">
-                                 </td>
-                                 <td class="inbox-small-cells hidden-phone"><i class="fa fa-circle"></i></td>
-                                 <td class="view-message dont-show">Chintan</td>
-                                 <td class="view-message view-message">Lorem ipsum dolor sit amet</td>
-                                 <td class="view-message inbox-small-cells"></td>
-                                 <td class="view-message text-right">June 13</td>
-                              </tr>
-                              <tr class="">
-                                 <td class="inbox-small-cells">
-                                    <input type="checkbox" class="mail-checkbox">
-                                 </td>
-                                 <td class="inbox-small-cells hidden-phone"><i class="fa fa-circle"></i></td>
-                                 <td class="view-message dont-show">Facebook <span class="label label-info pull-right">家庭</span></td>
-                                 <td class="view-message view-message">Dolor sit amet, consectetuer adipiscing</td>
-                                 <td class="view-message inbox-small-cells"></td>
-                                 <td class="view-message text-right">March 24</td>
-                              </tr>
-                              <tr class="">
-                                 <td class="inbox-small-cells">
-                                    <input type="checkbox" class="mail-checkbox">
-                                 </td>
-                                 <td class="inbox-small-cells hidden-phone"><i class="fa fa-circle inbox-started"></i></td>
-                                 <td class="view-message dont-show">Chintan <span class="label label-primary pull-right">社交</span></td>
-                                 <td class="view-message">Lorem ipsum dolor sit amet</td>
-                                 <td class="view-message inbox-small-cells"></td>
-                                 <td class="view-message text-right">March 09</td>
-                              </tr>
-                              <tr class="">
-                                 <td class="inbox-small-cells">
-                                    <input type="checkbox" class="mail-checkbox">
-                                 </td>
-                                 <td class="inbox-small-cells hidden-phone"><i class="fa fa-circle inbox-started"></i></td>
-                                 <td class="dont-show">Facebook</td>
-                                 <td class="view-message">Dolor sit amet, consectetuer adipiscing</td>
-                                 <td class="view-message inbox-small-cells"><i class="fa fa-paperclip"></i></td>
-                                 <td class="view-message text-right">May 14</td>
-                              </tr>
-                              <tr class="">
-                                 <td class="inbox-small-cells">
-                                    <input type="checkbox" class="mail-checkbox">
-                                 </td>
-                                 <td class="inbox-small-cells hidden-phone"><i class="fa fa-circle"></i></td>
-                                 <td class="view-message dont-show">Parth</td>
-                                 <td class="view-message">Lorem ipsum dolor sit amet</td>
-                                 <td class="view-message inbox-small-cells"><i class="fa fa-paperclip"></i></td>
-                                 <td class="view-message text-right">February 25</td>
-                              </tr>
-                              <tr class="">
-                                 <td class="inbox-small-cells">
-                                    <input type="checkbox" class="mail-checkbox">
-                                 </td>
-                                 <td class="inbox-small-cells hidden-phone"><i class="fa fa-circle"></i></td>
-                                 <td class="dont-show">Facebook</td>
-                                 <td class="view-message view-message">Dolor sit amet, consectetuer adipiscing</td>
-                                 <td class="view-message inbox-small-cells"></td>
-                                 <td class="view-message text-right">March 14</td>
-                              </tr>
-                              <tr class="">
-                                 <td class="inbox-small-cells">
-                                    <input type="checkbox" class="mail-checkbox">
-                                 </td>
-                                 <td class="inbox-small-cells hidden-phone"><i class="fa fa-circle"></i></td>
-                                 <td class="view-message dont-show">Dulal <span class="label label-primary pull-right">公司</span></td>
-                                 <td class="view-message">Lorem ipsum dolor sit amet</td>
-                                 <td class="view-message inbox-small-cells"></td>
-                                 <td class="view-message text-right">April 07</td>
-                              </tr>
-                              <tr class="">
-                                 <td class="inbox-small-cells">
-                                    <input type="checkbox" class="mail-checkbox">
-                                 </td>
-                                 <td class="inbox-small-cells hidden-phone"><i class="fa fa-circle"></i></td>
-                                 <td class="view-message dont-show">Twitter</td>
-                                 <td class="view-message">Dolor sit amet, consectetuer adipiscing</td>
-                                 <td class="view-message inbox-small-cells"></td>
-                                 <td class="view-message text-right">July 14</td>
-                              </tr>
-                              <tr class="">
-                                 <td class="inbox-small-cells">
-                                    <input type="checkbox" class="mail-checkbox">
-                                 </td>
-                                 <td class="inbox-small-cells hidden-phone"><i class="fa fa-circle inbox-started"></i></td>
-                                 <td class="view-message dont-show">Parth</td>
-                                 <td class="view-message">Lorem ipsum dolor sit amet</td>
-                                 <td class="view-message inbox-small-cells"></td>
-                                 <td class="view-message text-right">August 10</td>
-                              </tr>
-                              <tr class="">
-                                 <td class="inbox-small-cells">
-                                    <input type="checkbox" class="mail-checkbox">
-                                 </td>
-                                 <td class="inbox-small-cells hidden-phone"><i class="fa fa-circle"></i></td>
-                                 <td class="view-message dont-show">Facebook</td>
-                                 <td class="view-message view-message">Dolor sit amet, consectetuer adipiscing</td>
-                                 <td class="view-message inbox-small-cells"><i class="fa fa-paperclip"></i></td>
-                                 <td class="view-message text-right">April 14</td>
-                              </tr>
-                              <tr class="">
-                                 <td class="inbox-small-cells">
-                                    <input type="checkbox" class="mail-checkbox">
-                                 </td>
-                                 <td class="inbox-small-cells hidden-phone"><i class="fa fa-circle"></i></td>
-                                 <td class="view-message dont-show">Chintan</td>
-                                 <td class="view-message">Lorem ipsum dolor sit amet</td>
-                                 <td class="view-message inbox-small-cells"><i class="fa fa-paperclip"></i></td>
-                                 <td class="view-message text-right">June 16</td>
-                              </tr>
-                              <tr class="">
-                                 <td class="inbox-small-cells">
-                                    <input type="checkbox" class="mail-checkbox">
-                                 </td>
-                                 <td class="inbox-small-cells hidden-phone"><i class="fa fa-circle inbox-started"></i></td>
-                                 <td class="view-message dont-show">Parth</td>
-                                 <td class="view-message">Lorem ipsum dolor sit amet</td>
-                                 <td class="view-message inbox-small-cells"></td>
-                                 <td class="view-message text-right">August 10</td>
-                              </tr>
-                              
-                           </tbody>
-                        </table>
-                     </div>
-                  </aside>
-				  <!-- 发件箱 end -->
-				  
-				  
-				  
-				  <!-- 垃圾箱 -->
-                  <aside class="lg-side" style="display: none;">
-                     <div class="inbox-head">
-                        <h3>发件箱</h3>
-                        <form class="pull-right position" action="#">
-                           <div class="input-append">
-                              <input type="text" placeholder="搜索你的邮件" class="sr-input">
-                              <button type="button" class="btn sr-btn"><i class="fa fa-search"></i></button>
-                           </div>
-                        </form>
-                     </div>
-                     <div class="inbox-body">
-                        <div class="mail-option">
-                           <div class="chk-all">
-                              <input type="checkbox" class="mail-checkbox mail-group-checkbox">
-                              <div class="btn-group">
-                                 <a class="btn mini all" href="#" data-toggle="dropdown">
-                                 全选
-                                 <i class="fa fa-angle-down "></i>
-                                 </a>
-                                 <ul class="dropdown-menu">
-                                    <li><a href="#"> 无</a></li>
-                                    <li><a href="#"> 已读</a></li>
-                                    <li><a href="#">未读</a></li>
-                                 </ul>
-                              </div>
-                           </div>
-                           <div class="btn-group">
-                              <a class="btn mini tooltips" href="#" data-toggle="dropdown" data-placement="top" data-original-title="Refresh">
-                              <i class=" fa fa-refresh"></i>
-                              </a>
-                           </div>
-                           <!--<div class="btn-group hidden-phone">
-                              <a class="btn mini blue" href="#" data-toggle="dropdown">
-                              更多
-                              <i class="fa fa-angle-down "></i>
-                              </a>
-                              <ul class="dropdown-menu">
-                                 <li><a href="#"><i class="fa fa-pencil"></i> 标记为已读</a></li>
-                                 <li><a href="#"><i class="fa fa-ban"></i> 垃圾邮件</a></li>
-                                 <li class="divider"></li>
-                                 <li><a href="#"><i class="fa fa-trash-o"></i> 删除</a></li>
-                              </ul>
-                           </div>
-                           <div class="btn-group">
-                              <a class="btn mini blue" href="#" data-toggle="dropdown">
-                              移到
-                              <i class="fa fa-angle-down "></i>
-                              </a>
-                              <ul class="dropdown-menu">
-                                 <li><a href="#"><i class="fa fa-pencil"></i> 标记为已读</a></li>
-                                 <li><a href="#"><i class="fa fa-ban"></i> 垃圾文件</a></li>
-                                 <li class="divider"></li>
-                                 <li><a href="#"><i class="fa fa-trash-o"></i> 删除</a></li>
-                              </ul>
-                           </div>-->
-                           <ul class="unstyled inbox-pagination">
-                              <li><span>共12页</span></li>
-                              <li>
-                                 <a href="#" class="np-btn"><i class="fa fa-angle-left  pagination-left"></i></a>
-                              </li>
-                              <li>
-                                 <a href="#" class="np-btn"><i class="fa fa-angle-right pagination-right"></i></a>
-                              </li>
-                           </ul>
-                        </div>
-                        <table class="table table-inbox table-hover">
-                           <tbody>
-                              <tr class="unread">
-                                 <td class="inbox-small-cells">
-                                    <input type="checkbox" class="mail-checkbox">
-                                 </td>
-                                 <td class="inbox-small-cells hidden-phone"><i class="fa fa-circle"></i></td>
-                                 <td class="view-message  dont-show">发件人名字</td>
-                                 <td class="view-message ">主题主题主题</td>
-                                 <td class="view-message  inbox-small-cells"><i class="fa fa-paperclip"></i></td>
-                                 <td class="view-message  text-right">2016-12-8&nbsp;15:38</td>
-                              </tr>
-                              <tr class="">
-                                 <td class="inbox-small-cells">
-                                    <input type="checkbox" class="mail-checkbox">
-                                 </td>
-                                 <td class="inbox-small-cells hidden-phone"><i class="fa fa-circle inbox-started"></i></td>
-                                 <td class="view-message dont-show">名字名字<span class="label label-danger pull-right">高优先</span></td>
-                                 <td class="view-message">主题主题</td>
-                                 <td class="view-message inbox-small-cells"><i class="fa fa-paperclip"></i></td>
-                                 <td class="view-message text-right">2016-12-8&nbsp;15:38</td>
-                              </tr>
-                              <tr class="">
-                                 <td class="inbox-small-cells">
-                                    <input type="checkbox" class="mail-checkbox">
-                                 </td>
-                                 <td class="inbox-small-cells hidden-phone"><i class="fa fa-circle"></i></td>
-                                 <td class="view-message dont-show">Facebook <span class="label label-success pull-right">一般</span></td>
-                                 <td class="view-message view-message">Dolor sit amet, consectetuer adipiscing</td>
-                                 <td class="view-message inbox-small-cells"><i class="fa fa-paperclip"></i></td>
-                                 <td class="view-message text-right">2016-12-8&nbsp;15:38</td>
-                              </tr>
-                              <tr class="">
-                                 <td class="inbox-small-cells">
-                                    <input type="checkbox" class="mail-checkbox">
-                                 </td>
-                                 <td class="inbox-small-cells hidden-phone"><i class="fa fa-circle"></i></td>
-                                 <td class="view-message dont-show">Chintan</td>
-                                 <td class="view-message view-message">Lorem ipsum dolor sit amet</td>
-                                 <td class="view-message inbox-small-cells"></td>
-                                 <td class="view-message text-right">June 13</td>
-                              </tr>
-                              <tr class="">
-                                 <td class="inbox-small-cells">
-                                    <input type="checkbox" class="mail-checkbox">
-                                 </td>
-                                 <td class="inbox-small-cells hidden-phone"><i class="fa fa-circle"></i></td>
-                                 <td class="view-message dont-show">Facebook <span class="label label-info pull-right">家庭</span></td>
-                                 <td class="view-message view-message">Dolor sit amet, consectetuer adipiscing</td>
-                                 <td class="view-message inbox-small-cells"></td>
-                                 <td class="view-message text-right">March 24</td>
-                              </tr>
-                              <tr class="">
-                                 <td class="inbox-small-cells">
-                                    <input type="checkbox" class="mail-checkbox">
-                                 </td>
-                                 <td class="inbox-small-cells hidden-phone"><i class="fa fa-circle inbox-started"></i></td>
-                                 <td class="view-message dont-show">Chintan <span class="label label-primary pull-right">社交</span></td>
-                                 <td class="view-message">Lorem ipsum dolor sit amet</td>
-                                 <td class="view-message inbox-small-cells"></td>
-                                 <td class="view-message text-right">March 09</td>
-                              </tr>
-                              <tr class="">
-                                 <td class="inbox-small-cells">
-                                    <input type="checkbox" class="mail-checkbox">
-                                 </td>
-                                 <td class="inbox-small-cells hidden-phone"><i class="fa fa-circle inbox-started"></i></td>
-                                 <td class="dont-show">Facebook</td>
-                                 <td class="view-message">Dolor sit amet, consectetuer adipiscing</td>
-                                 <td class="view-message inbox-small-cells"><i class="fa fa-paperclip"></i></td>
-                                 <td class="view-message text-right">May 14</td>
-                              </tr>
-                              <tr class="">
-                                 <td class="inbox-small-cells">
-                                    <input type="checkbox" class="mail-checkbox">
-                                 </td>
-                                 <td class="inbox-small-cells hidden-phone"><i class="fa fa-circle"></i></td>
-                                 <td class="view-message dont-show">Parth</td>
-                                 <td class="view-message">Lorem ipsum dolor sit amet</td>
-                                 <td class="view-message inbox-small-cells"><i class="fa fa-paperclip"></i></td>
-                                 <td class="view-message text-right">February 25</td>
-                              </tr>
-                              <tr class="">
-                                 <td class="inbox-small-cells">
-                                    <input type="checkbox" class="mail-checkbox">
-                                 </td>
-                                 <td class="inbox-small-cells hidden-phone"><i class="fa fa-circle"></i></td>
-                                 <td class="dont-show">Facebook</td>
-                                 <td class="view-message view-message">Dolor sit amet, consectetuer adipiscing</td>
-                                 <td class="view-message inbox-small-cells"></td>
-                                 <td class="view-message text-right">March 14</td>
-                              </tr>
-                              <tr class="">
-                                 <td class="inbox-small-cells">
-                                    <input type="checkbox" class="mail-checkbox">
-                                 </td>
-                                 <td class="inbox-small-cells hidden-phone"><i class="fa fa-circle"></i></td>
-                                 <td class="view-message dont-show">Dulal <span class="label label-primary pull-right">公司</span></td>
-                                 <td class="view-message">Lorem ipsum dolor sit amet</td>
-                                 <td class="view-message inbox-small-cells"></td>
-                                 <td class="view-message text-right">April 07</td>
-                              </tr>
-                              <tr class="">
-                                 <td class="inbox-small-cells">
-                                    <input type="checkbox" class="mail-checkbox">
-                                 </td>
-                                 <td class="inbox-small-cells hidden-phone"><i class="fa fa-circle"></i></td>
-                                 <td class="view-message dont-show">Twitter</td>
-                                 <td class="view-message">Dolor sit amet, consectetuer adipiscing</td>
-                                 <td class="view-message inbox-small-cells"></td>
-                                 <td class="view-message text-right">July 14</td>
-                              </tr>
-                              <tr class="">
-                                 <td class="inbox-small-cells">
-                                    <input type="checkbox" class="mail-checkbox">
-                                 </td>
-                                 <td class="inbox-small-cells hidden-phone"><i class="fa fa-circle inbox-started"></i></td>
-                                 <td class="view-message dont-show">Parth</td>
-                                 <td class="view-message">Lorem ipsum dolor sit amet</td>
-                                 <td class="view-message inbox-small-cells"></td>
-                                 <td class="view-message text-right">August 10</td>
-                              </tr>
-                              <tr class="">
-                                 <td class="inbox-small-cells">
-                                    <input type="checkbox" class="mail-checkbox">
-                                 </td>
-                                 <td class="inbox-small-cells hidden-phone"><i class="fa fa-circle"></i></td>
-                                 <td class="view-message dont-show">Facebook</td>
-                                 <td class="view-message view-message">Dolor sit amet, consectetuer adipiscing</td>
-                                 <td class="view-message inbox-small-cells"><i class="fa fa-paperclip"></i></td>
-                                 <td class="view-message text-right">April 14</td>
-                              </tr>
-                              <tr class="">
-                                 <td class="inbox-small-cells">
-                                    <input type="checkbox" class="mail-checkbox">
-                                 </td>
-                                 <td class="inbox-small-cells hidden-phone"><i class="fa fa-circle"></i></td>
-                                 <td class="view-message dont-show">Chintan</td>
-                                 <td class="view-message">Lorem ipsum dolor sit amet</td>
-                                 <td class="view-message inbox-small-cells"><i class="fa fa-paperclip"></i></td>
-                                 <td class="view-message text-right">June 16</td>
-                              </tr>
-                              <tr class="">
-                                 <td class="inbox-small-cells">
-                                    <input type="checkbox" class="mail-checkbox">
-                                 </td>
-                                 <td class="inbox-small-cells hidden-phone"><i class="fa fa-circle inbox-started"></i></td>
-                                 <td class="view-message dont-show">Parth</td>
-                                 <td class="view-message">Lorem ipsum dolor sit amet</td>
-                                 <td class="view-message inbox-small-cells"></td>
-                                 <td class="view-message text-right">August 10</td>
-                              </tr>
-                              
-                           </tbody>
-                        </table>
-                     </div>
-                  </aside>
+                     </aside>
+                  </div>
+
 				  <!-- 垃圾箱 end -->				  
 				  
                </div>
             </section>
 			<!-- END WRAPPER  -->
          </section>
-         
+<script language='javascript' src='/js/public.js'></script>
+<script>
+   $(function(){
+      receive_message(0,'','all')
+      $('.msg_nav li a').click(function(){
+         $('.main_section aside').hide();
+         var id = $(this).attr('name');
+         $('#'+id).show();
+         $(this).parent().addClass('active').siblings('.active').removeClass('active');
+         switch(id){
+            case 'receive_msg':
+                 receive_message(0,'','all');break;
+            case 'send_msg':
+                 get_all_send(0,'');break;
+         }
+      })
+      //收件箱搜索
+      $('.receive_search').click(function(){
+        var key_word =  $(this).parent().siblings('input').val();
+         if(key_word){
+            receive_message(0,key_word,'all');
+         }else{
+            layer.msg('搜索词不能为空');
+         }
+      })
+      //发件箱搜素
+      $('.send_search').click(function(){
+         var key_word =  $(this).parent().siblings('input').val();
+         if(key_word){
+            get_all_send(0,key_word);
+         }else{
+            layer.msg('搜索词不能为空');
+         }
+      })
+   })
 
+   /*
+   * 收件箱
+   * page：起始条目
+   * key：搜索关键字
+   * way='all' => 全部邮件
+   * way='1' => 已读邮件
+   * way='2' => 未读邮件
+   * */
+   function receive_message(page,key,way){
+      if(!key){
+         key = '';
+      }
+      page *= 15;
+      $.ajax({
+         url:'/common/get_all_rec',
+         type:'POST',
+         data:{
+            search:key,
+            length:15,
+            start:page,
+            state:way
+         },
+         dataType:'json',
+         success:function(data){
+//            console.log(data);
+            if(data.emails.length){
+               $('.receive_msg tbody').html('');
+               var page_num = Math.ceil(data.num/15);
+               $('.page_num_rec').html(page_num);
+               var str = '';
+               var len = data.emails.length;
+               for(var i=0; i<len ; i++){
+                  var obj = data.emails[i];  //获取目标元素
+                  str += '<tr>';
+                  str += '<td class="inbox-small-cells">'
+                  str += '<input type="checkbox" class="mail-checkbox"></td>';
+                  if(obj.state == '1'){
+                     str += '<td class="inbox-small-cells hidden-phone"><i class="fa fa-circle inbox-started"></i></td>'
+                  }else{
+                     str += '<td class="inbox-small-cells hidden-phone"><i class="fa fa-circle"></i></td>'
+                  }
+                  switch (obj.priority_level){
+                     case "1":
+                        str += '<td class="view-message  dont-show">'+obj.sender_name+'<span class="label label-danger pull-right">高级</span></td>';
+                        break;
+                     case "2":
+                        str += '<td class="view-message  dont-show">'+obj.sender_name+'<span class="label label-info pull-right">一般</span></td>';
+                        break;
+                  }
+                  str += '<td class="view-message ">'+obj.title+'</td>';
+                  if(obj.has_att){
+                     str += '<td class="view-message  inbox-small-cells"><a class="fa fa-paperclip" href="/common/att_download?eid='+obj.eid+'&id='+obj.id+'"></a></td>'
+                  }else{
+                     str += '<td class="view-message  inbox-small-cells"></td>'
+                  }
+                  str += '<td class="view-message  text-right">'+timeToDate(obj.time*1000)+'</td>';
+                  str += '</tr>';
+               }
+               $('.receive_msg tbody').append(str);
+            }else{
+               $('.receive_msg tbody').html('<tr><td style="text-align: center;">暂无此类消息</td></tr>');
+            }
+         }
+      })
+   }
+
+   //发件箱
+   function get_all_send(page,key){
+      if(!key){
+         key = '';
+      }
+      page *= 15 ;
+      $.ajax({
+         url:'/common/get_all_sends',
+         type:"POST",
+         data:{
+           length:15,
+            start:page,
+            search:key
+         },
+         dataType:'json',
+         success:function(data){
+            if(data.emails.length){
+               $('.send_msg tbody').html('');
+               var page_num = Math.ceil(data.num/15);
+               $('.page_num_send').html(page_num);
+               var str = '';
+               var len = data.emails.length;
+               for(var i=0; i<len ; i++){
+                  var obj = data.emails[i];  //获取目标元素
+                  str += '<tr>';
+                  str += '<td class="inbox-small-cells">'
+                  str += '<input type="checkbox" class="mail-checkbox"></td>';
+                  switch (obj.priority_level){
+                     case "1":
+                        str += '<td class="view-message  dont-show"><{$name}><span class="label label-danger pull-right">高级</span></td>';
+                        break;
+                     case "2":
+                        str += '<td class="view-message  dont-show"><{$name}><span class="label label-info pull-right">一般</span></td>';
+                        break;
+                  }
+                  str += '<td class="view-message ">'+obj.title+'</td>';
+                  if(obj.has_att){
+                     str += '<td class="view-message  inbox-small-cells"><a class="fa fa-paperclip" href="/common/att_download?eid='+obj.eid+'&id='+obj.id+'"></a></td>'
+                  }else{
+                     str += '<td class="view-message  inbox-small-cells"></td>'
+                  }
+                  str += '<td class="view-message  text-right">'+timeToDate(obj.time*1000)+'</td>';
+                  str += '</tr>';
+               }
+               $('.send_msg tbody').append(str);
+            }else{
+               $('.send_msg tbody').html('<tr><td style="text-align: center">暂无此类消息</td></tr>');
+            }
+         }
+      })
+   }
+
+</script>
