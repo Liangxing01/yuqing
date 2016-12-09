@@ -686,7 +686,7 @@ class Common_Model extends CI_Model
         $gids = $this->session->userdata('gid');
         $gid_arr = explode(',',$gids);
         $res = array();
-        $res['emails'] = $this->db->select('e.id,ea.eid,e.title,u.name as sender_name,e.priority_level,e.time')
+        $res['emails'] = $this->db->select('e.id,ea.eid,e.title,u.name as sender_name,e.priority_level,e.time,eu.state')
             ->from('email as e')
             ->join('email_user as eu','eu.email_id = e.id')
             ->join('user as u','u.id = e.sender')
