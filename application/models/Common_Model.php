@@ -242,12 +242,22 @@ class Common_Model extends CI_Model
     }
 
     //修改个人信息接口
-    public function update_info($data){
+    public function update_info($data)
+    {
         $uid = $this->session->userdata('uid');
 
-        $this->db->where('id',$uid);
-        $res = $this->db->update('user',$data);
-        return $res;
+        $this->db->trans_begin();
+        $this->db->where('id', $uid)->update("user", $data);
+        $this->db->where(array("uid" => $uid, "type" => 1))->update("relation", array("name" => $data["name"]));
+
+        if ($this->db->trans_status() === FALSE) {
+            $this->db->trans_rollback();
+            return false;
+        } else {
+            $this->db->trans_commit();
+            $this->session->set_userdata(array('name' => $data["name"]));
+            return true;
+        }
     }
 
     public function update_alarm_state($eid,$state){
@@ -413,8 +423,8 @@ class Common_Model extends CI_Model
     public function del_file($del_arr){
         $uid = $this->session->userdata('uid');
 
-        var_dump($del_arr);
-        /*//开始运行事务
+
+        //开始运行事务
         $this->db->trans_begin();
 
         foreach ($del_arr as $del){
@@ -428,6 +438,7 @@ class Common_Model extends CI_Model
             if(empty($check)){
                 return false;
             }else{
+
                 //删除file_user 表数据
                 $this->db->where('fid',$del);
                 $this->db->delete('file_user');
@@ -446,8 +457,7 @@ class Common_Model extends CI_Model
                     ->get()->row_array();
 
                 @unlink($_SERVER['DOCUMENT_ROOT'] . $file_info['loc']);
-
-
+                $res = true;
             }
         }
 
@@ -459,7 +469,7 @@ class Common_Model extends CI_Model
             $res = true;
         }
 
-        return $res;*/
+        return $res;
     }
 
 

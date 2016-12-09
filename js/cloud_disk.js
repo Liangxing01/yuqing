@@ -68,7 +68,7 @@ function upload_btn(){
                 if(data.res){
                     layer.msg(data.msg);
                 }else{
-                    layer.msg(data.msg);
+                    layer.msg(data.msg,{anim:6});
                 }
             }
         })
@@ -239,7 +239,6 @@ $(function(){
                delete_files(str);
                layer.close(isClose);
             });
-
         }else{
             layer.msg("请至少勾选一项");
         }

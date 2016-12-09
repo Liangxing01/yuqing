@@ -289,8 +289,8 @@ class Common extends MY_Controller
      */
     public function file_download(){
         $fid = $this->input->get('fid');
-        if (!isset($id) || $id == null || $id == "") {
-            show_404();
+        if (!isset($fid) || $fid == null || $fid == "") {
+            show_404("文件不存在");
         }
         //获取文件信息和鉴权
         $this->load->model("Common_Model", "common");
