@@ -230,14 +230,14 @@ class Common extends MY_Controller
         $this->load->model("Common_Model","common");
         $config = array();
         $config['upload_path'] = './uploads/file/';
-        //$config['allowed_types'] = 'doc|docx|ppt|pdf|pptx|xlsx|word';
-        $config['allowed_types'] = '*';
+        $config['allowed_types'] = 'doc|docx|ppt|pdf|pptx|xlsx|word';
+        //$config['allowed_types'] = '*';
         $config['max_size'] = 500000;
         $config['max_width'] = 0;
         $config['max_height'] = 0;
         $config['encrypt_name'] = true;
 
-        $config['detect_mime'] = false;
+        //$config['detect_mime'] = false;
 
         $this->load->library('upload', $config);
 
@@ -251,7 +251,7 @@ class Common extends MY_Controller
             $data = array('upload_data' => $this->upload->data());
             $upload_data = $data['upload_data'];
             $upload_data['loc'] = '/uploads/file/' . $upload_data['file_name'];
-            $re = $this->common->insert_file_info($upload_data,1);
+            $re = $this->common->insert_file_info($upload_data,1,$config['allowed_types']);
 
             if($re['res'] == 1){
                 $res = array(

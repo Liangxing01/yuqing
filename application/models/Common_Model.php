@@ -275,11 +275,29 @@ class Common_Model extends CI_Model
      * 参数:$check_all_size 是否检查 云盘总容量 限定 每个用户 云盘容量上限150M
      * return fid文件id
      */
-    public function insert_file_info($file_data,$check_all_size){
+    public function insert_file_info($file_data,$check_all_size,$allow_mime){
+        //判断Mime  转换 文件格式
+        $mimes = get_mimes();
+        $file_type = '';
+        foreach (explode('|',$allow_mime) as $item){
+            if(is_array($mimes[$item])){
+                if(in_array($file_data['file_type'],$mimes[$item])){
+                    $file_type = $item;
+                    break;
+                }
+            }else{
+                if($mimes[$item] == $file_data['file_type']){
+                    $file_type = $item;
+                    break;
+                }
+            }
+
+        }
+
         $finfo = array(
             'old_name' => $file_data['client_name'],
             'new_name' => $file_data['file_name'],
-            'type'     => $file_data['file_type'],
+            'type'     => $file_type,
             'size'     => $file_data['file_size'],
             'upload_time' => time(),
             'loc'      => $file_data['loc'],
@@ -788,12 +806,12 @@ class Common_Model extends CI_Model
         $gid_arr = explode(',',$gids);
         $res = array();
         if($q['state'] == 'all'){
-            $res['emails'] = $this->db->select('e.id,ea.eid as has_att,e.title,u.name as sender_name,e.priority_level,e.time,eu.state')
+            $res['emails'] = $this->db->select('e.id,ea.id as has_att,e.title,u.name as sender_name,e.priority_level,e.time,eu.state')
                 ->from('email as e')
                 ->join('email_user as eu','eu.email_id = e.id')
                 ->join('user as u','u.id = e.sender')
                 ->join('email_attachment as ea','e.id = ea.eid','left')
-                ->group_by('ea.eid')
+                ->group_by('e.id')
                 ->group_start()
                 ->where('eu.receiver_id',$uid)
                 ->or_where_in('eu.receiver_gid',$gid_arr)
@@ -821,12 +839,12 @@ class Common_Model extends CI_Model
                 ->group_end()
                 ->get()->num_rows();
         }else{
-            $res['emails'] = $this->db->select('e.id,ea.eid as has_att,e.title,u.name as sender_name,e.priority_level,e.time,eu.state')
+            $res['emails'] = $this->db->select('e.id,ea.id as has_att,e.title,u.name as sender_name,e.priority_level,e.time,eu.state')
                 ->from('email as e')
                 ->join('email_user as eu','eu.email_id = e.id')
                 ->join('user as u','u.id = e.sender')
                 ->join('email_attachment as ea','e.id = ea.eid','left')
-                ->group_by('ea.eid')
+                ->group_by('e.id')
                 ->where('eu.state',$q['state'])
                 ->group_start()
                 ->where('eu.receiver_id',$uid)

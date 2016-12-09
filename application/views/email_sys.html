@@ -11,15 +11,42 @@
    .index_num_rec,.index_num_send{
       color: red;
    }
-   .disabled_click{
-
+   .main_section{
+       display: table-cell;
+       width: 75%;
    }
+   .main_section aside{
+       display: block;
+       width: 100% !important;
+   }
+   .receive_msg tr td:nth-child(1){
+      width:5%;
+   }
+    .receive_msg tr td:nth-child(2){
+       width:5%;
+    }
+    .receive_msg tr td:nth-child(3){
+       width:20%;
+    }
+    .receive_msg tr td:nth-child(4){
+       width:40%;
+    }
+    .send_msg tr td:nth-child(1){
+       width:5%;
+    }
+    .send_msg tr td:nth-child(2){
+       width:20%;
+    }
+    .send_msg tr td:nth-child(3){
+       width:40%;
+    }
+
 </style>
 	
 <!-- BEGIN MAIN CONTENT -->
          <section id="main-content">
 		 <!-- BEGIN WRAPPER  -->
-            <section class="wrapper">
+            <section class="wrapper site-min-height">
                <div class="mail-box">
                   <aside class="sm-side">
 				     <!-- INBOX HEADER -->
@@ -235,7 +262,7 @@
                            </div>
                            <table class="table table-inbox table-hover del_msg">
                               <tbody>
-                              <!--<tr class="unread">
+                              <tr class="unread">
                                  <td class="inbox-small-cells">
                                     <input type="checkbox" class="mail-checkbox">
                                  </td>
@@ -244,7 +271,7 @@
                                  <td class="view-message ">主题主题主题</td>
                                  <td class="view-message  inbox-small-cells"><i class="fa fa-paperclip"></i></td>
                                  <td class="view-message  text-right">2016-12-8&nbsp;15:38</td>
-                              </tr>-->
+                              </tr>
                               </tbody>
                            </table>
                         </div>
@@ -302,16 +329,18 @@
    * way='2' => 未读邮件
    * */
    function receive_message(page,key,way){
+      var load1 = layer.load(3);
+      $('.index_num_rec').html(1);
+      $('.page_num_rec').html(1);
       if(!key){
          key = '';
       }
-      page *= 15;
       $.ajax({
          url:'/common/get_all_rec',
          type:'POST',
          data:{
             search:key,
-            length:15,
+            length:5,
             start:page,
             state:way
          },
@@ -320,7 +349,7 @@
 //            console.log(data);
             if(data.emails.length){
                $('.receive_msg tbody').html('');
-               var page_num = Math.ceil(data.num/15);
+               var page_num = Math.ceil(data.num/5);
                $('.page_num_rec').html(page_num);
                var str = '';
                var len = data.emails.length;
@@ -352,8 +381,10 @@
                   str += '</tr>';
                }
                $('.receive_msg tbody').append(str);
+               layer.close(load1);
             }else{
                $('.receive_msg tbody').html('<tr><td style="text-align: center;">暂无此类消息</td></tr>');
+               layer.close(load1);
             }
          }
       })
@@ -361,15 +392,17 @@
 
    //发件箱
    function get_all_send(page,key){
+    var load2 = layer.load(3);
+      $('.index_num_send').html(1);
+      $('.page_num_send').html(1);
       if(!key){
          key = '';
       }
-      page *= 15 ;
       $.ajax({
          url:'/common/get_all_sends',
          type:"POST",
          data:{
-           length:15,
+           length:5,
             start:page,
             search:key
          },
@@ -404,8 +437,10 @@
                   str += '</tr>';
                }
                $('.send_msg tbody').append(str);
+               layer.close(load2);
             }else{
                $('.send_msg tbody').html('<tr><td style="text-align: center">暂无此类消息</td></tr>');
+               layer.close(load2);
             }
          }
       })
@@ -419,8 +454,8 @@
             layer.msg('当前为第一页');
             return;
          }else{
-            receive_message((index-1)*15,'','all');
-            $('.index_num_rec').html(index+1);
+            receive_message((index-2)*5,'','all');
+            $('.index_num_rec').html(index*1-1);
             return;
          }
       }
@@ -431,7 +466,8 @@
             layer.msg('当前为第一页');
             return;
          }else{
-            get_all_send((index-1)*15,'','all');
+            get_all_send((index-2)*5,'','all');
+            $('.index_num_send').html(index*1-1);
             return;
          }
       }
@@ -445,7 +481,8 @@
             layer.msg('当前为最后一页');
             return false;
          }else{
-            receive_message((index+1)*15,'','all');
+            receive_message(index*5,'','all');
+            $('.index_num_rec').html(index*1+1);
             return false;
          }
       }
@@ -457,8 +494,8 @@
             layer.msg('当前为最后一页');
             return false;
          }else{
-            $('.index_num_send').html((index+1)*1);
-            get_all_send((index+1)*15,'','all');
+            get_all_send(index*5,'','all');
+            $('.index_num_send').html(index*1+1);
             return false;
          }
       }
