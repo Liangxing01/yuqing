@@ -22,7 +22,7 @@ class Common extends MY_Controller
         //更新事件报警状态为0
         if ($option == "cancel_alert") {
             $this->load->model("Common_Model","common");
-            $this->common->update_alarm_state($event_id, 0);
+            $this->common->update_alarm_state($event_id);
         }
 
         if (!isset($event_id) || $event_id == null || $event_id == "") {
