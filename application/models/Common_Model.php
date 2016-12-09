@@ -266,36 +266,89 @@ class Common_Model extends CI_Model
     /**
      * @param $file_data
      * 插入上传文件信息
+     * 参数:$check_all_size 是否检查 云盘总容量 限定 每个用户 云盘容量上限150M
      * return fid文件id
      */
-    public function insert_file_info($file_data){
+    public function insert_file_info($file_data,$check_all_size){
         $finfo = array(
-            'old_name' => $file_data['orig_name'],
+            'old_name' => $file_data['client_name'],
             'new_name' => $file_data['file_name'],
             'type'     => $file_data['file_type'],
             'size'     => $file_data['file_size'],
             'upload_time' => time(),
-            'loc'      => $file_data['loc']
+            'loc'      => $file_data['loc'],
+            'is_exist' => 1
         );
-        //开始运行事务
-        $this->db->trans_begin();
 
-        $this->db->insert('file',$finfo);
-        $fid = $this->db->insert_id();
+        if($check_all_size == 1){
+            //检查云盘总容量
+            $now_all_size = $this->db->select_sum('size')
+                ->from('file')
+                ->join('file_user as fu','fu.uid =' . $this->session->userdata('uid'))
+                ->get()->row_array();
+            if($now_all_size['size'] > 1500000){
+                return array(
+                    'res' => 0,
+                    'msg' => '您的云盘容量已达到150M上限，请删除多余文件后上传'
+                );
+            }else{
+                //开始运行事务
+                $this->db->trans_begin();
 
-        $fuser = array(
-            'fid' => $fid,
-            'uid' => $this->session->userdata('uid')
-        );
-        $this->db->insert('file_user',$fuser);
+                $this->db->insert('file',$finfo);
+                $fid = $this->db->insert_id();
 
-        if($this->db->trans_status() === FALSE){
-            $this->db->trans_rollback();
-            return false;
+                $fuser = array(
+                    'fid' => $fid,
+                    'uid' => $this->session->userdata('uid')
+                );
+                $this->db->insert('file_user',$fuser);
+
+                if($this->db->trans_status() === FALSE){
+                    $this->db->trans_rollback();
+                    return array(
+                        'res' => 0,
+                        'msg' => '上传失败'
+                    );
+                }else{
+                    $this->db->trans_commit();
+                    return array(
+                        'res' => 1,
+                        'msg' => '上传成功',
+                        'fid' => $fid
+                    );
+                }
+            }
         }else{
-            $this->db->trans_commit();
-            return $fid;
+            //开始运行事务
+            $this->db->trans_begin();
+
+            $this->db->insert('file',$finfo);
+            $fid = $this->db->insert_id();
+
+            $fuser = array(
+                'fid' => $fid,
+                'uid' => $this->session->userdata('uid')
+            );
+            $this->db->insert('file_user',$fuser);
+
+            if($this->db->trans_status() === FALSE){
+                $this->db->trans_rollback();
+                return array(
+                    'res' => 0,
+                    'msg' => '上传失败'
+                );
+            }else{
+                $this->db->trans_commit();
+                return array(
+                    'res' => 1,
+                    'msg' => '上传成功',
+                    'fid' => $fid
+                );
+            }
         }
+
+
     }
 
 
@@ -359,7 +412,9 @@ class Common_Model extends CI_Model
      */
     public function del_file($del_arr){
         $uid = $this->session->userdata('uid');
-        //开始运行事务
+
+        var_dump($del_arr);
+        /*//开始运行事务
         $this->db->trans_begin();
 
         foreach ($del_arr as $del){
@@ -369,12 +424,20 @@ class Common_Model extends CI_Model
                 ->where('uid',$uid)
                 ->where('fid',$del)
                 ->get()->row_array();
+
             if(empty($check)){
                 return false;
             }else{
                 //删除file_user 表数据
                 $this->db->where('fid',$del);
                 $this->db->delete('file_user');
+
+                //更新 file 表 is_exist = 0
+                $update = array(
+                    'is_exist' => 0
+                );
+                $this->db->where('id',$del);
+                $this->db->update('file',$update);
 
                 //删除本地文件
                 //查询出路径
@@ -396,7 +459,7 @@ class Common_Model extends CI_Model
             $res = true;
         }
 
-        return $res;
+        return $res;*/
     }
 
 
@@ -434,6 +497,25 @@ class Common_Model extends CI_Model
             array_push($new_fids,$new_id);
         }
         return $new_fids;
+    }
+
+    /**
+     * 通过 附件id 获取附件信息
+     * $eid 校验是否 属于 该邮件的附件
+     */
+    public function get_att_by_id($ids,$eid){
+        $id_arr = explode(',',$ids);
+        $att_info_arr = array();
+        foreach ($id_arr as $id){
+            $info = $this->db->select('id,file_name,size,is_exist')
+                ->from('email_attachment')
+                ->where('id',$id)
+                ->where('eid',$eid)
+                ->get()->row_array();
+
+            array_push($att_info_arr,$info);
+        }
+        return $att_info_arr;
     }
 
     /**
@@ -533,19 +615,25 @@ class Common_Model extends CI_Model
 
         if(!empty($check_rece)){
             //查询邮件信息
-            $info = $this->db->select('*')
-                ->from('email')
-                ->where('id',$eid)
+            $info = $this->db->select('e.id,e.title,e.body,u.name as sender_name,from_unixtime(e.time) as time')
+                ->from('email as e')
+                ->join('user as u','u.id = e.sender')
+                ->where('e.id',$eid)
                 ->get()->row_array();
 
-            $att = $this->db->select('*')
+            $attID = $this->db->select('id')
                 ->from('email_attachment')
                 ->where('eid',$eid)
-                ->get()->row_array();
+                ->get()->result_array();
+
+            $attIDs = array();
+            foreach ($attID as $id){
+                array_push($attIDs,$id['id']);
+            }
 
             $res = array(
                 'info' => $info,
-                'att'  => $att
+                'attID'  => $attIDs
             );
 
             //更新阅读状态为已读
@@ -582,14 +670,18 @@ class Common_Model extends CI_Model
                 ->where('id',$eid)
                 ->get()->row_array();
 
-            $att = $this->db->select('*')
+            $attID = $this->db->select('id')
                 ->from('email_attachment')
                 ->where('eid',$eid)
-                ->get()->row_array();
+                ->get()->result_array();
+            $attIDs = array();
+            foreach ($attID as $id){
+                array_push($attIDs,$id['id']);
+            }
 
             $res = array(
                 'info' => $info,
-                'att'  => $att
+                'attID'  => $attIDs
             );
             return $res;
         }else{
@@ -680,44 +772,83 @@ class Common_Model extends CI_Model
 
     /**
      * 分页显示 收件箱 列表
+     * $q['state'] 已读 未读 状态
      */
     public function get_rec_emails_info($q){
         $uid  = $this->session->userdata('uid');
         $gids = $this->session->userdata('gid');
         $gid_arr = explode(',',$gids);
         $res = array();
-        $res['emails'] = $this->db->select('e.id,ea.eid as has_att,e.title,u.name as sender_name,e.priority_level,e.time,eu.state')
-            ->from('email as e')
-            ->join('email_user as eu','eu.email_id = e.id')
-            ->join('user as u','u.id = e.sender')
-            ->join('email_attachment as ea','e.id = ea.eid','left')
-            ->group_by('ea.eid')
-            ->group_start()
-            ->where('eu.receiver_id',$uid)
-            ->or_where_in('eu.receiver_gid',$gid_arr)
-            ->group_end()
-            ->group_start()
-            ->like('e.title',$q['search'])
-            ->or_like('u.name',$q['search'])
-            ->group_end()
-            ->limit($q['length'],$q['start'])
-            ->order_by('e.time','DESC')
-            ->get()->result_array();
+        if($q['state'] == 'all'){
+            $res['emails'] = $this->db->select('e.id,ea.eid as has_att,e.title,u.name as sender_name,e.priority_level,e.time,eu.state')
+                ->from('email as e')
+                ->join('email_user as eu','eu.email_id = e.id')
+                ->join('user as u','u.id = e.sender')
+                ->join('email_attachment as ea','e.id = ea.eid','left')
+                ->group_by('ea.eid')
+                ->group_start()
+                ->where('eu.receiver_id',$uid)
+                ->or_where_in('eu.receiver_gid',$gid_arr)
+                ->group_end()
+                ->group_start()
+                ->like('e.title',$q['search'])
+                ->or_like('u.name',$q['search'])
+                ->group_end()
+                ->limit($q['length'],$q['start'])
+                ->order_by('e.time','DESC')
+                ->get()->result_array();
 
 
-        $res['num'] = $this->db->select('e.id,e.title,u.name as sender_name,e.priority_level,e.time')
-            ->from('email as e')
-            ->join('email_user as eu','eu.email_id = e.id')
-            ->join('user as u','u.id = e.sender')
-            ->group_start()
-            ->where('eu.receiver_id',$uid)
-            ->or_where_in('eu.receiver_gid',$gid_arr)
-            ->group_end()
-            ->group_start()
-            ->like('e.title',$q['search'])
-            ->or_like('u.name',$q['search'])
-            ->group_end()
-            ->get()->num_rows();
+            $res['num'] = $this->db->select('e.id,e.title,u.name as sender_name,e.priority_level,e.time')
+                ->from('email as e')
+                ->join('email_user as eu','eu.email_id = e.id')
+                ->join('user as u','u.id = e.sender')
+                ->group_start()
+                ->where('eu.receiver_id',$uid)
+                ->or_where_in('eu.receiver_gid',$gid_arr)
+                ->group_end()
+                ->group_start()
+                ->like('e.title',$q['search'])
+                ->or_like('u.name',$q['search'])
+                ->group_end()
+                ->get()->num_rows();
+        }else{
+            $res['emails'] = $this->db->select('e.id,ea.eid as has_att,e.title,u.name as sender_name,e.priority_level,e.time,eu.state')
+                ->from('email as e')
+                ->join('email_user as eu','eu.email_id = e.id')
+                ->join('user as u','u.id = e.sender')
+                ->join('email_attachment as ea','e.id = ea.eid','left')
+                ->group_by('ea.eid')
+                ->where('eu.state',$q['state'])
+                ->group_start()
+                ->where('eu.receiver_id',$uid)
+                ->or_where_in('eu.receiver_gid',$gid_arr)
+                ->group_end()
+                ->group_start()
+                ->like('e.title',$q['search'])
+                ->or_like('u.name',$q['search'])
+                ->group_end()
+                ->limit($q['length'],$q['start'])
+                ->order_by('e.time','DESC')
+                ->get()->result_array();
+
+
+            $res['num'] = $this->db->select('e.id,e.title,u.name as sender_name,e.priority_level,e.time')
+                ->from('email as e')
+                ->join('email_user as eu','eu.email_id = e.id')
+                ->join('user as u','u.id = e.sender')
+                ->where('eu.state',$q['state'])
+                ->group_start()
+                ->where('eu.receiver_id',$uid)
+                ->or_where_in('eu.receiver_gid',$gid_arr)
+                ->group_end()
+                ->group_start()
+                ->like('e.title',$q['search'])
+                ->or_like('u.name',$q['search'])
+                ->group_end()
+                ->get()->num_rows();
+        }
+
 
         return $res;
     }
