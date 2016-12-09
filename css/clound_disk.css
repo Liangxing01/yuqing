@@ -1,0 +1,174 @@
+
+button img{
+    margin-right: 5px;
+}
+.text-btn{
+    float: left;
+    width: 100%;
+    margin-bottom: 15px;
+}
+.del,.upload{
+    float: left;
+    margin-right: 10px;
+
+}
+.send,.file-search,.add_search{
+    float: right;
+    margin-left: 10px;
+}
+.upload,.send{
+    background: #57c7e6;
+    color: white;
+}
+.del{
+    background: white;
+    color: #57c7e6;
+    border: 1px solid  #57c7e6;
+}
+.add_search{
+    height:40px;
+}
+.file-search-text{
+    display: block;
+    width: 100%;
+    height: 40px;
+    padding: 10px 12px;
+    font-size: 14px;
+    color: #555;
+}
+.file-search{
+    width: 300px;
+    border: none;
+    box-shadow: none;
+    border-radius: 20px;
+    background: #f1f2f4 url(../../img/file-search.png) no-repeat center right 10px ;
+    padding: 0 35px 0 15px;
+}
+
+.My_pan_title{
+    width: 100%;
+    line-height: 30px;
+    font-size: 16px;
+    color: #000000;
+}
+table tr{
+    border-bottom: 1px solid #eaf0f2;
+    display: table-row;
+    font-size: 14px;
+    color: #000000;
+}
+
+table tr:last-child{
+    border-bottom: none;
+}
+table tr:hover{
+    cursor:pointer;
+    background: #f6f6f6;
+}
+table tr td:nth-child(4) a{
+    visibility: hidden;
+}
+table tr:hover td:nth-child(4) a{
+    visibility: visible;
+}
+table tr td{
+    padding: 10px;
+}
+table tr td a{
+
+    background: #57c7e6;
+    border: none;
+    padding: 10px 20px;
+    color: white;
+    visibility:hidden;
+}
+table tr td span i{
+    font-style: normal;
+    font-size: 18px;
+}
+.file-file{
+    line-height: 50px;
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 34px;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    text-transform:capitalize;
+    display: inline-block;
+    margin: auto 10px;
+}
+.file-word{
+    color:rgb(84,158,251);
+}
+.file-ex{
+    color:rgb(125,186,41);
+}
+.file-p{
+    color:rgb(244,157,82);
+}
+.file-pdf{
+    color:rgb(239,110,100);
+}
+.file-other{
+    color: red;
+}
+.my_pan_page{
+    width:600px;
+    margin:0 auto;
+}
+.my_pan_page li{
+    float: left;
+    text-align: center;
+    margin-right:5px;
+    padding:5px 10px;
+    border: 1px solid #0075b0;
+    font-size:14px;
+}
+.my_pan_page li:hover{
+    background: #0075b0;
+}
+.my_pan_page li:hover a{
+    color: #fff;
+}
+.my_pan_page .special{
+    border: none;
+}
+.my_pan_page .special:hover{
+    background: #fff;
+}
+.my_pan_page .special:hover a{
+    color: red;
+}
+.my_pan_page .special input{
+    display: inline-block;
+    width:40px;
+    border-radius: 5px;
+    margin-right:5px;
+    padding-left:5px;
+    border:1px solid #0075b0;
+}
+.my_pan_page .special a{
+    padding:5px 10px;
+    border:1px solid #0075b0;
+    margin-left:10px;
+}
+.my_pan_page .special span{
+    margin:0 5px;
+}
+.choose_all{
+    float: left;
+}
+.file_name th{
+    text-align: center;
+}
+.file_name th input{
+    margin:0 10px;
+}
+.file_name td{
+    text-align: center;
+}
+.file_name td:nth-child(1){
+    text-align: left;
+}

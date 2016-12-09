@@ -199,7 +199,7 @@
                     <li class="option-row" id="option-row{id}">
                         <img alt="Avatar" class="avatar"  src="{avatar}">
                         <div class="reply">
-                            <form role="form">
+                            <form role="form" onkeydown="if(event.keyCode==13){return false;}">
                                 <input placeholder="填写你的反馈..." class="form-control input-sm" id="comment{id}" type="text">
                                 <input value="发表" id="fb" class="input-btn" onclick="addComment('{id}',1)" type="button"></form>
                         </div>
