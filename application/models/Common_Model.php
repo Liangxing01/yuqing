@@ -242,12 +242,22 @@ class Common_Model extends CI_Model
     }
 
     //修改个人信息接口
-    public function update_info($data){
+    public function update_info($data)
+    {
         $uid = $this->session->userdata('uid');
 
-        $this->db->where('id',$uid);
-        $res = $this->db->update('user',$data);
-        return $res;
+        $this->db->trans_begin();
+        $this->db->where('id', $uid)->update("user", $data);
+        $this->db->where(array("uid" => $uid, "type" => 1))->update("relation", array("name" => $data["name"]));
+
+        if ($this->db->trans_status() === FALSE) {
+            $this->db->trans_rollback();
+            return false;
+        } else {
+            $this->db->trans_commit();
+            $this->session->set_userdata(array('name' => $data["name"]));
+            return true;
+        }
     }
 
     public function update_alarm_state($eid,$state){
