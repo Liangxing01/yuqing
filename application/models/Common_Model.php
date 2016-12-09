@@ -652,8 +652,10 @@ class Common_Model extends CI_Model
     public function get_send_emails_info($q){
         $uid = $this->session->userdata('uid');
         $res = array();
-        $res['emails'] = $this->db->select('e.id,e.title,e.priority_level,e.time')
+        $res['emails'] = $this->db->select('e.id,ea.eid as has_att,e.title,e.priority_level,e.time')
             ->from('email as e')
+            ->join('email_attachment as ea','e.id = ea.eid','left')
+            ->group_by('ea.eid')
             ->where('e.sender',$uid)
             ->group_start()
             ->like('e.title',$q['search'])
@@ -684,10 +686,12 @@ class Common_Model extends CI_Model
         $gids = $this->session->userdata('gid');
         $gid_arr = explode(',',$gids);
         $res = array();
-        $res['emails'] = $this->db->select('e.id,e.title,u.name as sender_name,e.priority_level,e.time')
+        $res['emails'] = $this->db->select('e.id,e.eid,e.title,u.name as sender_name,e.priority_level,e.time')
             ->from('email as e')
             ->join('email_user as eu','eu.email_id = e.id')
             ->join('user as u','u.id = e.sender')
+            ->join('email_attachment as ea','e.id = ea.eid','left')
+            ->group_by('ea.eid')
             ->group_start()
             ->where('eu.receiver_id',$uid)
             ->or_where_in('eu.receiver_gid',$gid_arr)
