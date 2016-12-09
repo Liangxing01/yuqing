@@ -413,8 +413,8 @@ class Common_Model extends CI_Model
     public function del_file($del_arr){
         $uid = $this->session->userdata('uid');
 
-        var_dump($del_arr);
-        /*//开始运行事务
+
+        //开始运行事务
         $this->db->trans_begin();
 
         foreach ($del_arr as $del){
@@ -428,6 +428,7 @@ class Common_Model extends CI_Model
             if(empty($check)){
                 return false;
             }else{
+
                 //删除file_user 表数据
                 $this->db->where('fid',$del);
                 $this->db->delete('file_user');
@@ -446,8 +447,7 @@ class Common_Model extends CI_Model
                     ->get()->row_array();
 
                 @unlink($_SERVER['DOCUMENT_ROOT'] . $file_info['loc']);
-
-
+                $res = true;
             }
         }
 
@@ -459,7 +459,7 @@ class Common_Model extends CI_Model
             $res = true;
         }
 
-        return $res;*/
+        return $res;
     }
 
 

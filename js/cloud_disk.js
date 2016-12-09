@@ -68,7 +68,7 @@ function upload_btn(){
                 if(data.res){
                     layer.msg(data.msg);
                 }else{
-                    layer.msg(data.msg);
+                    layer.msg(data.msg,{anim:6});
                 }
             }
         })
@@ -238,12 +238,14 @@ $(function(){
             $.ajax({
                 url:'/common/del_file',
                 type:'POST',
+                dataType : 'json',
                 data:{
                     del_id:str
                 },
                 success:function(data){
-                    if(data.res*1){
+                    if(data.res){
                         layer.msg('删除成功');
+                        window.location.reload();
                     }else{
                         layer.msg('删除失败');
                         window.location.reload();
