@@ -405,6 +405,38 @@ class Common_Model extends CI_Model
      */
 
     /**
+     * 复制 移动 云盘文件 并 插入email_attachment数据库
+     * 参数 : fid 云盘文件id
+     */
+    public function copy_insert_att($fids,$eid){
+        $fid_arr = explode(',',$fids);
+        $new_fids = array();
+        foreach ($fid_arr as $fid){
+            //遍历 file表数据 copy 并插入新表中
+            $file = $this->db->select('old_name as file_name,new_name,type,size,loc,upload_time')
+                ->from('file')
+                ->where('id',$fid)
+                ->get()->row_array();
+            //复制到 eUploads目录下
+            copy($_SERVER['DOCUMENT_ROOT'] . $file['loc'],$_SERVER['DOCUMENT_ROOT'].'/uploads/eUploads/'.$file['new_name']);
+            //插入到 数据库中
+            $insert_info = array(
+                'eid'       => $eid,
+                'file_name' => $file['file_name'],
+                'loc'       => '/uploads/eUploads/'.$file['new_name'],
+                'size'      => $file['size'],
+                'type'      => $file['type'],
+                'is_exist'  => 1,
+                'upload_time' => $file['upload_time']
+            );
+            $this->db->insert('email_attachment',$insert_info);
+            $new_id = $this->db->insert_id();
+            array_push($new_fids,$new_id);
+        }
+        return $new_fids;
+    }
+
+    /**
      * @param $einfo
      * @param $receID
      * @param $attID

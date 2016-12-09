@@ -329,6 +329,24 @@ class Common extends MY_Controller
      */
 
     /**
+     * 展示 写邮件 界面
+     * 参数：fid 如果有 则为 云盘勾选文件后 跳转过来的
+     */
+    public function show_write_email(){
+        $this->load->model("Common_Model","common");
+        $eid  = $this->input->get('eid');
+        $fids = $this->input->get('fid');
+        if($fids == NULL){
+            //展示写邮件 页面
+        }else{
+            //先把云盘文件 拷贝到 邮件附件 目录下，并插入email_attachment表中，隔离文件
+            $new_fid_arr = $this->common->copy_insert_att($fids,$eid);
+            $this->assign('attID',$new_fid_arr);
+            //展示写邮件页面
+        }
+    }
+
+    /**
      * 写邮件 接口
      * 参数：邮件字段 附件
      */
