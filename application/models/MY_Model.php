@@ -218,11 +218,12 @@ class MY_Model extends CI_Model {
             ->get()->row_array();
         if(!empty($old_avatar) && $old_avatar['avatar'] != "/img/avatar/avatar.png"){
             $old_avatar_url = $old_avatar['avatar'];
-            unlink($_SERVER['DOCUMENT_ROOT'].$old_avatar_url);
+            @unlink($_SERVER['DOCUMENT_ROOT'].$old_avatar_url);
         }
 
         $this->db->where('id',$uid);
         $res = $this->db->update('user',$data);
+        $this->session->set_userdata("avatar", $data["avatar"]);
         return $res;
     }
 
