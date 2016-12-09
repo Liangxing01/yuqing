@@ -500,7 +500,8 @@ class Common_Model extends CI_Model
                 'size'      => $file['size'],
                 'type'      => $file['type'],
                 'is_exist'  => 1,
-                'upload_time' => $file['upload_time']
+                'upload_time' => $file['upload_time'],
+                'expire_time' => (int)$file['upload_time'] + 1209600
             );
             $this->db->insert('email_attachment',$insert_info);
             $new_id = $this->db->insert_id();
@@ -555,6 +556,7 @@ class Common_Model extends CI_Model
                 ->get()->row_array();
             $file_info['eid'] = $eid;
             $file_info['is_exist'] = 1;
+            $file_info['expire_time'] = (int)$file_info['upload_time'] + 1209600;
             array_push($att_arr,$file_info);
         }
 

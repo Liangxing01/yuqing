@@ -498,7 +498,7 @@ class Common extends MY_Controller
             $upload_data = $data['upload_data'];
             //生成 文件保存 路径
             $upload_data['loc'] = '/uploads/eUploads/' . $upload_data['file_name'];
-            $re = $this->common->insert_file_info($upload_data);
+            $re = $this->common->insert_file_info($upload_data,0);
 
             if($re['res'] == 1){
                 $res = array(
@@ -585,6 +585,10 @@ class Common extends MY_Controller
     }
 
 
+    public function test(){
+        $a = "1481272759";
+        echo (int)$a + 1209600;
+    }
 
 
 }
