@@ -338,11 +338,17 @@ class Common extends MY_Controller
         $fids = $this->input->get('fid');
         if($fids == NULL){
             //展示写邮件 页面
+            $this->assign("active_title", "email_sys");
+            $this->assign("active_parent", "file_parent");
+            $this->all_display("email/write_email.html");
         }else{
             //先把云盘文件 拷贝到 邮件附件 目录下，并插入email_attachment表中，隔离文件
             $new_fid_arr = $this->common->copy_insert_att($fids,$eid);
             $this->assign('attID',$new_fid_arr);
             //展示写邮件页面
+            $this->assign("active_title", "email_sys");
+            $this->assign("active_parent", "file_parent");
+            $this->all_display("email/write_email.html");
         }
     }
 
@@ -383,7 +389,7 @@ class Common extends MY_Controller
     public function rec_email_detail(){
         $this->load->model("Common_Model", "common");
         $eid = $this->input->get('id');
-        /*if (!isset($id) || $id == null || $id == "") {
+        if (!isset($eid) || $eid == null || $eid == "") {
             show_404();
         }
 
@@ -395,7 +401,8 @@ class Common extends MY_Controller
             $this->assign('info',$email_info['info']);
             $this->assign('att', $email_info['att']);
 
-        }*/
+        }
+       // var_dump($email_info);
         $this->assign("active_title", "email_sys");
         $this->assign("active_parent", "file_parent");
         $this->all_display("email/rec_detail.html");
@@ -409,7 +416,7 @@ class Common extends MY_Controller
     public function send_email_detail(){
         $this->load->model('Common_Model','common');
         $eid = $this->input->get('id');
-        if (!isset($id) || $id == null || $id == "") {
+        if (!isset($eid) || $eid == null || $eid == "") {
             show_404();
         }
 
