@@ -244,20 +244,28 @@ class Common extends MY_Controller
         if (!$this->upload->do_upload('file')) {
             $error = $this->upload->display_errors();
             $res = array(
-                'res' => 0, 'info' => $error
+                'res' => 0, 'msg' => $error
             );
             echo json_encode($res);
         } else {
             $data = array('upload_data' => $this->upload->data());
             $upload_data = $data['upload_data'];
-
             $upload_data['loc'] = '/uploads/file/' . $upload_data['file_name'];
-            $fid = $this->common->insert_file_info($upload_data);
+            $re = $this->common->insert_file_info($upload_data,1);
 
-            $res = array(
-                'res' => 1,
-                'fid' => $fid
-            );
+            if($re['res'] == 1){
+                $res = array(
+                    'res' => 1,
+                    'fid' => $re['fid'],
+                    'msg' => $re['msg']
+                );
+            }else{
+                $res = array(
+                    'res' => 0,
+                    'msg' => $re['msg']
+                );
+            }
+
             echo json_encode($res);
 
         }
@@ -338,12 +346,30 @@ class Common extends MY_Controller
         $fids = $this->input->get('fid');
         if($fids == NULL){
             //展示写邮件 页面
+            $this->assign("active_title", "email_sys");
+            $this->assign("active_parent", "file_parent");
+            $this->all_display("email/write_email.html");
         }else{
             //先把云盘文件 拷贝到 邮件附件 目录下，并插入email_attachment表中，隔离文件
             $new_fid_arr = $this->common->copy_insert_att($fids,$eid);
-            $this->assign('attID',$new_fid_arr);
+            $this->assign('attID',implode(',',$new_fid_arr));
             //展示写邮件页面
+            $this->assign("active_title", "email_sys");
+            $this->assign("active_parent", "file_parent");
+            $this->all_display("email/write_email.html");
         }
+    }
+
+    /**
+     * 接口：通过 附件id 获取 附件信息
+     */
+    public function get_att_info(){
+        $this->load->model("Common_Model","common");
+        $attIDs = $this->input->post('att_ids');
+        $eid = $this->input->post('eid');
+        $att_info = $this->common->get_att_by_id($attIDs,$eid);
+
+        echo json_encode($att_info);
     }
 
     /**
@@ -383,7 +409,7 @@ class Common extends MY_Controller
     public function rec_email_detail(){
         $this->load->model("Common_Model", "common");
         $eid = $this->input->get('id');
-        /*if (!isset($id) || $id == null || $id == "") {
+        if (!isset($eid) || $eid == null || $eid == "") {
             show_404();
         }
 
@@ -393,9 +419,10 @@ class Common extends MY_Controller
             show_404();
         }else{
             $this->assign('info',$email_info['info']);
-            $this->assign('att', $email_info['att']);
+            $this->assign('attID', implode(',',$email_info['attID']));
 
-        }*/
+        }
+       // var_dump($email_info);
         $this->assign("active_title", "email_sys");
         $this->assign("active_parent", "file_parent");
         $this->all_display("email/rec_detail.html");
@@ -409,7 +436,7 @@ class Common extends MY_Controller
     public function send_email_detail(){
         $this->load->model('Common_Model','common');
         $eid = $this->input->get('id');
-        if (!isset($id) || $id == null || $id == "") {
+        if (!isset($eid) || $eid == null || $eid == "") {
             show_404();
         }
 
@@ -420,10 +447,13 @@ class Common extends MY_Controller
             show_404();
         }else{
             $this->assign('info',$email_info['info']);
-            $this->assign('att', $email_info['att']);
+            $this->assign('attID',implode(',',$email_info['attID']));
 
         }
 
+        $this->assign("active_title", "email_sys");
+        $this->assign("active_parent", "file_parent");
+        $this->all_display("email/send_detail.html");
 
     }
 
@@ -468,12 +498,21 @@ class Common extends MY_Controller
             $upload_data = $data['upload_data'];
             //生成 文件保存 路径
             $upload_data['loc'] = '/uploads/eUploads/' . $upload_data['file_name'];
-            $fid = $this->common->insert_file_info($upload_data);
+            $re = $this->common->insert_file_info($upload_data);
 
-            $res = array(
-                'res' => 1,
-                'fid' => $fid
-            );
+            if($re['res'] == 1){
+                $res = array(
+                    'res' => 1,
+                    'fid' => $re['fid'],
+                    'msg' => $re['msg']
+                );
+            }else{
+                $res = array(
+                    'res' => 0,
+                    'msg' => $re['msg']
+                );
+            }
+
             echo json_encode($res);
 
         }

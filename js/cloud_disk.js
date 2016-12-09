@@ -66,9 +66,9 @@ function upload_btn(){
             contentType: false,
             success:function(data){
                 if(data.res){
-                    layer.msg('上传成功');
+                    layer.msg(data.msg);
                 }else{
-                    layer.msg('上传失败');
+                    layer.msg(data.msg);
                 }
             }
         })
