@@ -361,6 +361,91 @@ class Common extends MY_Controller
     }
 
     /**
+     * 回复 邮件功能
+     */
+    public function reply_email(){
+        $this->load->model('Common_Model','common');
+        $reply_uid = $this->input->get('reply_uid');
+        $reply_eid = $this->input->get('reply_eid');
+        $reply_info = $this->common->get_reply_info($reply_uid,$reply_eid);
+        $this->assign('reply_uid',$reply_uid);
+        $this->assign('reply_name',$reply_info['name']);
+        $this->assign('reply_title','回复 : '.$reply_info['title']);
+        $this->all_display("email/write_email.html");
+    }
+
+    /**
+     * 接口 ： 根据uid 获取 用户姓名，显示到 收件人
+     */
+    public function get_name_by_uid(){
+        $this->load->model('Common_Model','common');
+        $uid = $this->input->get('uid');
+        $name = $this->common->get_name($uid);
+        echo json_encode(array(
+            'name' => $name
+        ));
+    }
+
+    /**
+     * 接口： 邮件 Body 上传图片
+     */
+    public function email_upload_img(){
+        $this->load->model("Common_Model","common");
+        $config = array();
+        $config['upload_path'] = './uploads/pic/email_pic';
+        $config['allowed_types'] = 'jpeg|png|jpg';
+        $config['max_size'] = 250;//大小限制250kb
+        $config['max_width'] = 1500;
+        $config['max_height'] = 1500;
+        $config['encrypt_name'] = true;
+
+        $this->load->library('upload', $config);
+
+        if (!$this->upload->do_upload('file')) {
+            $error = $this->upload->display_errors();
+            $res = array(
+                'code' => 2,
+                'msg' => "大图片请用附件上传",
+                'data' => array(
+                    'src'   =>'',
+                    'title' => ''
+                )
+            );
+            echo json_encode($res);
+        } else {
+            $data = array('upload_data' => $this->upload->data());
+            $upload_data = $data['upload_data'];
+            //生成 文件保存 路径
+            $upload_data['loc'] = '/uploads/pic/email_pic/' . $upload_data['file_name'];
+            $re = $this->common->insert_img($upload_data,$config['allowed_types']);
+
+            if($re['res'] == 1){
+                $res = array(
+                    'code' => 0,
+                    'msg'  => $re['msg'],
+                    'data' => array(
+                        'src' => $re['src'],
+                        'title' => ''
+                    )
+                );
+            }else{
+                $res = array(
+                    'code' => 1,
+                    'msg'  => $re['msg'],
+                    'data' => array(
+                        'src' => '',
+                        'title' => ''
+                    )
+                );
+            }
+
+            echo json_encode($res);
+
+        }
+    }
+
+
+    /**
      * 接口：通过 附件id 获取 附件信息
      */
     public function get_att_info(){
@@ -385,13 +470,17 @@ class Common extends MY_Controller
         );
 
         $receiveID = array(
-            'uids' => explode(',',$this->input->post('uids')),
-            'gids' => explode(',',$this->input->post('gids'))
+            'uids' => $this->input->post('uids') ? explode(',',$this->input->post('uids')) : array(),
+            'gids' => $this->input->post('gids') ? explode(',',$this->input->post('gids')) : array()
         );
 
-        $attID = explode(',',$this->input->post('attID'));
-
-        $res = $this->common->insert_email($email_info,$receiveID,$attID);
+        $attID = $this->input->post('attID');
+        if($attID != ''){
+            $attID_arr = explode(',',$attID);
+        }else{
+            $attID_arr = array();
+        }
+        $res = $this->common->insert_email($email_info,$receiveID,$attID_arr);
         if($res){
             echo json_encode(array(
                 'res' => 1
@@ -422,7 +511,7 @@ class Common extends MY_Controller
             $this->assign('attID', implode(',',$email_info['attID']));
 
         }
-       // var_dump($email_info);
+
         $this->assign("active_title", "email_sys");
         $this->assign("active_parent", "file_parent");
         $this->all_display("email/rec_detail.html");
@@ -463,7 +552,7 @@ class Common extends MY_Controller
     public function get_has_read(){
         $this->load->model('Common_Model','common');
         $eid = $this->input->get('id');
-        if (!isset($id) || $id == null || $id == "") {
+        if (!isset($eid) || $eid == null || $eid == "") {
             show_404();
         }
 
@@ -478,7 +567,8 @@ class Common extends MY_Controller
     public function email_att_upload(){
         $this->load->model("Common_Model","common");
         $config = array();
-        $config['upload_path'] = './uploads/eUploads/';
+        //先保存在 temp 临时目录
+        $config['upload_path'] = './uploads/temp/';
         $config['allowed_types'] = 'doc|docx|ppt|pdf|pptx|xlsx|word|rar|zip|jpeg|png|jpg';
         $config['max_size'] = 1000000;//大小限制100M
         $config['max_width'] = 0;
@@ -497,8 +587,8 @@ class Common extends MY_Controller
             $data = array('upload_data' => $this->upload->data());
             $upload_data = $data['upload_data'];
             //生成 文件保存 路径
-            $upload_data['loc'] = '/uploads/eUploads/' . $upload_data['file_name'];
-            $re = $this->common->insert_file_info($upload_data,0);
+            $upload_data['loc'] = '/uploads/temp/' . $upload_data['file_name'];
+            $re = $this->common->insert_file_info($upload_data,0,$config['allowed_types']);
 
             if($re['res'] == 1){
                 $res = array(

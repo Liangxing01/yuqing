@@ -236,7 +236,7 @@ $(function(){
                 arr.push($(this).attr('data-id'));
             })
             var str = arr.join(',');
-           var isClose = layer.confirm('执行此操作不可复原',{icon: 3, title:'提示'},function(){
+           var isClose = layer.confirm('删除后不可恢复，确认删除?',{shade:0.4,anim:3,icon: 3, title:'提示'},function(){
                delete_files(str);
                layer.close(isClose);
             });
