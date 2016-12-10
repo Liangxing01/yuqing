@@ -91,7 +91,7 @@ function overtime_info(data) {
     $('#notification_bar2 .notify_total span').html(val2 + 1);
     var str = '';
     str += '<li>';
-    str += '<a href="/common/event_detail?eid="' + data.event_id + '" title="' + data.title + '">';
+    str += '<a href="/common/event_detail?eid="' + data.event_id + '" title="' + data.title + '&option=cancel_alert">';
     str += '<p class="alarm_title"' + data.title + '></p>';
     str += '<span class="small italic">' + data.time + '</span>';
     str += '</a></li>';
@@ -122,7 +122,7 @@ function beforetime_info(data) {
     $('#notification_bar1 .notify_total span').html(val2 + 1);
     var str = '';
     str += '<li>';
-    str += '<a href="/common/event_detail?eid="' + data.event_id + '" title="' + data.title + '">';
+    str += '<a href="/common/event_detail?eid="' + data.event_id + '" title="' + data.title + '&option=cancel_alert">';
     str += '<p class="alarm_title"' + data.title + '></p>';
     str += '<span class="small italic">' + data.time + '</span>';
     str += '</a></li>';

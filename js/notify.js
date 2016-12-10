@@ -17,7 +17,7 @@ function showNotify(data,target)
     
     var str='';
     $.each(data,function(index,v){
-        var i='<li><a href="/common/event_detail?eid='+v.event_id+'" title="'+v.title+'">' +
+        var i='<li><a href="/common/event_detail?eid='+v.event_id+'&option=cancel_alert" title="'+v.title+'">' +
             '<p class="alarm_title">'+
             v.title+
             '</p><span class="small italic">'+
