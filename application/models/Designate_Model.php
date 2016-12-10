@@ -993,6 +993,26 @@ class Designate_Model extends CI_Model
 
 
     /**
+     * 首回时间设置
+     * @param $event_id
+     * @return mixed
+     * false         - 不显示
+     * (array)result - 事件首回参数
+     */
+    public function show_reply_time_setting($event_id)
+    {
+        $result = $this->db->select("start_time, first_reply")
+            ->where(array("id" => $event_id, "reply_time !=" => null))
+            ->get("event")->row_array();
+        if (empty($result)) {
+            return false;
+        } else {
+            return $result;
+        }
+    }
+
+
+    /**
      * 确认事件审核按钮显示
      * @param $eid
      * @return bool
@@ -1048,7 +1068,8 @@ class Designate_Model extends CI_Model
      * @param $reply_time
      * @return bool
      */
-    public function commit_event_reply_time($event_id, $reply_time){
+    public function commit_event_reply_time($event_id, $reply_time)
+    {
         $this->db->trans_begin();
         $this->db->where("id", $event_id)->update("event", array("first_reply" => $reply_time));
         $this->db->where(array("event_id" => $event_id, "state" => 1))->update("event_alert", array("state" => 0));

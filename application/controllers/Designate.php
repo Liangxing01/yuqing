@@ -318,8 +318,11 @@ class Designate extends MY_controller
             $usertype = 0;
         }
 
-        $this->load->model("Handler_Model", "handler");
+        //首回事件设置
+        $reply_time_setting = $this->designate->show_reply_time_setting($event_id);
+        $this->assign("reply_time_setting", $reply_time_setting);
 
+        $this->load->model("Handler_Model", "handler");
         $einfo = $this->handler->get_title_by_eid($event_id);
         $done_btn = $this->designate->check_done_btn($event_id);   //事件审核按钮
         $this->assign('title', $einfo['title']);
