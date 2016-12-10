@@ -344,6 +344,8 @@ class Common_Model extends CI_Model
                 }
             }
         }else{
+            //邮件上传的文件
+            $finfo['belong_email'] = 1;
             //开始运行事务
             $this->db->trans_begin();
 
@@ -388,6 +390,7 @@ class Common_Model extends CI_Model
             ->from('file_user as fu')
             ->join('file as f','f.id = fu.fid')
             ->where('fu.uid',$uid)
+            ->where('f.belong_email IS NULL')
             ->like('f.old_name',$q['search'])
             ->limit($q['length'],$q['start'])
             ->order_by('f.upload_time','DESC')
@@ -397,6 +400,7 @@ class Common_Model extends CI_Model
             ->from('file_user as fu')
             ->join('file as f','f.id = fu.fid')
             ->where('fu.uid',$uid)
+            ->where('f.belong_email IS NULL')
             ->like('f.old_name',$q['search'])
             ->get()->num_rows();
 
@@ -525,6 +529,104 @@ class Common_Model extends CI_Model
     }
 
     /**
+     * 获取 回复 邮件的信息
+     * 参数：回复人的 id, 回复邮件的id
+     */
+    public function get_reply_info($r_uid,$r_eid){
+        $r_name = $this->db->select('name')
+            ->from('user')
+            ->where('id',$r_uid)
+            ->get()->row_array();
+
+        $r_etitle = $this->db->select('title')
+            ->from('email')
+            ->where('id',$r_eid)
+            ->get()->row_array();
+
+        return array(
+            'r_name'   => $r_name['name'],
+            'r_etitle' => $r_etitle['title']
+        );
+    }
+
+    /**通过 uid 获取用户姓名
+     *
+     */
+    public function get_name($uid){
+        $res = $this->db->select('name')
+            ->from('user')
+            ->where('id',$uid)
+            ->get()->row_array();
+        if(!empty($res)){
+            return $res['name'];
+        }else{
+            return false;
+        }
+    }
+
+    /**
+     * 邮件 Body 插入图片
+     * return 路径
+     */
+    public function insert_img($file_data,$allow_mime){
+        //判断Mime  转换 文件格式
+        $mimes = get_mimes();
+        $file_type = '';
+        foreach (explode('|',$allow_mime) as $item){
+            if(is_array($mimes[$item])){
+                if(in_array($file_data['file_type'],$mimes[$item])){
+                    $file_type = $item;
+                    break;
+                }
+            }else{
+                if($mimes[$item] == $file_data['file_type']){
+                    $file_type = $item;
+                    break;
+                }
+            }
+
+        }
+
+        $finfo = array(
+            'old_name' => $file_data['client_name'],
+            'new_name' => $file_data['file_name'],
+            'type'     => $file_type,
+            'size'     => $file_data['file_size'],
+            'upload_time' => time(),
+            'loc'      => $file_data['loc'],
+            'is_exist' => 1,
+            'belong_email' => 1
+        );
+
+        //开始运行事务
+        $this->db->trans_begin();
+
+        $this->db->insert('file',$finfo);
+        $fid = $this->db->insert_id();
+
+        $fuser = array(
+            'fid' => $fid,
+            'uid' => $this->session->userdata('uid')
+        );
+        $this->db->insert('file_user',$fuser);
+
+        if($this->db->trans_status() === FALSE){
+            $this->db->trans_rollback();
+            return array(
+                'res' => 0,
+                'msg' => '上传失败'
+            );
+        }else{
+            $this->db->trans_commit();
+            return array(
+                'res' => 1,
+                'msg' => '上传成功',
+                'src' => $file_data['loc']
+            );
+        }
+    }
+
+    /**
      * 通过 附件id 获取附件信息
      * $eid 校验是否 属于 该邮件的附件
      */
@@ -561,20 +663,31 @@ class Common_Model extends CI_Model
         $this->db->insert('email',$einfo);
         $eid = $this->db->insert_id();
 
-        //插入附件信息表，先通过fid 找到file表的信息，然后插入到 email_attach 表里面
-        $att_arr = array();
-        foreach ($attID as $att){
-            $file_info = $this->db->select('old_name as file_name,type,size,upload_time,loc')
-                ->from('file')
-                ->where('id',$att)
-                ->get()->row_array();
-            $file_info['eid'] = $eid;
-            $file_info['is_exist'] = 1;
-            $file_info['expire_time'] = (int)$file_info['upload_time'] + 1209600;
-            array_push($att_arr,$file_info);
+        //判断 是否 有附件
+        if(!empty($attID)){
+            //插入附件信息表，先通过fid 找到file表的信息，然后插入到 email_attach 表里面
+            $att_arr = array();
+            foreach ($attID as $att){
+                $file_info = $this->db->select('old_name as file_name,type,size,upload_time,new_name')
+                    ->from('file')
+                    ->where('id',$att)
+                    ->get()->row_array();
+                $file_info['eid'] = $eid;
+                $file_info['is_exist'] = 1;
+                $file_info['expire_time'] = (int)$file_info['upload_time'] + 1209600;
+                $file_info['loc'] = '/uploads/eUploads/' . $file_info['new_name'];
+
+                //copy temp目录下的文件 到 eUploads目录，并删除 原有文件
+                copy($_SERVER['DOCUMENT_ROOT'] . '/uploads/temp/' . $file_info['new_name'],$_SERVER['DOCUMENT_ROOT'] . '/uploads/eUploads/'.$file_info['new_name']);
+                @unlink($_SERVER['DOCUMENT_ROOT'] . '/uploads/temp/' . $file_info['new_name']);
+
+                unset($file_info['new_name']);
+                array_push($att_arr,$file_info);
+            }
+
+            $this->db->insert_batch('email_attachment',$att_arr);
         }
 
-        $this->db->insert_batch('email_attachment',$att_arr);
 
         //插入email_user表
 
@@ -641,7 +754,7 @@ class Common_Model extends CI_Model
 
         if(!empty($check_rece)){
             //查询邮件信息
-            $info = $this->db->select('e.id,e.title,e.body,u.name as sender_name,from_unixtime(e.time) as time')
+            $info = $this->db->select('e.id,e.priority_level,e.title,e.body,u.name as sender_name,from_unixtime(e.time) as time')
                 ->from('email as e')
                 ->join('user as u','u.id = e.sender')
                 ->where('e.id',$eid)
@@ -691,7 +804,7 @@ class Common_Model extends CI_Model
 
         if(!empty($check_send)){
             //查询邮件信息
-            $info = $this->db->select('*')
+            $info = $this->db->select('id,title,body,priority_level,from_unixtime(time) as time')
                 ->from('email')
                 ->where('id',$eid)
                 ->get()->row_array();
