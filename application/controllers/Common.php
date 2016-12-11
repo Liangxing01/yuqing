@@ -493,6 +493,16 @@ class Common extends MY_Controller
     }
 
     /**
+     * 接口：获取 邮件 通讯录
+     * 排除 领导
+     */
+    public function get_email_tree(){
+        $this->load->model('Tree_Model','tree');
+        $tree = $this->tree->get_email_tree();
+        echo $tree;
+    }
+
+    /**
      *收件箱  邮件 信息 查看 功能
      */
     public function rec_email_detail(){
@@ -559,6 +569,17 @@ class Common extends MY_Controller
         $user_read_state = $this->common->get_read_state($eid);
 
         echo json_encode($user_read_state);
+    }
+
+    /**
+     * 接口 ： 获取 未读邮件 个数
+     */
+    public function get_unread_num(){
+        $this->load->model('Common_Model','common');
+        $num = $this->common->get_unread_num();
+        echo json_encode(array(
+            'unread_num' => $num
+        ));
     }
 
     /**
