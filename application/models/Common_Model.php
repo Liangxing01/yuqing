@@ -856,6 +856,24 @@ class Common_Model extends CI_Model
     }
 
     /**
+     * 获取未读 邮件 个数
+     */
+    public function get_unread_num(){
+        $uid = $this->session->userdata('uid');
+        $gid = $this->session->userdata('gid');
+        $gid_arr = explode(',',$gid);
+        $num = $this->db->select('id')
+            ->from('email_user')
+            ->where('state',0)
+            ->group_start()
+            ->where('receiver_id',$uid)
+            ->or_where_in('receiver_gid',$gid_arr)
+            ->group_end()
+            ->get()->num_rows();
+        return $num;
+    }
+
+    /**
      * @param $fid
      * @return bool
      * 云盘 文件下载

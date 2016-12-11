@@ -562,6 +562,17 @@ class Common extends MY_Controller
     }
 
     /**
+     * 接口 ： 获取 未读邮件 个数
+     */
+    public function get_unread_num(){
+        $this->load->model('Common_Model','common');
+        $num = $this->common->get_unread_num();
+        echo json_encode(array(
+            'unread_num' => $num
+        ));
+    }
+
+    /**
      * 接口：邮件 附件上传接口
      */
     public function email_att_upload(){
