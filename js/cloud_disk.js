@@ -170,18 +170,17 @@ $(function(){
     get_all_files(0);   //默认第一页数据
 
     //上传按钮
-    $('.upload').click(function(){
-        var str = '<div class="row">';
-        str += '<form name="files">';
-        str += '<div class="upload_files">';
-        str += '<input type="file" name="file">'
-        str += '<a href="javascript:;" class="btn btn-md btn-info" id="upload_file" onclick="upload_btn()">上传</a>';
-        str += '</div></form></div>';
-        layer.open({
+    $('.upload').click(function(ev){
+       var layer1 =  layer.open({
+           type:1,
             title:'上传页面',
-            content:str,
+            content:$('#form1'),
             area:['600px','400px'],
-        })
+           cancel:function(){
+               window.location.reload();
+           }
+        });
+        return false;
     })
 
     //首页

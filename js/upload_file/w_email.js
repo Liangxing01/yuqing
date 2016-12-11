@@ -17,40 +17,38 @@ $(function () {
     $('#pic').fileupload({
         // Uncomment the following to send cross-domain cookies:
         //xhrFields: {withCredentials: true},
-        url:'/common/upload_file',
+        url:'/common/email_att_upload',
         autoUpload: false,
         filesContainer: $('#pic_files'),
         getFilesFromResponse:function(res){
-            /*if (res.result&&res.result.res==1){
-                res=res.result.info;
-                res.url=res.url.replace('pic/','temp/');
-                return [{'url':res.url,'name':res.name,'isPic':true}];
-            }*/
+            if (res.result&&res.result.res==1){
+                res=res.result;
+                return [{'id':res.fid,'name':res.file_name}];
+            }
             return [];
         },
         acceptFileTypes: /(\.|\/)(doc|docx|ppt|pdf|pptx|xlsx|word)$/i,
         maxFileSize:50000000
     }).on('fileuploaddone', function (e, data) {
         var res=data.result;
+        console.log(res);
         if (res.res!=1){
             alert('error');
             return;
         }else{
             /*res.info.isPic=1;
             window.FILES.push(res.info);*/
-            layer.msg("上传成功")
         }
     });
     
     $('form').on('click','.cancle-file',function(){
-        var url=$(this).data('url');
-        for (var x in window.FILES){
-            if (FILES[x].url==url){
-                FILES[x]=FILES[0];
-                FILES.shift();
-                break;
-            }
-        }
+        var id =$(this).data('id');
+        $.ajax({
+            url:'del_att',
+            data:{
+                fid:id,
+            },
+        })
         $(this).parent().parent().remove();
     });
 });

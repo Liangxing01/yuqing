@@ -1,5 +1,6 @@
 <script src="/js/layerUI/layui.js" ></script>
 <link href="/js/layerUI/css/layui.css"  rel="stylesheet">
+<link rel="stylesheet" href="/css/ssi-uploader.min.css">
 <style>
 .inbox-divider{
 	border-bottom: none;
@@ -46,6 +47,14 @@ textarea{
 	background: #47a8c4;
 }
 .panel-body{ height: 450px; overflow-y: auto ;}
+#pic{
+    display: inline-block;
+    width:40px;
+    opacity: 0;
+    z-index: 10;
+    position: absolute;
+    cursor: pointer;
+}
 </style>
 	
 <!-- BEGIN MAIN CONTENT -->
@@ -115,7 +124,7 @@ textarea{
                                     <h4 class="modal-title">写邮件</h4>
                                  </div>-->
                                  <div class="modal-body">
-                                    <form class="form-horizontal" role="form">
+                                    <form class="form-horizontal" role="form" enctype="multipart/form-data">
                                        <div class="form-group">
                                           <label class="col-lg-2 control-label" style="text-decoration: underline;">收件人</label>
                                           <div class="col-lg-10">
@@ -131,7 +140,18 @@ textarea{
                                        </div>
                                        <div class="form-group" style="border-bottom: none;">
                                           <div class="control-label">
-				                              <span type="file"><i class="fa fa-paperclip"></i> 添加附件</span>
+                                              <input type="hidden" id="id" name="id"/>
+                                              <span type="file"><i class="fa fa-paperclip"></i> 添加附件</span>
+                                              <input name="file" class="fileinput-button" type="file" id="pic" multiple>
+                                              <span class="btn btn-xs btn-info td_file">添加</span>
+                                              <select name="level_choose" id="" style="float: right">
+                                                  <option value="2">高优先级</option>
+                                                  <option value="1">一般</option>
+                                              </select>
+                                              <div style="clear: both"></div>
+                                              <table role="presentation" class="table table-striped">
+                                                  <tbody id="pic_files"></tbody>
+                                              </table>
 				                           </div>
                                        </div>
                                        
@@ -150,7 +170,7 @@ textarea{
                                     </form>
                                  </div>
                               </div>
-                                             
+                     </div>
                   </aside>
                  
                   <aside class="lg-side" style="width: 30%;">
@@ -177,7 +197,7 @@ textarea{
             </section>
 			<!-- END WRAPPER  -->
          </section>
-         
+<script src="/js/ssi-uploader.min.js"></script>
 <script type="text/javascript">
 	layui.use('layedit', function(){
 	  var layedit = layui.layedit;
@@ -187,5 +207,74 @@ textarea{
 
 
 	});
+</script>
+<script src="/js/cloud_disk.js"></script>
+<script id="template-upload" type="text/x-tmpl">
+{% for (var i=0, file; file=o.files[i]; i++) { %}
+    <tr class="template-upload fade">
+        <td>
+            <span class="preview"></span>
+        </td>
+        <td>
+            <p class="name">{%=file.name%}</p>
+            <strong class="error text-danger"></strong>
+        </td>
+        <td>
+            <p class="size">Processing...</p>
+            <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="progress-bar progress-bar-success" style="width:0%;"></div></div>
+        </td>
+        <td>
+            {% if (!i && !o.options.autoUpload) { %}
+                <button class="btn btn-primary start" disabled>
+                    <span>开始</span>
+                </button>
+            {% } %}
+            {% if (!i) { %}
+                <button class="btn btn-warning cancel">
+                    <span>取消</span>
+                </button>
+            {% } %}
+        </td>
+    </tr>
+{% } %}
+
 
 </script>
+<!-- The template to display files available for download -->
+<script id="template-download" type="text/x-tmpl">
+{% for (var i=0, file; file=o.files[i]; i++) { %}
+    <tr class="template-download fade">
+        <td>
+            <span class="preview">
+                {% if (file.isPic) { %}
+                    <img src="{%=file.url%}">
+                {% } %}
+            </span>
+        </td>
+        <td>
+            <p class="name">
+                    <span>{%=file.name%}提交成功！</span>
+        </td>
+        <td>
+            <button class="cancle-file" data-id="{%=file.id%}">取消上传</button>
+        </td>
+        <td>
+        </td>
+    </tr>
+{% } %}
+
+
+</script>
+<script src="/js/upload_file/load-image.js"></script>
+<script src="/js/upload_file/tmpl.js"></script>
+<script src="/js/upload_file/vendor/jquery.ui.widget.js"></script>
+<!-- The basic File Upload plugin -->
+<script src="/js/upload_file/jquery.fileupload.js"></script>
+<!-- The File Upload processing plugin -->
+<script src="/js/upload_file/jquery.fileupload-process.js"></script>
+<script src="/js/upload_file/jquery.fileupload-validate.js"></script>
+<script src="/js/upload_file/jquery.fileupload-ui.js"></script>
+<!-- The File Upload image preview & resize plugin -->
+<script src="/js/upload_file/jquery.fileupload-image.js"></script>
+<!-- The main application script -->
+<script src="/js/upload_file/w_email.js"></script>

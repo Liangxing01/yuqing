@@ -277,7 +277,7 @@ class Common_Model extends CI_Model
      */
     public function insert_file_info($file_data,$check_all_size,$allow_mime){
         //判断Mime  转换 文件格式
-        $mimes = get_mimes();
+        /*$mimes = get_mimes();
         $file_type = '';
         foreach (explode('|',$allow_mime) as $item){
             if(is_array($mimes[$item])){
@@ -292,12 +292,12 @@ class Common_Model extends CI_Model
                 }
             }
 
-        }
+        }*/
 
         $finfo = array(
             'old_name' => $file_data['client_name'],
             'new_name' => $file_data['file_name'],
-            'type'     => $file_type,
+            'type'     => '',
             'size'     => $file_data['file_size'],
             'upload_time' => time(),
             'loc'      => $file_data['loc'],
@@ -369,7 +369,8 @@ class Common_Model extends CI_Model
                 return array(
                     'res' => 1,
                     'msg' => '上传成功',
-                    'fid' => $fid
+                    'fid' => $fid,
+                    'file_name' =>$file_data['client_name']
                 );
             }
         }

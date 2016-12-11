@@ -1,4 +1,15 @@
 <link rel="stylesheet" href="/css/clound_disk.css">
+<style>
+	.td_file{
+		position:absolute;
+	}
+	#pic{
+		z-index: 3;
+		width:80px;
+		height: 40px;
+		opacity: 0;
+	}
+</style>
 <section id="main-content">
     <section class="wrapper site-min-height">
         <!-- BEGIN ROW  -->
@@ -58,9 +69,92 @@
 							<li class="last"><a href="javascript:void(0)">尾页</a></li>
             			</ul>
 		            </div>
+					<div id="form1" style="display: none;">
+						<div style="padding: 20px">
+							<form class="form-horizontal tasi-form layui-form" enctype="multipart/form-data">
+								<input type="hidden" id="id" name="id"/>
+								<span class="btn btn-md btn-primary td_file">选择文件</span>
+								<input name="file" class="fileinput-button" type="file" id="pic" multiple>
+								<div style="clear: both"></div>
+								<table role="presentation" class="table table-striped">
+									<tbody id="pic_files"></tbody>
+								</table>
+							</form>
+						</div>
+					</div>
+
                 </section>
             </div>
         </div>
     </section>
 </section>
 <script src="/js/cloud_disk.js"></script>
+<script id="template-upload" type="text/x-tmpl">
+{% for (var i=0, file; file=o.files[i]; i++) { %}
+    <tr class="template-upload fade">
+        <td>
+            <span class="preview"></span>
+        </td>
+        <td>
+            <p class="name">{%=file.name%}</p>
+            <strong class="error text-danger"></strong>
+        </td>
+        <td>
+            <p class="size">Processing...</p>
+            <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="progress-bar progress-bar-success" style="width:0%;"></div></div>
+        </td>
+        <td>
+            {% if (!i && !o.options.autoUpload) { %}
+                <button class="btn btn-primary start" disabled>
+                    <span>开始</span>
+                </button>
+            {% } %}
+            {% if (!i) { %}
+                <button class="btn btn-warning cancel">
+                    <span>取消</span>
+                </button>
+            {% } %}
+        </td>
+    </tr>
+{% } %}
+
+
+</script>
+<!-- The template to display files available for download -->
+<script id="template-download" type="text/x-tmpl">
+{% for (var i=0, file; file=o.files[i]; i++) { %}
+    <tr class="template-download fade">
+        <td>
+            <span class="preview">
+                {% if (file.isPic) { %}
+                    <img src="{%=file.url%}">
+                {% } %}
+            </span>
+        </td>
+        <td>
+            <p class="name">
+                    <span>{%=file.name%}提交成功！</span>
+        </td>
+        <td>
+
+        </td>
+        <td>
+        </td>
+    </tr>
+{% } %}
+
+
+</script>
+<script src="/js/upload_file/load-image.js"></script>
+<script src="/js/upload_file/tmpl.js"></script>
+<script src="/js/upload_file/vendor/jquery.ui.widget.js"></script>
+<!-- The basic File Upload plugin -->
+<script src="/js/upload_file/jquery.fileupload.js"></script>
+<!-- The File Upload processing plugin -->
+<script src="/js/upload_file/jquery.fileupload-process.js"></script>
+<script src="/js/upload_file/jquery.fileupload-validate.js"></script>
+<script src="/js/upload_file/jquery.fileupload-ui.js"></script>
+<!-- The File Upload image preview & resize plugin -->
+<script src="/js/upload_file/jquery.fileupload-image.js"></script>
+<!-- The main application script -->
+<script src="/js/upload_file/e_mail.js"></script>
