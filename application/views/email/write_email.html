@@ -284,23 +284,21 @@ textarea{
 <script type="text/javascript">
 	layui.use('layedit', function(){
         layedit = layui.layedit;
-	index = layedit.build('email-Message',{
-          uploadImage: {url: '/common/email_upload_img', type: 'post'}
+	    index = layedit.build('email-Message',{
+            uploadImage: {url: '/common/email_upload_img', type: 'post'}
       }); //建立编辑器
         $('.my_own').click(function(){
-            $('#email-Message').text('');
             $('#email-Message').text(layedit.getContent(index));
-            console.log($('#email-Message').text());
             if(!$('#receive_uid').val()){
                 layer.msg('请选择收件人');
                 return false;
             }
             if (!$('input[name="theme"]').val()) {
-                layer.msg("主题不能为空");
+                layer.msg("标题不能为空");
                 return false;
             }
             if (!$('#email-Message').text() || $('#email-Message').text() =='<br>') {
-                layer.msg("描述内容不能为空");
+                layer.msg("邮件内容不能为空");
                 return false;
             }
             var att_id = [];
@@ -309,7 +307,6 @@ textarea{
             })
             att_id = att_id.join(',');
 
-            console.log($('input[name="theme"]'))
             $.ajax({
                 url:'/common/write_email',
                 dataType:'json',
