@@ -493,6 +493,16 @@ class Common extends MY_Controller
     }
 
     /**
+     * 接口：获取 邮件 通讯录
+     * 排除 领导
+     */
+    public function get_email_tree(){
+        $this->load->model('Tree_Model','tree');
+        $tree = $this->tree->get_email_tree();
+        echo $tree;
+    }
+
+    /**
      *收件箱  邮件 信息 查看 功能
      */
     public function rec_email_detail(){
