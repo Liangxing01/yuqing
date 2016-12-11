@@ -1,6 +1,9 @@
 <script src="/js/layerUI/layui.js" ></script>
 <link href="/js/layerUI/css/layui.css"  rel="stylesheet">
 <link rel="stylesheet" href="/css/ssi-uploader.min.css">
+<link rel="stylesheet" href="/assets/ztree/zTreeStyle/zTreeStyle.css">
+<!-- Jquery Tags Input CSS -->
+<link rel="stylesheet" href="/assets/jquery-tags-input/jquery.tagsinput.min.css">
 <style>
 .inbox-divider{
 	border-bottom: none;
@@ -124,18 +127,19 @@ textarea{
                                     <h4 class="modal-title">写邮件</h4>
                                  </div>-->
                                  <div class="modal-body">
-                                    <form class="form-horizontal" role="form" enctype="multipart/form-data">
+                                    <form class="form-horizontal" role="form" enctype="multipart/form-data" id="email_form">
                                        <div class="form-group">
                                           <label class="col-lg-2 control-label" style="text-decoration: underline;">收件人</label>
                                           <div class="col-lg-10">
-                                             <input type="text" class="form-control" id="inputEmail1" placeholder="">
+                                             <input type="text" class="form-control" id="inputEmail1" placeholder="" name="tags">
+                                              <input type="hidden" id="receive_uid" name="user_id"/>
                                           </div>
                                        </div>
                                        
                                        <div class="form-group">
                                           <label class="col-lg-2 control-label">主题</label>
                                           <div class="col-lg-10">
-                                             <input type="text" class="form-control" value="<{if isset($reply_title) }><{$reply_title}><{/if}>" id="inputPassword1" placeholder="">
+                                             <input type="text" class="form-control" value="<{if isset($reply_title) }><{$reply_title}><{/if}>" id="inputPassword1" placeholder="" name="theme">
                                           </div>
                                        </div>
                                        <div class="form-group" style="border-bottom: none;">
@@ -157,14 +161,14 @@ textarea{
                                        
                                        <div class="form-group" style="border-bottom: none;">                                          
                                           
-                                             <textarea name="" id="email-Message"  placeholder="输入你想说的话..." class="form-control" cols="30" rows="10">
+                                             <textarea name="content_email" id="email-Message"  placeholder="输入你想说的话..." class="form-control" cols="30" rows="10">
                                              	
                                              </textarea>
                                           
                                        </div>
                                        <div class="form-group" style="border-bottom: none;">
                                           <div class="col-lg-10"> 
-                                             <button type="submit" class="btn btn-send">发送</button>
+                                             <a class="btn btn-md btn-info my_own" href="javascript:on_submit()">发送</a>
                                           </div>
                                        </div>
                                     </form>
@@ -180,6 +184,7 @@ textarea{
                            <div class="col-md-12">
                               <h4 style="padding-bottom: 17px; text-align: center;">
                                 组织关系
+                                  <button class="btn btn-xs btn-danger" style="float: right;margin-right:10px;" onclick="add_tags()">添加</button>
                               </h4>
                            </div>
                         </div>
@@ -198,15 +203,136 @@ textarea{
 			<!-- END WRAPPER  -->
          </section>
 <script src="/js/ssi-uploader.min.js"></script>
+<script src="/assets/ztree/jquery.ztree.all.min.js"></script>
+<script src="/assets/jquery-tags-input/jquery.tagsinput.min.js"></script>
+<script src="/js/jquery.validate.min.js"></script><!-- VALIDATE JS  -->
+<script>
+    var index,layedit;
+    /**
+     * Ztree && MultiSelect 插件
+     */
+    var onlineTree;
+
+    var setting = {
+        async: {
+            enable: true,
+            url: "/common/get_email_tree",
+            autoParam: ["id", "name=n", "level=lv"]
+            // dataFilter: filter
+        },
+        check:{
+            autoCheckTrigger:false,
+            chkStyle:"checkbox",
+            enable: true,
+            chkboxType:{ "Y": "ps", "N": "ps" }
+        },
+        callback:{
+            onAsyncSuccess: zTreeOnAsyncSuccess,//异步加载完执行
+        }
+    };
+
+    function zTreeOnAsyncSuccess(event, treeId, treeNode, msg) {
+        //去掉组织结构的选择项
+        var rootNode = onlineTree.getNodeByParam("id", 0, null);//得到组织结构树
+        rootNode.nocheck = true;
+        onlineTree.refresh();//更改属性后，刷新界面
+    }
+    //当节点选中时选择
+    function zTreeCheck(event, treeId, treeNode) {
+        if (treeNode.isdepartment == 1) {//个人
+            treeNode.getParentNode().checked = false;
+            //   console.log(treeNode.getParentNode());
+        } else if (treeNode.isdepartment == 0) {//单位
+            var children_arr = treeNode.children;
+            for (var i in children_arr) {
+                children_arr[i].checked = false;
+            }
+        }
+        onlineTree.refresh();
+    }
+    onlineTree = $.fn.zTree.init($("#show_struct"), setting);
+    function add_tags(){
+        var nodes = onlineTree.getCheckedNodes();
+        var arr_id = [];
+        var arr_name = [];
+        console.log(nodes);
+        for(var i in nodes){
+            if(nodes[i].isdepartment == 1){
+                arr_id.push(nodes[i].id);
+                arr_name.push(nodes[i].name);
+                if (!$("#inputEmail1").tagExist(nodes[i].id+'-'+nodes[i].name)) {
+                    $("#inputEmail1").addTag(nodes[i].id+'-'+nodes[i].name);
+                }
+            }
+
+        }
+        var arr2 = arr_id.join(',')
+        $('#receive_uid').val(arr2)
+    }
+    $('#inputEmail1').tagsInput({
+        width: 'auto',
+        defaultText: "",
+        delimiter: "_",
+        interactive: false
+    });
+
+
+    //表单验证
+    function on_submit(){
+        if(!$('#receive_uid').val()){
+            layer.msg('请选择收件人');
+            return false;
+        }
+        if (!$('input[name="theme"]').val()) {
+            layer.msg("主题不能为空");
+            return false;
+        }
+        if (!$('#email-Message').val()) {
+            layer.msg("描述内容不能为空");
+            return false;
+        }
+        var att_id = [];
+        $('.cancle-file').each(function(){
+            att_id.push($(this).data('id'));
+        })
+        att_id = att_id.join(',');
+        $.ajax({
+            url:'/common/write_email',
+            data:{
+                title:$('input[name="theme"]'),
+                body:$('#email-Message').val(),
+                priority_type:$('select[name="level_choose"]').val(),
+                uids:$('#receive_uid').val(),
+                attID:att_id
+            },
+            type:'POST',
+            dataType:'json',
+            success:function(data){
+                if(data.res == 1){
+                    layer.msg('发送成功')
+                }else{
+                    layer.msg('发送失败')
+                }
+
+            }
+        })
+    }
+</script>
 <script type="text/javascript">
 	layui.use('layedit', function(){
-	  var layedit = layui.layedit;
-	  layedit.build('email-Message',{
+        layedit = layui.layedit;
+	index = layedit.build('email-Message',{
           uploadImage: {url: '/common/email_upload_img', type: 'post'}
       }); //建立编辑器
-
-
+        $('.my_own').click(function(){
+            $('#email-Message').val(layedit.getContent(index))
+        })
 	});
+
+
+    function getContent(msg){
+        return msg;
+    }
 </script>
 <script src="/js/cloud_disk.js"></script>
 <script id="template-upload" type="text/x-tmpl">
