@@ -16,7 +16,7 @@ function reload_num() {
     })
 }
 function get_webSocket_msg() {
-    var client_socket = new WebSocket('ws://192.168.0.127:3000');
+    var client_socket = new WebSocket('ws://www.bnv6.com:4000');
     client_socket.onopen = function () {
         console.log("服务器已连接");
         //var cookie = getCookie('p_token');
