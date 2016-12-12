@@ -128,7 +128,7 @@ textarea{
                                  </div>-->
                                  <div class="modal-body">
                                     <form class="form-horizontal" role="form" enctype="multipart/form-data" id="email_form">
-                                       <div class="form-group">
+                                       <div class="form-group" style="border-bottom:none;">
                                           <label class="col-lg-2 control-label" style="text-decoration: underline;">收件人</label>
                                           <div class="col-lg-10">
                                              <input type="text" class="form-control" id="inputEmail1" placeholder="" name="tags">
@@ -161,14 +161,12 @@ textarea{
                                        
                                        <div class="form-group" style="border-bottom: none;">                                          
                                           
-                                             <textarea name="content_email" id="email-Message"  placeholder="输入你想说的话..." class="form-control" cols="30" rows="10">
-                                             	
-                                             </textarea>
+                                             <textarea name="content_email" id="email-Message"  placeholder="输入你想说的话..." class="form-control" cols="30" rows="10"></textarea>
                                           
                                        </div>
                                        <div class="form-group" style="border-bottom: none;">
                                           <div class="col-lg-10"> 
-                                             <a class="btn btn-md btn-info my_own" href="javascript:on_submit()">发送</a>
+                                             <span class="btn btn-md btn-info my_own" >发送</span>
                                           </div>
                                        </div>
                                     </form>
@@ -290,54 +288,57 @@ textarea{
         $('#receive_uid').val(new_id_arr.join(','));
     }
     //表单验证
-    function on_submit(){
-        if(!$('#receive_uid').val()){
-            layer.msg('请选择收件人');
-            return false;
-        }
-        if (!$('input[name="theme"]').val()) {
-            layer.msg("主题不能为空");
-            return false;
-        }
-        if (!$('#email-Message').val()) {
-            layer.msg("描述内容不能为空");
-            return false;
-        }
-        var att_id = [];
-        $('.cancle-file').each(function(){
-            att_id.push($(this).data('id'));
-        })
-        att_id = att_id.join(',');
-        $.ajax({
-            url:'/common/write_email',
-            data:{
-                title:$('input[name="theme"]'),
-                body:$('#email-Message').val(),
-                priority_type:$('select[name="level_choose"]').val(),
-                uids:$('#receive_uid').val(),
-                attID:att_id
-            },
-            type:'POST',
-            dataType:'json',
-            success:function(data){
-                if(data.res == 1){
-                    layer.msg('发送成功')
-                }else{
-                    layer.msg('发送失败')
-                }
+    $(".my_own").click(function () {
 
-            }
-        })
-    }
+    });
+
 </script>
 <script type="text/javascript">
 	layui.use('layedit', function(){
         layedit = layui.layedit;
-	index = layedit.build('email-Message',{
-          uploadImage: {url: '/common/email_upload_img', type: 'post'}
+	    index = layedit.build('email-Message',{
+            uploadImage: {url: '/common/email_upload_img', type: 'post'}
       }); //建立编辑器
         $('.my_own').click(function(){
-            $('#email-Message').val(layedit.getContent(index))
+            $('#email-Message').text(layedit.getContent(index));
+            if(!$('#receive_uid').val()){
+                layer.msg('请选择收件人');
+                return false;
+            }
+            if (!$('input[name="theme"]').val()) {
+                layer.msg("标题不能为空");
+                return false;
+            }
+            if (!$('#email-Message').text() || $('#email-Message').text() =='<br>') {
+                layer.msg("邮件内容不能为空");
+                return false;
+            }
+            var att_id = [];
+            $('.cancle-file').each(function(){
+                att_id.push($(this).data('id'));
+            })
+            att_id = att_id.join(',');
+
+            $.ajax({
+                url:'/common/write_email',
+                dataType:'json',
+                data:{
+                    title:$('input[name="theme"]').val(),
+                    body:$('#email-Message').val(),
+                    priority_level:$('select[name="level_choose"]').val(),
+                    uids:$('#receive_uid').val(),
+                    attID:att_id
+                },
+                type:'POST',
+                success:function(data){
+                    if(data.res == 1){
+                        layer.msg('发送成功')
+                    }else{
+                        layer.msg('发送失败')
+                    }
+
+                }
+            })
         })
 	});
 

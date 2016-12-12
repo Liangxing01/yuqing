@@ -905,7 +905,7 @@ class Common_Model extends CI_Model
         $res['emails'] = $this->db->select('e.id,ea.eid as has_att,e.title,e.priority_level,e.time')
             ->from('email as e')
             ->join('email_attachment as ea','e.id = ea.eid','left')
-            ->group_by('ea.eid')
+            ->group_by('e.id')
             ->where('e.sender',$uid)
             ->group_start()
             ->like('e.title',$q['search'])
