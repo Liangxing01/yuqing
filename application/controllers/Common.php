@@ -348,6 +348,8 @@ class Common extends MY_Controller
             //展示写邮件 页面
             $this->assign("active_title", "email_sys");
             $this->assign("active_parent", "file_parent");
+            $this->assign('reply_uid','');
+            $this->assign('reply_name','');
             $this->all_display("email/write_email.html");
         }else{
             //先把云盘文件 拷贝到 邮件附件 目录下，并插入email_attachment表中，隔离文件
@@ -369,8 +371,10 @@ class Common extends MY_Controller
         $reply_eid = $this->input->get('reply_eid');
         $reply_info = $this->common->get_reply_info($reply_uid,$reply_eid);
         $this->assign('reply_uid',$reply_uid);
-        $this->assign('reply_name',$reply_info['name']);
-        $this->assign('reply_title','回复 : '.$reply_info['title']);
+        $this->assign('reply_name',$reply_info['r_name']);
+        $this->assign('reply_title','回复 : '.$reply_info['r_etitle']);
+        $this->assign("active_title", "email_sys");
+        $this->assign("active_parent", "file_parent");
         $this->all_display("email/write_email.html");
     }
 

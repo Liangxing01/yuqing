@@ -195,7 +195,8 @@ textarea{
                         
                      </div>
                   </aside>
-                  
+                   <input type="hidden" data-id="<{$reply_uid}>" id="reply_uid">
+                   <input type="hidden" data-id="<{$reply_name}>" id="reply_name">
                </div>
             </section>
 			<!-- END WRAPPER  -->
@@ -342,6 +343,22 @@ textarea{
             })
         })
 	});
+    //检测是否是回复邮件
+    function check_receive(){
+        if(window.location.href.match(/reply_email/ig)){
+            var re_uid = $('#reply_uid').data('id');
+            var re_name = $('#reply_name').data('id');
+            if(re_uid&&re_name){
+                $('#inputEmail1').addTag(re_uid+'-'+re_name);
+                $('#receive_uid').val(re_uid);
+            }
+        }
+    }
+    $(function(){
+        check_receive();
+    })
+
+
 </script>
 <script src="/js/cloud_disk.js"></script>
 <script id="template-upload" type="text/x-tmpl">

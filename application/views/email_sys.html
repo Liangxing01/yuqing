@@ -318,6 +318,13 @@
             layer.msg('搜索词不能为空');
          }
       })
+
+      //收件箱绑定事件
+      $('.receive_msg body').on('','click',function(){
+            alert(1);
+            var id = $(this).data(id);
+            window.location.href = "rec_email_detail?id="+id;
+      })
    })
 
    /*
@@ -371,7 +378,7 @@
                         str += '<td class="view-message  dont-show">'+obj.sender_name+'<span class="label label-info pull-right">一般</span></td>';
                         break;
                   }
-                  str += '<td class="view-message "><a href="send_email_detail?id='+obj.id+'">'+obj.title+'</a></td>';
+                  str += '<td class="view-message "><a href="rec_email_detail?id='+obj.id+'">'+obj.title+'</a></td>';
                   if(obj.has_att){
                      str += '<td class="view-message  inbox-small-cells"><a class="fa fa-paperclip" href="/common/att_download?eid='+obj.eid+'&id='+obj.id+'"></a></td>'
                   }else{
