@@ -63,7 +63,7 @@
                 <!-- INBOX HEADER -->
                 <!-- INBOX BODY -->
                 <div class="inbox-body">
-                    <a class="btn btn-compose" data-toggle="modal" href="#myModal">
+                    <a class="btn btn-compose" data-toggle="modal" href="/common/show_write_email">
                         <img src="../../img/write_email.png" width="30" />写邮件
                     </a>
                     <!--<div class="modal fade" id="myModal" >
@@ -118,28 +118,14 @@
                 <!-- INBOX HEADER -->
                 <!-- INBOX NAV -->
                 <ul class="inbox-nav inbox-divider">
+                    <li>
+                        <a href="/common/show_emails"><i class="fa fa-inbox"></i> 收件箱 <span class="label label-danger pull-right rec_num"></span></a>
+                    </li>
                     <li class="active">
-                        <a href="#"><i class="fa fa-inbox"></i> 收件箱 <span class="label label-danger pull-right">2</span></a>
+                        <a href="/common/show_emails?from=send"><i class="fa fa-envelope-o"></i> 发件箱</a>
                     </li>
-                    <li>
-                        <a href="#"><i class="fa fa-envelope-o"></i> 发件箱<span class="label label-success pull-right">2</span></a>
-                    </li>
-                    <li>
-                        <a href="#"><i class=" fa fa-trash-o"></i> 垃圾箱<span class="label label-info pull-right">30</span></a>
-                    </li>
+
                 </ul>
-                <div class="inbox-body text-center">
-                    <div class="btn-group">
-                        <a href="javascript:;" class="btn mini btn-danger">
-                            <i class="fa fa-power-off"></i>
-                        </a>
-                    </div>
-                    <div class="btn-group">
-                        <a href="javascript:;" class="btn mini btn-primary">
-                            <i class="fa fa-cogs"></i>
-                        </a>
-                    </div>
-                </div>
             </aside>
 
 
@@ -153,7 +139,7 @@
                         </div>
                     </form>
                 </div>
-                <div class="inbox-body">
+                <div class="inbox-body" style="height: 600px;">
                     <div class="heading-inbox row">
                         <div class="col-md-8">
                             <div class="compose-btn">
@@ -174,9 +160,12 @@
                     <div class="sender-info">
                         <div class="row">
                             <div class="col-md-12">
+
                                 <img alt="" src="../../img/email-head.png">
                                 <strong>发件人 : <{$name}></strong>
-                                <span>[bmpcom9401@gmail.com]</span>
+                                <p>
+                                    <b>阅读状态:</b><span class="read_type"></span>;
+                                </p>
 
                                 <!--<a class="sender-dropdown " href="javascript:;">
                                 <i class="fa fa-chevron-down"></i>
@@ -186,10 +175,11 @@
                     </div>
                     <div class="view-mail">
                         <p><{$info['body']}></p>
+
                     </div>
                     <div class="attachment-mail">
                         <p>
-                            <span><i class="fa fa-paperclip"></i> 添加附件 &mdash; 图片或者文档或者视频</span>
+                            <span><i class="fa fa-paperclip"></i> 附件 &mdash; 图片或者文档或者视频</span>
                             <!--<a href="#">所有附件下载</a>
                             |
                             <a href="#">查看所有图片</a>-->
@@ -231,6 +221,20 @@
 </section>
 <script>
     get_attachment();
+    get_unread_email();
+    //获取未读邮件
+    function get_unread_email(){
+        $.ajax({
+            url:'/common/get_unread_num',
+            type:"get",
+            dataType:'json',
+            success:function(data){
+                if(data.unread_num){
+                    $('.rec_num').html(data.unread_num);
+                }
+            }
+        })
+    }
     function get_attachment(){
         var num = window.location.href.indexOf('?id=');
         var email_id = window.location.href.substr(num+4);   //附件id
@@ -244,14 +248,14 @@
             },
             dataType:'json',
             success:function(data){
-                if(data.length){
+                if(data[0] != null){
                     $('.attachment_list').html('');//清空原有附件
                     var len = data.length;
                     var attr_list = '';
                     for(var i =0 ;i<len;i++){
                         attr_list += '<li>';
                         attr_list += '<a href="javascript:return false;" class="atch-thumb">';
-                        attr_list += get_file_type(data[i].file_name);
+                        attr_list += get_file_type(data[i].file_name,data[i].loc);
                         attr_list += '</a>';
                         attr_list += '<div class="file_img">';
                         if(data[i].is_exist == 1){
@@ -271,19 +275,48 @@
     }
 
     //获取文件类型
-    function get_file_type(name){
+    function get_file_type(name,loc){
         if(name.match(/(\.|\/)(doc|docx)$/ig)){ //文档类型
-            return '<img src="../../../img/email_word.png">';
+            return '<img src="/img/email_word.png">';
         }
         if(name.match(/(\.|\/)(xlsx)$/ig)){ //表格类型
-            return '<img src="../../../img/email_excel.png">';
+            return '<img src="/img/email_excel.png">';
         }
         if(name.match(/(\.|\/)(ppt|pptx)$/ig)){ //ppt类型
-            return '<img src="../../../img/email_ppt.png">';
+            return '<img src="/img/email_ppt.png">';
         }
         if(name.match(/(\.|\/)(pdf)$/ig)){ //文档类型
-            return '<img src="../../../img/email_pdf.png.png">';
+            return '<img src="/img/email_pdf.png">';
         }
-        return '<img src="../../../img/email-img.png">';
+        if(name.match(/(\.|\/)(jpg|png|jpeg)$/ig)){
+            return '<img src='+loc+' width="130px">';
+        }
+        return '<img src="/img/">';
+    }
+    get_has_read();
+    function get_has_read(){
+        var num = window.location.href.indexOf('?id=');
+        var id = window.location.href.substr(num+4);
+        $.ajax({
+            url:"/common/get_has_read",
+            type:"GET",
+            data:{
+              id  :id
+            },
+            dataType:'json',
+            success:function(data){
+                if(data.user_read_state.length){
+                    var str = '';
+                    for(var i= 0;i<data.user_read_state.length;i++){
+                        if(data.user_read_state[i].state == 1){
+                            str += data.user_read_state[i].name + '<span class="fa fa-check"></span>';
+                        }else{
+                            str +=  data.user_read_state[i].name +'<span class="fa fa-times"></span>';
+                        }
+                    }
+                    $('.read_type').append(str);
+                }
+            }
+        })
     }
 </script>

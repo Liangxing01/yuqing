@@ -105,13 +105,10 @@ textarea{
 					 <!-- INBOX NAV -->
                      <ul class="inbox-nav inbox-divider">
                         <li>
-                           <a href="#"><i class="fa fa-inbox"></i> </a>
+                           <a href="/common/show_emails"><i class="fa fa-inbox"></i> </a>
                         </li>
                         <li>
-                           <a href="#"><i class="fa fa-envelope-o"></i> </a>
-                        </li>
-                        <li>
-                           <a href="#"><i class=" fa fa-trash-o"></i></a>
+                           <a href="/common/show_emails?from=send"><i class="fa fa-envelope-o"></i> </a>
                         </li>
                      </ul>                  
                   </aside>
@@ -334,7 +331,8 @@ textarea{
                 type:'POST',
                 success:function(data){
                     if(data.res == 1){
-                        layer.msg('发送成功')
+                        layer.msg('发送成功');
+                        window.location.href = '/common/show_emails?from=send';
                     }else{
                         layer.msg('发送失败')
                     }

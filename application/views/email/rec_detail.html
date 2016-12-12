@@ -42,7 +42,7 @@
 <!-- BEGIN MAIN CONTENT -->
          <section id="main-content">
 		 <!-- BEGIN WRAPPER  -->
-            <section class="wrapper">
+            <section class="wrapper site-min-height">
                <div class="mail-box">
                   <aside class="sm-side">
 				     <!-- INBOX HEADER -->
@@ -60,8 +60,8 @@
                      </div>
 					 <!-- INBOX HEADER -->
 					 <!-- INBOX BODY -->
-                     <div class="inbox-body">
-                        <a class="btn btn-compose" data-toggle="modal" href="#myModal">
+                     <div class="inbox-body" style="">
+                        <a class="btn btn-compose" data-toggle="modal" href="/common/show_write_email">
                         <img src="../../img/write_email.png" width="30" />写邮件
                         </a>
                         <!--<div class="modal fade" id="myModal" >
@@ -117,27 +117,15 @@
 					 <!-- INBOX NAV -->
                      <ul class="inbox-nav inbox-divider">
                         <li class="active">
-                           <a href="#"><i class="fa fa-inbox"></i> 收件箱 <span class="label label-danger pull-right">2</span></a>
+                           <a href="/common/show_emails"><i class="fa fa-inbox"></i> 收件箱 <span class="label label-danger pull-right rec_num"></span></a>
                         </li>
                         <li>
-                           <a href="#"><i class="fa fa-envelope-o"></i> 发件箱<span class="label label-success pull-right">2</span></a>
+                           <a href="/common/show_emails?from=send"><i class="fa fa-envelope-o"></i> 发件箱</a>
                         </li>
-                        <li>
+                       <!-- <li>
                            <a href="#"><i class=" fa fa-trash-o"></i> 垃圾箱<span class="label label-info pull-right">30</span></a>
-                        </li>
-                     </ul>                  
-                     <div class="inbox-body text-center">
-                        <div class="btn-group">
-                           <a href="javascript:;" class="btn mini btn-danger">
-                           <i class="fa fa-power-off"></i>
-                           </a>
-                        </div>
-                        <div class="btn-group">
-                           <a href="javascript:;" class="btn mini btn-primary">
-                           <i class="fa fa-cogs"></i>
-                           </a>
-                        </div>
-                     </div>
+                        </li>-->
+                     </ul>
                   </aside>
                   
                   
@@ -151,7 +139,7 @@
                            </div>
                         </form>
                      </div>
-                     <div class="inbox-body">
+                     <div class="inbox-body" style="height: 600px;">
                         <div class="heading-inbox row">
                            <div class="col-md-8">
                               <div class="compose-btn">
@@ -193,7 +181,7 @@
                               <a href="#">查看所有图片</a>-->
                            </p>
                            <ul class="attachment_list">
-                              <li>
+                              <!--<li>
                                  <a href="#" class="atch-thumb">
                                  <img src="../../../img/email_pdf.png" alt="img" />
                                  </a>
@@ -203,12 +191,12 @@
                                  <div class="file-name">
                                     名字名字名字名字.pdf
                                  </div>
-                                 <!--<span>30KB</span>
+                                 &lt;!&ndash;<span>30KB</span>
                                  <div class="links">
                                     <a href="#">View</a> -
                                     <a href="#">Download</a>
-                                 </div>-->
-                              </li>
+                                 </div>&ndash;&gt;
+                              </li>-->
                            </ul>
                         </div>
                         <!--<div class="compose-btn pull-left">
@@ -231,8 +219,22 @@
 <script>
    $(function(){
       receive_replay();
+      get_attachment();
+      get_unread_email()
    })
-   get_attachment();
+
+   function get_unread_email(){
+      $.ajax({
+         url:'/common/get_unread_num',
+         type:"get",
+         dataType:'json',
+         success:function(data){
+            if(data.unread_num){
+               $('.rec_num').html(data.unread_num);
+            }
+         }
+      })
+   }
    function get_attachment(){
       var num = window.location.href.indexOf('?id=');
       var email_id = window.location.href.substr(num+4);   //附件id

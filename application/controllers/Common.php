@@ -664,7 +664,7 @@ class Common extends MY_Controller
     public function att_download(){
         $fid = $this->input->get('fid');
         $eid = $this->input->get('eid');
-        if (!isset($id) || $id == null || $id == "") {
+        if (!isset($eid) || $eid == null || $eid == "") {
             show_404();
         }
         //获取文件信息和鉴权

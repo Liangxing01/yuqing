@@ -635,7 +635,7 @@ class Common_Model extends CI_Model
         $id_arr = explode(',',$ids);
         $att_info_arr = array();
         foreach ($id_arr as $id){
-            $info = $this->db->select('id,file_name,size,is_exist')
+            $info = $this->db->select('id,file_name,loc,size,is_exist')
                 ->from('email_attachment')
                 ->where('id',$id)
                 ->where('eid',$eid)

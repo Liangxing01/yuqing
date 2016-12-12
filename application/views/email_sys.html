@@ -40,7 +40,6 @@
     .send_msg tr td:nth-child(3){
        width:40%;
     }
-
 </style>
 	
 <!-- BEGIN MAIN CONTENT -->
@@ -74,16 +73,16 @@
 					 <!-- INBOX NAV -->
                      <ul class="inbox-nav inbox-divider msg_nav">
                         <li class="active">
-                           <a href="javascript:void(0)" name="receive_msg"><i class="fa fa-inbox"></i> 收件箱 <span class="label label-danger pull-right">2</span></a>
+                           <a href="javascript:void(0)" name="receive_msg"><i class="fa fa-inbox"></i> 收件箱 <span class="label label-danger pull-right rec_num"></span></a>
                         </li>
                         <li>
-                           <a href="javascript:void(0)" name="send_msg"><i class="fa fa-envelope-o"></i> 发件箱<span class="label label-success pull-right">2</span></a>
+                           <a href="javascript:void(0)" name="send_msg"><i class="fa fa-envelope-o"></i> 发件箱</a>
                         </li>
-                        <li>
+                        <!--<li>
                            <a href="javascript:void(0)" name="dustbin"><i class=" fa fa-trash-o"></i> 垃圾箱<span class="label label-info pull-right">30</span></a>
-                        </li>
+                        </li>-->
                      </ul>                  
-                     <div class="inbox-body text-center">
+                     <!--<div class="inbox-body text-center">
                         <div class="btn-group">
                            <a href="javascript:;" class="btn mini btn-danger">
                            <i class="fa fa-power-off"></i>
@@ -94,7 +93,7 @@
                            <i class="fa fa-cogs"></i>
                            </a>
                         </div>
-                     </div>
+                     </div>-->
                   </aside>
 				  <!-- INBOX MAIL CONTAINER -->
                   <div class="main_section">
@@ -108,20 +107,25 @@
                               </div>
                            </form>
                         </div>
-                        <div class="inbox-body">
+                        <div class="inbox-body" style="height: 800px;">
                            <div class="mail-option">
                               <div class="chk-all">
                                  <input type="checkbox" class="mail-checkbox mail-group-checkbox">
                                  <div class="btn-group">
                                     <a class="btn mini all" href="#" data-toggle="dropdown">
-                                       筛选
+                                       <span class="email_content">全部</span>
                                        <i class="fa fa-angle-down "></i>
                                     </a>
-                                    <ul class="dropdown-menu hasRead">
-                                       <li><a href="javascript:receive_message(0,'','all')"> 无</a></li>
-                                       <li><a href="javascript:receive_message(0,'',1)"> 已读</a></li>
-                                       <li><a href="javascript:receive_message(0,'',0)">未读</a></li>
+                                    <ul class="dropdown-menu hasRead email_type">
+                                       <li><a href="javascript:void(0)">全部</a></li>
+                                       <li><a href="javascript:void(0)">已读</a></li>
+                                       <li><a href="javascript:void(0)">未读</a></li>
                                     </ul>
+                                   <!-- <select name="" id="">
+                                       <option value="0">全部</option>
+                                       <option value="1">已读</option>
+                                       <option value="2">未读</option>
+                                    </select>-->
                                  </div>
                               </div>
                               <div class="btn-group">
@@ -169,7 +173,7 @@
                               </div>
                            </form>
                         </div>
-                        <div class="inbox-body">
+                        <div class="inbox-body" style="height: 800px;">
                            <div class="mail-option">
                               <div class="chk-all">
                                  <input type="checkbox" class="mail-checkbox mail-group-checkbox">
@@ -218,7 +222,7 @@
 
 
                      <!-- 垃圾箱 -->
-                     <aside class="lg-side" id="dustbin" style="display: none;">
+                     <!--<aside class="lg-side" id="dustbin" style="display: none;">
                         <div class="inbox-head">
                            <h3>垃圾箱</h3>
                            <form class="pull-right position" action="#">
@@ -275,7 +279,7 @@
                               </tbody>
                            </table>
                         </div>
-                     </aside>
+                     </aside>-->
                   </div>
 
 				  <!-- 垃圾箱 end -->
@@ -286,8 +290,11 @@
          </section>
 <script language='javascript' src='/js/public.js'></script>
 <script>
+   PAGE_NUM_RE = 15; //每页显示数目
    $(function(){
+      get_unread_email()//获取未读邮件数目
       receive_message(0,'','all')
+      is_send();
       $('.msg_nav li a').click(function(){
          $('.main_section aside').hide();
          var id = $(this).attr('name');
@@ -319,14 +326,44 @@
          }
       })
 
-      //收件箱绑定事件
-      $('.receive_msg body').on('','click',function(){
-            alert(1);
-            var id = $(this).data(id);
-            window.location.href = "rec_email_detail?id="+id;
+      //邮件状态点击事件
+      $('.email_type li a').click(function(){
+         var val = $(this).html();
+         $('.email_content').html(val);
+         switch(val){
+            case '全部':
+               receive_message(0,'','all');break;
+            case '已读':
+               receive_message(0,'',1);break;
+            case '未读':
+               receive_message(0,'',0);break;
+         }
       })
    })
 
+   //判断是否是收件箱返回
+   function is_send(){
+      var num = window.location.href.indexOf('?from=send');
+      if(num != -1){
+         $('.main_section aside').hide();
+         $('#send_msg').show();
+         get_all_send(0,'');
+         $('a[name="send_msg"]').parent().addClass('active').siblings('.active').removeClass('active');
+      }
+   }
+   //获取未读邮件
+   function get_unread_email(){
+      $.ajax({
+         url:'/common/get_unread_num',
+         type:"get",
+         dataType:'json',
+         success:function(data){
+            if(data.unread_num){
+               $('.rec_num').html(data.unread_num);
+            }
+         }
+      })
+   }
    /*
    * 收件箱
    * page：起始条目
@@ -347,7 +384,7 @@
          type:'POST',
          data:{
             search:key,
-            length:5,
+            length:PAGE_NUM_RE,
             start:page,
             state:way
          },
@@ -356,7 +393,7 @@
 //            console.log(data);
             if(data.emails.length){
                $('.receive_msg tbody').html('');
-               var page_num = Math.ceil(data.num/5);
+               var page_num = Math.ceil(data.num/PAGE_NUM_RE);
                $('.page_num_rec').html(page_num);
                var str = '';
                var len = data.emails.length;
@@ -366,9 +403,9 @@
                   str += '<td class="inbox-small-cells">'
                   str += '<input type="checkbox" class="mail-checkbox"></td>';
                   if(obj.state == '1'){
-                     str += '<td class="inbox-small-cells hidden-phone"><i class="fa fa-circle inbox-started"></i></td>'
-                  }else{
                      str += '<td class="inbox-small-cells hidden-phone"><i class="fa fa-circle"></i></td>'
+                  }else{
+                     str += '<td class="inbox-small-cells hidden-phone"><i class="fa fa-circle inbox-started"></i></td>'
                   }
                   switch (obj.priority_level){
                      case "1":
@@ -409,7 +446,7 @@
          url:'/common/get_all_sends',
          type:"POST",
          data:{
-           length:5,
+           length:PAGE_NUM_RE,
             start:page,
             search:key
          },
@@ -417,7 +454,7 @@
          success:function(data){
             if(data.emails.length){
                $('.send_msg tbody').html('');
-               var page_num = Math.ceil(data.num/15);
+               var page_num = Math.ceil(data.num/PAGE_NUM_RE);
                $('.page_num_send').html(page_num);
                var str = '';
                var len = data.emails.length;
@@ -434,7 +471,7 @@
                         str += '<td class="view-message  dont-show"><{$name}><span class="label label-info pull-right">一般</span></td>';
                         break;
                   }
-                  str += '<td class="view-message ">'+obj.title+'</td>';
+                  str += '<td class="view-message "><a href="/common/send_email_detail?id='+obj.id+'">'+obj.title+'</a></td>';
                   if(obj.has_att){
                      str += '<td class="view-message  inbox-small-cells"><a class="fa fa-paperclip" href="/common/att_download?eid='+obj.eid+'&id='+obj.id+'"></a></td>'
                   }else{
@@ -461,7 +498,15 @@
             layer.msg('当前为第一页');
             return;
          }else{
-            receive_message((index-2)*5,'','all');
+            var type = $('.email_content').html();
+            switch(type){
+               case '全部':
+                  receive_message((index-2)*PAGE_NUM_RE,'','all');break;
+               case '已读':
+                  receive_message((index-2)*PAGE_NUM_RE,'',1);break;
+               case '未读':
+                  receive_message((index-2)*PAGE_NUM_RE,'',0);break;
+            }
             $('.index_num_rec').html(index*1-1);
             return;
          }
@@ -473,7 +518,7 @@
             layer.msg('当前为第一页');
             return;
          }else{
-            get_all_send((index-2)*5,'','all');
+            get_all_send((index-2)*PAGE_NUM_RE,'','all');
             $('.index_num_send').html(index*1-1);
             return;
          }
@@ -488,7 +533,15 @@
             layer.msg('当前为最后一页');
             return false;
          }else{
-            receive_message(index*5,'','all');
+            var type = $('.email_content').html();
+            switch(type){
+               case '全部':
+                  receive_message(index*PAGE_NUM_RE,'','all');break;
+               case '已读':
+                  receive_message(index*PAGE_NUM_RE,'',1);break;
+               case '未读':
+                  receive_message(index*PAGE_NUM_RE,'',0);break;
+            }
             $('.index_num_rec').html(index*1+1);
             return false;
          }
@@ -501,7 +554,7 @@
             layer.msg('当前为最后一页');
             return false;
          }else{
-            get_all_send(index*5,'','all');
+            get_all_send(index*PAGE_NUM_RE,'','all');
             $('.index_num_send').html(index*1+1);
             return false;
          }
