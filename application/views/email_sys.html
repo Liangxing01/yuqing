@@ -371,7 +371,7 @@
                         str += '<td class="view-message  dont-show">'+obj.sender_name+'<span class="label label-info pull-right">一般</span></td>';
                         break;
                   }
-                  str += '<td class="view-message ">'+obj.title+'</td>';
+                  str += '<td class="view-message "><a href="send_email_detail?id='+obj.id+'">'+obj.title+'</a></td>';
                   if(obj.has_att){
                      str += '<td class="view-message  inbox-small-cells"><a class="fa fa-paperclip" href="/common/att_download?eid='+obj.eid+'&id='+obj.id+'"></a></td>'
                   }else{
