@@ -205,7 +205,6 @@ textarea{
 <script src="/assets/jquery-tags-input/jquery.tagsinput.min.js"></script>
 <script src="/js/jquery.validate.min.js"></script><!-- VALIDATE JS  -->
 <script>
-    var index,layedit;
     /**
      * Ztree && MultiSelect 插件
      */
@@ -249,6 +248,8 @@ textarea{
         onlineTree.refresh();
     }
     onlineTree = $.fn.zTree.init($("#show_struct"), setting);
+
+    //添加按钮事件
     function add_tags(){
         var nodes = onlineTree.getCheckedNodes();
         var arr_id = [];
@@ -267,12 +268,13 @@ textarea{
         var arr2 = arr_id.join(',')
         $('#receive_uid').val(arr2)
     }
+    //input tags 初始化
     $('#inputEmail1').tagsInput({
         width: 'auto',
         defaultText: "",
         delimiter: "_",
         interactive: false,
-        onRemoveTag:delete_tags
+        onRemoveTag:delete_tags //删除tags标签回调函数
     });
 
     //删除标签的回调函数
@@ -287,18 +289,17 @@ textarea{
         }
         $('#receive_uid').val(new_id_arr.join(','));
     }
-    //表单验证
-    $(".my_own").click(function () {
-
-    });
-
-</script>
-<script type="text/javascript">
+    
+    /*
+    * 富文本编辑器
+    * */
 	layui.use('layedit', function(){
-        layedit = layui.layedit;
-	    index = layedit.build('email-Message',{
+    var layedit = layui.layedit;
+    var index = layedit.build('email-Message',{
             uploadImage: {url: '/common/email_upload_img', type: 'post'}
       }); //建立编辑器
+
+        // 绑定发送按钮
         $('.my_own').click(function(){
             $('#email-Message').text(layedit.getContent(index));
             if(!$('#receive_uid').val()){
@@ -341,11 +342,6 @@ textarea{
             })
         })
 	});
-
-
-    function getContent(msg){
-        return msg;
-    }
 </script>
 <script src="/js/cloud_disk.js"></script>
 <script id="template-upload" type="text/x-tmpl">
