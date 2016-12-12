@@ -273,10 +273,22 @@ textarea{
         width: 'auto',
         defaultText: "",
         delimiter: "_",
-        interactive: false
+        interactive: false,
+        onRemoveTag:delete_tags
     });
 
-
+    //删除标签的回调函数
+    function delete_tags(obj){
+       var total = $('#inputEmail1').val();
+        var str = total.split('_');
+        var new_id_arr = [];
+        for (var i in str){
+            var start = str[i].indexOf('-');
+            var id = str[i].substr(0,start);
+            new_id_arr.push(id);
+        }
+        $('#receive_uid').val(new_id_arr.join(','));
+    }
     //表单验证
     function on_submit(){
         if(!$('#receive_uid').val()){
