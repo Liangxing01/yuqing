@@ -51,11 +51,10 @@
 				     <!-- INBOX HEADER -->
                      <div class="user-head">
                         <a href="javascript:;" class="inbox-avatar">
-                        <img src="../../img/email-head.png" width="64" height="60" alt="">
+                        <img src="<{$avatar}>" width="64" height="60" alt="">
                         </a>
                         <div class="user-name">
-                           <h5><a href="#">某某某</a></h5>
-                           <span><a href="#">pruthvi@tripzmate.com</a></span>
+                           <h5><a href="#"><{$name}></a></h5>
                         </div>
                         <!--<a href="javascript:;" class="mail-dropdown pull-right">
                         <i class="fa fa-chevron-down"></i>
@@ -219,67 +218,6 @@
                      </aside>
                      <!-- 发件箱 end -->
 
-
-
-                     <!-- 垃圾箱 -->
-                     <!--<aside class="lg-side" id="dustbin" style="display: none;">
-                        <div class="inbox-head">
-                           <h3>垃圾箱</h3>
-                           <form class="pull-right position" action="#">
-                              <div class="input-append">
-                                 <input type="text" placeholder="搜索你的邮件" class="sr-input">
-                                 <button type="button" class="btn sr-btn"><i class="fa fa-search"></i></button>
-                              </div>
-                           </form>
-                        </div>
-                        <div class="inbox-body">
-                           <div class="mail-option">
-                              <div class="chk-all">
-                                 <input type="checkbox" class="mail-checkbox mail-group-checkbox">
-                                 <div class="btn-group">
-                                    <a class="btn mini all" href="#" data-toggle="dropdown">
-                                       全选
-                                       <i class="fa fa-angle-down "></i>
-                                    </a>
-                                    <ul class="dropdown-menu">
-                                       <li><a href="#"> 无</a></li>
-                                       <li><a href="#"> 已读</a></li>
-                                       <li><a href="#">未读</a></li>
-                                    </ul>
-                                 </div>
-                              </div>
-                              <div class="btn-group">
-                                 <a class="btn mini tooltips" href="#" data-toggle="dropdown" data-placement="top" data-original-title="Refresh">
-                                    <i class=" fa fa-refresh"></i>
-                                 </a>
-                              </div>
-
-                              <ul class="unstyled inbox-pagination">
-                                 <li>共<span class="page_num_del">12</span>页</li>
-                                 <li>
-                                    <a href="#" class="np-btn"><i class="fa fa-angle-left  pagination-left"></i></a>
-                                 </li>
-                                 <li>
-                                    <a href="#" class="np-btn"><i class="fa fa-angle-right pagination-right"></i></a>
-                                 </li>
-                              </ul>
-                           </div>
-                           <table class="table table-inbox table-hover del_msg">
-                              <tbody>
-                              <tr class="unread">
-                                 <td class="inbox-small-cells">
-                                    <input type="checkbox" class="mail-checkbox">
-                                 </td>
-                                 <td class="inbox-small-cells hidden-phone"><i class="fa fa-circle"></i></td>
-                                 <td class="view-message  dont-show">发件人名字</td>
-                                 <td class="view-message ">主题主题主题</td>
-                                 <td class="view-message  inbox-small-cells"><i class="fa fa-paperclip"></i></td>
-                                 <td class="view-message  text-right">2016-12-8&nbsp;15:38</td>
-                              </tr>
-                              </tbody>
-                           </table>
-                        </div>
-                     </aside>-->
                   </div>
 
 				  <!-- 垃圾箱 end -->
@@ -409,10 +347,10 @@
                   }
                   switch (obj.priority_level){
                      case "1":
-                        str += '<td class="view-message  dont-show">'+obj.sender_name+'<span class="label label-danger pull-right">高级</span></td>';
+                        str += '<td class="view-message  dont-show">'+obj.sender_name+'<span class="label label-primary pull-right">一般</span></td>';
                         break;
                      case "2":
-                        str += '<td class="view-message  dont-show">'+obj.sender_name+'<span class="label label-info pull-right">一般</span></td>';
+                        str += '<td class="view-message  dont-show">'+obj.sender_name+'<span class="label label-danger pull-right">高优先级</span></td>';
                         break;
                   }
                   str += '<td class="view-message "><a href="rec_email_detail?id='+obj.id+'">'+obj.title+'</a></td>';
@@ -465,10 +403,10 @@
                   str += '<input type="checkbox" class="mail-checkbox"></td>';
                   switch (obj.priority_level){
                      case "1":
-                        str += '<td class="view-message  dont-show"><{$name}><span class="label label-danger pull-right">高级</span></td>';
+                        str += '<td class="view-message  dont-show"><{$name}><span class="label label-primary pull-right">一般</span></td>';
                         break;
                      case "2":
-                        str += '<td class="view-message  dont-show"><{$name}><span class="label label-info pull-right">一般</span></td>';
+                        str += '<td class="view-message  dont-show"><{$name}><span class="label label-danger pull-right">高优先级</span></td>';
                         break;
                   }
                   str += '<td class="view-message "><a href="/common/send_email_detail?id='+obj.id+'">'+obj.title+'</a></td>';

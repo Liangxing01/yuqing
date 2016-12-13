@@ -69,11 +69,10 @@ textarea{
 				     <!-- INBOX HEADER -->
                      <div class="user-head">
                         <a href="javascript:;" class="inbox-avatar">
-                        <img src="../../img/email-head.png" width="64" height="60" alt="">
+                        <img src="<{$avatar}>" width="64" height="60" alt="">
                         </a>
                         <div class="user-name">
                            <h5><a href="#"><{$name}></a></h5>
-                           <span><a href="#">pruthvi@tripzmate.com</a></span>
                         </div>
 
                      </div>
@@ -105,10 +104,10 @@ textarea{
 					 <!-- INBOX NAV -->
                      <ul class="inbox-nav inbox-divider">
                         <li>
-                           <a href="/common/show_emails"><i class="fa fa-inbox"></i> </a>
+                           <a href="/common/show_emails" title="收件箱"><i class="fa fa-inbox"></i> </a>
                         </li>
                         <li>
-                           <a href="/common/show_emails?from=send"><i class="fa fa-envelope-o"></i> </a>
+                           <a href="/common/show_emails?from=send" title="发件箱"><i class="fa fa-envelope-o"></i> </a>
                         </li>
                      </ul>                  
                   </aside>
@@ -146,9 +145,11 @@ textarea{
                                               <input name="file" class="fileinput-button" type="file" id="pic" multiple>
                                               <span class="btn btn-xs btn-info td_file">添加</span>
                                               <select name="level_choose" id="" style="float: right">
-                                                  <option value="2">高优先级</option>
                                                   <option value="1">一般</option>
+                                                  <option value="2">高优先级</option>
                                               </select>
+                                              <span  style="float: right;">等级：</span>
+
                                               <div style="clear: both"></div>
                                               <table role="presentation" class="table table-striped">
                                                   <tbody id="pic_files"></tbody>
@@ -252,7 +253,6 @@ textarea{
         var nodes = onlineTree.getCheckedNodes();
         var arr_id = [];
         var arr_name = [];
-        console.log(nodes);
         for(var i in nodes){
             if(nodes[i].isdepartment == 1){
                 arr_id.push(nodes[i].id);
@@ -299,8 +299,10 @@ textarea{
 
         // 绑定发送按钮
         $('.my_own').click(function(){
-            $('#email-Message').text(layedit.getContent(index));
-            if(!$('#receive_uid').val()){
+            $('#email-Message').val("");
+            $('#email-Message').val(layedit.getContent(index));
+            console.log(layedit.getContent(index));
+           if(!$('#receive_uid').val()){
                 layer.msg('请选择收件人');
                 return false;
             }
@@ -308,7 +310,7 @@ textarea{
                 layer.msg("标题不能为空");
                 return false;
             }
-            if (!$('#email-Message').text() || $('#email-Message').text() =='<br>') {
+            if (!$('#email-Message').val() || $('#email-Message').val() =='<br>') {
                 layer.msg("邮件内容不能为空");
                 return false;
             }
