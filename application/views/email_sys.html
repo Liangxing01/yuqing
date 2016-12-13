@@ -128,7 +128,7 @@
                                  </div>
                               </div>
                               <div class="btn-group">
-                                 <a class="btn mini tooltips" href="#" data-toggle="dropdown" data-placement="top" data-original-title="Refresh">
+                                 <a class="btn mini " href="javascript:void(0)" onclick="window.refresh();"data-toggle="dropdown" title="刷新">
                                     <i class=" fa fa-refresh "></i>
                                  </a>
                               </div>
@@ -189,9 +189,7 @@
                                  </div>
                               </div>
                               <div class="btn-group">
-                                 <a class="btn mini tooltips" href="#" data-toggle="dropdown" data-placement="top" data-original-title="Refresh">
-                                    <i class=" fa fa-refresh"></i>
-                                 </a>
+
                               </div>
                               <ul class="unstyled inbox-pagination">
                                  <li>页数<span class="index_num_send">1</span>/<span class="page_num_send"></span></li>
@@ -481,7 +479,7 @@
                   receive_message(index*PAGE_NUM_RE,'',0);break;
             }
             $('.index_num_rec').html(index*1+1);
-            return false;
+            return ;
          }
       }
 
@@ -494,7 +492,7 @@
          }else{
             get_all_send(index*PAGE_NUM_RE,'','all');
             $('.index_num_send').html(index*1+1);
-            return false;
+            return ;
          }
       }
 
