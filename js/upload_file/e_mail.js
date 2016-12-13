@@ -28,7 +28,7 @@ $(function () {
             }*/
             return [];
         },
-        acceptFileTypes: /(\.|\/)(doc|docx|ppt|pdf|pptx|xlsx|word)$/i,
+        acceptFileTypes: /(\.|\/)(doc|docx|ppt|pdf|pptx|xlsx|word|png|jpg|jpeg)$/i,
         maxFileSize:50000000
     }).on('fileuploaddone', function (e, data) {
         var res=data.result;

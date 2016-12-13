@@ -31,7 +31,6 @@ $(function () {
         maxFileSize:50000000
     }).on('fileuploaddone', function (e, data) {
         var res=data.result;
-        console.log(res);
         if (res.res!=1){
             alert('error');
             return;

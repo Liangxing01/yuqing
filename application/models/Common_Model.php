@@ -755,7 +755,7 @@ class Common_Model extends CI_Model
 
         if(!empty($check_rece)){
             //查询邮件信息
-            $info = $this->db->select('e.id,e.sender,e.priority_level,e.title,e.body,u.name as sender_name,from_unixtime(e.time) as time')
+            $info = $this->db->select('e.id,u.avatar as sender_avatar,e.sender,e.priority_level,e.title,e.body,u.name as sender_name,from_unixtime(e.time) as time')
                 ->from('email as e')
                 ->join('user as u','u.id = e.sender')
                 ->where('e.id',$eid)

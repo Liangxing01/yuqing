@@ -113,8 +113,9 @@ function search_files(){
         },
         dataType:'json',
         success:function(data){
-            if(data){
+            if(data.num){
                 $('.My_pan_list tbody').html('');
+                $('.my_pan_page').show();
                 var str = '';
                 $('.my_pan_page .total').html(Math.ceil(data.num/5));
                 $('.My_pan_title .all').html(data.num);
@@ -148,6 +149,14 @@ function search_files(){
                     str += '</tr>';
                 }
                 $('.My_pan_list tbody').append(str);
+
+            }else{
+                $('.my_pan_page .total').html(Math.ceil(data.num/5));
+                $('.My_pan_title .all').html(data.num);
+                if(Math.ceil(data.num/5)<2){
+                    $('.my_pan_page').hide();
+                }
+                $('.My_pan_list tbody').html("<tr><td colspan='4' style='text-align: center;'>暂无数据</td></tr>");
 
             }
         }
