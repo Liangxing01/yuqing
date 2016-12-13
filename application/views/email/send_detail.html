@@ -56,9 +56,6 @@
                         <h5><a href="#">某某某</a></h5>
                         <span><a href="#">pruthvi@tripzmate.com</a></span>
                     </div>
-                    <!--<a href="javascript:;" class="mail-dropdown pull-right">
-                    <i class="fa fa-chevron-down"></i>
-                    </a>-->
                 </div>
                 <!-- INBOX HEADER -->
                 <!-- INBOX BODY -->
@@ -66,54 +63,6 @@
                     <a class="btn btn-compose" data-toggle="modal" href="/common/show_write_email">
                         <img src="../../img/write_email.png" width="30" />写邮件
                     </a>
-                    <!--<div class="modal fade" id="myModal" >
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                                    <h4 class="modal-title">写邮件</h4>
-                                </div>
-                                <div class="modal-body">
-                                    <form class="form-horizontal" role="form">
-                                        <div class="form-group">
-                                            <label class="col-lg-2 control-label">致</label>
-                                            <div class="col-lg-10">
-                                                <input type="text" class="form-control" id="inputEmail1" placeholder="">
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-lg-2 control-label">转发/密送</label>
-                                            <div class="col-lg-10">
-                                                <input type="text" class="form-control" id="cc" placeholder="">
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-lg-2 control-label">主题</label>
-                                            <div class="col-lg-10">
-                                                <input type="text" class="form-control" id="inputPassword1" placeholder="">
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-lg-2 control-label">正文</label>
-                                            <div class="col-lg-10">
-                                                <textarea name="" id="test" class="form-control" cols="30" rows="10"></textarea>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <div class="col-lg-offset-2 col-lg-10">
-                                             <span class="btn green fileinput-button">
-                                             <i class="fa fa-plus fa fa-white"></i>
-                                             <span>附件</span>
-                                             <input type="file" multiple="" name="files[]">
-                                             </span>
-                                                <button type="submit" class="btn btn-send">发送</button>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>-->
                 </div>
                 <!-- INBOX HEADER -->
                 <!-- INBOX NAV -->
@@ -144,7 +93,6 @@
                         <div class="col-md-8">
                             <div class="compose-btn">
                                 <a class="btn btn-sm btn-info" href="#"><i class="fa fa-reply"></i> 回复</a>
-                                <!--<button title="" data-placement="top" data-toggle="tooltip" type="button" data-original-title="打印" class="btn  btn-sm tooltips"><i class="fa fa-print"></i> </button>-->
                                 <button title="" data-placement="top" data-toggle="tooltip" data-original-title="草稿箱" class="btn btn-sm tooltips"><i class="fa fa-trash-o"></i></button>
                             </div>
                         </div>
@@ -166,10 +114,6 @@
                                 <p>
                                     <b>阅读状态:</b><span class="read_type"></span>;
                                 </p>
-
-                                <!--<a class="sender-dropdown " href="javascript:;">
-                                <i class="fa fa-chevron-down"></i>
-                                </a>-->
                             </div>
                         </div>
                     </div>
@@ -180,9 +124,6 @@
                     <div class="attachment-mail">
                         <p>
                             <span><i class="fa fa-paperclip"></i> 附件 &mdash; 图片或者文档或者视频</span>
-                            <!--<a href="#">所有附件下载</a>
-                            |
-                            <a href="#">查看所有图片</a>-->
                         </p>
                         <ul class="attachment_list">
                            <!-- <li>
@@ -203,12 +144,6 @@
                             </li>-->
                         </ul>
                     </div>
-                    <!--<div class="compose-btn pull-left">
-                       <a class="btn btn-sm btn-info" href="#"><i class="fa fa-reply"></i> Reply</a>
-                       <button class="btn btn-sm "><i class="fa fa-arrow-right"></i> Forward</button>
-                       <button title="" data-placement="top" data-toggle="tooltip" type="button" data-original-title="Print" class="btn  btn-sm tooltips"><i class="fa fa-print"></i> </button>
-                       <button title="" data-placement="top" data-toggle="tooltip" data-original-title="Trash" class="btn btn-sm tooltips"><i class="fa fa-trash-o"></i></button>
-                    </div>-->
                 </div>
             </aside>
 
@@ -219,104 +154,9 @@
     </section>
     <!-- END WRAPPER  -->
 </section>
+<script language="javascript" src="/js/common_email.js"></script>
 <script>
-    get_attachment();
-    get_unread_email();
-    //获取未读邮件
-    function get_unread_email(){
-        $.ajax({
-            url:'/common/get_unread_num',
-            type:"get",
-            dataType:'json',
-            success:function(data){
-                if(data.unread_num){
-                    $('.rec_num').html(data.unread_num);
-                }
-            }
-        })
-    }
-    function get_attachment(){
-        var num = window.location.href.indexOf('?id=');
-        var email_id = window.location.href.substr(num+4);   //附件id
-        var att_id = '<{$attID}>';
-        $.ajax({
-            url:'/common/get_att_info',
-            type:'POST',
-            data:{
-                att_ids:att_id,
-                eid:email_id
-            },
-            dataType:'json',
-            success:function(data){
-                if(data[0] != null){
-                    $('.attachment_list').html('');//清空原有附件
-                    var len = data.length;
-                    var attr_list = '';
-                    for(var i =0 ;i<len;i++){
-                        attr_list += '<li>';
-                        attr_list += '<a href="javascript:return false;" class="atch-thumb">';
-                        attr_list += get_file_type(data[i].file_name,data[i].loc);
-                        attr_list += '</a>';
-                        attr_list += '<div class="file_img">';
-                        if(data[i].is_exist == 1){
-                            attr_list += '<a href="/common/att_download?fid='+data[i].id+'&eid='+email_id+'" class="btn btn-md btn-info attr_down">下载</a>';
-                        }else{
-                            attr_list += '<span class="attr_down" style="color:#fff;font-size: 18px">已过期</span>';
-                        }
-                        attr_list += '</div>';
-                        attr_list += '<div class="file-name">'+data[i].file_name+'</div>';
-                        attr_list += '</li>';
-                    }
-                    $('.attachment_list').append(attr_list);
-                }
-            }
-        })
-
-    }
-
-    //获取文件类型
-    function get_file_type(name,loc){
-        if(name.match(/(\.|\/)(doc|docx)$/ig)){ //文档类型
-            return '<img src="/img/email_word.png">';
-        }
-        if(name.match(/(\.|\/)(xlsx)$/ig)){ //表格类型
-            return '<img src="/img/email_excel.png">';
-        }
-        if(name.match(/(\.|\/)(ppt|pptx)$/ig)){ //ppt类型
-            return '<img src="/img/email_ppt.png">';
-        }
-        if(name.match(/(\.|\/)(pdf)$/ig)){ //文档类型
-            return '<img src="/img/email_pdf.png">';
-        }
-        if(name.match(/(\.|\/)(jpg|png|jpeg)$/ig)){
-            return '<img src='+loc+' width="130px">';
-        }
-        return '<img src="/img/">';
-    }
-    get_has_read();
-    function get_has_read(){
-        var num = window.location.href.indexOf('?id=');
-        var id = window.location.href.substr(num+4);
-        $.ajax({
-            url:"/common/get_has_read",
-            type:"GET",
-            data:{
-              id  :id
-            },
-            dataType:'json',
-            success:function(data){
-                if(data.user_read_state.length){
-                    var str = '';
-                    for(var i= 0;i<data.user_read_state.length;i++){
-                        if(data.user_read_state[i].state == 1){
-                            str += data.user_read_state[i].name + '<span class="fa fa-check"></span>';
-                        }else{
-                            str +=  data.user_read_state[i].name +'<span class="fa fa-times"></span>';
-                        }
-                    }
-                    $('.read_type').append(str);
-                }
-            }
-        })
-    }
+    get_attachment();   //获取附件
+    get_unread_email(); //获取未读邮件数目
+    get_has_read(); //获取阅读状态
 </script>
