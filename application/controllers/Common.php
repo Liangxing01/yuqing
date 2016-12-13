@@ -230,14 +230,12 @@ class Common extends MY_Controller
         $this->load->model("Common_Model","common");
         $config = array();
         $config['upload_path'] = './uploads/file/';
-        ///$config['allowed_types'] = 'doc|docx|ppt|pdf|pptx|xlsx|word';
-        $config['allowed_types'] = '*';
+        $config['allowed_types'] = 'doc|docx|ppt|pdf|pptx|xlsx|word|jpg|png|jpeg|rar|zip';
         $config['max_size'] = 500000;
         $config['max_width'] = 0;
         $config['max_height'] = 0;
         $config['encrypt_name'] = true;
 
-        $config['detect_mime'] = false;
 
         $this->load->library('upload', $config);
 
@@ -594,14 +592,12 @@ class Common extends MY_Controller
         $config = array();
         //先保存在 temp 临时目录
         $config['upload_path'] = './uploads/temp/';
-        //$config['allowed_types'] = 'doc|docx|ppt|pdf|pptx|xlsx|word|rar|zip|jpeg|png|jpg';
-        $config['allowed_types'] = '*';
+        $config['allowed_types'] = 'doc|docx|ppt|pdf|pptx|xlsx|word|rar|zip|jpeg|png|jpg';
         $config['max_size'] = 1000000;//大小限制100M
         $config['max_width'] = 0;
         $config['max_height'] = 0;
         $config['encrypt_name'] = true;
 
-        $config['detect_mime'] = false;
         $this->load->library('upload', $config);
 
         if (!$this->upload->do_upload('file')) {
