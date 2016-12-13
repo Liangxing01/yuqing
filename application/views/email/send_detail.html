@@ -57,9 +57,6 @@
                         <h5><a href="#"><{$name}></a></h5>
 
                     </div>
-                    <!--<a href="javascript:;" class="mail-dropdown pull-right">
-                    <i class="fa fa-chevron-down"></i>
-                    </a>-->
                 </div>
                 <!-- INBOX HEADER -->
                 <!-- INBOX BODY -->
@@ -95,7 +92,6 @@
                 <div class="inbox-body" style="min-height: 600px;">
                     <div class="heading-inbox row">
                         <div class="col-md-8">
-                                <!--<button title="" data-placement="top" data-toggle="tooltip" type="button" data-original-title="打印" class="btn  btn-sm tooltips"><i class="fa fa-print"></i> </button>-->
 
                         </div>
                         <div class="col-md-4 text-right">
@@ -116,10 +112,6 @@
                                 <p>
                                     <b>阅读状态:</b><span class="read_type"></span>;
                                 </p>
-
-                                <!--<a class="sender-dropdown " href="javascript:;">
-                                <i class="fa fa-chevron-down"></i>
-                                </a>-->
                             </div>
                         </div>
                     </div>
@@ -130,9 +122,6 @@
                     <div class="attachment-mail">
                         <p>
                             <span><i class="fa fa-paperclip"></i> 附件 &mdash; 图片或者文档或者视频</span>
-                            <!--<a href="#">所有附件下载</a>
-                            |
-                            <a href="#">查看所有图片</a>-->
                         </p>
                         <ul class="attachment_list">
                            <!-- <li>
@@ -153,12 +142,6 @@
                             </li>-->
                         </ul>
                     </div>
-                    <!--<div class="compose-btn pull-left">
-                       <a class="btn btn-sm btn-info" href="#"><i class="fa fa-reply"></i> Reply</a>
-                       <button class="btn btn-sm "><i class="fa fa-arrow-right"></i> Forward</button>
-                       <button title="" data-placement="top" data-toggle="tooltip" type="button" data-original-title="Print" class="btn  btn-sm tooltips"><i class="fa fa-print"></i> </button>
-                       <button title="" data-placement="top" data-toggle="tooltip" data-original-title="Trash" class="btn btn-sm tooltips"><i class="fa fa-trash-o"></i></button>
-                    </div>-->
                 </div>
             </aside>
 
@@ -169,10 +152,9 @@
     </section>
     <!-- END WRAPPER  -->
 </section>
+<script language="javascript" src="/js/common_email.js"></script>
 <script>
 
-    get_attachment();
-    get_unread_email();
     //获取未读邮件
     function get_unread_email(){
         $.ajax({
@@ -270,4 +252,9 @@
             }
         })
     }
+
+    get_attachment();   //获取附件
+    get_unread_email(); //获取未读邮件数目
+    get_has_read(); //获取阅读状态
+
 </script>
