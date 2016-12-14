@@ -467,7 +467,7 @@
          var total = $('.page_num_rec').html();
          if(index+1>total){
             layer.msg('当前为最后一页');
-            return false;
+            return;
          }else{
             var type = $('.email_content').html();
             switch(type){
@@ -488,7 +488,7 @@
          var total = $('.page_num_send').html();
          if(index+1>total){
             layer.msg('当前为最后一页');
-            return false;
+            return;
          }else{
             get_all_send(index*PAGE_NUM_RE,'','all');
             $('.index_num_send').html(index*1+1);
