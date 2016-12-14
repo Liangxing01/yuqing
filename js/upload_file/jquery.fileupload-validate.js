@@ -74,9 +74,9 @@
             // Error and info messages:
             messages: {
                 maxNumberOfFiles: 'Maximum number of files exceeded',
-                acceptFileTypes: 'File type not allowed',
-                maxFileSize: 'File is too large',
-                minFileSize: 'File is too small'
+                acceptFileTypes: '文件上传格式不允许',
+                maxFileSize: '文件太大',
+                minFileSize: '文件太小'
             }
         },
 
