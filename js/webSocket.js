@@ -4,6 +4,7 @@
 $(function () {
     //get_all_msg();
     get_webSocket_msg();
+    window.onfocus = message.clear;
 });
 
 window.onload = function () {
@@ -30,6 +31,9 @@ function get_webSocket_msg() {
             var list = '';
             list += '<tr>';
             list += '<td></td>';
+            if(data.type != "client"){
+                message.show();
+            }
             switch (data.type) {
                 case "client":
                     bind_client_to_uid(data.client_id);
@@ -173,6 +177,42 @@ function bind_client_to_uid(client_id) {
         }
     });
 }
+
+
+/**
+ * 标题闪烁
+ */
+var message = {   //title闪烁
+    time: 0,
+    title: document.title,
+    timer: null,
+    // 显示新消息提示
+    show: function () {
+        if(message.timer != null){
+            return;
+        }
+        var title = message.title.replace("【　　　】", "").replace("【新消息】", "");
+        // 定时器，设置消息切换频率闪烁效果就此产生
+        message.timer = setTimeout(function () {
+            message.time++;
+            message.show();
+            if (message.time % 2 == 0) {
+                document.title = "【新消息!!】" + title
+            }
+            else {
+                document.title = "【　　　】" + title
+            };
+        }, 600);
+        return [message.timer, message.title];
+    },
+    // 取消新消息提示
+    clear: function () {
+        clearTimeout(message.timer);
+        document.title = message.title;
+    }
+};
+
+
 
 /**
  * 发送客户端心跳包
