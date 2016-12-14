@@ -120,9 +120,12 @@ class Identity_Auth
             //绑定client_id到uid
             Gateway::bindUid($client_id, $this->CI->session->uid);
             //添加到用户组
-            $user_group = explode(",", $this->CI->session->gid);
-            foreach ($user_group AS $group_id) {
-                Gateway::joinGroup($client_id, $group_id);
+            $gid = $this->CI->session->gid;
+            if ($gid) {
+                $user_group = explode(",", $gid);
+                foreach ($user_group AS $group_id) {
+                    Gateway::joinGroup($client_id, $group_id);
+                }
             }
             //更新client认证token
             Gateway::setSession($client_id, array("p_token" => $this->CI->session->p_token, "uid" => $this->CI->session->uid));
