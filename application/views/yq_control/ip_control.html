@@ -28,7 +28,7 @@
                                     <input type="text" class="form-control" id="alias" name="alias">
                                 </div>
                                 <div class="col-md-3">
-                                    <label>管控IP:< /label>
+                                    <label>管控IP:</label>
                                     <input type="text" placeholder="255.255.255.255" class="form-control" id="ctl_ip" name="ctl_ip">
                                 </div>
 
@@ -46,7 +46,7 @@
                                 <tr>
                                     <th>编号</th>
                                     <th>名称</th>
-                                    <th>管控域名</th>
+                                    <th>管控IP</th>
                                     <th>添加时间</th>
                                     <th>操作</th>
                                 </tr>
@@ -147,7 +147,7 @@
                 'orderable': false
             },
             {
-                "sTitle": "管控域名",
+                "sTitle": "管控IP",
                 "mData": "value",
                 'sClass': "text-center",
                 'orderable': false
@@ -196,7 +196,7 @@
         layer.confirm('确认删除?', {title: '提示'}, function (index) {
             var layer_index = layer.load(2);
             $.ajax({
-                url: "/yq_control/del_dns?rule_id=" + rule_id,
+                url: "/yq_control/del_ip?rule_id=" + rule_id,
                 method: "get",
                 dataType: 'json',
                 success: function (data) {
