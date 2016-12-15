@@ -174,6 +174,12 @@ class Yq_control extends MY_Controller {
     public function ctl_ip(){
         $ctl_ip = $this->input->get('ctl_ip');
         $alias = $this->input->get('alias');
+        if(!preg_match("/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/", $ctl_ip)) {
+            echo json_encode(array(
+                'res' => 0,
+                'msg' => "IP格式不正确"
+            ));
+        }
         $res = $this->url_control->ctl_ip($ctl_ip,$alias);
         if($res){
             echo json_encode($res);
