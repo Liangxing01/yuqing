@@ -105,9 +105,9 @@
             success: function (data) {
                 layer.close(layer_index);
                 if (data.res == "1") {
-                    layer.message(data.msg, {time: 1000});
+                    layer.msg(data.msg, {time: 1000});
                 } else {
-                    layer.message(data.msg, {anim: 6, time: 1000});
+                    layer.msg(data.msg, {anim: 6, time: 1000});
                 }
             }
         });

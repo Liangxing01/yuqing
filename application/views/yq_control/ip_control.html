@@ -29,7 +29,7 @@
                                 </div>
                                 <div class="col-md-3">
                                     <label>控制IP:</label>
-                                    <input type="text" class="form-control" id="control_ip" name="control_ip">
+                                    <input type="text" placeholder="255.255.255.255" class="form-control" id="control_ip" name="control_ip">
                                 </div>
 
                                 <div class="col-md-1 m-t-24">
@@ -105,9 +105,9 @@
             success: function (data) {
                 layer.close(layer_index);
                 if (data.res == "1") {
-                    layer.message(data.msg, {time: 1000});
+                    layer.msg(data.msg, {time: 1000});
                 } else {
-                    layer.message(data.msg, {anim: 6, time: 1000});
+                    layer.msg(data.msg, {anim: 6, time: 1000});
                 }
             }
         });
