@@ -16,12 +16,31 @@ class Yq_control extends MY_Controller {
 
 
     /**
-     * 舆情管控 视图载入
+     * 舆情管控 链接管控 视图载入
      */
-    public function index(){
-        $this->all_display("yq_control/yuqing_control.html");
+    public function http_control(){
+        $this->assign("active_title", "http_control");
+        $this->assign("active_parent", "control_parent");
+        $this->all_display("yq_control/http_control.html");
     }
 
+    /**
+     * 舆情管控 链接管控 视图载入
+     */
+    public function domain_control(){
+        $this->assign("active_title", "domain_control");
+        $this->assign("active_parent", "control_parent");
+        $this->all_display("yq_control/domain_control.html");
+    }
+
+    /**
+     * 舆情管控 链接管控 视图载入
+     */
+    public function ip_control(){
+        $this->assign("active_title", "ip_control");
+        $this->assign("active_parent", "control_parent");
+        $this->all_display("yq_control/ip_control.html");
+    }
 
     /**
      * 重定向 url

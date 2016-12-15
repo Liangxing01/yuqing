@@ -147,7 +147,17 @@ class URL_Model extends CI_Model {
         array_push($code,"/usr/ramdisk/app/v6plus/http_ctl.sh dns_remove_fun ".$dname." ".$url);
 
         $this->run4601($code);
-        return $res;
+        if($res){
+            return array(
+                'res' => 1,
+                'msg' => '解除管控成功'
+            );
+        }else{
+            return array(
+                'res' => 0,
+                'msg' => '解除管控失败'
+            );
+        }
     }
 
     /**

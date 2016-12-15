@@ -1,5 +1,5 @@
 <!-- 文件系统 -->
-<li class="sub-menu" >
+<li class="sub-menu">
     <a href="javascript:;" id="file_parent">
         <i class="fa fa-file">
         </i>
@@ -24,18 +24,32 @@
 </li>
 
 <!-- 舆情管控 -->
-<li>
-    <a href="/yq_control/index">
-        <i class="fa fa-eye-slash">
-        </i>
-                <span>
-                  舆情管控
-                </span>
+<li class="sub-menu">
+    <a href="javascript:;" id="control_parent">
+        <i class="fa fa-eye-slash"></i>
+        <span>舆情管控</span>
     </a>
+    <ul class="sub">
+        <li id="http_control">
+            <a href="/yq_control/http_control">
+                链接管控
+            </a>
+        </li>
+        <li id="domain_control">
+            <a href="/yq_control/domain_control">
+                域名管控
+            </a>
+        </li>
+        <li id="ip_control">
+            <a href="/yq_control/ip_control">
+                IP管控
+            </a>
+        </li>
+    </ul>
 </li>
 
 <!-- 用户信息 -->
-<li class="sub-menu" >
+<li class="sub-menu">
     <a href="javascript:;" id="manage_parent">
         <i class="fa fa-cogs">
         </i>
@@ -78,7 +92,7 @@
 <!-- 添加active class -->
 <script>
     $(document).ready(function () {
-        if("<{$active_title}>"){
+        if ("<{$active_title}>") {
             var title = "#<{$active_title}>";
             var parent_title = "#<{$active_parent}>";
             $(title).addClass('active');

@@ -14,7 +14,7 @@
             <div class="col-lg-12">
                 <section class="panel">
                     <header class="panel-heading">
-                        <span class="label label-primary">舆情管控</span>
+                        <span class="label label-primary">IP管控</span>
                            <span class="tools pull-right">
                            <a href="javascript:;" title="刷新" class="fa fa-refresh"></a>
                            </span>
@@ -28,12 +28,8 @@
                                     <input type="text" class="form-control" id="alias" name="alias">
                                 </div>
                                 <div class="col-md-3">
-                                    <label>控制链接:</label>
-                                    <input type="text" class="form-control" id="control_url" name="control_url">
-                                </div>
-                                <div class="col-md-3">
-                                    <label>目的链接:</label>
-                                    <input type="text" class="form-control" id="redirect_url" name="redirect_url">
+                                    <label>控制IP:</label>
+                                    <input type="text" class="form-control" id="control_ip" name="control_ip">
                                 </div>
 
                                 <div class="col-md-1 m-t-24">
@@ -49,9 +45,8 @@
                                 <thead>
                                 <tr>
                                     <th>编号</th>
-                                    <th>控制链接</th>
-                                    <th>所属域名</th>
-                                    <th>目的链接</th>
+                                    <th>名称</th>
+                                    <th>管控IP</th>
                                     <th>添加时间</th>
                                     <th>操作</th>
                                 </tr>
@@ -89,13 +84,11 @@
         $("#yuqing_control_form").validate({
             rules: {
                 alias: {required: true},
-                control_url: {required: true, url: true},
-                redirect_url: {required: true, url: true}
+                control_ip: {required: true, ip: true}
             },
             messages: {
                 alias: {required: "请输入名称"},
-                control_url: {required: "请输入控制链接", url: "请输入正确的链接"},
-                redirect_url: {required: "请输入目的链接", url: "请输入正确的链接"}
+                control_ip: {required: "请输入控制IP", ip: "请输入正确的IP"}
             }
         });
     });
@@ -103,13 +96,10 @@
     //登陆表单提交
     function commit_yuqing_control(layer_index) {
         var alias = $("#alias").val();
-        var control_url = $("#control_url").val();
-        var redirect_url = $("#redirect_url").val();
-        var domain_reg = /^(http|https):\/{2}(.+?)\/.*$/.exec(control_url);
-        var domain = domain_reg[2];
+        var control_ip = $("#control_ip").val();
 
         $.ajax({
-            url: "/yq_control/control_url?control_url=" + control_url + "&redirect_url=" + redirect_url + "&domain=" + domain,
+            url: "/yq_control/ctl_ip?ctl_ip=" + control_ip + "&alias=" + alias,
             method: "get",
             dataType: 'json',
             success: function (data) {
@@ -140,7 +130,7 @@
         "aaSorting": [4, "desc"],          //默认排序 第6,7列
 
         "bServerSide": true,
-        "sAjaxSource": "/yq_control/show_all",
+        "sAjaxSource": "/yq_control/show_ip_list",
         "sServerMethod": "POST",
 
         "aoColumns": [
@@ -151,20 +141,14 @@
                 'orderable': false
             },
             {
-                "sTitle": "控制链接",
-                "mData": "ctl_url",
+                "sTitle": "名称",
+                "mData": "alias",
                 'sClass': "text-center",
                 'orderable': false
             },
             {
-                "sTitle": "所属域名",
-                "mData": "domain",
-                'sClass': "text-center",
-                'orderable': false
-            },
-            {
-                "sTitle": "目的链接",
-                "mData": "redirect_url",
+                "sTitle": "管控IP",
+                "mData": "value",
                 'sClass': "text-center",
                 'orderable': false
             },
@@ -179,7 +163,7 @@
                 'sClass': "text-center",
                 'orderable': false,
                 "mRender": function (data) {
-                    return "<a title='重启事件' onclick='del_rule(" + data + ")' href='javascript:;' class='btn btn-info btn-xs'>删除</a>";
+                    return "<a title='删除' onclick='del_rule(" + data + ")' href='javascript:;' class='btn btn-info btn-xs'>删除</a>";
                 }
             }
         ],
@@ -212,7 +196,7 @@
         layer.confirm('确认删除?', {title: '提示'}, function (index) {
             var layer_index = layer.load(2);
             $.ajax({
-                url: "/yq_control/del_rule?rule_id=" + rule_id,
+                url: "/yq_control/del_ip?rule_id=" + rule_id,
                 method: "get",
                 dataType: 'json',
                 success: function (data) {
