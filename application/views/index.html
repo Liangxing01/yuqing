@@ -13,9 +13,22 @@
 	.xx{ background: url(../../img/index_xx.png) no-repeat -2px -5px;}
 	.xxt{ font-size: 2.0em; color: white;}
     .demo-lx{text-align:center;text-decoration: blink}
-    @media only screen and (min-width: 768px) {
+    #msg tr td a{
+      width: 300px;
+      display: inline-block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: red;
+    }
+    @media only screen and (min-width: 768px) and (max-width: 1200px){
       #msg tr td a{
-        width:220px;
+        width:126px;
+      }
+    }
+    @media only screen and (min-width: 1200px) and (max-width: 1400px){
+      #msg tr td a{
+        width:156px;
       }
     }
     @media only screen and (max-width: 375px) {
@@ -29,13 +42,6 @@
       }
     }
 
-    #msg tr td a{
-      display: inline-block;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      color: red;
-    }
 </style>
       <!-- BEGIN MAIN CONTENT -->
       <link href="/css/tasks.css" rel="stylesheet"><!-- TASK CSS-->
@@ -201,13 +207,13 @@
                     </p>
                   </div>
                 </div>
-                <table class="table table-hover personal-task">
+                <table class="table personal-task">
                   <tbody id="msg">
                     <tr>
-                      <td>1</td>
-                      <td>类型：指派</td>
-                      <td><a href="javascript:void(0)">标题一</a></td>
-                      <td><span class="badge bg-important">2016-12-10 10:30:15</span></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
                     </tr>
                     <tr>
                       <td></td>
@@ -239,7 +245,7 @@
           <!-- END PANEL -->
             </div>
 
-            <div class="col-lg-6">
+            <div class="col-lg-6 col-md-6">
               <section class="panel">
                 <div class="panel-body">
                   <a href="#" class="task-thumb">
