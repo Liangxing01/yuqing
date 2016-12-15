@@ -107,7 +107,8 @@ class URL_Model extends CI_Model {
     public function insert_ctl_url($domain_id,$ctl_url){
         $insert_info = array(
             'domain_id' => $domain_id,
-            'ctl_url'   => $ctl_url
+            'ctl_url'   => $ctl_url,
+            'time'      => time()
         );
         $this->db->insert('ctl_url',$insert_info);
     }
@@ -156,6 +157,31 @@ class URL_Model extends CI_Model {
         return $dname;
     }
 
+
+    /**
+     * 分页 获取 已管控域名
+     */
+    public function show_all_list($pInfo){
+        $data['aaData'] = $this->db->select("cu.id,cu.ctl_url,cd.domain,cd.redirect_url,from_unixtime(cu.time) as time")
+            ->from('ctl_url as cu')
+            ->join('ctl_domains as cd','cu.domain_id = cd.id')
+            ->order_by('cu.time',$pInfo['sort_type'])
+            ->limit($pInfo['length'],$pInfo['start'])
+            ->get()->result_array();
+
+        $total =  $this->db->select("cu.id,cu.ctl_url,cd.domain,cd.redirect_url,from_unixtime(cu.time)")
+            ->from('ctl_url as cu')
+            ->join('ctl_domains as cd','cu.domain_id = cd.id')
+            ->get()->num_rows();
+
+        $data['sEcho'] = $pInfo['sEcho'];
+
+        $data['iTotalDisplayRecords'] = $total;
+
+        $data['iTotalRecords'] = $total;
+
+        return $data;
+    }
 
 
 
