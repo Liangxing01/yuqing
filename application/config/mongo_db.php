@@ -28,11 +28,12 @@
 $config['mongo_db']['active'] = 'default';
 
 $config['mongo_db']['default']['no_auth'] = FALSE;
-$config['mongo_db']['default']['hostname'] = '192.168.0.127';
+//$config['mongo_db']['default']['hostname'] = '192.168.0.127';
+$config['mongo_db']['default']['hostname'] = '127.0.0.1';
 $config['mongo_db']['default']['port'] = '27017';
 $config['mongo_db']['default']['username'] = 'yuqing';
 $config['mongo_db']['default']['password'] = 'yuqing';
-$config['mongo_db']['default']['database'] = 'admin';
+$config['mongo_db']['default']['database'] = 'yq_raw_db';
 $config['mongo_db']['default']['db_debug'] = TRUE;
 $config['mongo_db']['default']['return_as'] = 'array';
 $config['mongo_db']['default']['write_concerns'] = (int)1;
