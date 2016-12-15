@@ -15,6 +15,13 @@ class Yq_control extends MY_Controller {
     }
 
 
+    /**
+     * 舆情管控 视图载入
+     */
+    public function index(){
+        $this->all_display("yq_control/yuqing_control.html");
+    }
+
 
     /**
      * 重定向 url
@@ -27,12 +34,9 @@ class Yq_control extends MY_Controller {
         $redi_url = $this->input->get('redirect_url');
         $domain  = $this->input->get('domain');
 
-
-
         //管控该url
         $res = $this->url_control->ctl_url($domain,$con_url,$redi_url);
-        var_dump($res);
-
+        echo $res;
     }
 
     /**
