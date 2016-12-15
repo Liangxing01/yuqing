@@ -79,6 +79,13 @@ class Yq_control extends MY_Controller {
         echo json_encode($data);
     }
 
+    /**
+     * 接口：DNS 管控
+     */
+    public function dns_ctl(){
+        
+    }
+
     public function test(){
         $set = "http://werewr.erwer/weraw.er.aewr.awe.re";
         $re = "/^((http|ftp|https):\/\/)?(.*)/";
