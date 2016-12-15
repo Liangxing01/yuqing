@@ -83,10 +83,16 @@ class URL_Model extends CI_Model {
 
         if($this->db->trans_status() === FALSE){
             $this->db->trans_rollback();
-            return false;
+            return array(
+                'res' => 0,
+                'msg' => '管控失败'
+            );
         }else{
             $this->db->trans_commit();
-            return $rule_id;
+            return array(
+                'res' => 1,
+                'msg' => '管控成功'
+            );
         }
 
     }
@@ -95,7 +101,7 @@ class URL_Model extends CI_Model {
      * 查询 主域名 是否已经存在 于 域名组
      */
     public function check_has_domain($domain,$type){
-        $is_exist = $this->db->select('id,redirect_url,domain,group_name')
+        $is_exist = $this->db->select('id,redirect_url,value,group_name')
             ->from('ctl_domains')
             ->where('group_name',$domain)
             ->where('type',$type)
@@ -212,7 +218,7 @@ class URL_Model extends CI_Model {
         $ctl_code = array();
         $gname = $ctl_domain."_dns";
         //检查有该 域名组没有
-        $is_exist = $this->check_has_domain($value,'dns');
+        $is_exist = $this->check_has_domain($gname,'dns');
         if($is_exist){
             return array(
                 'res' => 0,
@@ -220,7 +226,7 @@ class URL_Model extends CI_Model {
             );
         }else{
             $info = array(
-                'value' => $ip,
+                'value' => $ctl_domain,
                 'group_name' => $gname,
                 'type'  => "dns",
                 'time'  => time(),
@@ -229,6 +235,8 @@ class URL_Model extends CI_Model {
             $this->db->insert('ctl_domains',$info);
             $dns_id = $this->db->insert_id();
 
+            array_push($ctl_code,"/usr/ramdisk/app/v6plus/http_ctl.sh dns_addgrp ".$gname);
+            array_push($ctl_code,"/usr/ramdisk/app/v6plus/http_ctl.sh dns_add ".$gname . " ".$ctl_domain);
             array_push($ctl_code,"/usr/ramdisk/app/v6plus/dns_ctl.sh dnsctl_addrule ".$dns_id." ".$gname. " ".$ip);
             $this->run4601($ctl_code);
         }
