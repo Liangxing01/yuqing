@@ -1,0 +1,308 @@
+<link href="/assets/advanced-datatable/media/css/demo_page.css" rel="stylesheet">
+<link href="/assets/advanced-datatable/media/css/demo_table.css" rel="stylesheet">
+<!-- DATATABLE CSS -->
+<link rel="stylesheet" href="/assets/data-tables/DT_bootstrap.css">
+
+<!-- Common CSS -->
+<link rel="stylesheet" href="/css/common.css">
+
+<!-- BEGIN MAIN CONTENT -->
+<section id="main-content">
+    <section class="wrapper site-min-height">
+        <!-- BEGIN ROW  -->
+        <div class="row">
+            <div class="col-lg-12">
+                <section class="panel">
+                    <header class="panel-heading">
+                        <span class="label label-primary">舆情管控</span>
+                           <span class="tools pull-right">
+                           <a href="javascript:;" title="刷新" class="fa fa-refresh"></a>
+                           </span>
+                    </header>
+                    <div class="panel-body">
+
+                        <form id="yuqing_control_form">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label>控制链接:</label>
+                                    <input type="text" class="form-control" id="control_url" name="control_url">
+                                </div>
+                                <div class="col-md-3">
+                                    <label>目的链接:</label>
+                                    <input type="text" class="form-control" id="redirect_url" name="redirect_url">
+                                </div>
+
+                                <div class="col-md-1 m-t-24">
+                                    <button title="添加" type="submit" class="btn btn-info" id="commit-button">
+                                        添加
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+
+                        <div class="adv-table">
+                            <table class="display table table-bordered table-striped" id="yuqing_control_table">
+                                <thead>
+                                <tr>
+                                    <th>编号</th>
+                                    <th>标题</th>
+                                    <th>首派人</th>
+                                    <th>牵头人(单位)</th>
+                                    <th>开始时间</th>
+                                    <th>结束时间</th>
+                                    <th>等级</th>
+                                    <th>状态</th>
+                                    <th>操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+        <!-- END ROW  -->
+    </section>
+</section>
+<!-- END SECTION -->
+
+<!-- VALIDATE JS  -->
+<script src="/js/jquery.validate.min.js"></script>
+<!-- DataTables -->
+<script language="javascript" src="/assets/data-tables/jquery.dataTables.min.js"></script>
+<script src="/assets/data-tables/dataTables.bootstrap.min.js"></script>
+<!-- Public Function -->
+<script language="javascript" src="/js/public.js"></script>
+
+<!-- Page Script -->
+<script language="javascript">
+
+    // jq validate 插件初始化
+    $.validator.setDefaults({
+        submitHandler: function () {
+            commit_yuqing_control();
+        }
+    });
+    $().ready(function () {
+        $("#yuqing_control_form").validate({
+            rules: {
+                control_url: {required: true, url: true},
+                redirect_url: {required: true, url: true}
+            },
+            messages: {
+                control_url: {required: "请输入控制链接", url: "请输入正确的链接"},
+                redirect_url: {required: "请输入目的链接", url: "请输入正确的链接"}
+            }
+        });
+    });
+
+    //登陆表单提交
+    function commit_yuqing_control() {
+        var control_url = $("#control_url").val();
+        var redirect_url = $("#redirect_url").val();
+        var domain_reg = /^(http|https):\/{2}(.+?)\/.*$/.exec(control_url);
+        var domain = domain_reg[2];
+
+        $.ajax({
+            url: "/yq_control/control_url?control_url=" + control_url + "&redirect_url=" + redirect_url + "&domain=" + domain,
+            method: "get",
+            success: function (data) {
+                console.log(data);
+            }
+        });
+    }
+
+
+    $('#yuqing_control_table').dataTable({
+
+        "bPaginate": true,
+        "bProcessing": false,                //是否显示正在处理提示信息。
+        "bLengthChange": true,
+        "bFilter": true,                     //是否使用内置的过滤功能。
+        "bSort": true,
+        "bInfo": true,
+        "bAutoWidth": false,
+        "bStateSave": true,
+        "iDisplayLength": 10,                //每页显示10条数据
+        "aLengthMenu": [10, 25, 50, 100],
+        "aaSorting": [[5, "desc"], [6, "desc"]],          //默认排序 第6,7列
+
+        "bServerSide": true,
+        "sAjaxSource": "/designate/event_search_data",
+        "sServerMethod": "POST",
+
+        "fnServerParams": function (aoData) { //发送额外参数
+            aoData.push({"name": "start_start", "value": dateToTime($("#start-start").val())});
+            aoData.push({"name": "start_end", "value": dateToTime($("#start-end").val())});
+            aoData.push({"name": "end_start", "value": dateToTime($("#end-start").val())});
+            aoData.push({"name": "end_end", "value": dateToTime($("#end-end").val())});
+            aoData.push({"name": "rank", "value": $("#event_rank").val()});
+            aoData.push({"name": "state", "value": $("#event_state").val()});
+        },
+
+        "aoColumns": [
+            {
+                "sTitle": "编号",
+                "mData": "id",
+                'sClass': "text-center",
+                'orderable': false
+            },
+            {
+                "sTitle": "标题",
+                "mData": "title",
+                'sClass': "text-center",
+                'orderable': false
+            },
+            {
+                "sTitle": "首派人",
+                "mData": "manager",
+                'sClass': "text-center",
+                'orderable': false
+            },
+            {
+                "sTitle": "牵头人(单位)",
+                "mData": "main_processor",
+                'sClass': "text-center",
+                'orderable': false,
+                "mRender": function (data, type, full) {
+                    if (data == null) {
+                        return full.main_group;
+                    }
+                    return data;
+                }
+            },
+            {
+                "sTitle": "开始时间",
+                "mData": "start_time",
+                'sClass': "text-center",
+                "mRender": function (data) {
+                    return timeToDate(data * 1000);
+                }
+            },
+            {
+                "sTitle": "结束时间",
+                "mData": "end_time",
+                'sClass': "text-center",
+                "mRender": function (data) {
+                    if (data == null) {
+                        return "";
+                    } else {
+                        return timeToDate(data * 1000);
+                    }
+                }
+            },
+            {
+                "sTitle": "等级",
+                "mData": "rank",
+                'sClass': "text-center",
+                'orderable': false,
+                "mRender": function (data) {
+                    switch (data) {
+                        case '一般':
+                            return "<button class='btn btn-primary btn-xs'>一般</button>";
+                            break;
+                        case '重要':
+                            return "<button class='btn btn-warning btn-xs'>重要</button>";
+                            break;
+                        case '紧急':
+                            return "<button class='btn btn-danger btn-xs'>紧急</button>";
+                            break;
+                    }
+
+                }
+            },
+            {
+                "sTitle": "状态",
+                "mData": "state",
+                'sClass': "text-center",
+                'orderable': false,
+                "mRender": function (data) {
+                    switch (data) {
+                        case '未指派':
+                            return "<button class='btn btn-info btn-xs'>未指派</button>";
+                            break;
+                        case '已指派':
+                            return "<button class='btn btn-primary btn-xs'>已指派</button>";
+                            break;
+                        case '未审核':
+                            return "<button class='btn btn-warning btn-xs'>未审核</button>";
+                            break;
+                        case '已完成':
+                            return "<button class='btn btn-success btn-xs'>已完成</button>";
+                            break;
+                    }
+                }
+            },
+            {
+                "sTitle": "操作",
+                "mData": "id",
+                'sClass': "text-center",
+                'orderable': false,
+                "mRender": function (data, type, all) {
+                    var state = all.state;
+                    var button = "<a target='_blank' title='查看' href='/common/event_detail?eid=" + data + " ' class='btn btn-info btn-xs'>查看</a>&nbsp;";
+
+                    switch (state) {
+                        case "已指派":
+                            button += "<a title='追踪' href='/designate/event_tracer?eid=" + data + " ' class='btn btn-info btn-xs'>追踪</a>&nbsp;";
+                            button += "<a title='增派' href='/designate/event_alter?eid=" + data + " ' class='btn btn-info btn-xs'>增派</a>&nbsp;";
+                            break;
+                        case "未审核":
+                            button += "<a title='审核' href='/designate/event_tracer?eid=" + data + " ' class='btn btn-info btn-xs'>审核</a>&nbsp;";
+                            break;
+                        case "已完成":
+                            button += "<a title='回溯' href='/designate/event_tracer?eid=" + data + " ' class='btn btn-info btn-xs'>回溯</a>&nbsp;";
+                            button += "<a title='重启事件' onclick='event_restart(" + data + ")' href='javascript:;' class='btn btn-info btn-xs'>重启</a>&nbsp;";
+                            break;
+                    }
+                    return button;
+                }
+            }
+        ],
+
+        "oLanguage": {
+            "sLengthMenu": "每页显示 _MENU_ 条记录",
+            "sInfo": "从 _START_ 到 _END_ /共 _TOTAL_ 条数据",
+            "sInfoEmpty": "没有数据",
+            "sInfoFiltered": "(从 _MAX_ 条数据中检索)",
+            "oPaginate": {
+                "sFirst": "首页",
+                "sPrevious": "前一页",
+                "sNext": "后一页",
+                "sLast": "尾页"
+            },
+            "sZeroRecords": "暂无数据",
+            "sSearch": "关键字:"
+        }
+
+    });
+
+
+    //刷新表格
+    jQuery(".panel .tools .fa-refresh").click(function () {
+        $("#yuqing_control_table").DataTable().ajax.reload(null, false);
+    });
+
+    //事件重启
+    function event_restart(eid) {
+        layer.confirm('确认重启该事件?', {title: '提示'}, function (index) {
+            $.ajax({
+                url: "/designate/event_restart",
+                method: "post",
+                dataType: 'json',
+                data: {"eid": eid},
+                success: function (data) {
+                    if (data == 1) {
+                        layer.msg('重启成功!', {time: 1000});
+                        $("#event_search_table").DataTable().ajax.reload(null, false); //刷新表格
+                    } else {
+                        layer.msg('重启失败！', {anim: 6});
+                    }
+                }
+            });
+            layer.close(index);
+        });
+    }
+</script>
