@@ -40,11 +40,11 @@ function get_notify(){
         success:function(data){
             if(data.processor_alarm){//提前首回提醒
                 $('#notification_bar2').show();
-                showNotify(data.zp_alarm,$('#notification_bar2'));
+                showNotify(data.processor_alarm,$('#notification_bar2'));
             }
             if(data.zp_alarm){//超时提醒
                 $('#notification_bar1').show();
-                showNotify(data.processor_alarm,$('#notification_bar1'));
+                showNotify(data.zp_alarm,$('#notification_bar1'));
             }
         }
     })

@@ -106,18 +106,18 @@ function add_type_list(data){
 
 //超时提醒
 function overtime_info(data) {
-    var val = $('#notification_bar2 .bar_num').html();
-    $('#notification_bar2 .bar_num').html(parseInt(val) + 1);
-    $('#notification_bar2 .bar_num').show();
-    var val2 = $('#notification_bar2 .notify_total span').html();
-    $('#notification_bar2 .notify_total span').html(parseInt(val2) + 1);
+    var val = $('#notification_bar1 .bar_num').html();
+    $('#notification_bar1 .bar_num').html(parseInt(val) + 1);
+    $('#notification_bar1 .bar_num').show();
+    var val2 = $('#notification_bar1 .notify_total span').html();
+    $('#notification_bar1 .notify_total span').html(parseInt(val2) + 1);
     var str = '';
     str += '<li>';
-    str += '<a href="/common/event_detail?eid="' + data.event_id + '" title="' + data.title + '&option=cancel_alert">';
+    str += '<a href="/common/event_detail?eid="' + data.eid + '" title="' + data.title + '&option=cancel_alert">';
     str += '<p class="alarm_title"' + data.title + '></p>';
     str += '<span class="small italic">' + data.time + '</span>';
     str += '</a></li>';
-    $('#notification_bar2').find('.notify-all').before(str);
+    $('#notification_bar1').find('.notify-all').before(str);
     layer.open({
         type: 1,
         title: ['超时提醒', 'color:#fff;background:red'],
@@ -137,18 +137,18 @@ function overtime_info(data) {
  *
  * */
 function beforetime_info(data) {
-    var val = $('#notification_bar1 .bar_num').html();
-    $('#notification_bar1 .bar_num').html(parseInt(val) + 1);
-    $('#notification_bar1 .bar_num').show();
-    var val2 = $('#notification_bar1 .notify_total span').html();
-    $('#notification_bar1 .notify_total span').html(parseInt(val2) + 1);
+    var val = $('#notification_bar2 .bar_num').html();
+    $('#notification_bar2 .bar_num').html(parseInt(val) + 1);
+    $('#notification_bar2 .bar_num').show();
+    var val2 = $('#notification_bar2 .notify_total span').html();
+    $('#notification_bar2 .notify_total span').html(parseInt(val2) + 1);
     var str = '';
     str += '<li>';
-    str += '<a href="/common/event_detail?eid="' + data.event_id + '" title="' + data.title + '&option=cancel_alert">';
+    str += '<a href="/common/event_detail?eid="' + data.eid + '" title="' + data.title + '&option=cancel_alert">';
     str += '<p class="alarm_title"' + data.title + '></p>';
     str += '<span class="small italic">' + data.time + '</span>';
     str += '</a></li>';
-    $('#notification_bar1').find('.notify-all').before(str);
+    $('#notification_bar2').find('.notify-all').before(str);
     layer.open({
         type: 1,
         title: ['事件首回提醒', 'color:#fff;background:blue'],
