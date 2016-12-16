@@ -8,6 +8,7 @@ function showNotify(data,target)
     var notice=target.find('.bar_num');
     if (data === undefined || data.length===0 ) {
         notice.hide();
+        target.find('.notify_total').html("你有<span>0</span>条新信息");
         return;
     }
     else{
