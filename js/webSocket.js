@@ -36,10 +36,10 @@ function get_webSocket_msg() {
                     add_type_list(data);
                     break;//添加消息信息
                 case 3:
-                    message_info($('#notification_bar1'),data);
+                    message_info($('#notification_bar2'),data);
                     break;//事件首回提醒
                 case 4:
-                    message_info($('#notification_bar2'),data);
+                    message_info($('#notification_bar1'),data);
                     break;//超时提醒
             }
         }
