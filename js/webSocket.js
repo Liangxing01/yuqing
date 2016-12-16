@@ -48,18 +48,27 @@ function get_webSocket_msg() {
     }, 45000);
 }
 
+var msg_num = 1;    //提醒框的偏移量
 //向消息记录添加消息信息
 function add_type_list(data){
+    var title = ''; //提示框的title
+    var url = '';   //提示框的url
     var list = '<tr><td></td>';
     switch (data.type){
         case 0:
             list += '<td><span class="label label-info">信息上报</span></td>';
+            title = '信息上报提醒';
+            url = '/designate/info_detail?id='+data.id;
             break;
         case 1:
             list += '<td><span class="label label-primary">事件指派</span></td>';
+            title = '事件指派提醒';
+            url = data.url;
             break;
         case 2:
             list += '<td><span class="label label-danger">事件督办</span></td>';
+            title = '事件督办提醒';
+            url = data.url;
             break;
     }
     list += '<td><a href="' + data.url + '">' + data.title + '</a></td>';
@@ -67,6 +76,23 @@ function add_type_list(data){
     $('#msg').prepend(list);
     $('#msg tr:eq(5)').remove();
     reload_num();
+    var width = $(window).width()-300;
+    var height = $(window).height();
+    layer.open({
+        type:1,
+        title:title,
+        content:'<a href='+url+'">点击查看</>',
+        style:'text-align:center',
+        area:['300px','150px'],
+        offset:[height-150*(msg_num%3),width],
+        shade:0,
+        btn:"确定",
+        btnAlign:'c',
+        yes:function(){},
+        anim:2,
+        time:1000*(msg_num%3)
+    })
+    num++;
 }
 
 //超时提醒
@@ -85,7 +111,7 @@ function overtime_info(data) {
     $('#notification_bar2').find('.notify-all').before(str);
     layer.open({
         title: ['超时提醒', 'color:#fff;background:red'],
-        content: '<p>' + data.title + '</p><a  href="javascript:void(0)">点击查看</a>',
+        content: '<a  href="/common/event_detail?eid='+data.eid+'&option=cancel_alert">点击查看</a>',
         area: ['200px', '150px'],
         offset: 'rb',
         btn: ['确定'],
@@ -116,7 +142,7 @@ function beforetime_info(data) {
     $('#notification_bar1').find('.notify-all').before(str);
     layer.open({
         title: ['事件首回提醒', 'color:#fff;background:blue'],
-        content: '<p>' + data.title + '</p><a class="" href="">点击查看</a>',
+        content: '<a href="/common/event_detail?eid='+data.eid+'&option=cancel_alert">点击查看</a>',
         area: ['200px', '150px'],
         offset: 'rb',
         btn: ['确定'],
