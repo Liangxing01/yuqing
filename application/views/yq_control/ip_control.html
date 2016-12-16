@@ -106,6 +106,7 @@
                 layer.close(layer_index);
                 if (data.res == "1") {
                     layer.msg(data.msg, {time: 1000});
+                    $("#yuqing_control_table").DataTable().ajax.reload(null, false); //刷新表格
                 } else {
                     layer.msg(data.msg, {anim: 6, time: 1000});
                 }
@@ -130,7 +131,7 @@
         "aaSorting": [4, "desc"],          //默认排序 第6,7列
 
         "bServerSide": true,
-        "sAjaxSource": "/yq_control/show_dns_list",
+        "sAjaxSource": "/yq_control/show_ip_list",
         "sServerMethod": "POST",
 
         "aoColumns": [
