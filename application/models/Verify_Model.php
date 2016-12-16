@@ -30,7 +30,6 @@ class Verify_Model extends CI_Model
     }
 
 
-
     /**
      * 验证处理人权限
      * @return bool
@@ -102,15 +101,22 @@ class Verify_Model extends CI_Model
      */
     protected function processor_see_event($event_id, $uid)
     {
+        $gid = $this->session->gid;
         //指派事件可查看
         $r_1 = $this->db->select('event_designate.id')->from('event_designate')
-            ->where(array("event_id" => $event_id, "processor" => $uid))
+            ->where("event_id", $event_id)
+            ->group_start()
+            ->where("processor = $uid OR group in ($gid)")
+            ->group_end()
             ->get()->num_rows();
 
         //关联事件可查看
         $r_2 = $this->db->select('event_designate.id')->from("event_designate")
             ->join("event_relate", "event_designate.event_id = event_relate.event_id", "left")
-            ->where(array("event_relate.relate_id" => $event_id, "event_designate.processor" => $uid))
+            ->where("event_relate.relate_id", $event_id)
+            ->group_start()
+            ->where("event_designate.processor = $uid OR event_designate.group in ($gid)")
+            ->group_end()
             ->get()->num_rows();
 
         if ($r_1 > 0 || $r_2 > 0) {
