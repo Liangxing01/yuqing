@@ -27,10 +27,20 @@ function get_webSocket_msg() {
                 message.show();
             }
             switch (data.type) {
-                case "client":bind_client_to_uid(data.client_id);break;
-                case 0,1,2:add_type_list(data);break;//添加消息信息
-                case 3:beforetime_info(data);break;//事件首回提醒
-                case 4:overtime_info(data);break;//超时提醒
+                case "client":
+                    bind_client_to_uid(data.client_id);
+                    break;
+                case 0:
+                case 1:
+                case 2:
+                    add_type_list(data);
+                    break;//添加消息信息
+                case 3:
+                    beforetime_info(data);
+                    break;//事件首回提醒
+                case 4:
+                    overtime_info(data);
+                    break;//超时提醒
             }
         }
     };
@@ -52,23 +62,19 @@ var msg_num = 1;    //提醒框的偏移量
 //向消息记录添加消息信息
 function add_type_list(data){
     var title = ''; //提示框的title
-    var url = '';   //提示框的url
     var list = '<tr><td></td>';
     switch (data.type){
         case 0:
             list += '<td><span class="label label-info">信息上报</span></td>';
             title = '信息上报提醒';
-            url = '/designate/info_detail?id='+data.id;
             break;
         case 1:
             list += '<td><span class="label label-primary">事件指派</span></td>';
             title = '事件指派提醒';
-            url = data.url;
             break;
         case 2:
             list += '<td><span class="label label-danger">事件督办</span></td>';
             title = '事件督办提醒';
-            url = data.url;
             break;
     }
     list += '<td><a href="' + data.url + '">' + data.title + '</a></td>';
@@ -77,31 +83,34 @@ function add_type_list(data){
     $('#msg tr:eq(5)').remove();
     reload_num();
     var width = $(window).width()-300;
-    var height = $(window).height();
+    var height = $(window).height()-10;
     layer.open({
         type:1,
         title:title,
-        content:'<a href='+url+'">点击查看</>',
+        content: '<a target="_blank" href=' + data.url + '>' + data.title + '</>',
         style:'text-align:center',
         area:['300px','150px'],
-        offset:[height-150*(msg_num%3),width],
+        offset:[height-160*(msg_num%3),width],
         shade:0,
-        btn:"确定",
+        closeBtn: 1,
+        btn:"查看",
         btnAlign:'c',
-        yes:function(){},
+        yes:function(){
+            window.open(url, "target=_blank");
+        },
         anim:2,
-        time:1000*(msg_num%3)
+        time:30000*(msg_num%3)
     })
-    num++;
+    msg_num++;
 }
 
 //超时提醒
 function overtime_info(data) {
     var val = $('#notification_bar2 .bar_num').html();
-    $('#notification_bar2 .bar_num').html(val + 1);
+    $('#notification_bar2 .bar_num').html(parseInt(val) + 1);
     $('#notification_bar2 .bar_num').show();
     var val2 = $('#notification_bar2 .notify_total span').html();
-    $('#notification_bar2 .notify_total span').html(val2 + 1);
+    $('#notification_bar2 .notify_total span').html(parseInt(val2) + 1);
     var str = '';
     str += '<li>';
     str += '<a href="/common/event_detail?eid="' + data.event_id + '" title="' + data.title + '&option=cancel_alert">';
@@ -110,11 +119,11 @@ function overtime_info(data) {
     str += '</a></li>';
     $('#notification_bar2').find('.notify-all').before(str);
     layer.open({
+        type: 1,
         title: ['超时提醒', 'color:#fff;background:red'],
         content: '<a  href="/common/event_detail?eid='+data.eid+'&option=cancel_alert">点击查看</a>',
         area: ['200px', '150px'],
         offset: 'rb',
-        btn: ['确定'],
         btnAlign: 'c',
         shade: 0,
         time: 15000,
@@ -141,11 +150,11 @@ function beforetime_info(data) {
     str += '</a></li>';
     $('#notification_bar1').find('.notify-all').before(str);
     layer.open({
+        type: 1,
         title: ['事件首回提醒', 'color:#fff;background:blue'],
         content: '<a href="/common/event_detail?eid='+data.eid+'&option=cancel_alert">点击查看</a>',
         area: ['200px', '150px'],
         offset: 'rb',
-        btn: ['确定'],
         btnAlign: 'c',
         shade: 0,
         time: 15000,
