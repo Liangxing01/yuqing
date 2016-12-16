@@ -6,8 +6,9 @@ $(function(){
 function showNotify(data,target)
 {
     var notice=target.find('.bar_num');
-    if (data.length==0) {
+    if (data === undefined || data.length===0 ) {
         notice.hide();
+        return;
     }
     else{
         notice.html(data.length);
