@@ -73,8 +73,8 @@ class URL_Model extends CI_Model {
             $this->insert_ctl_url($d_id,$ctl_url);
             $rule_id = $this->db->insert_id();
 
-            array_push($ctl_code,"/usr/ramdisk/app/v6plus/http_ctl.sh dns_addgrp ".$domain);
-            array_push($ctl_code,"/usr/ramdisk/app/v6plus/http_ctl.sh dns_add ".$domain." ".$ctl_url);
+            array_push($ctl_code,"/usr/ramdisk/app/v6plus/http_ctl.sh dns_addgrp ".$domain."_http");
+            array_push($ctl_code,"/usr/ramdisk/app/v6plus/http_ctl.sh dns_add ".$domain."_http"." ".$ctl_url);
             array_push($ctl_code,"/usr/ramdisk/app/v6plus/http_ctl.sh urlfilter_addrule ".$d_id." ".$domain." ".$redi_url);
         }
 
@@ -214,7 +214,7 @@ class URL_Model extends CI_Model {
      * dns管控，默认 定向到 重大
      */
     public function ctl_dns($ctl_domain,$alias){
-        $ip = "202.202.2.42";
+        $ip = "202.202.2.42"; //重大ip
         $ctl_code = array();
         $gname = $ctl_domain."_dns";
         //检查有该 域名组没有
@@ -258,14 +258,22 @@ class URL_Model extends CI_Model {
      * DNS 删除
      */
     public function del_dns($rule_id){
-        $this->db->where('id',$rule_id);
-        $res = $this->db->delete('ctl_domains');
+        //删除dns 规则 和 域名组
+        $gname = $this->db->select('cd.group_name')
+            ->from('ctl_domains as cd')
+            ->where('cd.type','dns')
+            ->where('cd.id',$rule_id)
+            ->get()->row_array();
 
         //拼接命令
         $code = array();
         array_push($code,"/usr/ramdisk/app/v6plus/dns_ctl.sh dnsctl_rmvrule ".$rule_id);
+        array_push($code,"/usr/ramdisk/app/v6plus/http_ctl.sh dns_rmvgrp ".$gname['group_name']);
 
         $this->run4601($code);
+
+        $this->db->where('id',$rule_id);
+        $res = $this->db->delete('ctl_domains');
         if($res){
             return array(
                 'res' => 1,
@@ -328,7 +336,7 @@ class URL_Model extends CI_Model {
             $this->db->insert('ctl_domains',$info);
             $ip_id = $this->db->insert_id();
 
-            array_push($ctl_code,"/usr/ramdisk/app/v6plus/ip_ctl.sh ipctl_addrule ".$ip_id." ".$gname);
+            array_push($ctl_code,"/usr/ramdisk/app/v6plus/ip_ctl.sh ipctl_addrule ".$ip_id." ".$ip);
             $this->run4601($ctl_code);
         }
 
@@ -355,7 +363,7 @@ class URL_Model extends CI_Model {
 
         //拼接命令
         $code = array();
-        array_push($code,"/usr/ramdisk/app/v6plus /ip_ctl.sh ipctl_rmvrule ".$rule_id);
+        array_push($code,"/usr/ramdisk/app/v6plus/ip_ctl.sh ipctl_rmvrule ".$rule_id);
 
         $this->run4601($code);
         if($res){

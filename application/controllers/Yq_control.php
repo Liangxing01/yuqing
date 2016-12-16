@@ -179,13 +179,15 @@ class Yq_control extends MY_Controller {
                 'res' => 0,
                 'msg' => "IP格式不正确"
             ));
-        }
-        $res = $this->url_control->ctl_ip($ctl_ip,$alias);
-        if($res){
-            echo json_encode($res);
         }else{
-            echo json_encode($res);
+            $res = $this->url_control->ctl_ip($ctl_ip,$alias);
+            if($res){
+                echo json_encode($res);
+            }else{
+                echo json_encode($res);
+            }
         }
+
     }
 
     /**
