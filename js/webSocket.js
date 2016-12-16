@@ -7,9 +7,6 @@ $(function () {
     window.onfocus = message.clear;
 });
 
-window.onload = function () {
-
-};
 //重新绘制
 function reload_num() {
     $('#msg tr').each(function (i) {
@@ -18,62 +15,26 @@ function reload_num() {
 }
 function get_webSocket_msg() {
     var client_socket = new WebSocket('ws://www.bnv6.com:4000');
+
     client_socket.onopen = function () {
         console.log("服务器已连接");
-        //var cookie = getCookie('p_token');
-        //var json = {'token':cookie};
-        //client_socket.send(JSON.stringify(json));
     };
+
     client_socket.onmessage = function (ev) {
-        console.log(ev.data);
         var data = $.parseJSON(ev.data);
         if (data) {
-            var list = '';
-            list += '<tr>';
-            list += '<td></td>';
             if(data.type != "client"){
                 message.show();
             }
             switch (data.type) {
-                case "client":
-                    bind_client_to_uid(data.client_id);
-                    return;
-                case 0:
-                    list += '<td><span class="label label-info">信息上报</span></td>';
-                    break;
-                case 1:
-                    list += '<td><span class="label label-primary">事件指派</span></td>';
-                    break;
-                case 2:
-                    list += '<td><span class="label label-danger">事件督办</span></td>';
-                    break;
-                case 3:
-                    beforetime_info(data);
-                    return;//事件首回提醒
-                case 4:
-                    overtime_info(data);
-                    return;//超时提醒
+                case "client":bind_client_to_uid(data.client_id);break;
+                case 0,1,2:add_type_list(data);break;//添加消息信息
+                case 3:beforetime_info(data);break;//事件首回提醒
+                case 4:overtime_info(data);break;//超时提醒
             }
-            list += '<td><a href="' + data.url + '">' + data.title + '</a></td>';
-            list += '<td><span class="badge bg-important">' + timeToDate(data.time * 1000) + '</span></td>';
-            $('#msg').prepend(list);
-            $('#msg tr:eq(5)').remove();
-            reload_num();
-
-            layer.open({
-                title: '你有新的短消息',
-                content: '<a class="" href="' + data.url + '">点击查看</a>',
-                area: ['300px', '250px'],
-                offset: 'rb',
-                btn: ['确定'],
-                btnAlign: 'c',
-                shade: 0,
-                time: 15000,
-                skin: 'demo-lx',
-                tipsMore: true
-            });
         }
     };
+
     client_socket.onclose = function () {
         console.log("服务器已关闭");
         //断线重连
@@ -86,6 +47,28 @@ function get_webSocket_msg() {
         heart_beat(client_socket);
     }, 45000);
 }
+
+//向消息记录添加消息信息
+function add_type_list(data){
+    var list = '<tr><td></td>';
+    switch (data.type){
+        case 0:
+            list += '<td><span class="label label-info">信息上报</span></td>';
+            break;
+        case 1:
+            list += '<td><span class="label label-primary">事件指派</span></td>';
+            break;
+        case 2:
+            list += '<td><span class="label label-danger">事件督办</span></td>';
+            break;
+    }
+    list += '<td><a href="' + data.url + '">' + data.title + '</a></td>';
+    list += '<td><span class="badge bg-important">' + timeToDate(data.time * 1000) + '</span></td>';
+    $('#msg').prepend(list);
+    $('#msg tr:eq(5)').remove();
+    reload_num();
+}
+
 //超时提醒
 function overtime_info(data) {
     var val = $('#notification_bar2 .bar_num').html();
