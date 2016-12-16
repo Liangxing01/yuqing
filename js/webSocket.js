@@ -36,10 +36,10 @@ function get_webSocket_msg() {
                     add_type_list(data);
                     break;//添加消息信息
                 case 3:
-                    beforetime_info(data);
+                    message_info($('#notification_bar1'),data);
                     break;//事件首回提醒
                 case 4:
-                    overtime_info(data);
+                    message_info($('#notification_bar2'),data);
                     break;//超时提醒
             }
         }
@@ -102,6 +102,40 @@ function add_type_list(data){
         time:30000*(msg_num%3)
     })
     msg_num++;
+}
+
+
+//消息提醒
+function message_info(target,data) {
+    var val = target.find('.bar_num').html();
+    target.find('.bar_num').html(parseInt(val) + 1);
+    target.find('.bar_num').show();
+    var val2 = target.find('.notify_total span').html();
+    target.find('.notify_total span').html(parseInt(val2) + 1);
+    var str = '';
+    str += '<li>';
+    str += '<a href="/common/event_detail?eid="' + data.eid + '" title="' + data.title + '&option=cancel_alert">';
+    str += '<p class="alarm_title"' + data.title + '></p>';
+    str += '<span class="small italic">' + timeToDate(data.time*1000) + '</span>';
+    str += '</a></li>';
+    target.find('.notify-all').before(str);
+
+    if(target === $('#notification_bar1')){
+        var title = ['超时提醒', 'color:#fff;background:red'];
+    }
+    if(target === $('#notification_bar2')){
+        var title = ['事件首回提醒', 'color:#fff;background:blue']
+    }
+    layer.open({
+        type: 1,
+        title: title,
+        content: '<a  href="/common/event_detail?eid='+data.eid+'&option=cancel_alert">点击查看</a>',
+        area: ['200px', '150px'],
+        offset: 'rb',
+        btnAlign: 'c',
+        shade: 0,
+        time: 15000,
+    });
 }
 
 //超时提醒
