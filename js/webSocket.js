@@ -138,10 +138,10 @@ function overtime_info(data) {
  * */
 function beforetime_info(data) {
     var val = $('#notification_bar1 .bar_num').html();
-    $('#notification_bar1 .bar_num').html(val + 1);
+    $('#notification_bar1 .bar_num').html(parseInt(val) + 1);
     $('#notification_bar1 .bar_num').show();
     var val2 = $('#notification_bar1 .notify_total span').html();
-    $('#notification_bar1 .notify_total span').html(val2 + 1);
+    $('#notification_bar1 .notify_total span').html(parseInt(val2) + 1);
     var str = '';
     str += '<li>';
     str += '<a href="/common/event_detail?eid="' + data.event_id + '" title="' + data.title + '&option=cancel_alert">';
