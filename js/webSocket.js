@@ -120,10 +120,10 @@ function message_info(target,data) {
     str += '</a></li>';
     target.find('.notify-all').before(str);
 
-    if(target === $('#notification_bar1')){
+    if(target.attr('id') === 'notification_bar1'){
         var title = ['超时提醒', 'color:#fff;background:red'];
     }
-    if(target === $('#notification_bar2')){
+    if(target.attr('id') === 'notification_bar2'){
         var title = ['事件首回提醒', 'color:#fff;background:blue']
     }
     layer.open({
