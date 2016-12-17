@@ -20,10 +20,10 @@ class Yuqing_Model extends CI_Model {
     }
 
     /**
-     * 分页获取 舆情数据
+     * 分页获取 原始舆情数据
      * 参数 $query :search 标题关键字检索，length 每页长度,$page_num 页码
      */
-    public function get_yqData($query,$page_num,$col_name){
+    public function get_raw_yqData($query,$page_num,$col_name){
         $uid = $this->session->userdata('uid');
         $block_list = array();
         array_push($block_list,$uid);
@@ -32,6 +32,7 @@ class Yuqing_Model extends CI_Model {
         if(empty($query['search'])){
             $yq_data = $this->mongo->select(array(),array('content'))//排除 content字段
                 ->where_not_in('yq_block_list',$block_list) // 排除 自己已经 忽略的舆情
+                ->where_ne('yq_tag_lock',1) // 不显示指派人 已经 确认的舆情
                 ->limit($query['length'])
                 ->offset($offset)
                 ->order_by(array($query['sort'] => 'DESC'))
@@ -39,6 +40,7 @@ class Yuqing_Model extends CI_Model {
         }else{
             $yq_data = $this->mongo->select(array(),array('content'))
                 ->where_not_in('yq_block_list',$block_list) // 排除 自己已经 忽略的舆情
+                ->where_ne('yq_tag_lock',1) // 不显示指派人 已经 确认的舆情
                 ->like('title',$query['search'],'im',TRUE,TRUE)
                 ->limit($query['length'])
                 ->offset($offset)

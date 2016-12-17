@@ -33,15 +33,33 @@ class Yuqing extends MY_Controller
         $this->all_display("yq_data/yq_data_list.html");
     }
 
+    /**
+     * 舆情详情页面 载入
+     */
+    public function yq_detail(){
+        $this->assign("active_title", "report_parent");
+        $this->assign("active_parent", "yq_data");
+        $this->all_display("yq_data/yq_data_detail.html");
+    }
 
     /**
-     * 分页 获取 舆情数据库 数据
+     * 已上报舆情 页面 载入
+     */
+    public function yq_report_db(){
+        $this->assign("active_title", "report_parent");
+        $this->assign("active_parent", "yq_data");
+        $this->all_display("yq_data/yq_report_db.html");
+    }
+
+
+    /**
+     * 分页 获取 原始舆情数据库 数据
      */
     public function get_yqData_by_page(){
         $query    = $this->input->post('query');
         $page_num = $this->input->post('page_num');
         $col_name = 'rawdata'; //集合名称
-        $yq_data  = $this->yq->get_yqData($query,$page_num,$col_name);
+        $yq_data  = $this->yq->get_raw_yqData($query,$page_num,$col_name);
         print_r($yq_data);
 
     }
