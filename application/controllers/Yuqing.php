@@ -22,6 +22,18 @@ class Yuqing extends MY_Controller
         $this->yq->test1();
     }
 
+
+    /**
+     * 舆情数据筛选 视图载入
+     */
+    public function yq_data()
+    {
+        $this->assign("active_title", "report_parent");
+        $this->assign("active_parent", "yq_data");
+        $this->all_display("yq_data/yq_data_list.html");
+    }
+
+
     /**
      * 分页 获取 舆情数据库 数据
      */

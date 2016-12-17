@@ -278,6 +278,10 @@ class Reporter extends MY_controller
         }
     }
 
+
+    /**
+     * 视频上传接口
+     */
     public function upload_video()
     {
         $config['upload_path'] = './uploads/temp/';
@@ -313,8 +317,4 @@ class Reporter extends MY_controller
         }
     }
 
-    public function test()
-    {
-        echo $_SERVER['DOCUMENT_ROOT'];
-    }
 }
