@@ -1,0 +1,82 @@
+<style>
+	#main-content table td{
+		border-top: none;
+	}
+	.file-search{
+		position: relative;
+	}
+	.file-search i{
+		position: absolute;
+		top: 7px;
+		right: 17px;
+	}
+	.file-search i:before{
+		font-size: 23px;
+	}
+	.file-search input{
+    width: 300px;
+    border: none;
+    box-shadow: none;
+    border-radius: 20px;
+    background: #f1f2f4;
+    line-height: 36px;
+    font-size: 14px;
+    padding-left: 20px ;
+}
+#reporter_detail{
+	position: relative;
+	line-height: 40px;
+}
+#reporter_detail div{
+	position: absolute;
+	top: 0;
+	right: 0;
+}
+</style>
+	
+<!-- BEGIN MAIN CONTENT -->
+<section id="main-content">
+    <!-- BEGIN WRAPPER  -->
+    <section class="wrapper site-min-height">
+        <!-- BEGIN ROW  -->
+        <div class="row">
+            <div class="col-lg-12">
+                <section class="panel">
+                    <header class="panel-heading" style="line-height: 34px;">
+                        <b class="icon-title">标题标题标题</b>
+                        <div class="input-group file-search" style="float: right;">
+                        	<input type="text" class="search-input" placeholder="搜索关键词"/>
+                			<i class="fa fa-search btn-search"></i>
+                        </div>
+                    </header>
+                    <div class="panel-body clear">
+                    	<div id="reporter_detail">
+                    		<ul class="nav nav-tabs content_nav" role="tablist">
+							  <li role="presentation" class="active"><a href="#show_all" role="tab" data-toggle="tab">显示全部</a></li>
+							  <li role="presentation"><a href="#only_title" role="tab" data-toggle="tab">只看标题</a></li>
+							</ul>
+							<div>
+								<input type="checkbox" />全选
+							</div>
+                    	</div>
+                    	
+						<div class="tab-content">
+							<div role="tabpanel" class="tab-pane active" id="show_all">
+								内容1
+							</div>
+							<div role="tabpanel" class="tab-pane active" id="only_title">
+								内容2
+							</div>
+						</div>
+                    </div>
+                    
+                </section>
+                
+            </div>
+        </div>
+        </div>
+        <!-- END WRAPPER  -->
+    </section>
+    <!-- END MAIN CONTENT -->
+
+</section>
