@@ -83,12 +83,11 @@ class Yuqing extends MY_Controller
     }
 
     /**
-     * 接口： 给舆情打标签----区级、市级、国家级
+     * 接口： 取消忽略该舆情
      */
-    public function tag_this_yq(){
+    public function unset_ignore(){
         $yid = $this->input->get('yid');
-        $tag = $this->input->get('tag');
-        $res = $this->yq->tag_yq($yid,$tag);
+        $res = $this->yq->unset_ignore_this($yid);
         if($res){
             echo json_encode(array(
                 'res' => 1
@@ -99,6 +98,56 @@ class Yuqing extends MY_Controller
             ));
         }
     }
+
+    /**
+     * 接口： 上报这条舆情
+     * 参数： yid 舆情id
+     *       tag 标签 ---区级 市级 国家级
+     *
+     */
+    public function rep_this_yq(){
+        $yid = $this->input->get('yid');
+        $tag = $this->input->get('tag');
+        $res = $this->yq->rep_yq($yid,$tag);
+        if($res){
+            echo json_encode(array(
+                'res' => 1
+            ));
+        }else{
+            echo json_encode(array(
+                'res' => 0
+            ));
+        }
+    }
+
+    /**
+     * 接口 ： 查看舆情详情
+     * get 参数 舆情id
+     */
+    public function show_yq_detail(){
+        $yid = $this->input->get('yid');
+        $res = $this->yq->get_yq_detail($yid);
+        echo json_encode($res);
+    }
+
+    /**
+     * -------------------------上报人 已上报舆情 -------------------------
+     */
+
+    /**
+     * 接口：已上报舆情 分页
+     */
+    public function has_rep_yq(){
+        $query    = $this->input->post('query');
+        $page_num = $this->input->post('page_num');
+        $yq_data  = $this->yq->get_has_rep_yqData($query,$page_num);
+        echo json_encode($yq_data);
+    }
+
+
+
+
+
 
 
 
