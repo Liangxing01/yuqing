@@ -2,6 +2,24 @@
 	#main-content table td{
 		border-top: none;
 	}
+	#chonse_title{
+		float: left;
+		border-radius: 10px;
+	}
+	#chonse_title li a{
+		color: #57C7E6;
+		font-size: 16px;
+		padding: 10px 0 10px 20px;
+		padding-right: 0;
+	}
+	#chonse_title li a i{
+		padding: 0 10px;
+	}
+	#chonse_title li.active a{
+		background: #57C7E6;
+		color: #fff;
+		border-radius: 10px;
+	}
 	.file-search{
 		position: relative;
 	}
@@ -88,7 +106,17 @@
 		top: 0;
 	}
 	#nav_content div span{
-		margin-left:10px
+		margin-left:10px;
+		cursor: pointer;
+	}
+
+	.crux{
+		color: #bbb;
+		text-decoration: underline;
+		padding: 0 5px;
+	}
+	.fa-star:before{
+		color: #ffde00;
 	}
 </style>
 	
@@ -100,154 +128,187 @@
         <div class="row">
             <div class="col-lg-12">
                 <section class="panel">
-                    <header class="panel-heading" style="line-height: 34px;">
-                        <b class="icon-title">标题标题标题</b>
+                    <header class="panel-heading clear" style="line-height: 34px;">
+                        <div id="chonse_title">
+                        	<ul class="nav nav-tabs" role="tablist">
+							  <li role="presentation" class="active"><a href="#country" role="tab" data-toggle="tab">全国<i class="fa fa-share"></i></a></li>
+							  <li role="presentation"><a href="#city" role="tab" data-toggle="tab">全市<i class="fa fa-share"></i></a></li>
+							  <li role="presentation"><a href="#area" role="tab" data-toggle="tab">全区<i class="fa fa-share"></i></a></li>
+							  <li role="presentation"><a href="#company" role="tab" data-toggle="tab">全区<i class="fa fa-share"></i></a></li>
+							</ul>
+                        </div>
                         <div class="input-group file-search" style="float: right;">
                         	<input type="text" class="search-input" placeholder="搜索关键词"/>
                 			<i class="fa fa-search btn-search"></i>
                         </div>
                     </header>
-                    <div class="panel-body clear">
-                    	<div id="all_nav">
-                    		<ul class="nav nav-tabs " role="tablist" >
-							  <li role="presentation" class="active"><a href="#all_type" role="tab" data-toggle="tab"><i class="fa fa-list-ul"></i>全部</a></li>
-							  <li role="presentation"><a href="#news" role="tab" data-toggle="tab"><i class="fa fa-list-alt"></i>新闻</a></li>
-							  <li role="presentation"><a href="#forum" role="tab" data-toggle="tab"><i class="fa fa-compress"></i>论坛</a></li>
-							  <li role="presentation"><a href="#Blog" role="tab" data-toggle="tab"><i class="fa fa-android"></i>博客</a></li>
-							  <li role="presentation"><a href="#micro-blog" role="tab" data-toggle="tab"><i class="fa fa-weibo"></i>微博</a></li>
-							  <li role="presentation"><a href="#postBar" role="tab" data-toggle="tab"><i class="fa fa-credit-card"></i>贴吧</a></li>
-							  <li role="presentation"><a href="#weChat" role="tab" data-toggle="tab"><i class="fa fa-align-left"></i>微信</a></li>
-							  <li role="presentation"><a href="#media" role="tab" data-toggle="tab"><i class="fa fa-video-camera"></i>平媒</a></li>
-							  <li role="presentation"><a href="#app" role="tab" data-toggle="tab"><i class="fa fa-android"></i>App</a></li>
-							</ul>
-							<div>
-								<span class="active"><i class="fa fa-tasks"></i>按时间发布</span>
-								<span><i class="fa fa-tasks"></i>按时间发布</span>
-							</div>
-                    	</div>
-						<!-- Tab panes -->
-						<div class="tab-content">
-						  <div role="tabpanel" class="tab-pane active" id="all_type">
-						  	<!-- Nav tabs -->
-						  	<div id="nav_content" class="clear">
-						  		<ul class="nav nav-tabs content_nav" role="tablist">
-								  <li role="presentation" class="active"><a href="#show_all" role="tab" data-toggle="tab">显示全部</a></li>
-								  <li role="presentation"><a href="#only_title" role="tab" data-toggle="tab">只看标题</a></li>
-								</ul>
-								<div>
-									<input type="checkbox" />全选
-									<span class="label label-primary">加入资源库</span>
-									<span class="label label-danger">删除</span>
+                    <div class="tab-content">
+                    	<!--country START-->
+                    	<div role="tabpanel" class="tab-pane active" id="country">
+                    		<div class="panel-body clear">
+		                    	<div id="all_nav">
+		                    		<ul class="nav nav-tabs " role="tablist" >
+									  <li role="presentation" class="active"><a href="#all_type" role="tab" data-toggle="tab"><i class="fa fa-list-ul"></i>全部</a></li>
+									  <li role="presentation"><a href="#news" role="tab" data-toggle="tab"><i class="fa fa-list-alt"></i>新闻</a></li>
+									  <li role="presentation"><a href="#forum" role="tab" data-toggle="tab"><i class="fa fa-compress"></i>论坛</a></li>
+									  <li role="presentation"><a href="#Blog" role="tab" data-toggle="tab"><i class="fa fa-android"></i>博客</a></li>
+									  <li role="presentation"><a href="#micro-blog" role="tab" data-toggle="tab"><i class="fa fa-weibo"></i>微博</a></li>
+									  <li role="presentation"><a href="#postBar" role="tab" data-toggle="tab"><i class="fa fa-credit-card"></i>贴吧</a></li>
+									  <li role="presentation"><a href="#weChat" role="tab" data-toggle="tab"><i class="fa fa-apple"></i>微信</a></li>
+									  <li role="presentation"><a href="#media" role="tab" data-toggle="tab"><i class="fa fa-video-camera"></i>平媒</a></li>
+									  <li role="presentation"><a href="#app" role="tab" data-toggle="tab"><i class="fa fa-android"></i>App</a></li>
+									</ul>
+									<div>
+										<span class="active"><i class="fa fa-tasks"></i>按时间发布</span>
+										<span><i class="fa fa-tasks"></i>按时间发布</span>
+									</div>
+		                    	</div>
+								<!-- Tab panes -->
+								<div class="tab-content">
+								  <div role="tabpanel" class="tab-pane active" id="all_type">
+								  	<!-- Nav tabs -->
+								  	<div id="nav_content" class="clear">
+								  		<ul class="nav nav-tabs content_nav" role="tablist">
+										  <li role="presentation" class="active"><a href="#show_all" role="tab" data-toggle="tab">显示全部</a></li>
+										  <li role="presentation"><a href="#only_title" role="tab" data-toggle="tab">只看标题</a></li>
+										</ul>
+										<div>
+											<input type="checkbox" />全选
+											<span class="label label-primary">加入资源库</span>
+											<span class="label label-primary">忽略</span>
+										</div>
+								  	</div>
+									<!-- Tab panes -->
+									<div class="tab-content">
+									  <div role="tabpanel" class="tab-pane active" id="show_all">
+									  	<table class="table">
+									  		<tbody>
+									  			<tr style="font-weight: 900; color: #222222;">
+									  				<td colspan="2">
+									  					<input type="checkbox" value="" />
+									  					<span>重启啊是个撒了感觉萨嘎杀</span>
+									  				</td>
+									  				<td>【safsafsa】</td>
+									  				<td>2014-20-12 &nbsp;20：10：01</td>
+									  				<td></td>
+									  			</tr>
+									  			<tr>
+									  				<td colspan="5">
+									  					<span style="color: red;">[摘要]</span>dsgdskglkdsk;lgsdk;lgj;dsgkjdsklgndsklngsdklnlkvcnsdlkvndsklvnkdlsgnkldsgjkldsjgkldsjgsdjlk
+									  				</td>
+									  			</tr>
+									  			<tr>
+									  				<td>
+									  					要素
+									  					<span class="crux">巴南</span>
+									  					<span class="crux ">东温泉</span>
+									  				</td>
+									  				<td>关键词
+									  					<span class="crux">巴南</span>
+									  					<span class="crux">巴南</span>
+									  					<span class="crux">巴南</span>
+									  				</td>
+									  				<td>关联级别
+									  					<span><i class="fa fa-star"></i>
+									  					<i class="fa fa-star"></i>
+									  					<i class="fa fa-star"></i>
+									  					<i class="fa fa-star"></i>
+									  					<i class="fa fa-star"></i></span>
+									  				</td>
+									  				<td></td>
+									  				<td></td>
+									  			</tr>
+									  		</tbody>
+									  	</table>
+									  </div>
+									  <div role="tabpanel" class="tab-pane" id="only_title">
+									  	<table class="table">
+									  		<tr style="color: #222222; font-weight: 900;">
+								  				<td colspan="2">
+								  					<input type="checkbox"value="" />
+								  					<span>重启啊是个撒了感觉萨嘎杀</span>
+								  				</td>
+								  				<td>【safsafsa】</td>
+								  				<td>2014-20-12 20：10：01</td>
+								  				<td></td>
+								  			</tr>
+								  			<tr style="color: #222222; font-weight: 900;">
+								  				<td colspan="2">
+								  					<input type="checkbox"value="" />
+								  					<span>重启啊是个撒了感觉萨嘎杀</span>
+								  				</td>
+								  				<td>【safsafsa】</td>
+								  				<td>2014-20-12 20：10：01</td>
+								  				<td></td>
+								  			</tr>
+								  			<tr style="color: #222222; font-weight: 900;">
+								  				<td colspan="2">
+								  					<input type="checkbox"value="" />
+								  					<span>重启啊是个撒了感觉萨嘎杀</span>
+								  				</td>
+								  				<td>【safsafsa】</td>
+								  				<td>2014-20-12 20：10：01</td>
+								  				<td></td>
+								  			</tr>
+								  			<tr style="color: #222222; font-weight: 900;">
+								  				<td colspan="2">
+								  					<input type="checkbox"value="" />
+								  					<span>重启啊是个撒了感觉萨嘎杀</span>
+								  				</td>
+								  				<td>【safsafsa】</td>
+								  				<td>2014-20-12 20：10：01</td>
+								  				<td></td>
+								  			</tr>
+								  			<tr style="color: #222222; font-weight: 900;">
+								  				<td colspan="2">
+								  					<input type="checkbox"value="" />
+								  					<span>重启啊是个撒了感觉萨嘎杀</span>
+								  				</td>
+								  				<td>【safsafsa】</td>
+								  				<td>2014-20-12 20：10：01</td>
+								  				<td></td>
+								  			</tr>
+								  			<tr style="color: #222222; font-weight: 900;">
+								  				<td colspan="2">
+								  					<input type="checkbox"value="" />
+								  					<span>重启啊是个撒了感觉萨嘎杀</span>
+								  				</td>
+								  				<td>【safsafsa】</td>
+								  				<td>2014-20-12 20：10：01</td>
+								  				<td></td>
+								  			</tr>
+								  			
+									  	</table>
+									  </div>
+									</div>
+								  </div>
+								  <div role="tabpanel" class="tab-pane" id="news">...</div>
+								  <div role="tabpanel" class="tab-pane" id="forum">...</div>
+								  <div role="tabpanel" class="tab-pane" id="Blog">...</div>
+								  <div role="tabpanel" class="tab-pane" id="micro-blog">...</div>
+								  <div role="tabpanel" class="tab-pane" id="postBar">...</div>
+								  <div role="tabpanel" class="tab-pane" id="weChat">...</div>
+								  <div role="tabpanel" class="tab-pane" id="media">...</div>
+								  <div role="tabpanel" class="tab-pane" id="app">...</div>
 								</div>
-						  	</div>
-							<!-- Tab panes -->
-							<div class="tab-content">
-							  <div role="tabpanel" class="tab-pane active" id="show_all">
-							  	<table class="table">
-							  		<tbody>
-							  			<tr>
-							  				<td colspan="2">
-							  					<input type="checkbox"value="" />
-							  					<span>重启啊是个撒了感觉萨嘎杀</span>
-							  				</td>
-							  				<td>【safsafsa】</td>
-							  				<td>2014-20-12 20：10：01</td>
-							  				<td></td>
-							  			</tr>
-							  			<tr>
-							  				<td colspan="5">
-							  					dsgdskglkdsk;lgsdk;lgj;dsgkjdsklgndsklngsdklnlkvcnsdlkvndsklvnkdlsgnkldsgjkldsjgkldsjgsdjlk
-							  				</td>
-							  			</tr>
-							  			<tr>
-							  				<td>
-							  					要素
-							  					<span class="label label-primary">巴南</span>
-							  					<span class="label label-primary">东温泉</span>
-							  				</td>
-							  				<td>关键词
-							  					<span class="label label-info">巴南</span>
-							  					<span class="label label-success">巴南</span>
-							  					<span class="label label-warning">巴南</span>
-							  				</td>
-							  				<td></td>
-							  				<td></td>
-							  				<td></td>
-							  			</tr>
-							  		</tbody>
-							  	</table>
-							  </div>
-							  <div role="tabpanel" class="tab-pane" id="only_title">
-							  	<table class="table">
-							  		<tr>
-						  				<td colspan="2">
-						  					<input type="checkbox"value="" />
-						  					<span>重启啊是个撒了感觉萨嘎杀</span>
-						  				</td>
-						  				<td>【safsafsa】</td>
-						  				<td>2014-20-12 20：10：01</td>
-						  				<td></td>
-						  			</tr>
-						  			<tr>
-						  				<td colspan="2">
-						  					<input type="checkbox"value="" />
-						  					<span>重启啊是个撒了感觉萨嘎杀</span>
-						  				</td>
-						  				<td>【safsafsa】</td>
-						  				<td>2014-20-12 20：10：01</td>
-						  				<td></td>
-						  			</tr>
-						  			<tr>
-						  				<td colspan="2">
-						  					<input type="checkbox"value="" />
-						  					<span>重启啊是个撒了感觉萨嘎杀</span>
-						  				</td>
-						  				<td>【safsafsa】</td>
-						  				<td>2014-20-12 20：10：01</td>
-						  				<td></td>
-						  			</tr>
-						  			<tr>
-						  				<td colspan="2">
-						  					<input type="checkbox"value="" />
-						  					<span>重启啊是个撒了感觉萨嘎杀</span>
-						  				</td>
-						  				<td>【safsafsa】</td>
-						  				<td>2014-20-12 20：10：01</td>
-						  				<td></td>
-						  			</tr>
-						  			<tr>
-						  				<td colspan="2">
-						  					<input type="checkbox"value="" />
-						  					<span>重启啊是个撒了感觉萨嘎杀</span>
-						  				</td>
-						  				<td>【safsafsa】</td>
-						  				<td>2014-20-12 20：10：01</td>
-						  				<td></td>
-						  			</tr>
-						  			<tr>
-						  				<td colspan="2">
-						  					<input type="checkbox"value="" />
-						  					<span>重启啊是个撒了感觉萨嘎杀</span>
-						  				</td>
-						  				<td>【safsafsa】</td>
-						  				<td>2014-20-12 20：10：01</td>
-						  				<td></td>
-						  			</tr>
-							  	</table>
-							  </div>
-							</div>
-						  </div>
-						  <div role="tabpanel" class="tab-pane" id="news">...</div>
-						  <div role="tabpanel" class="tab-pane" id="forum">...</div>
-						  <div role="tabpanel" class="tab-pane" id="Blog">...</div>
-						  <div role="tabpanel" class="tab-pane" id="micro-blog">...</div>
-						  <div role="tabpanel" class="tab-pane" id="postBar">...</div>
-						  <div role="tabpanel" class="tab-pane" id="weChat">...</div>
-						  <div role="tabpanel" class="tab-pane" id="media">...</div>
-						  <div role="tabpanel" class="tab-pane" id="app">...</div>
-						</div>
+		                    </div>
+                    	</div><!--country END-->
+                    	<!--city START-->
+                    	<div role="tabpanel" class="tab-pane" id="city">
+                    		全市
+                    	</div>
+                    	<!--city END-->
+                    	<!--area START-->
+                    	<div role="tabpanel" class="tab-pane" id="area">
+                    		全区
+                    	</div>
+                    	<!--area END-->
+                    	<!--company START-->
+                    	<div role="tabpanel" class="tab-pane" id="company">
+                    		本单位
+                    	</div>
+                    	<!--company END-->
                     </div>
-                    
                 </section>
                 
             </div>
@@ -259,3 +320,4 @@
 
 </section>
 <script src="/js/yq_data_list.js"></script>
+
