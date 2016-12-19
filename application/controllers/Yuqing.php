@@ -14,11 +14,10 @@ class Yuqing extends MY_Controller
     {
         parent::__construct();
         $this->identity->is_authentic();
-//      $this->load->model('Yuqing_Model','yq');
+        $this->load->model('Yuqing_Model','yq');
     }
 
     public function test(){
-        $this->load->model('Yuqing_Model','yq');
         $this->yq->test1();
     }
 
@@ -60,17 +59,19 @@ class Yuqing extends MY_Controller
         $page_num = $this->input->post('page_num');
         $col_name = 'rawdata'; //集合名称
         $yq_data  = $this->yq->get_raw_yqData($query,$page_num,$col_name);
-        print_r($yq_data);
+        echo json_encode($yq_data);
 
     }
 
 
     /**
      * 接口：忽略掉此条舆情，不显示给 该用户看
+     * type 区分是 垃圾信息 还是 无关自己的信息 ('trash' --垃圾信息 ,'useless'--无用)
      */
     public function ignore_this_yq(){
-        $yid = $this->input->get('yid');
-        $res = $this->yq->ignore_this($yid);
+        $yid  = $this->input->get('yid');
+        $type = $this->input->get('type');
+        $res = $this->yq->ignore_this($yid,$type);
         if($res){
             echo json_encode(array(
                 'res' => 1
@@ -87,7 +88,8 @@ class Yuqing extends MY_Controller
      */
     public function unset_ignore(){
         $yid = $this->input->get('yid');
-        $res = $this->yq->unset_ignore_this($yid);
+        $type = $this->input->get('type');
+        $res = $this->yq->unset_ignore_this($yid,$type);
         if($res){
             echo json_encode(array(
                 'res' => 1
@@ -144,6 +146,55 @@ class Yuqing extends MY_Controller
         echo json_encode($yq_data);
     }
 
+    /**
+     * 接口：根据舆情id 获取 上报人 打的标签
+     * 参数： 舆情id
+     */
+    public function get_tag(){
+        $yid = $this->input->get('yid');
+        $tag = $this->yq->get_tag_by_yid($yid);
+        echo json_encode($tag);
+    }
+
+
+    /**
+     * ------------------------上报人 无用信息 功能------------------------
+     */
+    /**
+     * 无用信息分页，非垃圾信息
+     */
+    public function useless_data(){
+        $query    = $this->input->post('query');
+        $page_num = $this->input->post('page_num');
+        $yq_data  = $this->yq->get_useless_yqData($query,$page_num);
+        echo json_encode($yq_data);
+    }
+
+    /**
+     * 垃圾信息分页
+     */
+    public function trash_data(){
+        $query    = $this->input->post('query');
+        $page_num = $this->input->post('page_num');
+        $yq_data  = $this->yq->get_trash_yqData($query,$page_num);
+        echo json_encode($yq_data);
+    }
+
+
+    /**
+     * -------------------指派人 功能 --------------------------------------
+     */
+    /**
+     * 指派人 查看  已经上报的舆情 分页
+     * 参数： query[tag] 舆情员分类  区 市 国家级
+     *
+     */
+     public function get_rep_data(){
+         $query    = $this->input->get('query');
+         $page_num = $this->input->get('page_num');
+         $yq_data  = $this->yq->get_rep_yqData($query,$page_num);
+         echo json_encode($yq_data);
+     }
 
 
 
