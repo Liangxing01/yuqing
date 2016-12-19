@@ -123,7 +123,7 @@ class Yuqing_Model extends CI_Model {
     public function tag_yq($yid,$tag){
         $uid = $this->session->userdata('uid');
         //找出舆情标题
-        $title = $this->mongo->select(array('title'))
+        $yq_info = $this->mongo->select(array('title','carry'))
             ->where(array('_id' => new MongoId($yid)))
             ->find_one('rawdata');
         //插入 rep_info 集合
@@ -132,7 +132,9 @@ class Yuqing_Model extends CI_Model {
             'tag'   => $tag,
             'uid'   => $uid,
             'time'  => time(),
-            'title' => $title['title']
+            'title' => $yq_info['title'],
+            'media_type' => $yq_info['carry'],
+            'is_cfm'=> 0 //是否被指派人确认过
         );
         $tag_id = $this->mongo->insert('rep_info',$insert_info);
 
@@ -331,32 +333,150 @@ class Yuqing_Model extends CI_Model {
     /**
      * -----------------------------指派人 功能 ----------------------------------
      */
+    /**
+     * @param $query
+     * @param $page_num
+     * @return array
+     * 分页查看 舆情员 已经分类的舆情
+     */
     public function get_rep_yqData($query,$page_num){
         $offset = ((int)$page_num - 1) * $query['length'];  //数据 偏移量
         //先查询 rep_info 集合，分类找出已经上报的 舆情id
         $rep_yq_list = $this->mongo->aggregate('rep_info',array(
-                array('$sort' => array('time' => -1)),
+                array('$sort' => array('time' => 1)),
                 array('$limit' => (int)$query['length']),
                 array('$skip' => $offset),
-                array('$project' => array('yq_id'=>1,'uid'=>1,'tag'=>1,'time'=>1)),
-                array('$match' => array('tag' => $query['tag'])),
+                array('$project' => array('_id'=>1,'yq_id'=>1,'uid'=>1,'tag'=>1,'time'=>1,'is_cfm'=>1,'title'=>1)),
+                array('$match' => array(
+                    'tag'    => $query['tag'],
+                    'is_cfm'  => 0,
+                    //'title' => "/".$query['search']."/"
+                )),
                 array('$group' => array(
-                    '_id' => array('yq_id' => '$yq_id'),
-                    'tag' => array('$addToSet' => '$tag'),
-                    'rep_time' => array('$addToSet' => '$time')
+                    '_id' => array('yq_id' => '$yq_id'),  //舆情id
+                    'id'  => array('$first' => '$_id'),   //上报id
+                    'uid' => array('$first' => '$uid'),   //第一个上报人的 uid
+                    'tag' => array('$first' => '$tag'),
+                    'rep_time' => array('$max' => '$time')
                 ))
             ));
         $rep_list = array();
         foreach ($rep_yq_list['result'] as $rep){
             array_push($rep_list,array(
-                'yq_id' => $rep['_id']['yq_id'],
-                'tag'   => $rep['tag'][0],
-                'rep_time' => $rep['rep_time'][0]
+                'yq_id'     => $rep['_id']['yq_id'],
+                'tag'       => $rep['tag'],
+                'rep_time'  => $rep['rep_time'],
+                'id'        => $rep['id'],
+                'first_uid' => $rep['uid']
             ));
         }
-        var_dump($rep_list);
-        //return $rep_list;
+        $res_arr = array(
+            'info' => array()
+        );
+        //遍历 上报数组，查询rawdata 集合，显示 每条舆情的信息
+        foreach ($rep_list as $item){
+            $yid = $item['yq_id'];
+            //查询 舆情 信息
+            $yq_info = $this->mongo->select(array(),array('content','yq_tag_list','yq_block_list'))
+                ->where('_id',$yid)
+                ->find_one('rawdata');
+
+            //查询第一个人的名字 mysql查询
+            $first_name = $this->db->select('name')
+                ->from('user')
+                ->where('id',$item['first_uid'])
+                ->get()->row_array();
+            //增加一些字段信息
+            $yq_info['first_name'] = $first_name['name'];
+            $yq_info['tag']        = $item['tag'];
+            $yq_info['rep_time']   = $item['rep_time'];
+            $yq_info['first_uid']  = $item['first_uid'];
+            $yq_info['rep_id']     = $item['id'];      //rep_info 信息的id
+
+            array_push($res_arr['info'],$yq_info);
+        }
+        $res_arr['num'] = count($rep_list);
+
+        return $res_arr;
     }
+
+
+    /**
+     * @param $yid
+     * @param $tag
+     * 指派人 确认  这个舆情的分类
+     */
+    public function cfm_yq($yid,$tag,$rep_id){
+        //遍历 rep_info 把is_cfm 设置为1
+        $res1 = $this->mongo->where(array('_id' => new MongoId($yid)))->set('is_cfm',1)->update('rep_info');
+
+        //设置 rawdata 集合中 tag_lock 为1
+        $res2 = $this->mongo->where(array('_id' => new MongoId($yid)))->set('yq_tag_lock',1)->update('rawdata');
+
+        //查询出 raw_db 数据信息 导入 到 有用信息 集合中 yq_useful_db
+        $raw_yq_info = $this->mongo->select(array('_id','title','url','summary','content','nrtags','keyword','yq_media_type',
+            'yq_author','yq_relevance','yq_sentiment','yq_pubdate','yq_tag','yq_reporter_list','yq_block_list'),array())
+            ->where(array('_id' => new MongoId($yid)))
+            ->find_one('rawdata');
+
+        $raw_yq_info['raw_yq_id'] = $raw_yq_info['_id'];
+        unset($raw_yq_info['_id']);
+        //新增一些 字段
+        $rep_info = $this->mongo->select(array(),array())
+            ->where(array('_id' => new MongoId($rep_id)))
+            ->find_one('rep_info');
+
+        $raw_yq_info['first_rep_stamp'] = $rep_info['time'];
+        $raw_yq_info['final_tag']       = $tag;
+        $raw_yq_info['first_rep_uid']   = $rep_info['uid'];
+        $raw_yq_info['time']            = time();
+
+        //插入数据到 有用信息集合
+        $res3 = $this->mongo->insert('useful_yq',$raw_yq_info);
+
+        //如果 tag 标记为 区级，则导入数据到  mysql表中
+        if($tag == "区级"){
+
+        }
+        if($res1 && $res2 && $res3){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    /**
+     * @param $query
+     * @param $page_num
+     * 分页 查看 已经确认的信息
+     */
+    public function get_cfm_yqData($query,$page_num){
+        $offset = ((int)$page_num - 1) * $query['length'];  //数据 偏移量
+
+        if(empty($query['search'])){
+            $yq_data['info'] = $this->mongo->select(array(),array('content'))
+                ->limit($query['length'])
+                ->offset($offset)
+                ->order_by(array('time' => 'DESC'))
+                ->get('useful_yq');
+
+            $yq_data['num'] = $this->mongo->select(array(),array('content'))
+                ->count('useful_yq');
+        }else{
+            $yq_data['info'] = $this->mongo->select(array(),array('content'))
+                ->limit($query['length'])
+                ->like('title',$query['search'],'im',TRUE,TRUE)
+                ->offset($offset)
+                ->order_by(array('time' => 'DESC'))
+                ->get('useful_yq');
+
+            $yq_data['num'] = $this->mongo->select(array(),array('content'))
+                ->count('useful_yq');
+        }
+        return $yq_data;
+    }
+
+
 
 
 
