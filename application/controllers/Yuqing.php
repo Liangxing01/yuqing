@@ -15,10 +15,17 @@ class Yuqing extends MY_Controller
         parent::__construct();
         //$this->identity->is_authentic();
         $this->load->model('Yuqing_Model','yq');
+        header( 'Access-Control-Allow-Origin:*' );
+        $this->session->set_userdata('uid',103);
     }
 
     public function test(){
-        $this->yq->test1();
+        //$this->yq->test1();
+        $t = array(
+            'test' => '1'
+        );
+        unset($t['test']);
+        var_dump($t);
     }
 
 
@@ -50,6 +57,15 @@ class Yuqing extends MY_Controller
         $this->all_display("yq_data/yq_report_db.html");
     }
 
+    /**
+     * 指派人 查看 上报上来的舆情 分页
+     */
+    public function show_all_has_rep(){
+        $this->assign("active_title", "yq_has_rep");
+        $this->assign("active_parent", "designate_parent");
+        $this->all_display("yq_data/yq_has_rep.html");
+    }
+
 
     /**
      * 分页 获取 原始舆情数据库 数据
@@ -69,16 +85,18 @@ class Yuqing extends MY_Controller
      * type 区分是 垃圾信息 还是 无关自己的信息 ('trash' --垃圾信息 ,'useless'--无用)
      */
     public function ignore_this_yq(){
-        $yid  = $this->input->get('yid');
-        $type = $this->input->get('type');
+        $yid  = $this->input->post('yids');
+        $type = $this->input->post('type');
         $res = $this->yq->ignore_this($yid,$type);
         if($res){
             echo json_encode(array(
-                'res' => 1
+                'res' => 1,
+                'msg' => '操作成功'
             ));
         }else{
             echo json_encode(array(
-                'res' => 0
+                'res' => 0,
+                'msg' => '操作失败'
             ));
         }
     }

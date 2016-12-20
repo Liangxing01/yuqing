@@ -41,40 +41,105 @@ class Yuqing_Model extends CI_Model {
 
         $offset = ((int)$page_num - 1) * $query['length'];  //数据 偏移量
         if(empty($query['search'])){
-            $yq_data['info'] = $this->mongo->select(array(),array('content'))//排除 content字段
-                ->where_not_in('yq_block_list',$block_list) // 排除 自己已经 忽略的无关舆情
-                ->where_not_in('yq_trash_list',$block_list) // 排除 自己认为 垃圾的舆情
-                ->where_not_in('yq_reporter_list',$block_list) // 不显示已经上报的舆情
-                ->where_lte('trash_num',5)                     //垃圾标记数 不超过5个的显示
-                ->limit($query['length'])
-                ->offset($offset)
-                ->order_by(array($query['sort'] => 'DESC'))
-                ->get($col_name);
+            if($query['media_type'] != '全部'){
+                $yq_data['info'] = $this->mongo->select(array(),array('content','yq_block_list','yq_trash_list','yq_reporter_list',
+                    'yq_rep_num'))//排除 content字段
+                ->where('yq_media_type',$query['media_type'])
+                    ->where('yq_tag_lock',0)                    //未被确认的舆情
+                    ->where_lte('yq_rep_num',10)                //上报人小于10个
+                    ->where_not_in('yq_block_list',$block_list) // 排除 自己已经 忽略的无关舆情
+                    ->where_not_in('yq_trash_list',$block_list) // 排除 自己认为 垃圾的舆情
+                    ->where_not_in('yq_reporter_list',$block_list) // 不显示已经上报的舆情
+                    ->where_lte('yq_trash_num',5)                     //垃圾标记数 不超过5个的显示
+                    ->limit($query['length'])
+                    ->offset($offset)
+                    ->order_by(array('yq_pubdate' => $query['sort']))
+                    ->get($col_name);
 
-            $yq_data['num'] = $this->mongo->select(array(),array('content'))//排除 content字段
-                ->where_not_in('yq_block_list',$block_list) // 排除 自己已经 忽略的舆情
-                ->where_not_in('yq_trash_list',$block_list) // 排除 自己认为 垃圾的舆情
-                ->where_not_in('yq_reporter_list',$block_list) // 不显示已经上报的舆情
-                ->where_lte('trash_num',5)                     //垃圾标记数 不超过5个的显示
-                ->count('rawdata');
+                $yq_data['num'] = $this->mongo->select(array('_id'),array('content'))//排除 content字段
+                ->where('yq_media_type',$query['media_type'])
+                    ->where('yq_tag_lock',0)                    //未被确认的舆情
+                    ->where_lte('yq_rep_num',10)                //上报人小于10个
+                    ->where_not_in('yq_block_list',$block_list) // 排除 自己已经 忽略的舆情
+                    ->where_not_in('yq_trash_list',$block_list) // 排除 自己认为 垃圾的舆情
+                    ->where_not_in('yq_reporter_list',$block_list) // 不显示已经上报的舆情
+                    ->where_lte('yq_trash_num',5)                     //垃圾标记数 不超过5个的显示
+                    ->count('rawdata');
+            }else{
+                $yq_data['info'] = $this->mongo->select(array(),array('content','yq_block_list','yq_trash_list','yq_reporter_list',
+                    'yq_rep_num'))//排除 content字段
+                    ->where('yq_tag_lock',0)                    //未被确认的舆情
+                    ->where_lte('yq_rep_num',10)                //上报人小于10个
+                    ->where_not_in('yq_block_list',$block_list) // 排除 自己已经 忽略的无关舆情
+                    ->where_not_in('yq_trash_list',$block_list) // 排除 自己认为 垃圾的舆情
+                    ->where_not_in('yq_reporter_list',$block_list) // 不显示已经上报的舆情
+                    ->where_lte('yq_trash_num',5)                     //垃圾标记数 不超过5个的显示
+                    ->limit($query['length'])
+                    ->offset($offset)
+                    ->order_by(array('yq_pubdate' => $query['sort']))
+                    ->get($col_name);
+
+                $yq_data['num'] = $this->mongo->select(array('_id'),array('content'))//排除 content字段
+                    ->where('yq_tag_lock',0)                    //未被确认的舆情
+                    ->where_lte('yq_rep_num',10)                //上报人小于10个
+                    ->where_not_in('yq_block_list',$block_list) // 排除 自己已经 忽略的舆情
+                    ->where_not_in('yq_trash_list',$block_list) // 排除 自己认为 垃圾的舆情
+                    ->where_not_in('yq_reporter_list',$block_list) // 不显示已经上报的舆情
+                    ->where_lte('yq_trash_num',5)                     //垃圾标记数 不超过5个的显示
+                    ->count('rawdata');
+            }
+
         }else{
-            $yq_data['info'] = $this->mongo->select(array(),array('content'))
-                ->where_not_in('yq_block_list',$block_list) // 排除 自己已经 忽略的舆情
-                ->where_not_in('yq_reporter_list',$block_list) // 不显示已经上报的舆情
-                ->where_not_in('yq_trash_list',$block_list) // 排除 自己认为 垃圾的舆情
-                ->where_lte('trash_num',5)                     //垃圾标记数 不超过5个的显示
-                ->like('title',$query['search'],'im',TRUE,TRUE)
-                ->limit($query['length'])
-                ->offset($offset)
-                ->order_by(array($query['sort'] => 'DESC'))
-                ->get($col_name);
+            if($query['media_type'] != '全部'){
+                $yq_data['info'] = $this->mongo->select(array(),array('content','yq_block_list','yq_trash_list','yq_reporter_list',
+                    'yq_rep_num'))
+                    ->where('yq_media_type',$query['media_type'])
+                    ->where('yq_tag_lock',0)                    //未被确认的舆情
+                    ->where_lte('yq_rep_num',10)                //上报人小于10个
+                    ->where_not_in('yq_block_list',$block_list) // 排除 自己已经 忽略的舆情
+                    ->where_not_in('yq_reporter_list',$block_list) // 不显示已经上报的舆情
+                    ->where_not_in('yq_trash_list',$block_list) // 排除 自己认为 垃圾的舆情
+                    ->where_lte('yq_trash_num',5)                     //垃圾标记数 不超过5个的显示
+                    ->like('title',$query['search'],'im',TRUE,TRUE)
+                    ->limit($query['length'])
+                    ->offset($offset)
+                    ->order_by(array('yq_pubdate' => $query['sort']))
+                    ->get($col_name);
 
-            $yq_data['num'] = $this->mongo->select(array(),array('content'))//排除 content字段
-                ->where_not_in('yq_block_list',$block_list) // 排除 自己已经 忽略的舆情
-                ->where_not_in('yq_reporter_list',$block_list) // 不显示已经上报的舆情
-                ->where_not_in('yq_trash_list',$block_list) // 排除 自己认为 垃圾的舆情
-                ->where_lte('trash_num',5)                     //垃圾标记数 不超过5个的显示
-                ->count('rawdata');
+                $yq_data['num'] = $this->mongo->select(array('_id'),array('content'))//排除 content字段
+                ->where('yq_media_type',$query['media_type'])
+                    ->where('yq_tag_lock',0)                    //未被确认的舆情
+                    ->where_lte('yq_rep_num',10)                //上报人小于10个
+                    ->where_not_in('yq_block_list',$block_list) // 排除 自己已经 忽略的舆情
+                    ->where_not_in('yq_reporter_list',$block_list) // 不显示已经上报的舆情
+                    ->where_not_in('yq_trash_list',$block_list) // 排除 自己认为 垃圾的舆情
+                    ->where_lte('yq_trash_num',5)                     //垃圾标记数 不超过5个的显示
+                    ->count('rawdata');
+            }else{
+                $yq_data['info'] = $this->mongo->select(array(),array('content','yq_block_list','yq_trash_list','yq_reporter_list',
+                    'yq_rep_num'))
+                    ->where('yq_tag_lock',0)                    //未被确认的舆情
+                    ->where_lte('yq_rep_num',10)                //上报人小于10个
+                    ->where_not_in('yq_block_list',$block_list) // 排除 自己已经 忽略的舆情
+                    ->where_not_in('yq_reporter_list',$block_list) // 不显示已经上报的舆情
+                    ->where_not_in('yq_trash_list',$block_list) // 排除 自己认为 垃圾的舆情
+                    ->where_lte('yq_trash_num',5)                     //垃圾标记数 不超过5个的显示
+                    ->like('title',$query['search'],'im',TRUE,TRUE)
+                    ->limit($query['length'])
+                    ->offset($offset)
+                    ->order_by(array('yq_pubdate' => $query['sort']))
+                    ->get($col_name);
+
+                $yq_data['num'] = $this->mongo->select(array('_id'),array('content'))//排除 content字段
+                    ->where('yq_tag_lock',0)                    //未被确认的舆情
+                    ->where_lte('yq_rep_num',10)                //上报人小于10个
+                    ->where_not_in('yq_block_list',$block_list) // 排除 自己已经 忽略的舆情
+                    ->where_not_in('yq_reporter_list',$block_list) // 不显示已经上报的舆情
+                    ->where_not_in('yq_trash_list',$block_list) // 排除 自己认为 垃圾的舆情
+                    ->where_lte('yq_trash_num',5)                     //垃圾标记数 不超过5个的显示
+                    ->count('rawdata');
+            }
+
         }
         return $yq_data;
     }
@@ -85,12 +150,28 @@ class Yuqing_Model extends CI_Model {
      */
     public function ignore_this($yid,$type){
         $uid = $this->session->userdata('uid');
+        $yid_arr = explode(',',$yid);
+        $u_arr = array($uid);
+        $yid_mongo = array();
+        //转换 yid 成 MongoId类型
+        foreach ($yid_arr as $yid){
+            array_push($yid_mongo,new MongoId($yid));
+        }
         if($type == 'trash'){
             //垃圾信息计数+1，同时添加到trash_list
-            $this->mongo->where(array('_id' => new MongoId($yid)))->inc(array('trash_num' => 1))->update('rawdata');
-            $res = $this->mongo->where(array('_id' => new MongoId($yid)))->addtoset('yq_trash_list',$uid)->update('rawdata');
+            foreach ($yid_mongo as $one){
+                $this->mongo->where('_id',$one)->inc(array('yq_trash_num' => 1))->update('rawdata');
+                $this->mongo->where('_id',$one)->addtoset('yq_trash_list',$u_arr)->update('rawdata');
+            }
+            $res = true;
+
         }else if($type == 'useless'){
-            $res = $this->mongo->where(array('_id' => new MongoId($yid)))->addtoset('yq_block_list',$uid)->update('rawdata');
+            foreach ($yid_mongo as $one){
+                $this->mongo->where('_id',$one)->addtoset('yq_block_list',$u_arr)->update('rawdata');
+            }
+            $res = true;
+        }else{
+            $res = false;
         }
         return $res;
     }
@@ -101,16 +182,19 @@ class Yuqing_Model extends CI_Model {
      */
     public function unset_ignore_this($yid,$type){
         $uid = $this->session->userdata('uid');
+        $u_arr = array($uid);
         if($type == 'trash'){
             //垃圾计数 -1
             $this->mongo->where(array('_id' => new MongoId($yid)))->inc(array('trash_num' => -1))->update('rawdata');
             $res = $this->mongo->where(array('_id' => new MongoId($yid)))
-                ->pop(array('yq_trash_list',$uid))
+                ->pop(array('yq_trash_list',$u_arr))
                 ->update('rawdata');
         }else if($type == 'useless'){
             $res = $this->mongo->where(array('_id' => new MongoId($yid)))
-                ->pop(array('yq_block_list',$uid))
+                ->pop(array('yq_block_list',$u_arr))
                 ->update('rawdata');
+        }else{
+            $res = false;
         }
         return $res;
     }
@@ -123,7 +207,7 @@ class Yuqing_Model extends CI_Model {
     public function tag_yq($yid,$tag){
         $uid = $this->session->userdata('uid');
         //找出舆情标题
-        $yq_info = $this->mongo->select(array('title','carry'))
+        $yq_info = $this->mongo->select(array('title','yq_media_type'))
             ->where(array('_id' => new MongoId($yid)))
             ->find_one('rawdata');
         //插入 rep_info 集合
@@ -133,8 +217,8 @@ class Yuqing_Model extends CI_Model {
             'uid'   => $uid,
             'time'  => time(),
             'title' => $yq_info['title'],
-            'media_type' => $yq_info['carry'],
-            'is_cfm'=> 0 //是否被指派人确认过
+            'media_type' => $yq_info['yq_media_type'],
+            'is_cfm'=> 0//是否被指派人确认过 0 未查看 1 被采纳 -1 未被采纳
         );
         $tag_id = $this->mongo->insert('rep_info',$insert_info);
 
@@ -152,7 +236,7 @@ class Yuqing_Model extends CI_Model {
     public function rep_yq($yid,$tag){
         $uid = $this->session->userdata('uid');
         //插入uid 到该舆情的 reporter_list
-        $res1 = $this->mongo->where(array('_id' => new MongoId($yid)))->push('yq_reporter',$uid)->update('rawdata');
+        $res1 = $this->mongo->where(array('_id' => new MongoId($yid)))->push('yq_reporter_list',$uid)->update('rawdata');
 
         //给舆情 打标签
         $res2 = $this->tag_yq($yid,$tag);
@@ -168,10 +252,11 @@ class Yuqing_Model extends CI_Model {
      * 获取舆情详细信息
      */
     public function get_yq_detail($yid){
-        $res = $this->mongo->select(array(),array('sid','pubdate','_version','reloadtag','timestamp'))
+        $res = $this->mongo->select(array(),array('sid','pubdate','_version','reloadtag','timestamp','yq_block_list',
+            'yq_trash_list','yq_reporter_list', 'yq_rep_num'))
             ->where(array('_id' => new MongoId($yid)))
-            ->get('rawdata');
-        return $res[0];
+            ->find_one('rawdata');
+        return $res;
     }
 
     /**
@@ -189,7 +274,7 @@ class Yuqing_Model extends CI_Model {
 
         if(empty($query['search'])){
             //先检索 rep_info 集合，找出符合条件的 id
-            $rep_list = $this->mongo->select(array('yq_id'))
+            $rep_list = $this->mongo->select(array('yq_id','is_cfm'))
                 ->limit($query['length'])
                 ->offset($offset)
                 ->order_by(array($query['sort'] => 'DESC'))
@@ -201,6 +286,7 @@ class Yuqing_Model extends CI_Model {
                 $info = $this->mongo->select(array(),array('content'))
                     ->where(array('_id' => $item['yq_id']))
                     ->find_one('rawdata');
+                $info['is_cfm'] = $item['is_cfm'];
                 array_push($yq_data['info'],$info);
             }
 
@@ -209,7 +295,7 @@ class Yuqing_Model extends CI_Model {
                 ->count('rep_info');
         }else{
             //先检索 rep_info 集合，找出符合条件的 id
-            $rep_list = $this->mongo->select(array('yq_id'))
+            $rep_list = $this->mongo->select(array('yq_id','is_cfm'))
                 ->like('title',$query['search'],'im',TRUE,TRUE)
                 ->limit($query['length'])
                 ->offset($offset)
@@ -222,6 +308,7 @@ class Yuqing_Model extends CI_Model {
                 $info = $this->mongo->select(array(),array('content'))
                     ->where(array('_id' => $item['yq_id']))
                     ->find_one('rawdata');
+                $info['is_cfm'] = $item['is_cfm'];
                 array_push($yq_data['info'],$info);
             }
 
@@ -408,14 +495,18 @@ class Yuqing_Model extends CI_Model {
      */
     public function cfm_yq($yid,$tag,$rep_id){
         //遍历 rep_info 把is_cfm 设置为1
-        $res1 = $this->mongo->where(array('_id' => new MongoId($yid)))->set('is_cfm',1)->update('rep_info');
+        if($tag == '无效信息'){
+            $res1 = $this->mongo->where(array('yq_id' => new MongoId($yid)))->set('is_cfm',-1)->update('rep_info');
+        }else{
+            $res1 = $this->mongo->where(array('yq_id' => new MongoId($yid)))->set('is_cfm',1)->update('rep_info');
+        }
 
         //设置 rawdata 集合中 tag_lock 为1
         $res2 = $this->mongo->where(array('_id' => new MongoId($yid)))->set('yq_tag_lock',1)->update('rawdata');
 
         //查询出 raw_db 数据信息 导入 到 有用信息 集合中 yq_useful_db
         $raw_yq_info = $this->mongo->select(array('_id','title','url','summary','content','nrtags','keyword','yq_media_type',
-            'yq_author','yq_relevance','yq_sentiment','yq_pubdate','yq_tag','yq_reporter_list','yq_block_list'),array())
+            'yq_author','yq_relevance','yq_sentiment','yq_pubdate','yq_tag','yq_reporter_list','yq_block_list','source'),array())
             ->where(array('_id' => new MongoId($yid)))
             ->find_one('rawdata');
 
@@ -436,7 +527,18 @@ class Yuqing_Model extends CI_Model {
 
         //如果 tag 标记为 区级，则导入数据到  mysql表中
         if($tag == "区级"){
-
+            $insert_info = array(
+                'title'         => $raw_yq_info['title'],
+                'type'          => 100, // 来自舆情平台
+                'url'           => $raw_yq_info['url'],
+                'source'        => $raw_yq_info['source'],
+                'description'   => $raw_yq_info['summary'],
+                'publisher'     => $rep_info['uid'],
+                'time'          => $rep_info['time'],
+                'state'         => 0,
+                'duplicate'     => 0
+            );
+            $this->db->insert('info',$insert_info);
         }
         if($res1 && $res2 && $res3){
             return true;
