@@ -13,7 +13,7 @@ class Yuqing extends MY_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->identity->is_authentic();
+        //$this->identity->is_authentic();
         $this->load->model('Yuqing_Model','yq');
     }
 
@@ -193,6 +193,36 @@ class Yuqing extends MY_Controller
          $query    = $this->input->get('query');
          $page_num = $this->input->get('page_num');
          $yq_data  = $this->yq->get_rep_yqData($query,$page_num);
+         echo json_encode($yq_data);
+     }
+
+     /**
+      * 指派人 确认 上报分类功能
+      */
+     public function cfm_yq(){
+         $yid = $this->input->get('yid');
+         $tag = $this->input->get('tag');
+         $rep_id = $this->input->get('rep_id');
+
+         $res = $this->yq->cfm_yq($yid,$tag,$rep_id);
+         if($res){
+             echo json_encode(array(
+                 'res' => 1
+             ));
+         }else{
+             echo json_encode(array(
+                 'res' => 0
+             ));
+         }
+     }
+
+     /**
+      * 分页查看 已经确认过的 舆情
+      */
+     public function get_cfm_data(){
+         $query    = $this->input->get('query');
+         $page_num = $this->input->get('page_num');
+         $yq_data  = $this->yq->get_cfm_yqData($query,$page_num);
          echo json_encode($yq_data);
      }
 
