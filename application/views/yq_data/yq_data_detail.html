@@ -38,10 +38,17 @@
 		color:#222222;
 	}
 	.keyword{
-
+		line-height: 36px;
 	}
 	.keyword span{
 		margin-right: 5px;
+	}
+	.leavel{
+		text-align: center;
+		font-size: 18px;
+	}
+	.leavel input{
+		margin-left:8px;;
 	}
 </style>
 <!-- BEGIN MAIN CONTENT -->
@@ -55,9 +62,12 @@
                     <div class="panel-body clear">
                     	<div class="detail_title">
                     		<a href="" class="active">进入舆情快照</a>
-							<a href="">浏览原始网页</a>
+							<a href="" class="look_page">浏览原始网页</a>
 							<a href="">网页取证</a>
                     	</div>
+						<div style="float: right">
+							<button class="btn btn-md btn-primary" data-toggle="modal" data-target="#model_reporter" id="reporter"><i class="fa fa-share"></i>上报此舆情 </button>
+						</div>
                     	<div class="row" style="margin-top: 20px; font-size:16px; color: #000000;">
 							<div class="col-md-12">
 								<p class="release_man">发布人: <span></span></p>
@@ -103,12 +113,7 @@
                 			<div class="col-md-6" style=";">
                 				<h3 class="b_color">转载信息</h3>
                 				<ul class="detail_list">
-                					<li><a href=""><b>标题一标题一标题一 </b><span>(搜狐 2016-12-18  19：32：66)</span></a></li>
-                					<li><a href=""><b>标题一标题一标题一 </b><span>(搜狐 2016-12-18  19：32：66)</span></a></li>
-                					<li><a href=""><b>标题一标题一标题一 </b><span>(搜狐 2016-12-18  19：32：66)</span></a></li>
-                					<li><a href=""><b>标题一标题一标题一 </b><span>(搜狐 2016-12-18  19：32：66)</span></a></li>
-                					<li><a href=""><b>标题一标题一标题一 </b><span>(搜狐 2016-12-18  19：32：66)</span></a></li>
-                					<li><a href=""><b>标题一标题一标题一 </b><span>(搜狐 2016-12-18  19：32：66)</span></a></li>
+                					<li><a href="javascript:void(0)">暂无相关转载</a></li>
                 				</ul>
                 			</div>	
                 			<div class="col-md-6">
@@ -126,12 +131,49 @@
         <!-- END WRAPPER  -->
     </section>
     <!-- END MAIN CONTENT -->
-
+	<div class="modal fade" id="model_reporter">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+					<h4 class="modal-title">舆情等级列表</h4>
+				</div>
+				<div class="modal-body leavel" style="text-align: center;font-size: 18px">
+					标记舆情等级：
+					<input type="radio" id="country" name="address" value="全区">
+					<label for="country">区级</label>
+					<input type="radio" id="city" name="address" value="全市">
+					<label for="city">市级</label>
+					<input type="radio" id="coun" name="address" value="全国">
+					<label for="coun">国家级</label>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" id="re_sure">确定</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
 </section>
 <script src='/js/public.js'></script>
 <script>
 	$(function(){
 		get_content();
+
+		$('#re_sure').click(function(){
+			var val = $('.leavel input[type="radio"]:checked').val();
+			var fid = get_id();
+			$.ajax({
+				type:'get',
+				url:'http://192.168.0.135:81/yuqing/rep_this_yq?yid='+fid+'&tag='+val,
+				dataType:'json',
+				success:function(data){
+					layer.msg(data.msg);
+					$('#model_reporter').modal('hide');
+					$('#reporter').hide();
+				}
+			})
+		})
 	})
 
 	function get_content(){
@@ -153,9 +195,11 @@
 				}
 				$('.keyword').append(str);	//关键字
 				var k=0 ,k_str= '',k_len = data.nrtags.length;
-				$('.msg_url').append( "<a href='"+(data.url?data.url:'')+"'>"+(data.url?data.url:'')+"</a>");	//文章链接
+				$('.msg_url').append( "<a href='"+(data.url?data.url:'')+"' target='_blank'>"+(data.url?data.url:'')+"</a>");	//文章链接
 				$('.msg_title').html(data.title?data.title:'');		//文章标题
 				$('.data_detail_main p').html(data.content?data.content:'');
+				$('.detail_title .look_page').attr('href',data.url?data.url:'');
+				$('.detail_title .look_page').attr('target','_blank')
 			}
 		})
 	}
@@ -177,5 +221,11 @@
 			case 5:
 				return '<span class="label label-danger">'+content+'</span>';
 		}
+	}
+
+	function get_id(){
+		var start = window.location.href.indexOf('?yid=')+5;
+		var yid = window.location.href.slice(start);
+		return yid;
 	}
 </script>

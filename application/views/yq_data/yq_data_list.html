@@ -136,6 +136,16 @@
 	#show_all table{
 		table-layout: fixed;
 	}
+
+    .tr_title td:first-child{
+        width: 350px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+    #sort,.btn-search{
+        cursor: pointer;
+    }
 </style>
 	
 <!-- BEGIN MAIN CONTENT -->
@@ -156,7 +166,7 @@
 							</ul>
                         </div>
                         <div class="input-group file-search" style="float: right;">
-                        	<input type="text" class="search-input" placeholder="搜索关键词"/>
+                        	<input type="text" class="search-input" placeholder="搜索关键词" id="search_input"/>
                 			<i class="fa fa-search btn-search"></i>
                         </div>
                     </header>
@@ -176,8 +186,7 @@
 									  <li role="presentation"><a href="javascript:void(0)" role="tab" data-toggle="tab"><i class="fa fa-ellipsis-h"></i>其他</a></li>
 									</ul>
 									<div>
-										<span class="active"><i class="fa fa-tasks"></i>按时间发布</span>
-										<span><i class="fa fa-tasks"></i>按时间发布</span>
+										<span class="active" id="sort"><i class="fa fa-tasks"></i>按时间发布</span>
 									</div>
 		                    	</div>
 								<!-- Tab panes -->
@@ -296,12 +305,10 @@
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-					<h4 class="modal-title">忽略信息列表</h4>
+					<h4 class="modal-title">舆情等级</h4>
 				</div>
 				<div class="modal-body">
-					<ul class="list-group">
 
-                    </ul>
 				</div>
 				<div class="modal-footer">
                     <button type="button" class="btn btn-primary" id="ignore_sure" onclick=ignore_this_yq(this,'useless')>确定</button>
@@ -310,6 +317,7 @@
 			</div><!-- /.modal-content -->
 		</div><!-- /.modal-dialog -->
 	</div><!-- /.modal -->
+
 </section>
 <script src="/js/public.js"></script>
 <script src="/js/yq_data_list.js"></script>

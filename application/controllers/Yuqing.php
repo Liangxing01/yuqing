@@ -14,7 +14,7 @@ class Yuqing extends MY_Controller
     {
         parent::__construct();
         //$this->identity->is_authentic();
-        $this->load->model('Yuqing_Model','yq');
+       // $this->load->model('Yuqing_Model','yq');
         header( 'Access-Control-Allow-Origin:*' );
         $this->session->set_userdata('uid',103);
     }
@@ -55,6 +55,15 @@ class Yuqing extends MY_Controller
         $this->assign("active_title", "report_parent");
         $this->assign("active_parent", "yq_data");
         $this->all_display("yq_data/yq_report_db.html");
+    }
+
+    /**
+     * 已上报舆情 历史记录 页面 载入
+     */
+    public function yq_record(){
+        $this->assign("active_title", "report_parent");
+        $this->assign("active_parent", "yq_record");
+        $this->all_display("yq_data/yq_record.html");
     }
 
     /**
