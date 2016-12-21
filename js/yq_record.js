@@ -1,4 +1,7 @@
 /**
+ * Created by LX on 2016/12/20.
+ */
+/**
  * Created by LX on 2016/12/17.
  */
 var page_num = 1;   //页码
@@ -8,7 +11,7 @@ var arr_all = ['全国','全部','显示全部','ASC','']; //默认初始查询
 //显示全部
 function sroll_ajax(type){
     if(type == 'all'){
-      var  fn = add_content_all;
+        var  fn = add_content_all;
     }
     if(type == 'title'){
         var fn = add_content_title;
@@ -17,17 +20,13 @@ function sroll_ajax(type){
     var arr = {"sort":arr_all[3],"length":page_length,"search":arr_all[4],"media_type":arr_all[1]};
     $.ajax({
         type:'POST',
-        url:'http://192.168.0.135:81/yuqing/get_yqData_by_page',
+        url:'http://192.168.0.135:81/yuqing/has_rep_yq',
         data:{
             query:arr,
             page_num:page_num
         },
         dataType:'json',
-        success:fn,
-        error:function(){
-            layer.msg('服务器无法连接');
-            layer.close(layer2);
-        }
+        success:fn
     });
 }
 
@@ -39,12 +38,12 @@ $(document).scroll(function(){
             if(arr_all[2] == '显示全部'){
                 sroll_ajax('all');
             }
-           if(arr_all[2] == '只看标题'){
-               sroll_ajax('title');
-           }
+            if(arr_all[2] == '只看标题'){
+                sroll_ajax('title');
+            }
         }
     }
-   // console.log($(document).scrollTop()+":"+$('#main-content').height()+':'+$(window).height()+":"+$('footer').height());
+    // console.log($(document).scrollTop()+":"+$('#main-content').height()+':'+$(window).height()+":"+$('footer').height());
 });
 function add_content_all(data){
     page_total = Math.ceil(data.num/page_length);
@@ -59,24 +58,22 @@ function add_content_all(data){
             str += '<tr class="tr_title">';
             str += '<td colspan="2">';
             str += '<input type="checkbox" data-id="'+obj._id.$id+'">';
-            str += '<span><a href="/yuqing/yq_detail?yid='+obj._id.$id+'" title="'+obj.title+'">'+obj.title+'</a></span>';
+            str += '<span><a href="/yuqing/yq_detail?yid='+obj._id.$id+'#record" title="'+obj.title+'">'+obj.title+'</a></span>';
             str += '</td>';
             str += '<td>【'+(obj.source?obj.source:'')+'】</td>';
             str += '<td><span class="label label-danger">'+obj.yq_tag+'</span></td>';
+            switch (obj.is_cfm){
+                case 0 :
+                    str += '<td><span class="label label-default">未查看</span></td>';break;
+                case 1 :
+                    str += '<td><span class="label label-success">已采纳</span></td>';break;
+                case -1 :
+                    str += '<td><span class="label label-primary">未采纳</span></td>';break;
+            }
             str += '<td>'+timeToDate(obj.yq_pubdate*1000)+'</td>';
 
-            str += '<tr><td colspan="5"><span class="color_red">[摘要]</span>'+obj.summary+'</td></tr>';
-            /*str += '<tr><td colspan="2">要素';
-            var j=0,j_len = obj.nrtags.length;  //循环遍历文章要素
-            for(;j<j_len;++j){
-                str += '<span class="crux">'+obj.nrtags[j]+'</span>';
-            }
-            str += '</td><td colspan="2">关联级别:';
-            for(var m = 0;m<obj.yq_relevance*1;++m){
-                str += '<i class="fa fa-star"></i>';
-            }
-            str += '</td><td></td></tr>';*/
-            str += '<tr><td colspan="5">关键字：';
+            str += '<tr><td colspan="6"><span class="color_red">[摘要]</span>'+obj.summary+'</td></tr>';
+            str += '<tr><td colspan="6">关键字：';
             if(obj.keyword !== undefined){
                 var k=0,k_len = obj.keyword.length; //遍历文章关键字
                 for(;k<k_len;++k){
@@ -111,6 +108,14 @@ function add_content_title(data){
             str += '</td>';
             str += '<td>【'+(obj.source?obj.source:'')+'】</td>';
             str += '<td><span class="label label-danger">'+obj.yq_tag+'</span></td>';
+            switch (obj.is_cfm){
+                case 0 :
+                    str += '<td><span class="label label-default">未查看</span></td>';break;
+                case 1 :
+                    str += '<td><span class="label label-success">已采纳</span></td>';break;
+                case -1 :
+                    str += '<td><span class="label label-primary">未采纳</span></td>';break;
+            }
             str += '<td>'+timeToDate(obj.yq_pubdate*1000)+'</td>';
             str += '</tr>'
         }
@@ -156,7 +161,7 @@ $(function(){
     });
     //搜索按钮
     $('.btn-search').click(function(){
-       arr_all[4] =  $('#search_input').val();
+        arr_all[4] =  $('#search_input').val();
         load_who();//加载页面
     })
     //全选按钮
@@ -167,60 +172,14 @@ $(function(){
         })
     })
 
-    //加入垃圾信息
-    $('#add_garbage').click(function(){
-        var len = $('#show_all input[type="checkbox"]:checked').length;
-        if(len>10){
-            layer.msg("所选数据不能超过10条",{anim:6});
-            return false;
-        }
-        if(len == 0){
-            layer.msg("所选信息为空",{anim:6});
-            return false;
-        }
-        var list = '';
-        var arr = []; //id数组
-        $('#model_garbage ul').html('');
-        $('#show_all input[type="checkbox"]:checked').each(function(i){
-            var title = $(this).parent().find('a').html();
-            arr.push($(this).data("id"));
-            list += '<li class="list-group-item">'+(i+1)+'、'+title+'</li>';
-        })
-        $('#model_garbage ul').append(list);
-        $('#garbage_sure').data('id',arr.join(','));
-    })
-    //忽略消息
-    $('#add_ignore').click(function(){
-        var len = $('#show_all input[type="checkbox"]:checked').length;
-        if(len>10){
-            layer.msg("所选数据不能超过10条",{anim:6});
-            return false;
-        }
-        if(len == 0){
-            layer.msg("所选信息为空",{anim:6});
-            return false;
-        }
-        var list = '';
-        var arr = []; //id数组
-        $('#model_ignore ul').html('');
-        $('#show_all input[type="checkbox"]:checked').each(function(i){
-            var title = $(this).parent().find('a').html();
-            arr.push($(this).data("id"));
-            list += '<li class="list-group-item">'+(i+1)+'、'+title+'</li>';
-        })
-        $('#model_ignore ul').append(list);
-        $('#ignore_sure').data('id',arr.join(','));
-    })
     //排序
     $('#sort').click(function(){
         if($(this).hasClass('active')){
             $(this).removeClass('active');
             arr_all[3] = 'DESC';
-            $(this).find('.sort').removeClass("fa-sort-amount-desc").addClass('fa-sort-amount-asc');
         }else{
             $(this).addClass('active');
             arr_all[3] = 'ASC';
-            $(this).find('.sort').removeClass("fa-sort-amount-asc").addClass('fa-sort-amount-desc');
         }
         load_who();
     })

@@ -1,23 +1,26 @@
 /**
+ * Created by LX on 2016/12/21.
+ */
+/**
  * Created by LX on 2016/12/17.
  */
 var page_num = 1;   //页码
 var page_total = 0 ; //总页码
 var page_length = 10;   //每页显示多少条
-var arr_all = ['全国','全部','显示全部','ASC','']; //默认初始查询
+var arr_all = ['全国','全部','显示全部','DESC','']; //默认初始查询
 //显示全部
 function sroll_ajax(type){
     if(type == 'all'){
-      var  fn = add_content_all;
+        var  fn = add_content_all;
     }
     if(type == 'title'){
         var fn = add_content_title;
     }
     var layer2 = layer.load(2);
-    var arr = {"sort":arr_all[3],"length":page_length,"search":arr_all[4],"media_type":arr_all[1]};
+    var arr = {"sort":arr_all[3],"length":page_length,"search":arr_all[4],"media_type":arr_all[1],"tag":arr_all[0]};
     $.ajax({
         type:'POST',
-        url:'http://192.168.0.135:81/yuqing/get_yqData_by_page',
+        url:'http://192.168.0.135:81/yuqing/get_rep_data',
         data:{
             query:arr,
             page_num:page_num
@@ -39,12 +42,12 @@ $(document).scroll(function(){
             if(arr_all[2] == '显示全部'){
                 sroll_ajax('all');
             }
-           if(arr_all[2] == '只看标题'){
-               sroll_ajax('title');
-           }
+            if(arr_all[2] == '只看标题'){
+                sroll_ajax('title');
+            }
         }
     }
-   // console.log($(document).scrollTop()+":"+$('#main-content').height()+':'+$(window).height()+":"+$('footer').height());
+    // console.log($(document).scrollTop()+":"+$('#main-content').height()+':'+$(window).height()+":"+$('footer').height());
 });
 function add_content_all(data){
     page_total = Math.ceil(data.num/page_length);
@@ -67,15 +70,15 @@ function add_content_all(data){
 
             str += '<tr><td colspan="5"><span class="color_red">[摘要]</span>'+obj.summary+'</td></tr>';
             /*str += '<tr><td colspan="2">要素';
-            var j=0,j_len = obj.nrtags.length;  //循环遍历文章要素
-            for(;j<j_len;++j){
-                str += '<span class="crux">'+obj.nrtags[j]+'</span>';
-            }
-            str += '</td><td colspan="2">关联级别:';
-            for(var m = 0;m<obj.yq_relevance*1;++m){
-                str += '<i class="fa fa-star"></i>';
-            }
-            str += '</td><td></td></tr>';*/
+             var j=0,j_len = obj.nrtags.length;  //循环遍历文章要素
+             for(;j<j_len;++j){
+             str += '<span class="crux">'+obj.nrtags[j]+'</span>';
+             }
+             str += '</td><td colspan="2">关联级别:';
+             for(var m = 0;m<obj.yq_relevance*1;++m){
+             str += '<i class="fa fa-star"></i>';
+             }
+             str += '</td><td></td></tr>';*/
             str += '<tr><td colspan="5">关键字：';
             if(obj.keyword !== undefined){
                 var k=0,k_len = obj.keyword.length; //遍历文章关键字
@@ -123,6 +126,7 @@ function add_content_title(data){
 }
 
 function load_who(){
+    if()
     if(arr_all[2] == '显示全部'){
         sroll_ajax('all');
     }else{
@@ -156,7 +160,7 @@ $(function(){
     });
     //搜索按钮
     $('.btn-search').click(function(){
-       arr_all[4] =  $('#search_input').val();
+        arr_all[4] =  $('#search_input').val();
         load_who();//加载页面
     })
     //全选按钮
@@ -223,6 +227,11 @@ $(function(){
             $(this).find('.sort').removeClass("fa-sort-amount-asc").addClass('fa-sort-amount-desc');
         }
         load_who();
+    })
+
+    $('#from_where li a i').click(function(){
+        var content = $(this).parent().text();
+        window.open(window.location.href+'#'+content);
     })
 });
 
