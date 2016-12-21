@@ -162,7 +162,7 @@
 
 		$('#re_sure').click(function(){
 			var val = $('.leavel input[type="radio"]:checked').val();
-			var fid = get_id();
+			var fid = window.location.search.slice(5);
 			$.ajax({
 				type:'get',
 				url:'http://192.168.0.135:81/yuqing/rep_this_yq?yid='+fid+'&tag='+val,
@@ -177,8 +177,11 @@
 	})
 
 	function get_content(){
-		var start = window.location.href.indexOf('?yid=')+5;
-		var yid = window.location.href.slice(start);
+		var yid = window.location.search.slice(5);
+		var has_btn = window.location.hash;
+		if(has_btn != ''){
+			$('#reporter').hide();
+		}
 		$.ajax({
 			url:'http://192.168.0.135:81/yuqing/show_yq_detail?yid='+yid,
 			type:"GET",
@@ -224,8 +227,6 @@
 	}
 
 	function get_id(){
-		var start = window.location.href.indexOf('?yid=')+5;
-		var yid = window.location.href.slice(start);
-		return yid;
+
 	}
 </script>

@@ -67,6 +67,25 @@ class Yuqing extends MY_Controller
     }
 
     /**
+         * 已上报舆情 历史记录 页面 载入
+         */
+        public function yq_trash_list(){
+            $this->assign("active_title", "report_parent");
+            $this->assign("active_parent", "yq_record");
+            $this->all_display("yq_data/yq_trash_list.html");
+       }
+
+    /**
+         * 已上报舆情 历史记录 页面 载入
+         */
+    public function yq_block_list(){
+            $this->assign("active_title", "report_parent");
+            $this->assign("active_parent", "yq_record");
+            $this->all_display("yq_data/yq_block_list.html");
+    }
+
+
+    /**
      * 指派人 查看 上报上来的舆情 分页
      */
     public function show_all_has_rep(){

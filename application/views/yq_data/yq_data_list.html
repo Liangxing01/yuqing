@@ -186,7 +186,7 @@
 									  <li role="presentation"><a href="javascript:void(0)" role="tab" data-toggle="tab"><i class="fa fa-ellipsis-h"></i>其他</a></li>
 									</ul>
 									<div>
-										<span class="active" id="sort"><i class="fa fa-tasks"></i>按时间发布</span>
+										<span class="active" id="sort"><i class="fa fa-tasks"></i>按时间发布<i class="fa fa fa-sort-amount-desc sort"></i></span>
 									</div>
 		                    	</div>
 								<!-- Tab panes -->
@@ -205,73 +205,11 @@
 										</div>
 								  	</div>
 									  <div role="tabpanel" class="tab-pane active" id="show_all">
-									  <!--	<table class="table">
-									  		<tbody>
-									  			<tr class="tr_title">
-									  				<td colspan="2">
-									  					<input type="checkbox" value="" />
-									  					<span>重启啊是个撒了感觉萨嘎杀</span>
-									  				</td>
-									  				<td>【safsafsa】</td>
-									  				<td>2014-20-12 &nbsp;20：10：01</td>
-									  				<td></td>
-									  			</tr>
-									  			<tr>
-									  				<td colspan="5">
-									  					<span class="color_red">[摘要]</span>dsgdskglkdsk;lgsdk;lgj;dsgkjdsklgndsklngsdklnlkvcnsdlkvndsklvnkdlsgnkldsgjkldsjgkldsjgsdjlk
-									  				</td>
-									  			</tr>
-									  			<tr>
-									  				<td>
-									  					要素
-									  					<span class="crux">巴南</span>
-									  					<span class="crux ">东温泉</span>
-									  				</td>
-									  				<td>关键词
-									  					<span class="crux">巴南</span>
-									  					<span class="crux">巴南</span>
-									  					<span class="crux">巴南</span>
-									  				</td>
-									  				<td>关联级别
-									  					<span><i class="fa fa-star"></i>
-									  					<i class="fa fa-star"></i>
-									  					<i class="fa fa-star"></i>
-									  					<i class="fa fa-star"></i>
-									  					<i class="fa fa-star"></i></span>
-									  				</td>
-									  				<td></td>
-									  				<td></td>
-									  			</tr>
-									  		</tbody>-->
-									  	</table>
 									  </div>
 								  </div>
-								  <!--<div role="tabpanel" class="tab-pane" id="news">...</div>
-								  <div role="tabpanel" class="tab-pane" id="forum">...</div>
-								  <div role="tabpanel" class="tab-pane" id="Blog">...</div>
-								  <div role="tabpanel" class="tab-pane" id="micro-blog">...</div>
-								  <div role="tabpanel" class="tab-pane" id="postBar">...</div>
-								  <div role="tabpanel" class="tab-pane" id="weChat">...</div>
-								  <div role="tabpanel" class="tab-pane" id="media">...</div>
-								  <div role="tabpanel" class="tab-pane" id="app">...</div>-->
 								</div>
 		                    </div>
                     	</div><!--country END-->
-                    	<!--city START
-                    	<div role="tabpanel" class="tab-pane" id="city">
-                    		全市
-                    	</div>
-                    	city END
-                    	area START
-                    	<div role="tabpanel" class="tab-pane" id="area">
-                    		全区
-                    	</div>
-                    	area END
-                    	company START
-                    	<div role="tabpanel" class="tab-pane" id="company">
-                    		本单位
-                    	</div>
-                    	company END-->
                     </div>
                 </section>
                 
@@ -305,10 +243,12 @@
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-					<h4 class="modal-title">舆情等级</h4>
+					<h4 class="modal-title">忽略信息列表</h4>
 				</div>
 				<div class="modal-body">
+					<ul class="list-group">
 
+					</ul>
 				</div>
 				<div class="modal-footer">
                     <button type="button" class="btn btn-primary" id="ignore_sure" onclick=ignore_this_yq(this,'useless')>确定</button>

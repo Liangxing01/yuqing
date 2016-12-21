@@ -1,10 +1,263 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<style>
+    #main-content table td{
+        border-top: none;
+    }
+    #chonse_title{
+        float: left;
+        border-radius: 10px;
+    }
+    #chonse_title li a{
+        color: #57C7E6;
+        font-size: 16px;
+        padding: 10px 0 10px 20px;
+        padding-right: 0;
+    }
+    #chonse_title li a i{
+        padding: 0 10px;
+        visibility: hidden;
+    }
+    #chonse_title li.active a i{
+        visibility: visible;
+    }
+    #chonse_title li.active a{
+        background: #57C7E6;
+        color: #fff;
+        border-radius: 10px;
+    }
+    .file-search{
+        position: relative;
+    }
+    .file-search i{
+        position: absolute;
+        top: 7px;
+        right: 17px;
+    }
+    .file-search i:before{
+        font-size: 23px;
+    }
+    .file-search input{
+        width: 300px;
+        border: none;
+        box-shadow: none;
+        border-radius: 20px;
+        background: #f1f2f4;
+        line-height: 36px;
+        font-size: 14px;
+        padding-left: 20px ;
+    }
+    .clear:after{
+        content: '';
+        display: block;
+        clear: both;
+    }
+    #all_nav {
+        background: #f5f5f5;
+        padding: 10px 20px;
+        font-size: 16px;
+    }
+    #all_nav ul{
+        border-bottom: none;
+        float: left;
+    }
+    #all_nav li:last-child a{
+        border-right: 0;
+    }
+    #all_nav li a{
+        color: #bbb;
+        border: none;
+        border-right: 1px solid #bbb;
+        padding: 0 10px;
+        font-size: 16px;
+        border-radius: 0;
+    }
+    #all_nav li.active a{
+        background:#f5f5f5 ;
+        color: #575757;
 
-</body>
-</html>
+    }
+    #all_nav li i{
+        margin-right: 5px;
+    }
+    #all_nav:after{
+        content: '';
+        display: block;
+        clear: both;
+    }
+    #all_nav div{
+        float: right;
+    }
+    #all_nav div span{
+        margin-left: 20px;
+        color: #bbb;
+    }
+    #all_nav div span i{
+        margin-right: 5px;
+    }
+    #all_nav div span.active{
+        color:#575757 ;
+    }
+    #nav_content{
+        margin-top: 20px;
+        line-height: 40px;
+        position: relative;
+    }
+    #nav_content ul{
+
+    }
+    #nav_content div{
+        position: absolute;
+        right: 0;
+        top: 0;
+    }
+    #nav_content div span{
+        margin-left:10px;
+        cursor: pointer;
+    }
+
+    .crux{
+        color: #bbb;
+        text-decoration: underline;
+        padding: 0 5px;
+    }
+    .fa-star:before{
+        color: #ffde00;
+    }
+    .tr_title{
+        font-weight: 900;
+        color: #222222;
+    }
+    .color_red{
+        color: red;
+    }
+    #only_title input,#show_all input{
+        margin-right:5px;
+    }
+
+    #show_all table{
+        table-layout: fixed;
+    }
+
+    .tr_title td:first-child{
+        width: 350px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+    #sort,.btn-search{
+        cursor: pointer;
+    }
+</style>
+
+<!-- BEGIN MAIN CONTENT -->
+<section id="main-content">
+    <!-- BEGIN WRAPPER  -->
+    <section class="wrapper site-min-height">
+        <!-- BEGIN ROW  -->
+        <div class="row">
+            <div class="col-lg-12">
+                <section class="panel">
+                    <header class="panel-heading clear" style="line-height: 34px;">
+                        <div id="chonse_title">
+                            <ul class="nav nav-tabs" role="tablist" id="from_where">
+                                <li role="presentation" class="active"><a href="javascript:void(0)" role="tab" data-toggle="tab">全国<i class="fa fa-share"></i></a></li>
+                                <li role="presentation"><a href="javascript:void(0)" role="tab" data-toggle="tab">全市<i class="fa fa-share"></i></a></li>
+                                <li role="presentation"><a href="javascript:void(0)" role="tab" data-toggle="tab">全区<i class="fa fa-share"></i></a></li>
+                            </ul>
+                        </div>
+                        <div class="input-group file-search" style="float: right;">
+                            <input type="text" class="search-input" placeholder="搜索关键词" id="search_input"/>
+                            <i class="fa fa-search btn-search"></i>
+                        </div>
+                    </header>
+                    <div class="tab-content">
+                        <!--country START-->
+                        <div role="tabpanel" class="tab-pane active">
+                            <div class="panel-body clear">
+                                <div id="all_nav">
+                                    <ul class="nav nav-tabs" role="tablist" id="what_type" >
+                                        <li role="presentation" class="active"><a href="javascript:void(0)" role="tab" data-toggle="tab"><i class="fa fa-list-ul"></i>全部</a></li>
+                                        <li role="presentation"><a href="javascript:void(0)" role="tab" data-toggle="tab"><i class="fa fa-list-alt"></i>新闻</a></li>
+                                        <li role="presentation"><a href="javascript:void(0)" role="tab" data-toggle="tab"><i class="fa fa-compress"></i>论坛</a></li>
+                                        <li role="presentation"><a href="javascript:void(0)" role="tab" data-toggle="tab"><i class="fa fa-android"></i>博客</a></li>
+                                        <li role="presentation"><a href="javascript:void(0)" role="tab" data-toggle="tab"><i class="fa fa-weibo"></i>微博</a></li>
+                                        <li role="presentation"><a href="javascript:void(0)" role="tab" data-toggle="tab"><i class="fa fa-credit-card"></i>贴吧</a></li>
+                                        <li role="presentation"><a href="javascript:void(0)" role="tab" data-toggle="tab"><i class="fa fa-apple"></i>微信</a></li>
+                                        <li role="presentation"><a href="javascript:void(0)" role="tab" data-toggle="tab"><i class="fa fa-ellipsis-h"></i>其他</a></li>
+                                    </ul>
+                                    <div>
+                                        <span class="active" id="sort"><i class="fa fa-tasks"></i>按时间发布 <i class="fa fa fa-sort-amount-desc sort"></i></span>
+                                    </div>
+                                </div>
+                                <!-- Tab panes -->
+                                <div class="tab-content">
+                                    <div role="tabpanel" class="tab-pane active" id="all_type">
+                                        <!-- Nav tabs -->
+                                        <div id="nav_content" class="clear">
+                                            <ul class="nav nav-tabs content_nav" role="tablist" id="how_show">
+                                                <li role="presentation" class="active"><a href="javascript:void(0)" role="tab" data-toggle="tab">显示全部</a></li>
+                                                <li role="presentation"><a href="javascript:void(0)" role="tab" data-toggle="tab">只看标题</a></li>
+                                            </ul>
+                                            <div>
+                                                <input type="checkbox" class="all_choose" />全选
+                                                <span class="label label-danger" data-toggle="modal" data-target="#model_garbage" id="add_garbage">标记为垃圾信息</span>
+                                                <span class="label label-info" data-toggle="modal" data-target="#model_ignore" id="add_ignore">忽略此信息</span>
+                                            </div>
+                                        </div>
+                                        <div role="tabpanel" class="tab-pane active" id="show_all">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!--country END-->
+                    </div>
+                </section>
+
+            </div>
+        </div>
+        </div>
+        <!-- END WRAPPER  -->
+    </section>
+    <!-- END MAIN CONTENT -->
+    <div class="modal fade" id="model_garbage">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">垃圾信息列表</h4>
+                </div>
+                <div class="modal-body">
+                    <ul class="list-group">
+
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="garbage_sure" onclick=ignore_this_yq(this,'trash')>确定</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    <div class="modal fade" id="model_ignore">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">忽略信息列表</h4>
+                </div>
+                <div class="modal-body">
+                    <ul class="list-group">
+
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="ignore_sure" onclick=ignore_this_yq(this,'useless')>确定</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+</section>
+<script src="/js/public.js"></script>
+<script src="/js/yq_has_rep.js"></script>
+
