@@ -133,16 +133,18 @@ class Yuqing extends MY_Controller
      * 接口： 取消忽略该舆情
      */
     public function unset_ignore(){
-        $yid = $this->input->get('yid');
-        $type = $this->input->get('type');
+        $yid = $this->input->post('yids');
+        $type = $this->input->post('type');
         $res = $this->yq->unset_ignore_this($yid,$type);
         if($res){
             echo json_encode(array(
-                'res' => 1
+                'res' => 1,
+                'msg' => '取消标记成功'
             ));
         }else{
             echo json_encode(array(
-                'res' => 0
+                'res' => 0,
+                'msg' => '取消标记失败'
             ));
         }
     }
@@ -159,11 +161,13 @@ class Yuqing extends MY_Controller
         $res = $this->yq->rep_yq($yid,$tag);
         if($res){
             echo json_encode(array(
-                'res' => 1
+                'res' => 1,
+                'msg' => '上报舆情成功'
             ));
         }else{
             echo json_encode(array(
-                'res' => 0
+                'res' => 0,
+                'msg' => '上报舆情失败'
             ));
         }
     }
@@ -236,8 +240,8 @@ class Yuqing extends MY_Controller
      *
      */
      public function get_rep_data(){
-         $query    = $this->input->get('query');
-         $page_num = $this->input->get('page_num');
+         $query    = $this->input->post('query');
+         $page_num = $this->input->post('page_num');
          $yq_data  = $this->yq->get_rep_yqData($query,$page_num);
          echo json_encode($yq_data);
      }
@@ -260,6 +264,16 @@ class Yuqing extends MY_Controller
                  'res' => 0
              ));
          }
+     }
+
+    /**
+     * 根据 rep_id 获取 上报信息
+     *
+     */
+     public function get_rep_info(){
+         $rep_id = $this->input->get('rep_id');
+         $res    = $this->yq->get_rep_by_id($rep_id);
+         echo json_encode($res);
      }
 
      /**
