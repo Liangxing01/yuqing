@@ -66,20 +66,11 @@ function add_content_all(data){
             str += '</td>';
             str += '<td>【'+(obj.source?obj.source:'')+'】</td>';
             str += '<td><span class="label label-danger">'+obj.yq_tag+'</span></td>';
+            str += '<td>首报人:<span class="label label-primary">'+obj.first_name+'</span></td>';
             str += '<td>'+timeToDate(obj.yq_pubdate*1000)+'</td>';
 
-            str += '<tr><td colspan="5"><span class="color_red">[摘要]</span>'+obj.summary+'</td></tr>';
-            /*str += '<tr><td colspan="2">要素';
-             var j=0,j_len = obj.nrtags.length;  //循环遍历文章要素
-             for(;j<j_len;++j){
-             str += '<span class="crux">'+obj.nrtags[j]+'</span>';
-             }
-             str += '</td><td colspan="2">关联级别:';
-             for(var m = 0;m<obj.yq_relevance*1;++m){
-             str += '<i class="fa fa-star"></i>';
-             }
-             str += '</td><td></td></tr>';*/
-            str += '<tr><td colspan="5">关键字：';
+            str += '<tr><td colspan="6"><span class="color_red">[摘要]</span>'+obj.summary+'</td></tr>';
+            str += '<tr><td colspan="6">关键字：';
             if(obj.keyword !== undefined){
                 var k=0,k_len = obj.keyword.length; //遍历文章关键字
                 for(;k<k_len;++k){
@@ -114,6 +105,7 @@ function add_content_title(data){
             str += '</td>';
             str += '<td>【'+(obj.source?obj.source:'')+'】</td>';
             str += '<td><span class="label label-danger">'+obj.yq_tag+'</span></td>';
+            str += '<td>首报人:<span class="label label-primary">'+obj.first_name+'</span></td>';
             str += '<td>'+timeToDate(obj.yq_pubdate*1000)+'</td>';
             str += '</tr>'
         }
@@ -126,7 +118,11 @@ function add_content_title(data){
 }
 
 function load_who(){
-    if()
+    var where_from = window.location.hash.slice(1);
+    if(where_from !== ''){
+        arr_all[0] = $('#'+where_from).text();
+        $('#'+where_from).parent().addClass('active').siblings('.active').removeClass('active');
+    }
     if(arr_all[2] == '显示全部'){
         sroll_ajax('all');
     }else{
@@ -230,7 +226,7 @@ $(function(){
     })
 
     $('#from_where li a i').click(function(){
-        var content = $(this).parent().text();
+        var content = $(this).parent().attr('id');
         window.open(window.location.href+'#'+content);
     })
 });
