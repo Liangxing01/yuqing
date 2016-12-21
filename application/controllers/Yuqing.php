@@ -94,6 +94,15 @@ class Yuqing extends MY_Controller
         $this->all_display("yq_data/yq_has_rep.html");
     }
 
+    /**
+         * 指派人 查看 上报上来的舆情 分页
+         */
+     public function show_cfm_list(){
+            $this->assign("active_title", "yq_cfm_list");
+            $this->assign("active_parent", "designate_parent");
+            $this->all_display("yq_data/yq_cfm_list.html");
+     }
+
 
     /**
      * 分页 获取 原始舆情数据库 数据

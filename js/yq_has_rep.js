@@ -55,6 +55,7 @@ function add_content_all(data){
         if(page_num === 1){
             $('#show_all').html('');//清空盒子内容
         }
+        $(".all_total").html('总数据量：<span class="red">'+(data.num?data.num:0)+'</span>>条');
         var str = '',i=0,len=data.info.length;
         for(; i<len;i++){
             var obj = data.info[i];
@@ -62,24 +63,16 @@ function add_content_all(data){
             str += '<tr class="tr_title">';
             str += '<td colspan="2">';
             str += '<input type="checkbox" data-id="'+obj._id.$id+'">';
-            str += '<span><a href="/yuqing/yq_detail?yid='+obj._id.$id+'" title="'+obj.title+'">'+obj.title+'</a></span>';
+            str += '<span><a href="/yuqing/yq_detail?'+obj._id.$id+','+obj.rep_id.$id+'#reporter" title="'+obj.title+'">'+obj.title+'</a></span>';
             str += '</td>';
             str += '<td>【'+(obj.source?obj.source:'')+'】</td>';
             str += '<td><span class="label label-danger">'+obj.yq_tag+'</span></td>';
+            str += '<td>首报人:<span class="label label-primary">'+obj.first_name+'</span></td>';
             str += '<td>'+timeToDate(obj.yq_pubdate*1000)+'</td>';
 
-            str += '<tr><td colspan="5"><span class="color_red">[摘要]</span>'+obj.summary+'</td></tr>';
-            /*str += '<tr><td colspan="2">要素';
-             var j=0,j_len = obj.nrtags.length;  //循环遍历文章要素
-             for(;j<j_len;++j){
-             str += '<span class="crux">'+obj.nrtags[j]+'</span>';
-             }
-             str += '</td><td colspan="2">关联级别:';
-             for(var m = 0;m<obj.yq_relevance*1;++m){
-             str += '<i class="fa fa-star"></i>';
-             }
-             str += '</td><td></td></tr>';*/
-            str += '<tr><td colspan="5">关键字：';
+            str += '<tr><td colspan="6"><span class="color_red">[摘要]</span>'+obj.summary+'</td></tr>';
+            str += '<tr><td colspan="6">舆情等级：'+obj.tag+'</td></tr>';
+            str += '<tr><td colspan="6">关键字：';
             if(obj.keyword !== undefined){
                 var k=0,k_len = obj.keyword.length; //遍历文章关键字
                 for(;k<k_len;++k){
@@ -110,10 +103,11 @@ function add_content_title(data){
             str += '<tr class="tr_title">';
             str += '<td colspan="2">';
             str += '<input type="checkbox" data-id="'+obj._id.$id+'">';
-            str += '<span><a href="/yuqing/yq_detail?yid='+obj._id.$id+'">'+obj.title+'</a></span>';
+            str += '<span><a href="/yuqing/yq_detail?yid='+obj._id.$id+'#reporter">'+obj.title+'</a></span>';
             str += '</td>';
             str += '<td>【'+(obj.source?obj.source:'')+'】</td>';
             str += '<td><span class="label label-danger">'+obj.yq_tag+'</span></td>';
+            str += '<td>首报人:<span class="label label-primary">'+obj.first_name+'</span></td>';
             str += '<td>'+timeToDate(obj.yq_pubdate*1000)+'</td>';
             str += '</tr>'
         }
@@ -126,7 +120,11 @@ function add_content_title(data){
 }
 
 function load_who(){
-    if()
+    var where_from = window.location.hash.slice(1);
+    if(where_from !== ''){
+        arr_all[0] = $('#'+where_from).text();
+        $('#'+where_from).parent().addClass('active').siblings('.active').removeClass('active');
+    }
     if(arr_all[2] == '显示全部'){
         sroll_ajax('all');
     }else{
@@ -170,51 +168,7 @@ $(function(){
             this.checked = checked;
         })
     })
-
-    //加入垃圾信息
-    $('#add_garbage').click(function(){
-        var len = $('#show_all input[type="checkbox"]:checked').length;
-        if(len>10){
-            layer.msg("所选数据不能超过10条",{anim:6});
-            return false;
-        }
-        if(len == 0){
-            layer.msg("所选信息为空",{anim:6});
-            return false;
-        }
-        var list = '';
-        var arr = []; //id数组
-        $('#model_garbage ul').html('');
-        $('#show_all input[type="checkbox"]:checked').each(function(i){
-            var title = $(this).parent().find('a').html();
-            arr.push($(this).data("id"));
-            list += '<li class="list-group-item">'+(i+1)+'、'+title+'</li>';
-        })
-        $('#model_garbage ul').append(list);
-        $('#garbage_sure').data('id',arr.join(','));
-    })
-    //忽略消息
-    $('#add_ignore').click(function(){
-        var len = $('#show_all input[type="checkbox"]:checked').length;
-        if(len>10){
-            layer.msg("所选数据不能超过10条",{anim:6});
-            return false;
-        }
-        if(len == 0){
-            layer.msg("所选信息为空",{anim:6});
-            return false;
-        }
-        var list = '';
-        var arr = []; //id数组
-        $('#model_ignore ul').html('');
-        $('#show_all input[type="checkbox"]:checked').each(function(i){
-            var title = $(this).parent().find('a').html();
-            arr.push($(this).data("id"));
-            list += '<li class="list-group-item">'+(i+1)+'、'+title+'</li>';
-        })
-        $('#model_ignore ul').append(list);
-        $('#ignore_sure').data('id',arr.join(','));
-    })
+    
     //排序
     $('#sort').click(function(){
         if($(this).hasClass('active')){
@@ -230,28 +184,7 @@ $(function(){
     })
 
     $('#from_where li a i').click(function(){
-        var content = $(this).parent().text();
+        var content = $(this).parent().attr('id');
         window.open(window.location.href+'#'+content);
     })
 });
-
-function ignore_this_yq(that,type){
-    var fid = $(that).data('id');
-    $.ajax({
-        type:'POST',
-        url:"http://192.168.0.135:81/yuqing/ignore_this_yq",
-        data:{
-            yids:fid,
-            type:type
-        },
-        dataType:'json',
-        success:function(data){
-            if(data.res == 1){
-                layer.msg(data.msg);
-                $('#model_garbage').modal('hide');
-                $('#model_ignore').modal('hide');
-                load_who();
-            }
-        }
-    })
-}

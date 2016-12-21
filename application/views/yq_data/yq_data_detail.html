@@ -50,6 +50,17 @@
 	.leavel input{
 		margin-left:8px;;
 	}
+	#sure_info{
+		display: none;
+	}
+	.reporter_man {
+		display: none;
+		color: red;
+	}
+	#where_from{
+		display: none;
+		float: left;
+	}
 </style>
 <!-- BEGIN MAIN CONTENT -->
 <section id="main-content">
@@ -65,8 +76,17 @@
 							<a href="" class="look_page">浏览原始网页</a>
 							<a href="">网页取证</a>
                     	</div>
-						<div style="float: right">
-							<button class="btn btn-md btn-primary" data-toggle="modal" data-target="#model_reporter" id="reporter"><i class="fa fa-share"></i>上报此舆情 </button>
+						<div style="float: right" >
+							<div  id="where_from">
+								舆情等级：
+								<select name="">
+									<option value="全国">全国</option>
+									<option value="全市">全市</option>
+									<option value="全区">全区</option>
+								</select>
+							</div>
+							<button class="btn btn-md btn-primary" data-toggle="modal" data-target="#model_reporter" id="reporter" ><i class="fa fa-share"></i>上报此舆情 </button>
+							<button class="btn btn-md btn-primary" id="sure_info">确定此舆情 </button>
 						</div>
                     	<div class="row" style="margin-top: 20px; font-size:16px; color: #000000;">
 							<div class="col-md-12">
@@ -86,6 +106,12 @@
 	                    	</div>
 							<div class="col-md-12" style="word-break: break-all;word-wrap:break-word;">
 								<p class="keyword">关键词：<span></span></p>
+							</div>
+							<div class="col-md-4 reporter_man">
+								<p>首报人 :<span class="man"></span></p>
+							</div>
+							<div class="col-md-8 reporter_man">
+								<p>首报时间 :<span class="time"></span></p>
 							</div>
 	                    	<div class="col-md-12">
 	                    		<p class="msg_url">原文链接:</p>
@@ -177,13 +203,19 @@
 	})
 
 	function get_content(){
-		var yid = window.location.search.slice(5);
-		var has_btn = window.location.hash;
-		if(has_btn != ''){
+		var yid = window.location.search.slice(1).split(',');
+		var has_btn = window.location.hash.slice(1);
+		if(has_btn === 'record'){
 			$('#reporter').hide();
+		}else if( has_btn === 'reporter'){
+			$('#reporter').hide();
+			$('#sure_info').show();
+			$('.reporter_man').show();
+			$('#where_from').show();
+			get_reporter_info();
 		}
 		$.ajax({
-			url:'http://192.168.0.135:81/yuqing/show_yq_detail?yid='+yid,
+			url:'http://192.168.0.135:81/yuqing/show_yq_detail?yid='+yid[0],
 			type:"GET",
 			dataType:'json',
 			success:function(data){
@@ -207,6 +239,22 @@
 		})
 	}
 
+	function get_reporter_info(){
+		var arr = window.location.search.slice(1).split(',');
+		$.ajax({
+			url:'http://192.168.0.135:81/yuqing/get_rep_info?rep_id='+arr[1],
+			dataType:'json',
+			type:'GET',
+			success:function(data){
+				if(data){
+					$('.reporter_man .man').html(data.first_name);
+					$('.reporter_man .time').html(timeToDate(data.time*1000))
+					$('#where_from select').val(data.tag);
+				}
+			}
+		})
+	}
+
 	//随机label标签
 	function random_label(content){
 		var num = Math.floor(Math.random()*6);
@@ -226,7 +274,20 @@
 		}
 	}
 
-	function get_id(){
+	$('#sure_info').click(function(){
+		var val = $('#where_from select').val();
 
-	}
+		var layer3 = layer.confirm('确定将此舆情标记为：<span style="color:red">'+val+'</span>&nbsp;等级',function(){
+			var arr2 = window.location.search.slice(1).split(',');
+			$.ajax({
+				url:"http://192.168.0.135:81/yuqing/cfm_yq?yid="+arr2[0]+'&rep_id='+arr2[1]+'&tag='+val,
+				type:'GET',
+				dataType:'json',
+				success:function(data){
+					layer.msg(data.msg);
+					layer.close(layer3);
+				}
+			});
+		})
+	})
 </script>
