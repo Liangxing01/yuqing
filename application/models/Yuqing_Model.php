@@ -510,11 +510,35 @@ class Yuqing_Model extends CI_Model {
      */
     public function get_rep_yqData($query,$page_num){
         $offset = ((int)$page_num - 1) * $query['length'];  //数据 偏移量
-        var_dump($query);
+        if($query['sort'] == 'DESC'){
+            $sort = 1;
+        }else{
+            $sort = -1;
+        }
+
         //先查询 rep_info 集合，分类找出已经上报的 舆情id
         if($query['media_type'] == '全部'){
             $rep_yq_list = $this->mongo->aggregate('rep_info',array(
-                array('$sort' => array('time' => -1)),
+                array('$sort' => array('time' => $sort)),
+                array('$limit' => (int)$query['length']),
+                array('$skip' => $offset),
+                array('$project' => array('_id'=>1,'yq_id'=>1,'uid'=>1,'tag'=>1,'time'=>1,'is_cfm'=>1,'title'=>1)),
+                array('$match' => array(
+                    'tag'           => $query['tag'],
+                    'is_cfm'        => 0
+                    //'title' => "/".$query['search']."/"
+                )),
+                array('$group' => array(
+                    '_id' => array('yq_id' => '$yq_id'),  //舆情id
+                    'id'  => array('$first' => '$_id'),   //上报id
+                    'uid' => array('$first' => '$uid'),   //第一个上报人的 uid
+                    'tag' => array('$first' => '$tag'),
+                    'rep_time' => array('$max' => '$time')
+                ))
+            ));
+        }else{
+            $rep_yq_list = $this->mongo->aggregate('rep_info',array(
+                array('$sort' => array('time' => $sort)),
                 array('$limit' => (int)$query['length']),
                 array('$skip' => $offset),
                 array('$project' => array('_id'=>1,'yq_id'=>1,'uid'=>1,'tag'=>1,'time'=>1,'is_cfm'=>1,'title'=>1)),
@@ -532,29 +556,8 @@ class Yuqing_Model extends CI_Model {
                     'rep_time' => array('$max' => '$time')
                 ))
             ));
-        }else{
-            $rep_yq_list = $this->mongo->aggregate('rep_info',array(
-                array('$sort' => array('time' => -1)),
-                array('$limit' => (int)$query['length']),
-                array('$skip' => $offset),
-                array('$project' => array('_id'=>1,'yq_id'=>1,'uid'=>1,'tag'=>1,'time'=>1,'is_cfm'=>1,'title'=>1)),
-                array('$match' => array(
-                    'tag'           => $query['tag'],
-                    'is_cfm'        => 0,
-                    //'media_type'    => $query['media_type']
-                    //'title' => "/".$query['search']."/"
-                )),
-                array('$group' => array(
-                    '_id' => array('yq_id' => '$yq_id'),  //舆情id
-                    'id'  => array('$first' => '$_id'),   //上报id
-                    'uid' => array('$first' => '$uid'),   //第一个上报人的 uid
-                    'tag' => array('$first' => '$tag'),
-                    'rep_time' => array('$max' => '$time')
-                ))
-            ));
         }
 
-        var_dump($rep_yq_list);
         $rep_list = array();
         foreach ($rep_yq_list['result'] as $rep){
             array_push($rep_list,array(
@@ -629,6 +632,7 @@ class Yuqing_Model extends CI_Model {
         $raw_yq_info['final_tag']       = $tag;
         $raw_yq_info['first_rep_uid']   = $rep_info['uid'];
         $raw_yq_info['time']            = time();
+        //var_dump($raw_yq_info);
 
         //插入数据到 有用信息集合
         $res3 = $this->mongo->insert('useful_yq',$raw_yq_info);

@@ -257,11 +257,13 @@ class Yuqing extends MY_Controller
          $res = $this->yq->cfm_yq($yid,$tag,$rep_id);
          if($res){
              echo json_encode(array(
-                 'res' => 1
+                 'res' => 1,
+                 'msg' => '确认舆情成功'
              ));
          }else{
              echo json_encode(array(
-                 'res' => 0
+                 'res' => 0,
+                 'msg' => '确认舆情失败'
              ));
          }
      }
@@ -280,8 +282,8 @@ class Yuqing extends MY_Controller
       * 分页查看 已经确认过的 舆情
       */
      public function get_cfm_data(){
-         $query    = $this->input->get('query');
-         $page_num = $this->input->get('page_num');
+         $query    = $this->input->post('query');
+         $page_num = $this->input->post('page_num');
          $yq_data  = $this->yq->get_cfm_yqData($query,$page_num);
          echo json_encode($yq_data);
      }

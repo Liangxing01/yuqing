@@ -20,7 +20,7 @@ class URL_Model extends CI_Model {
      * 4601 管控 命令执行
      */
     public function run4601($codes){
-        $host = "2001:250:221:0:1:0:2e:9999";
+        $host = "2001:250:221::6";
         $port = 2222;
         $username = "root";
         $password = "axzb@4601";
