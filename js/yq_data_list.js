@@ -59,7 +59,7 @@ function add_content_all(data){
             str += '<tr class="tr_title">';
             str += '<td colspan="2">';
             str += '<input type="checkbox" data-id="'+obj._id.$id+'">';
-            str += '<span><a href="/yuqing/yq_detail?yid='+obj._id.$id+'" title="'+obj.title+'">'+obj.title+'</a></span>';
+            str += '<span><a href="/yuqing/yq_detail?'+obj._id.$id+'" title="'+obj.title+'">'+obj.title+'</a></span>';
             str += '</td>';
             str += '<td>【'+(obj.source?obj.source:'')+'】</td>';
             str += '<td><span class="label label-danger">'+obj.yq_tag+'</span></td>';
@@ -101,13 +101,14 @@ function add_content_title(data){
         if(page_num === 1){
             $('#show_all').html('<table class="table table-responsive"></table>');//清空盒子内容
         }
+        $(".all_total").html('总数据量：<span class="red">'+(data.num?data.num:0)+'</span>>条');
         var str = '',i=0,len=data.info.length;
         for(; i<len;i++){
             var obj = data.info[i];
             str += '<tr class="tr_title">';
             str += '<td colspan="2">';
             str += '<input type="checkbox" data-id="'+obj._id.$id+'">';
-            str += '<span><a href="/yuqing/yq_detail?yid='+obj._id.$id+'">'+obj.title+'</a></span>';
+            str += '<span><a href="/yuqing/yq_detail?'+obj._id.$id+'">'+obj.title+'</a></span>';
             str += '</td>';
             str += '<td>【'+(obj.source?obj.source:'')+'】</td>';
             str += '<td><span class="label label-danger">'+obj.yq_tag+'</span></td>';

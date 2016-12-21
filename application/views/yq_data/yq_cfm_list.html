@@ -146,9 +146,6 @@
     #sort,.btn-search{
         cursor: pointer;
     }
-    .tr_title span{
-        margin-left:5px;
-    }
     .all_total{
         margin: 0 20px;
     }
@@ -168,9 +165,9 @@
                     <header class="panel-heading clear" style="line-height: 34px;">
                         <div id="chonse_title">
                             <ul class="nav nav-tabs" role="tablist" id="from_where">
-                                <li role="presentation" class="active"><a href="javascript:void(0)" role="tab" data-toggle="tab" id="all_country">全国<i class="fa fa-share"></i></a></li>
-                                <li role="presentation"><a href="javascript:void(0)" role="tab" data-toggle="tab" id="all_city">全市<i class="fa fa-share"></i></a></li>
-                                <li role="presentation"><a href="javascript:void(0)" role="tab" data-toggle="tab" id="all_count">全区<i class="fa fa-share"></i></a></li>
+                                <li role="presentation" class="active"><a href="javascript:void(0)" role="tab" data-toggle="tab">全国<i class="fa fa-share"></i></a></li>
+                                <li role="presentation"><a href="javascript:void(0)" role="tab" data-toggle="tab">全市<i class="fa fa-share"></i></a></li>
+                                <li role="presentation"><a href="javascript:void(0)" role="tab" data-toggle="tab">全区<i class="fa fa-share"></i></a></li>
                             </ul>
                         </div>
                         <div class="input-group file-search" style="float: right;">
@@ -194,7 +191,7 @@
                                         <li role="presentation"><a href="javascript:void(0)" role="tab" data-toggle="tab"><i class="fa fa-ellipsis-h"></i>其他</a></li>
                                     </ul>
                                     <div>
-                                        <span class="active" id="sort"><i class="fa fa-tasks"></i>按时间发布 <i class="fa fa fa-sort-amount-desc sort"></i></span>
+                                        <span class="active" id="sort"><i class="fa fa-tasks"></i>按时间发布<i class="fa fa fa-sort-amount-desc sort"></i></span>
                                     </div>
                                 </div>
                                 <!-- Tab panes -->
@@ -207,8 +204,9 @@
                                                 <li role="presentation"><a href="javascript:void(0)" role="tab" data-toggle="tab">只看标题</a></li>
                                             </ul>
                                             <div>
+
                                                 <input type="checkbox" class="all_choose" />全选
-                                                <span class="all_total"></span>
+                                                <span class="all_total">0</span>
                                             </div>
                                         </div>
                                         <div role="tabpanel" class="tab-pane active" id="show_all">
@@ -226,7 +224,8 @@
         <!-- END WRAPPER  -->
     </section>
     <!-- END MAIN CONTENT -->
+
 </section>
 <script src="/js/public.js"></script>
-<script src="/js/yq_has_rep.js"></script>
+<script src="/js/yq_cfm_list.js"></script>
 

@@ -55,6 +55,7 @@ function add_content_all(data){
         if(page_num === 1){
             $('#show_all').html('');//清空盒子内容
         }
+        $(".all_total").html('总数据量：<span class="red">'+(data.num?data.num:0)+'</span>>条');
         var str = '',i=0,len=data.info.length;
         for(; i<len;i++){
             var obj = data.info[i];
@@ -62,7 +63,7 @@ function add_content_all(data){
             str += '<tr class="tr_title">';
             str += '<td colspan="2">';
             str += '<input type="checkbox" data-id="'+obj._id.$id+'">';
-            str += '<span><a href="/yuqing/yq_detail?yid='+obj._id.$id+'" title="'+obj.title+'">'+obj.title+'</a></span>';
+            str += '<span><a href="/yuqing/yq_detail?'+obj._id.$id+','+obj.rep_id.$id+'#reporter" title="'+obj.title+'">'+obj.title+'</a></span>';
             str += '</td>';
             str += '<td>【'+(obj.source?obj.source:'')+'】</td>';
             str += '<td><span class="label label-danger">'+obj.yq_tag+'</span></td>';
@@ -70,6 +71,7 @@ function add_content_all(data){
             str += '<td>'+timeToDate(obj.yq_pubdate*1000)+'</td>';
 
             str += '<tr><td colspan="6"><span class="color_red">[摘要]</span>'+obj.summary+'</td></tr>';
+            str += '<tr><td colspan="6">舆情等级：'+obj.tag+'</td></tr>';
             str += '<tr><td colspan="6">关键字：';
             if(obj.keyword !== undefined){
                 var k=0,k_len = obj.keyword.length; //遍历文章关键字
@@ -101,7 +103,7 @@ function add_content_title(data){
             str += '<tr class="tr_title">';
             str += '<td colspan="2">';
             str += '<input type="checkbox" data-id="'+obj._id.$id+'">';
-            str += '<span><a href="/yuqing/yq_detail?yid='+obj._id.$id+'">'+obj.title+'</a></span>';
+            str += '<span><a href="/yuqing/yq_detail?yid='+obj._id.$id+'#reporter">'+obj.title+'</a></span>';
             str += '</td>';
             str += '<td>【'+(obj.source?obj.source:'')+'】</td>';
             str += '<td><span class="label label-danger">'+obj.yq_tag+'</span></td>';
@@ -166,51 +168,7 @@ $(function(){
             this.checked = checked;
         })
     })
-
-    //加入垃圾信息
-    $('#add_garbage').click(function(){
-        var len = $('#show_all input[type="checkbox"]:checked').length;
-        if(len>10){
-            layer.msg("所选数据不能超过10条",{anim:6});
-            return false;
-        }
-        if(len == 0){
-            layer.msg("所选信息为空",{anim:6});
-            return false;
-        }
-        var list = '';
-        var arr = []; //id数组
-        $('#model_garbage ul').html('');
-        $('#show_all input[type="checkbox"]:checked').each(function(i){
-            var title = $(this).parent().find('a').html();
-            arr.push($(this).data("id"));
-            list += '<li class="list-group-item">'+(i+1)+'、'+title+'</li>';
-        })
-        $('#model_garbage ul').append(list);
-        $('#garbage_sure').data('id',arr.join(','));
-    })
-    //忽略消息
-    $('#add_ignore').click(function(){
-        var len = $('#show_all input[type="checkbox"]:checked').length;
-        if(len>10){
-            layer.msg("所选数据不能超过10条",{anim:6});
-            return false;
-        }
-        if(len == 0){
-            layer.msg("所选信息为空",{anim:6});
-            return false;
-        }
-        var list = '';
-        var arr = []; //id数组
-        $('#model_ignore ul').html('');
-        $('#show_all input[type="checkbox"]:checked').each(function(i){
-            var title = $(this).parent().find('a').html();
-            arr.push($(this).data("id"));
-            list += '<li class="list-group-item">'+(i+1)+'、'+title+'</li>';
-        })
-        $('#model_ignore ul').append(list);
-        $('#ignore_sure').data('id',arr.join(','));
-    })
+    
     //排序
     $('#sort').click(function(){
         if($(this).hasClass('active')){
@@ -230,24 +188,3 @@ $(function(){
         window.open(window.location.href+'#'+content);
     })
 });
-
-function ignore_this_yq(that,type){
-    var fid = $(that).data('id');
-    $.ajax({
-        type:'POST',
-        url:"http://192.168.0.135:81/yuqing/ignore_this_yq",
-        data:{
-            yids:fid,
-            type:type
-        },
-        dataType:'json',
-        success:function(data){
-            if(data.res == 1){
-                layer.msg(data.msg);
-                $('#model_garbage').modal('hide');
-                $('#model_ignore').modal('hide');
-                load_who();
-            }
-        }
-    })
-}
