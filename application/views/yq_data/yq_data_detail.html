@@ -188,10 +188,10 @@
 
 		$('#re_sure').click(function(){
 			var val = $('.leavel input[type="radio"]:checked').val();
-			var fid = window.location.search.slice(5);
+			var fid = window.location.search.slice(1).split(',');
 			$.ajax({
 				type:'get',
-				url:'http://192.168.0.135:81/yuqing/rep_this_yq?yid='+fid+'&tag='+val,
+				url:'http://192.168.0.135:81/yuqing/rep_this_yq?yid='+fid[0]+'&tag='+val,
 				dataType:'json',
 				success:function(data){
 					layer.msg(data.msg);

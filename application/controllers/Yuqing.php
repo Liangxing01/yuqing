@@ -14,7 +14,7 @@ class Yuqing extends MY_Controller
     {
         parent::__construct();
         //$this->identity->is_authentic();
-       // $this->load->model('Yuqing_Model','yq');
+        $this->load->model('Yuqing_Model','yq');
         header( 'Access-Control-Allow-Origin:*' );
         $this->session->set_userdata('uid',103);
     }
