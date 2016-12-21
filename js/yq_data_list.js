@@ -4,7 +4,7 @@
 var page_num = 1;   //页码
 var page_total = 0 ; //总页码
 var page_length = 10;   //每页显示多少条
-var arr_all = ['全国','全部','显示全部','ASC','']; //默认初始查询
+var arr_all = ['全国','全部','显示全部','DESC','']; //默认初始查询
 //显示全部
 function sroll_ajax(type){
     if(type == 'all'){
@@ -52,6 +52,7 @@ function add_content_all(data){
         if(page_num === 1){
             $('#show_all').html('');//清空盒子内容
         }
+        $(".all_total").html('总数据量：<span class="red">'+(data.num?data.num:0)+'</span>条');
         var str = '',i=0,len=data.info.length;
         for(; i<len;i++){
             var obj = data.info[i];
@@ -101,7 +102,7 @@ function add_content_title(data){
         if(page_num === 1){
             $('#show_all').html('<table class="table table-responsive"></table>');//清空盒子内容
         }
-        $(".all_total").html('总数据量：<span class="red">'+(data.num?data.num:0)+'</span>>条');
+
         var str = '',i=0,len=data.info.length;
         for(; i<len;i++){
             var obj = data.info[i];
@@ -216,11 +217,11 @@ $(function(){
     $('#sort').click(function(){
         if($(this).hasClass('active')){
             $(this).removeClass('active');
-            arr_all[3] = 'DESC';
+            arr_all[3] = 'ASC';
             $(this).find('.sort').removeClass("fa-sort-amount-desc").addClass('fa-sort-amount-asc');
         }else{
             $(this).addClass('active');
-            arr_all[3] = 'ASC';
+            arr_all[3] = 'DESC';
             $(this).find('.sort').removeClass("fa-sort-amount-asc").addClass('fa-sort-amount-desc');
         }
         load_who();

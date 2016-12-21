@@ -173,11 +173,11 @@ $(function(){
     $('#sort').click(function(){
         if($(this).hasClass('active')){
             $(this).removeClass('active');
-            arr_all[3] = 'DESC';
+            arr_all[3] = 'ASC';
             $(this).find('.sort').removeClass("fa-sort-amount-desc").addClass('fa-sort-amount-asc');
         }else{
             $(this).addClass('active');
-            arr_all[3] = 'ASC';
+            arr_all[3] = 'DESC';
             $(this).find('.sort').removeClass("fa-sort-amount-asc").addClass('fa-sort-amount-desc');
         }
         load_who();

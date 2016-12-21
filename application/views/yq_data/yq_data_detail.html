@@ -229,7 +229,6 @@
 					str += random_label(data.keyword[i]);
 				}
 				$('.keyword').append(str);	//关键字
-				var k=0 ,k_str= '',k_len = data.nrtags.length;
 				$('.msg_url').append( "<a href='"+(data.url?data.url:'')+"' target='_blank'>"+(data.url?data.url:'')+"</a>");	//文章链接
 				$('.msg_title').html(data.title?data.title:'');		//文章标题
 				$('.data_detail_main p').html(data.content?data.content:'');
