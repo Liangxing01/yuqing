@@ -20,7 +20,7 @@ function sroll_ajax(type){
     var arr = {"sort":arr_all[3],"length":page_length,"search":arr_all[4],"media_type":arr_all[1]};
     $.ajax({
         type:'POST',
-        url:'/yuqing/has_rep_yq',
+        url:server_url+'/yuqing/has_rep_yq',
         data:{
             query:arr,
             page_num:page_num
@@ -189,7 +189,7 @@ function ignore_this_yq(that,type){
     var fid = $(that).data('id');
     $.ajax({
         type:'POST',
-        url:"/yuqing/ignore_this_yq",
+        url:server_url+"/yuqing/ignore_this_yq",
         data:{
             yids:fid,
             type:type

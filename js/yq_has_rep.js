@@ -20,7 +20,7 @@ function sroll_ajax(type){
     var arr = {"sort":arr_all[3],"length":page_length,"search":arr_all[4],"media_type":arr_all[1],"tag":arr_all[0]};
     $.ajax({
         type:'POST',
-        url:'/yuqing/get_rep_data',
+        url:server_url+'/yuqing/get_rep_data',
         data:{
             query:arr,
             page_num:page_num
