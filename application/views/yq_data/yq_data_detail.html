@@ -225,7 +225,7 @@
 			dataType:'json',
 			success:function(data){
 				if(data != false){
-					$('.release_man span').html(data.yq_autho?data.yq_autho:'');	//发布人
+					$('.release_man span').html(data.yq_author?data.yq_author:'');	//发布人
 					$('.msg_from a').html(data.source?data.source:'');			//文章来源
 					$('.publish_time a').html(timeToDate((data.yq_pubdate?data.yq_pubdate:'')*1000));	//发布时间
 					$('.area span').html();		//地区
