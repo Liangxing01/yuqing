@@ -17,7 +17,7 @@ function sroll_ajax(type){
         var fn = add_content_title;
     }
     var layer2 = layer.load(2);
-    var arr = {"sort":arr_all[3],"length":page_length,"search":arr_all[4],"media_type":arr_all[1]};
+    var arr = {"sort":arr_all[3],"length":page_length,"search":arr_all[4],"media_type":arr_all[1],"tag":arr_all[0]};
     $.ajax({
         type:'POST',
         url:server_url+'/yuqing/has_rep_yq',

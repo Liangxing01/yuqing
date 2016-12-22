@@ -243,7 +243,7 @@ $(function(){
 
     //操作按钮
     $('#show_all').delegate(".handle",'click',function(){
-        var str = '<input name="type" value="trash" type="radio">标记为垃圾信息';
+        var str = '<input name="type" value="trash" type="radio" chekced>标记为垃圾信息';
             str += '<input name="type" value="useless" type="radio">忽略此信息';
         var that = this;
         var layer_1 = layer.confirm(str,{"icon":3},function(){
