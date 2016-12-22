@@ -61,7 +61,7 @@ class Yuqing extends MY_Controller
      *  指派人 舆情平台筛选 详情页面
      */
     public function filter_detail(){
-        $this->assign("active_title", "report_parent");
+        $this->assign("active_title", "designate_parent");
         $this->assign("active_parent", "yq_has_rep");
         $this->all_display("yq_data/yq_data_detail.html");
     }
@@ -70,7 +70,7 @@ class Yuqing extends MY_Controller
      * 指派人 筛选记录 详情页面
      */
     public function filter_rec_detail(){
-        $this->assign("active_title", "report_parent");
+        $this->assign("active_title", "designate_parent");
         $this->assign("active_parent", "yq_cfm_list");
         $this->all_display("yq_data/yq_data_detail.html");
     }
