@@ -282,7 +282,7 @@ class Yuqing_Model extends CI_Model {
         $res = $this->mongo->select(array(),array('sid','pubdate','_version','reloadtag','timestamp','yq_block_list',
             'yq_trash_list','yq_reporter_list', 'yq_rep_num'))
             ->where(array('_id' => new MongoId($yid)))
-            ->find_one('rep_info');
+            ->find_one('useful_yq');
         return $res;
     }
 
@@ -701,44 +701,56 @@ class Yuqing_Model extends CI_Model {
             if($query['media_type'] == '全部'){
                 $yq_data['info'] = $this->mongo->select(array(),array('content'))
                     ->limit($query['length'])
+                    ->where('final_tag',$query['tag'])
                     ->offset($offset)
                     ->order_by(array('time' => $query['sort']))
                     ->get('useful_yq');
 
                 $yq_data['num'] = $this->mongo->select(array(),array('content'))
+                    ->where('final_tag',$query['tag'])
                     ->count('useful_yq');
             }else{
                 $yq_data['info'] = $this->mongo->select(array(),array('content'))
                     ->limit($query['length'])
                     ->where('yq_media_type',$query['media_type'])
+                    ->where('final_tag',$query['tag'])
                     ->offset($offset)
                     ->order_by(array('time' => $query['sort']))
                     ->get('useful_yq');
 
                 $yq_data['num'] = $this->mongo->select(array(),array('content'))
+                    ->where('yq_media_type',$query['media_type'])
+                    ->where('final_tag',$query['tag'])
                     ->count('useful_yq');
             }
         }else{
             if($query['media_type'] == '全部'){
                 $yq_data['info'] = $this->mongo->select(array(),array('content'))
                     ->limit($query['length'])
+                    ->where('final_tag',$query['tag'])
                     ->like('title',$query['search'],'im',TRUE,TRUE)
                     ->offset($offset)
                     ->order_by(array('time' => $query['sort']))
                     ->get('useful_yq');
 
                 $yq_data['num'] = $this->mongo->select(array(),array('content'))
+                    ->like('title',$query['search'],'im',TRUE,TRUE)
+                    ->where('final_tag',$query['tag'])
                     ->count('useful_yq');
             }else{
                 $yq_data['info'] = $this->mongo->select(array(),array('content'))
                     ->limit($query['length'])
                     ->where('yq_media_type',$query['media_type'])
+                    ->where('final_tag',$query['tag'])
                     ->like('title',$query['search'],'im',TRUE,TRUE)
                     ->offset($offset)
                     ->order_by(array('time' => $query['sort']))
                     ->get('useful_yq');
 
                 $yq_data['num'] = $this->mongo->select(array(),array('content'))
+                    ->like('title',$query['search'],'im',TRUE,TRUE)
+                    ->where('final_tag',$query['tag'])
+                    ->where('yq_media_type',$query['media_type'])
                     ->count('useful_yq');
             }
         }
