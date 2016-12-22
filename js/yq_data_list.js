@@ -4,7 +4,7 @@
 var page_num = 1;   //页码
 var page_total = 0 ; //总页码
 var page_length = 10;   //每页显示多少条
-var arr_all = ['全国','全部','显示全部','DESC','']; //默认初始查询
+var arr_all = ['全区','全部','显示全部','DESC','']; //默认初始查询
 
 //显示全部
 function sroll_ajax(type){
@@ -74,8 +74,9 @@ function add_content_all(data){
             str += '<td>【'+(obj.source?obj.source:'')+'】</td>';
             str += '<td><span class="label label-danger">'+obj.yq_tag+'</span></td>';
             str += '<td>'+timeToDate(obj.yq_pubdate*1000)+'</td>';
-            str += '<tr><td colspan="5"><span class="color_red">[摘要]</span>'+obj.summary+'</td></tr>';
-            str += '<tr><td colspan="5">关键字：';
+            str += '<td><span class="label label-primary handle" data-id="'+obj._id.$id+'">操作</span></td>';
+            str += '</tr><tr><td colspan="6"><span class="color_red">[摘要]</span>'+obj.summary+'</td></tr>';
+            str += '<tr><td colspan="6">关键字：';
             if(obj.keyword !== undefined){
                 var k=0,k_len = obj.keyword.length; //遍历文章关键字
                 for(;k<k_len;++k){
@@ -112,6 +113,7 @@ function add_content_title(data){
             str += '<td>【'+(obj.source?obj.source:'')+'】</td>';
             str += '<td><span class="label label-danger">'+obj.yq_tag+'</span></td>';
             str += '<td>'+timeToDate(obj.yq_pubdate*1000)+'</td>';
+            str += '<td><span class="label label-primary handle" data-id="'+obj._id.$id+'">操作</span></td>';
             str += '</tr>'
         }
         $('#show_all table').append(str);
@@ -237,5 +239,15 @@ $(function(){
             $(this).find('.sort').removeClass("fa-sort-amount-asc").addClass('fa-sort-amount-desc');
         }
         load_who();
+    })
+
+    //操作按钮
+    $('#show_all').delegate(".handle",'click',function(){
+        var str = '<input name="type" value="trash" type="radio">标记为垃圾信息';
+            str += '<input name="type" value="useless" type="radio">忽略此信息';
+        var that = this;
+        var layer_1 = layer.confirm(str,{"icon":3},function(){
+            ignore_this_yq(that,$('input[type="radio"]:checked').val());
+        })
     })
 });

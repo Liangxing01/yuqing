@@ -7,7 +7,7 @@
 var page_num = 1;   //页码
 var page_total = 0 ; //总页码
 var page_length = 10;   //每页显示多少条
-var arr_all = ['全国','全部','显示全部','DESC','']; //默认初始查询
+var arr_all = ['全区','全部','显示全部','DESC','']; //默认初始查询
 //显示全部
 function sroll_ajax(type){
     if(type == 'all'){
