@@ -230,7 +230,8 @@
 					$('.publish_time a').html(timeToDate((data.yq_pubdate?data.yq_pubdate:'')*1000));	//发布时间
 					$('.area span').html();		//地区
 					$('.msg_type span').html(data.yq_sentiment?'负面':'') //正负面
-					if(data.keyword != ''){
+
+					if(typeof(data.keyword) != 'undefined'){
 						var i=0 , str = '',len = data.keyword.length;
 						for(;i<len;++i){
 							str += random_label(data.keyword[i]);
