@@ -214,8 +214,12 @@
 			$('#where_from').show();
 			get_reporter_info();
 		}
+		var url = '/yuqing/show_yq_detail?yid=';
+		if(window.location.href.indexOf('filter_rec_detail')!= -1){
+			url = '/yuqing/show_cfm_detail?yid=';
+		}
 		$.ajax({
-			url:'/yuqing/show_cfm_detail?yid='+yid[0],
+			url:server_url+url+yid[0],
 			type:"GET",
 			dataType:'json',
 			success:function(data){
@@ -247,7 +251,7 @@
 	function get_reporter_info(){
 		var arr = window.location.search.slice(1).split(',');
 		$.ajax({
-			url:'/yuqing/get_rep_info?rep_id='+arr[1],
+			url:server_url+'/yuqing/get_rep_info?rep_id='+arr[1],
 			dataType:'json',
 			type:'GET',
 			success:function(data){
