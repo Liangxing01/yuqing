@@ -98,7 +98,9 @@ function add_content_title(data){
 }
 
 function load_who(){
-    var where_from = window.location.hash.slice(1);
+    var arr = window.location.search.slice(1).split('?');
+    var len = arr.length;
+    var where_from = arr[len-1];
     if(where_from !== ''){
         arr_all[0] = $('#'+where_from).text();
         $('#'+where_from).parent().addClass('active').siblings('.active').removeClass('active');
@@ -115,7 +117,7 @@ $(function(){
     //地区切换箭头点击事件
     $('#from_where li a i').click(function(){
         var content = $(this).parent().attr('id');
-        window.open(window.location.href+'#'+content);
+        window.open(window.location.href+'?'+content);
     })
 
     //定时刷新按钮

@@ -40,7 +40,7 @@ function add_content_all(data){
             str += '<tr class="tr_title">';
             str += '<td colspan="2">';
             str += '<input type="checkbox" data-id="'+obj._id.$id+'">';
-            str += '<span><a href="/yuqing/filter_rec_detail?'+obj._id.$id+'" title="'+obj.title+'">'+obj.title+'</a></span>';
+            str += '<span><a href="/yuqing/filter_rec_detail?'+obj._id.$id+'#record" title="'+obj.title+'">'+obj.title+'</a></span>';
             str += '</td>';
             str += '<td>【'+(obj.source?obj.source:'')+'】</td>';
             str += '<td><span class="label label-danger">'+obj.yq_tag+'</span></td>';
@@ -97,7 +97,9 @@ function add_content_title(data){
 }
 
 function load_who(){
-    var where_from = window.location.hash.slice(1);
+    var arr = window.location.search.slice(1).split('?');
+    var len = arr.length;
+    var where_from = arr[len-1];
     if(where_from !== ''){
         arr_all[0] = $('#'+where_from).text();
         $('#'+where_from).parent().addClass('active').siblings('.active').removeClass('active');
@@ -158,7 +160,7 @@ $(function(){
 
     $('#from_where li a i').click(function(){
         var content = $(this).parent().attr('id');
-        window.open(window.location.href+'#'+content);
+        window.open(window.location.href+'?'+content);
     })
 });
 

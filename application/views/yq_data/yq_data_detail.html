@@ -191,7 +191,7 @@
 			var fid = window.location.search.slice(1).split(',');
 			$.ajax({
 				type:'get',
-				url:'/yuqing/rep_this_yq?yid='+fid[0]+'&tag='+val,
+				url:server_url+'/yuqing/rep_this_yq?yid='+fid[0]+'&tag='+val,
 				dataType:'json',
 				success:function(data){
 					layer.msg(data.msg);
