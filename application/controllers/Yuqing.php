@@ -40,13 +40,41 @@ class Yuqing extends MY_Controller
     }
 
     /**
-     * 舆情详情页面 载入
+     * 舆情  详情页面 载入
      */
     public function yq_detail(){
         $this->assign("active_title", "report_parent");
         $this->assign("active_parent", "yq_data");
         $this->all_display("yq_data/yq_data_detail.html");
     }
+
+    /**
+     * 上报记录 详情页面 载入
+     */
+    public function rec_detail(){
+        $this->assign("active_title", "report_parent");
+        $this->assign("active_parent", "yq_record");
+        $this->all_display("yq_data/yq_data_detail.html");
+    }
+
+    /**
+     *  指派人 舆情平台筛选 详情页面
+     */
+    public function filter_detail(){
+        $this->assign("active_title", "report_parent");
+        $this->assign("active_parent", "yq_has_rep");
+        $this->all_display("yq_data/yq_data_detail.html");
+    }
+
+    /**
+     * 指派人 筛选记录 详情页面
+     */
+    public function filter_rec_detail(){
+        $this->assign("active_title", "report_parent");
+        $this->assign("active_parent", "yq_cfm_list");
+        $this->all_display("yq_data/yq_data_detail.html");
+    }
+
 
     /**
      * 已上报舆情 页面 载入
@@ -67,21 +95,21 @@ class Yuqing extends MY_Controller
     }
 
     /**
-         * 已上报舆情 历史记录 页面 载入
-         */
-        public function yq_trash_list(){
-            $this->assign("active_title", "report_parent");
-            $this->assign("active_parent", "yq_record");
-            $this->all_display("yq_data/yq_trash_list.html");
-       }
+     * 已上报舆情 历史记录 页面 载入
+     */
+    public function yq_trash_list(){
+        $this->assign("active_title", "report_parent");
+        $this->assign("active_parent", "yq_record");
+        $this->all_display("yq_data/yq_trash_list.html");
+    }
 
     /**
-         * 已上报舆情 历史记录 页面 载入
-         */
+     * 已上报舆情 历史记录 页面 载入
+     */
     public function yq_block_list(){
-            $this->assign("active_title", "report_parent");
-            $this->assign("active_parent", "yq_record");
-            $this->all_display("yq_data/yq_block_list.html");
+        $this->assign("active_title", "report_parent");
+        $this->assign("active_parent", "yq_record");
+        $this->all_display("yq_data/yq_block_list.html");
     }
 
 
@@ -95,12 +123,12 @@ class Yuqing extends MY_Controller
     }
 
     /**
-         * 指派人 查看 上报上来的舆情 分页
-         */
+     * 指派人 查看 上报上来的舆情 分页
+     */
      public function show_cfm_list(){
-            $this->assign("active_title", "yq_cfm_list");
-            $this->assign("active_parent", "designate_parent");
-            $this->all_display("yq_data/yq_cfm_list.html");
+         $this->assign("active_title", "yq_cfm_list");
+         $this->assign("active_parent", "designate_parent");
+         $this->all_display("yq_data/yq_cfm_list.html");
      }
 
 
@@ -188,6 +216,16 @@ class Yuqing extends MY_Controller
     public function show_yq_detail(){
         $yid = $this->input->get('yid');
         $res = $this->yq->get_yq_detail($yid);
+        echo json_encode($res);
+    }
+
+    /**
+     * 接口： 查看 已确认舆情 详情
+     *
+     */
+    public function show_cfm_detail(){
+        $yid = $this->input->get('yid');
+        $res = $this->yq->get_cfm_detail($yid);
         echo json_encode($res);
     }
 

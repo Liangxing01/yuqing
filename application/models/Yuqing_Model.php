@@ -275,6 +275,18 @@ class Yuqing_Model extends CI_Model {
     }
 
     /**
+     * @param $yid
+     * 已确认舆情详情
+     */
+    public function get_cfm_detail($yid){
+        $res = $this->mongo->select(array(),array('sid','pubdate','_version','reloadtag','timestamp','yq_block_list',
+            'yq_trash_list','yq_reporter_list', 'yq_rep_num'))
+            ->where(array('_id' => new MongoId($yid)))
+            ->find_one('rep_info');
+        return $res;
+    }
+
+    /**
      * -------------------------上报人 已上报舆情--------------------------
      */
 
