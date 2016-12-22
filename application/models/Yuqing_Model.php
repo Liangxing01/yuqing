@@ -44,7 +44,7 @@ class Yuqing_Model extends CI_Model {
             if($query['media_type'] != '全部'){
                 $yq_data['info'] = $this->mongo->select(array(),array('content','yq_block_list','yq_trash_list','yq_reporter_list',
                     'yq_rep_num'))//排除 content字段
-                ->where('yq_media_type',$query['media_type'])
+                    ->where('yq_media_type',$query['media_type'])
                     ->where('yq_tag_lock',0)                    //未被确认的舆情
                     ->where_lte('yq_rep_num',10)                //上报人小于10个
                     ->where_not_in('yq_block_list',$block_list) // 排除 自己已经 忽略的无关舆情
@@ -57,7 +57,7 @@ class Yuqing_Model extends CI_Model {
                     ->get($col_name);
 
                 $yq_data['num'] = $this->mongo->select(array('_id'),array('content'))//排除 content字段
-                ->where('yq_media_type',$query['media_type'])
+                    ->where('yq_media_type',$query['media_type'])
                     ->where('yq_tag_lock',0)                    //未被确认的舆情
                     ->where_lte('yq_rep_num',10)                //上报人小于10个
                     ->where_not_in('yq_block_list',$block_list) // 排除 自己已经 忽略的舆情
@@ -108,6 +108,7 @@ class Yuqing_Model extends CI_Model {
 
                 $yq_data['num'] = $this->mongo->select(array('_id'),array('content'))//排除 content字段
                 ->where('yq_media_type',$query['media_type'])
+                    ->like('title',$query['search'],'im',TRUE,TRUE)
                     ->where('yq_tag_lock',0)                    //未被确认的舆情
                     ->where_lte('yq_rep_num',10)                //上报人小于10个
                     ->where_not_in('yq_block_list',$block_list) // 排除 自己已经 忽略的舆情
@@ -131,6 +132,7 @@ class Yuqing_Model extends CI_Model {
                     ->get($col_name);
 
                 $yq_data['num'] = $this->mongo->select(array('_id'),array('content'))//排除 content字段
+                    ->like('title',$query['search'],'im',TRUE,TRUE)
                     ->where('yq_tag_lock',0)                    //未被确认的舆情
                     ->where_lte('yq_rep_num',10)                //上报人小于10个
                     ->where_not_in('yq_block_list',$block_list) // 排除 自己已经 忽略的舆情
@@ -305,12 +307,14 @@ class Yuqing_Model extends CI_Model {
                 //先检索 rep_info 集合，找出符合条件的 id
                 $rep_list = $this->mongo->select(array('yq_id','is_cfm'))
                     ->where('uid',$uid)
+                    ->where('tag',$query['tag'])
                     ->limit($query['length'])
                     ->offset($offset)
                     ->order_by(array('time' => $query['sort']))
                     ->get('rep_info');
 
                 $yq_data['num'] = $this->mongo->select(array('_id'))
+                    ->where('tag',$query['tag'])
                     ->where(array('uid' => $uid))
                     ->count('rep_info');
             }else{
@@ -318,6 +322,7 @@ class Yuqing_Model extends CI_Model {
                 $rep_list = $this->mongo->select(array('yq_id','is_cfm'))
                     ->where('uid',$uid)
                     ->where('media_type',$query['media_type'])
+                    ->where('tag',$query['tag'])
                     ->limit($query['length'])
                     ->offset($offset)
                     ->order_by(array('time' => $query['sort']))
@@ -326,6 +331,7 @@ class Yuqing_Model extends CI_Model {
                 $yq_data['num'] = $this->mongo->select(array('_id'))
                     ->where('media_type',$query['media_type'])
                     ->where(array('uid' => $uid))
+                    ->where('tag',$query['tag'])
                     ->count('rep_info');
             }
 
@@ -335,6 +341,7 @@ class Yuqing_Model extends CI_Model {
                 //先检索 rep_info 集合，找出符合条件的 id
                 $rep_list = $this->mongo->select(array('yq_id','is_cfm'))
                     ->where('uid',$uid)
+                    ->where('tag',$query['tag'])
                     ->like('title',$query['search'],'im',TRUE,TRUE)
                     ->limit($query['length'])
                     ->offset($offset)
@@ -343,6 +350,7 @@ class Yuqing_Model extends CI_Model {
 
                 $yq_data['num'] = $this->mongo->select(array('_id'))
                     ->where(array('uid' => $uid))
+                    ->where('tag',$query['tag'])
                     ->like('title',$query['search'],'im',TRUE,TRUE)
                     ->count('rep_info');
 
@@ -351,6 +359,7 @@ class Yuqing_Model extends CI_Model {
                 $rep_list = $this->mongo->select(array('yq_id','is_cfm'))
                     ->where('uid',$uid)
                     ->where('media_type',$query['media_type'])
+                    ->where('tag',$query['tag'])
                     ->like('title',$query['search'],'im',TRUE,TRUE)
                     ->limit($query['length'])
                     ->offset($offset)
@@ -360,13 +369,15 @@ class Yuqing_Model extends CI_Model {
                 $yq_data['num'] = $this->mongo->select(array('_id'))
                     ->where(array('uid' => $uid))
                     ->where('media_type',$query['media_type'])
+                    ->where('tag',$query['tag'])
                     ->like('title',$query['search'],'im',TRUE,TRUE)
                     ->count('rep_info');
             }
         }
         //循环rep_list 获取每条舆情的信息
         $yq_data = array(
-            'info' =>array()
+            'info' => array(),
+            'num'  => $yq_data['num']
         );
         foreach ($rep_list as $item){
             $info = $this->mongo->select(array(),array('content'))
@@ -537,8 +548,8 @@ class Yuqing_Model extends CI_Model {
                 array('$project' => array('_id'=>1,'yq_id'=>1,'uid'=>1,'tag'=>1,'time'=>1,'is_cfm'=>1,'title'=>1)),
                 array('$match' => array(
                     'tag'           => $query['tag'],
-                    'is_cfm'        => 0
-                    //'title' => "/".$query['search']."/"
+                    'is_cfm'        => 0,
+                    'title'        => array('$regex' => $query['search'])
                 )),
                 array('$group' => array(
                     '_id' => array('yq_id' => '$yq_id'),  //舆情id
@@ -557,8 +568,8 @@ class Yuqing_Model extends CI_Model {
                 array('$match' => array(
                     'tag'           => $query['tag'],
                     'is_cfm'        => 0,
-                    'media_type'    => $query['media_type']
-                    //'title' => "/".$query['search']."/"
+                    'media_type'    => $query['media_type'],
+                    'title'        => array('$regex' => $query['search'])
                 )),
                 array('$group' => array(
                     '_id' => array('yq_id' => '$yq_id'),  //舆情id
