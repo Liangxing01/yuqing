@@ -21,7 +21,7 @@ function sroll_ajax(type){
     var arr = {"sort":arr_all[3],"length":page_length,"search":arr_all[4],"media_type":arr_all[1]};
     $.ajax({
         type:'POST',
-        url:'http://192.168.0.135:81/yuqing/useless_data',
+        url:'/yuqing/useless_data',
         data:{
             query:arr,
             page_num:page_num
@@ -198,7 +198,7 @@ function ignore_this_yq(that,type){
     var fid = $(that).data('id');
     $.ajax({
         type:'POST',
-        url:"http://192.168.0.135:81/yuqing/unset_ignore",
+        url:"/yuqing/unset_ignore",
         data:{
             yids:fid,
             type:type
