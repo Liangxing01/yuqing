@@ -1,7 +1,12 @@
 <link rel="stylesheet" href="/css/yq_data.css">
 <style>
-	.handle{
+	.handle,.time_to_updata{
 		cursor: pointer;
+	}
+	.time_to_updata{
+		position: absolute;
+		top:7px;
+		left:200px;;
 	}
 </style>
 <!-- BEGIN MAIN CONTENT -->
@@ -49,6 +54,7 @@
 										  <li role="presentation" class="active"><a href="javascript:void(0)" role="tab" data-toggle="tab">显示全部</a></li>
 										  <li role="presentation"><a href="javascript:void(0)" role="tab" data-toggle="tab">只看标题</a></li>
 										</ul>
+										<span class="label label-success time_to_updata">开启定时刷新</span>
 										<div>
 											<span class="all_total">0</span>
 											<input type="checkbox" class="all_choose" />全选

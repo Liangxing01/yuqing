@@ -8,6 +8,8 @@ var page_num = 1;   //页码
 var page_total = 0 ; //总页码
 var page_length = 10;   //每页显示多少条
 var arr_all = ['全区','全部','显示全部','DESC','']; //默认初始查询
+
+var timer = null ; //定时刷新
 //显示全部
 function sroll_ajax(type){
     if(type == 'all'){
@@ -34,21 +36,6 @@ function sroll_ajax(type){
     });
 }
 
-
-$(document).scroll(function(){
-    if($(document).scrollTop()+$(window).height()>$('#main-content').height()){
-        if(page_num<page_total){
-            page_num++;
-            if(arr_all[2] == '显示全部'){
-                sroll_ajax('all');
-            }
-            if(arr_all[2] == '只看标题'){
-                sroll_ajax('title');
-            }
-        }
-    }
-    // console.log($(document).scrollTop()+":"+$('#main-content').height()+':'+$(window).height()+":"+$('footer').height());
-});
 function add_content_all(data){
     page_total = Math.ceil(data.num/page_length);
     if(data.info.length !== 0){
@@ -115,6 +102,7 @@ function add_content_title(data){
         $('#show_all table').append(str);
         layer.closeAll()
     }else{
+        $(".all_total").html('总数据量：<span class="red">'+(data.num?data.num:0)+'</span>条')
         $('#show_all').html("<p style='text-align:center;line-height: 36px'>暂无该数据</p>");
         layer.closeAll()
     }
@@ -135,57 +123,28 @@ function load_who(){
 
 
 $(function(){
-    load_who();
-
-
-    $('#main-content').delegate('ul li a','click',function(){
-        var parent = $(this).parent().parent().attr('id');
-        var child = $(this).text();
-        switch(parent){
-            case 'from_where':
-                arr_all[0] = child;break;
-            case 'what_type':
-                arr_all[1] = child; break;
-            case 'how_show':
-                arr_all[2] = child ;break;
-        }
-        page_num = 1;
-        if(arr_all[2] == '显示全部'){
-            sroll_ajax('all');
-        }
-        if(arr_all[2] == '只看标题'){
-            sroll_ajax('title');
-        }
-    });
-    //搜索按钮
-    $('.btn-search').click(function(){
-        arr_all[4] =  $('#search_input').val();
-        load_who();//加载页面
-    })
-    //全选按钮
-    $('input.all_choose').change(function(){
-        var checked = this.checked;
-        $("#show_all input[type='checkbox']").each(function(){
-            this.checked = checked;
-        })
-    })
-    
-    //排序
-    $('#sort').click(function(){
-        if($(this).hasClass('active')){
-            $(this).removeClass('active');
-            arr_all[3] = 'ASC';
-            $(this).find('.sort').removeClass("fa-sort-amount-desc").addClass('fa-sort-amount-asc');
-        }else{
-            $(this).addClass('active');
-            arr_all[3] = 'DESC';
-            $(this).find('.sort').removeClass("fa-sort-amount-asc").addClass('fa-sort-amount-desc');
-        }
-        load_who();
-    })
-
+    //地区切换箭头点击事件
     $('#from_where li a i').click(function(){
         var content = $(this).parent().attr('id');
         window.open(window.location.href+'#'+content);
+    })
+
+    //定时刷新按钮
+    $('.time_to_updata').click(function(){
+        if($(this).hasClass('label-success')){
+            $(this).removeClass('label-success').addClass('label-danger');
+            $(this).text('关闭定时刷新');
+            timer = setInterval(function(){
+                var key = $('.search-input').val();
+                arr_all[4] = key;
+                load_who();
+                $('.search-input').val(key);
+            },60000);
+        }else{
+            $(this).removeClass('label-danger').addClass('label-success');
+            $(this).text('开启定时刷新');
+            clearInterval(timer);
+            timer = null ;
+        }
     })
 });

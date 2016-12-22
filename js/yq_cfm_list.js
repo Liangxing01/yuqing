@@ -35,20 +35,7 @@ function sroll_ajax(type){
 }
 
 
-$(document).scroll(function(){
-    if($(document).scrollTop()+$(window).height()>$('#main-content').height()){
-        if(page_num<page_total){
-            page_num++;
-            if(arr_all[2] == '显示全部'){
-                sroll_ajax('all');
-            }
-            if(arr_all[2] == '只看标题'){
-                sroll_ajax('title');
-            }
-        }
-    }
-    // console.log($(document).scrollTop()+":"+$('#main-content').height()+':'+$(window).height()+":"+$('footer').height());
-});
+
 function add_content_all(data){
     page_total = Math.ceil(data.num/page_length);
     if(data.info.length !== 0){
@@ -141,41 +128,6 @@ function load_who(){
 
 
 $(function(){
-    load_who();
-
-
-    $('#main-content').delegate('ul li a','click',function(){
-        var parent = $(this).parent().parent().attr('id');
-        var child = $(this).text();
-        switch(parent){
-            case 'from_where':
-                arr_all[0] = child;break;
-            case 'what_type':
-                arr_all[1] = child; break;
-            case 'how_show':
-                arr_all[2] = child ;break;
-        }
-        page_num = 1;
-        if(arr_all[2] == '显示全部'){
-            sroll_ajax('all');
-        }
-        if(arr_all[2] == '只看标题'){
-            sroll_ajax('title');
-        }
-    });
-    //搜索按钮
-    $('.btn-search').click(function(){
-        arr_all[4] =  $('#search_input').val();
-        load_who();//加载页面
-    })
-    //全选按钮
-    $('input.all_choose').change(function(){
-        var checked = this.checked;
-        $("#show_all input[type='checkbox']").each(function(){
-            this.checked = checked;
-        })
-    })
-
     //加入垃圾信息
     $('#add_garbage').click(function(){
         var len = $('#show_all input[type="checkbox"]:checked').length;
@@ -219,19 +171,6 @@ $(function(){
         })
         $('#model_ignore ul').append(list);
         $('#ignore_sure').data('id',arr.join(','));
-    })
-    //排序
-    $('#sort').click(function(){
-        if($(this).hasClass('active')){
-            $(this).removeClass('active');
-            arr_all[3] = 'ASC';
-            $(this).find('.sort').removeClass("fa-sort-amount-desc").addClass('fa-sort-amount-asc');
-        }else{
-            $(this).addClass('active');
-            arr_all[3] = 'DESC';
-            $(this).find('.sort').removeClass("fa-sort-amount-asc").addClass('fa-sort-amount-desc');
-        }
-        load_who();
     })
 
     $('#from_where li a i').click(function(){

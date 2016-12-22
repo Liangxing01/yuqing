@@ -118,49 +118,6 @@ function ignore_this_yq(that,type){
 }
 
 $(function() {
-    load_who();
-    //滚动请求
-    $(document).scroll(function () {
-        if ($(document).scrollTop() + $(window).height() > $('#main-content').height()) {
-            if (page_num < page_total) {
-                page_num++;
-                if (arr_all[2] == '显示全部') {
-                    sroll_ajax('all');
-                }
-                if (arr_all[2] == '只看标题') {
-                    sroll_ajax('title');
-                }
-            }
-        }
-    });
-    //选项卡的点击请求
-    $('#main-content').delegate('ul li a', 'click', function () {
-        var parent = $(this).parent().parent().attr('id');
-        var child = $(this).text();
-        switch (parent) {
-            case 'from_where':
-                arr_all[0] = child;
-                break;
-            case 'what_type':
-                arr_all[1] = child;
-                break;
-            case 'how_show':
-                arr_all[2] = child;
-                break;
-        }
-        page_num = 1;
-        if (arr_all[2] == '显示全部') {
-            sroll_ajax('all');
-        }
-        if (arr_all[2] == '只看标题') {
-            sroll_ajax('title');
-        }
-    });
-    //搜索按钮
-    $('.btn-search').click(function () {
-        arr_all[4] = $('#search_input').val();
-        load_who();//加载页面
-    })
     //全选按钮
     $('input.all_choose').change(function () {
         var checked = this.checked;
@@ -169,19 +126,6 @@ $(function() {
         })
     })
 
-    //排序
-    $('#sort').click(function () {
-        if ($(this).hasClass('active')) {
-            $(this).removeClass('active');
-            arr_all[3] = 'DESC';
-            $(this).find('.sort').removeClass("fa-sort-amount-desc").addClass('fa-sort-amount-asc');
-        } else {
-            $(this).addClass('active');
-            arr_all[3] = 'ASC';
-            $(this).find('.sort').removeClass("fa-sort-amount-asc").addClass('fa-sort-amount-desc');
-        }
-        load_who();
-    })
     //取消标记垃圾信息
     $('#add_garbage').click(function () {
         var len = $('#show_all input[type="checkbox"]:checked').length;

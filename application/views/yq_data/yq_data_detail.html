@@ -85,7 +85,7 @@
 									<option value="全区">全区</option>
 								</select>
 							</div>
-							<button class="btn btn-md btn-primary" data-toggle="modal" data-target="#model_reporter" id="reporter" ><i class="fa fa-share"></i>上报此舆情 </button>
+							<button class="btn btn-md btn-primary" data-toggle="modal" data-target="#model_reporter" id="reporter_1" ><i class="fa fa-share"></i>上报此舆情 </button>
 							<button class="btn btn-md btn-primary" id="sure_info">确定此舆情 </button>
 						</div>
                     	<div class="row" style="margin-top: 20px; font-size:16px; color: #000000;">
@@ -196,7 +196,7 @@
 				success:function(data){
 					layer.msg(data.msg);
 					$('#model_reporter').modal('hide');
-					$('#reporter').hide();
+					$('#reporter_1').hide();
 				}
 			})
 		})
@@ -206,9 +206,9 @@
 		var yid = window.location.search.slice(1).split(',');
 		var has_btn = window.location.hash.slice(1);
 		if(has_btn === 'record'){
-			$('#reporter').hide();
+			$('#reporter_1').hide();
 		}else if( has_btn === 'reporter'){
-			$('#reporter').hide();
+			$('#reporter_1').hide();
 			$('#sure_info').show();
 			$('.reporter_man').show();
 			$('#where_from').show();
