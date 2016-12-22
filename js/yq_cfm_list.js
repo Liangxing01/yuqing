@@ -1,13 +1,3 @@
-/**
- * Created by LX on 2016/12/21.
- */
-/**
- * Created by LX on 2016/12/17.
- */
-var page_num = 1;   //页码
-var page_total = 0 ; //总页码
-var page_length = 10;   //每页显示多少条
-var arr_all = ['全区','全部','显示全部','DESC','']; //默认初始查询
 //显示全部
 function sroll_ajax(type){
     if(type == 'all'){
@@ -57,16 +47,6 @@ function add_content_all(data){
             str += '<td>'+timeToDate(obj.yq_pubdate*1000)+'</td>';
 
             str += '<tr><td colspan="5"><span class="color_red">[摘要]</span>'+obj.summary+'</td></tr>';
-            /*str += '<tr><td colspan="2">要素';
-             var j=0,j_len = obj.nrtags.length;  //循环遍历文章要素
-             for(;j<j_len;++j){
-             str += '<span class="crux">'+obj.nrtags[j]+'</span>';
-             }
-             str += '</td><td colspan="2">关联级别:';
-             for(var m = 0;m<obj.yq_relevance*1;++m){
-             str += '<i class="fa fa-star"></i>';
-             }
-             str += '</td><td></td></tr>';*/
             str += '<tr><td colspan="5">关键字：';
             if(obj.keyword !== undefined){
                 var k=0,k_len = obj.keyword.length; //遍历文章关键字
@@ -80,6 +60,7 @@ function add_content_all(data){
         $('#show_all').append(str);
         layer.closeAll()
     }else{
+        $(".all_total").html('总数据量：<span class="red">'+(data.num?data.num:0)+'</span>条');
         $('#show_all').html("<p style='text-align:center;line-height: 36px'>暂无该数据</p>");
         layer.closeAll()
     }
@@ -92,6 +73,7 @@ function add_content_title(data){
         if(page_num === 1){
             $('#show_all').html('<table class="table table-responsive"></table>');//清空盒子内容
         }
+        $(".all_total").html('总数据量：<span class="red">'+(data.num?data.num:0)+'</span>条');
         var str = '',i=0,len=data.info.length;
         for(; i<len;i++){
             var obj = data.info[i];
@@ -108,6 +90,7 @@ function add_content_title(data){
         $('#show_all table').append(str);
         layer.closeAll()
     }else{
+        $(".all_total").html('总数据量：<span class="red">'+(data.num?data.num:0)+'</span>条');
         $('#show_all').html("<p style='text-align:center;line-height: 36px'>暂无该数据</p>");
         layer.closeAll()
     }
