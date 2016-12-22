@@ -638,7 +638,7 @@ class Yuqing_Model extends CI_Model {
         $res3 = $this->mongo->insert('useful_yq',$raw_yq_info);
 
         //如果 tag 标记为 区级，则导入数据到  mysql表中
-        if($tag == "区级"){
+        if($tag == "全区"){
             $insert_info = array(
                 'title'         => $raw_yq_info['title'],
                 'type'          => 100, // 来自舆情平台

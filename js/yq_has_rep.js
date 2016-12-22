@@ -20,7 +20,7 @@ function sroll_ajax(type){
     var arr = {"sort":arr_all[3],"length":page_length,"search":arr_all[4],"media_type":arr_all[1],"tag":arr_all[0]};
     $.ajax({
         type:'POST',
-        url:'http://192.168.0.135:81/yuqing/get_rep_data',
+        url:'/yuqing/get_rep_data',
         data:{
             query:arr,
             page_num:page_num
@@ -55,7 +55,7 @@ function add_content_all(data){
         if(page_num === 1){
             $('#show_all').html('');//清空盒子内容
         }
-        $(".all_total").html('总数据量：<span class="red">'+(data.num?data.num:0)+'</span>>条');
+        $(".all_total").html('总数据量：<span class="red">'+(data.num?data.num:0)+'</span>条');
         var str = '',i=0,len=data.info.length;
         for(; i<len;i++){
             var obj = data.info[i];

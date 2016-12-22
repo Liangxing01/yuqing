@@ -14,7 +14,7 @@ function sroll_ajax(type){
     var arr = {"sort":arr_all[3],"length":page_length,"search":arr_all[4],"media_type":arr_all[1]};
     $.ajax({
         type:'POST',
-        url:'http://192.168.0.135:81/yuqing/useless_data',
+        url:'/yuqing/useless_data',
         data:{
             query:arr,
             page_num:page_num
@@ -117,62 +117,65 @@ function ignore_this_yq(that,type){
     })
 }
 
-$(function(){
+$(function() {
     load_who();
     //滚动请求
-    $(document).scroll(function(){
-        if($(document).scrollTop()+$(window).height()>$('#main-content').height()){
-            if(page_num<page_total){
+    $(document).scroll(function () {
+        if ($(document).scrollTop() + $(window).height() > $('#main-content').height()) {
+            if (page_num < page_total) {
                 page_num++;
-                if(arr_all[2] == '显示全部'){
+                if (arr_all[2] == '显示全部') {
                     sroll_ajax('all');
                 }
-                if(arr_all[2] == '只看标题'){
+                if (arr_all[2] == '只看标题') {
                     sroll_ajax('title');
                 }
             }
         }
     });
     //选项卡的点击请求
-    $('#main-content').delegate('ul li a','click',function(){
+    $('#main-content').delegate('ul li a', 'click', function () {
         var parent = $(this).parent().parent().attr('id');
         var child = $(this).text();
-        switch(parent){
+        switch (parent) {
             case 'from_where':
-                arr_all[0] = child;break;
+                arr_all[0] = child;
+                break;
             case 'what_type':
-                arr_all[1] = child; break;
+                arr_all[1] = child;
+                break;
             case 'how_show':
-                arr_all[2] = child ;break;
+                arr_all[2] = child;
+                break;
         }
         page_num = 1;
-        if(arr_all[2] == '显示全部'){
+        if (arr_all[2] == '显示全部') {
             sroll_ajax('all');
         }
-        if(arr_all[2] == '只看标题'){
+        if (arr_all[2] == '只看标题') {
             sroll_ajax('title');
         }
     });
     //搜索按钮
-    $('.btn-search').click(function(){
-        arr_all[4] =  $('#search_input').val();
+    $('.btn-search').click(function () {
+        arr_all[4] = $('#search_input').val();
         load_who();//加载页面
     })
     //全选按钮
-    $('input.all_choose').change(function(){
+    $('input.all_choose').change(function () {
         var checked = this.checked;
-        $("#show_all input[type='checkbox']").each(function(){
+        $("#show_all input[type='checkbox']").each(function () {
             this.checked = checked;
         })
     })
 
     //排序
-    $('#sort').click(function(){
-        if($(this).hasClass('active')){
+    $('#sort').click(function () {
+        if ($(this).hasClass('active')) {
             $(this).removeClass('active');
             arr_all[3] = 'DESC';
             $(this).find('.sort').removeClass("fa-sort-amount-desc").addClass('fa-sort-amount-asc');
-        }else{
+        } else {
             $(this).addClass('active');
             arr_all[3] = 'ASC';
             $(this).find('.sort').removeClass("fa-sort-amount-asc").addClass('fa-sort-amount-desc');
@@ -180,26 +183,25 @@ $(function(){
         load_who();
     })
     //取消标记垃圾信息
-    $('#add_garbage').click(function(){
+    $('#add_garbage').click(function () {
         var len = $('#show_all input[type="checkbox"]:checked').length;
-        if(len>10){
-            layer.msg("所选数据不能超过10条",{anim:6});
+        if (len > 10) {
+            layer.msg("所选数据不能超过10条", {anim: 6});
             return false;
         }
-        if(len == 0){
-            layer.msg("所选信息为空",{anim:6});
+        if (len == 0) {
+            layer.msg("所选信息为空", {anim: 6});
             return false;
         }
         var list = '';
         var arr = []; //id数组
         $('#model_garbage ul').html('');
-        $('#show_all input[type="checkbox"]:checked').each(function(i){
+        $('#show_all input[type="checkbox"]:checked').each(function (i) {
             var title = $(this).parent().find('a').html();
             arr.push($(this).data("id"));
-            list += '<li class="list-group-item">'+(i+1)+'、'+title+'</li>';
+            list += '<li class="list-group-item">' + (i + 1) + '、' + title + '</li>';
         })
         $('#model_garbage ul').append(list);
-        $('#garbage_sure').data('id',arr.join(','));
+        $('#garbage_sure').data('id', arr.join(','));
     })
 });
-
