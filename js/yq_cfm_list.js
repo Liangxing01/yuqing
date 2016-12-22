@@ -17,7 +17,7 @@ function sroll_ajax(type){
         var fn = add_content_title;
     }
     var layer2 = layer.load(2);
-    var arr = {"sort":arr_all[3],"length":page_length,"search":arr_all[4],"media_type":arr_all[1]};
+    var arr = {"sort":arr_all[3],"length":page_length,"search":arr_all[4],"media_type":arr_all[1],"tag":arr_all[0]};
     $.ajax({
         type:'POST',
         url:'/yuqing/get_cfm_data',
@@ -63,7 +63,7 @@ function add_content_all(data){
             str += '<tr class="tr_title">';
             str += '<td colspan="2">';
             str += '<input type="checkbox" data-id="'+obj._id.$id+'">';
-            str += '<span><a href="/yuqing/yq_detail?'+obj._id.$id+'" title="'+obj.title+'">'+obj.title+'</a></span>';
+            str += '<span><a href="/yuqing/filter_rec_detail?'+obj._id.$id+'" title="'+obj.title+'">'+obj.title+'</a></span>';
             str += '</td>';
             str += '<td>【'+(obj.source?obj.source:'')+'】</td>';
             str += '<td><span class="label label-danger">'+obj.yq_tag+'</span></td>';
@@ -111,7 +111,7 @@ function add_content_title(data){
             str += '<tr class="tr_title">';
             str += '<td colspan="2">';
             str += '<input type="checkbox" data-id="'+obj._id.$id+'">';
-            str += '<span><a href="/yuqing/yq_detail?'+obj._id.$id+'">'+obj.title+'</a></span>';
+            str += '<span><a href="/yuqing/filter_rec_detail?'+obj._id.$id+'#record">'+obj.title+'</a></span>';
             str += '</td>';
             str += '<td>【'+(obj.source?obj.source:'')+'】</td>';
             str += '<td><span class="label label-danger">'+obj.yq_tag+'</span></td>';
@@ -127,6 +127,11 @@ function add_content_title(data){
 }
 
 function load_who(){
+    var where_from = window.location.hash.slice(1);
+    if(where_from !== ''){
+        arr_all[0] = $('#'+where_from).text();
+        $('#'+where_from).parent().addClass('active').siblings('.active').removeClass('active');
+    }
     if(arr_all[2] == '显示全部'){
         sroll_ajax('all');
     }else{
@@ -227,6 +232,11 @@ $(function(){
             $(this).find('.sort').removeClass("fa-sort-amount-asc").addClass('fa-sort-amount-desc');
         }
         load_who();
+    })
+
+    $('#from_where li a i').click(function(){
+        var content = $(this).parent().attr('id');
+        window.open(window.location.href+'#'+content);
     })
 });
 
