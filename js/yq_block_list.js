@@ -1,10 +1,3 @@
-/**
- * Created by LX on 2016/12/21.
- */
-/**
- * Created by LX on 2016/12/21.
- */
-
 var page_num = 1;   //页码
 var page_total = 0 ; //总页码
 var page_length = 10;   //每页显示多少条
@@ -31,21 +24,7 @@ function sroll_ajax(type){
     });
 }
 
-
-$(document).scroll(function(){
-    if($(document).scrollTop()+$(window).height()>$('#main-content').height()){
-        if(page_num<page_total){
-            page_num++;
-            if(arr_all[2] == '显示全部'){
-                sroll_ajax('all');
-            }
-            if(arr_all[2] == '只看标题'){
-                sroll_ajax('title');
-            }
-        }
-    }
-    // console.log($(document).scrollTop()+":"+$('#main-content').height()+':'+$(window).height()+":"+$('footer').height());
-});
+//加载全部内容
 function add_content_all(data){
     page_total = Math.ceil(data.num/page_length);
     if(data.info.length !== 0){
@@ -111,7 +90,7 @@ function add_content_title(data){
         layer.closeAll()
     }
 }
-
+// 加载标题或者全部
 function load_who(){
     if(arr_all[2] == '显示全部'){
         sroll_ajax('all');
@@ -119,12 +98,42 @@ function load_who(){
         sroll_ajax('title');
     }
 }
-
+//忽略消息
+function ignore_this_yq(that,type){
+    var fid = $(that).data('id');
+    $.ajax({
+        type:'POST',
+        url:"http://192.168.0.135:81/yuqing/unset_ignore",
+        data:{
+            yids:fid,
+            type:type
+        },
+        dataType:'json',
+        success:function(data){
+            layer.msg(data.msg);
+            $('#model_garbage').modal('hide');
+            load_who();
+        }
+    })
+}
 
 $(function(){
     load_who();
-
-
+    //滚动请求
+    $(document).scroll(function(){
+        if($(document).scrollTop()+$(window).height()>$('#main-content').height()){
+            if(page_num<page_total){
+                page_num++;
+                if(arr_all[2] == '显示全部'){
+                    sroll_ajax('all');
+                }
+                if(arr_all[2] == '只看标题'){
+                    sroll_ajax('title');
+                }
+            }
+        }
+    });
+    //选项卡的点击请求
     $('#main-content').delegate('ul li a','click',function(){
         var parent = $(this).parent().parent().attr('id');
         var child = $(this).text();
@@ -194,20 +203,3 @@ $(function(){
     })
 });
 
-function ignore_this_yq(that,type){
-    var fid = $(that).data('id');
-    $.ajax({
-        type:'POST',
-        url:"http://192.168.0.135:81/yuqing/unset_ignore",
-        data:{
-            yids:fid,
-            type:type
-        },
-        dataType:'json',
-        success:function(data){
-            layer.msg(data.msg);
-            $('#model_garbage').modal('hide');
-            load_who();
-        }
-    })
-}

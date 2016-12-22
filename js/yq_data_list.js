@@ -5,6 +5,7 @@ var page_num = 1;   //页码
 var page_total = 0 ; //总页码
 var page_length = 10;   //每页显示多少条
 var arr_all = ['全国','全部','显示全部','DESC','']; //默认初始查询
+
 //显示全部
 function sroll_ajax(type){
     if(type == 'all'){
@@ -31,21 +32,29 @@ function sroll_ajax(type){
     });
 }
 
-
-$(document).scroll(function(){
-    if($(document).scrollTop()+$(window).height()>$('#main-content').height()){
-        if(page_num<page_total){
-            page_num++;
-            if(arr_all[2] == '显示全部'){
-                sroll_ajax('all');
+//忽略消息
+function ignore_this_yq(that,type){
+    var fid = $(that).data('id');
+    $.ajax({
+        type:'POST',
+        url:"http://192.168.0.135:81/yuqing/ignore_this_yq",
+        data:{
+            yids:fid,
+            type:type
+        },
+        dataType:'json',
+        success:function(data){
+            if(data.res == 1){
+                layer.msg(data.msg);
+                $('#model_garbage').modal('hide');
+                $('#model_ignore').modal('hide');
+                load_who();
             }
-           if(arr_all[2] == '只看标题'){
-               sroll_ajax('title');
-           }
         }
-    }
-   // console.log($(document).scrollTop()+":"+$('#main-content').height()+':'+$(window).height()+":"+$('footer').height());
-});
+    })
+}
+
+//请求主体内容
 function add_content_all(data){
     page_total = Math.ceil(data.num/page_length);
     if(data.info.length !== 0){
@@ -65,18 +74,7 @@ function add_content_all(data){
             str += '<td>【'+(obj.source?obj.source:'')+'】</td>';
             str += '<td><span class="label label-danger">'+obj.yq_tag+'</span></td>';
             str += '<td>'+timeToDate(obj.yq_pubdate*1000)+'</td>';
-
             str += '<tr><td colspan="5"><span class="color_red">[摘要]</span>'+obj.summary+'</td></tr>';
-            /*str += '<tr><td colspan="2">要素';
-            var j=0,j_len = obj.nrtags.length;  //循环遍历文章要素
-            for(;j<j_len;++j){
-                str += '<span class="crux">'+obj.nrtags[j]+'</span>';
-            }
-            str += '</td><td colspan="2">关联级别:';
-            for(var m = 0;m<obj.yq_relevance*1;++m){
-                str += '<i class="fa fa-star"></i>';
-            }
-            str += '</td><td></td></tr>';*/
             str += '<tr><td colspan="5">关键字：';
             if(obj.keyword !== undefined){
                 var k=0,k_len = obj.keyword.length; //遍历文章关键字
@@ -134,9 +132,22 @@ function load_who(){
 
 
 $(function(){
-    load_who();
-
-
+    load_who(); //默认加载页面
+    //滚动请求
+    $(document).scroll(function(){
+        if($(document).scrollTop()+$(window).height()>$('#main-content').height()){
+            if(page_num<page_total){
+                page_num++;
+                if(arr_all[2] == '显示全部'){
+                    sroll_ajax('all');
+                }
+                if(arr_all[2] == '只看标题'){
+                    sroll_ajax('title');
+                }
+            }
+        }
+    });
+    //代理选项卡的点击事件
     $('#main-content').delegate('ul li a','click',function(){
         var parent = $(this).parent().parent().attr('id');
         var child = $(this).text();
@@ -212,7 +223,8 @@ $(function(){
         })
         $('#model_ignore ul').append(list);
         $('#ignore_sure').data('id',arr.join(','));
-    })
+    });
+    
     //排序
     $('#sort').click(function(){
         if($(this).hasClass('active')){
@@ -227,24 +239,3 @@ $(function(){
         load_who();
     })
 });
-
-function ignore_this_yq(that,type){
-    var fid = $(that).data('id');
-    $.ajax({
-        type:'POST',
-        url:"http://192.168.0.135:81/yuqing/ignore_this_yq",
-        data:{
-            yids:fid,
-            type:type
-        },
-        dataType:'json',
-        success:function(data){
-            if(data.res == 1){
-                layer.msg(data.msg);
-                $('#model_garbage').modal('hide');
-                $('#model_ignore').modal('hide');
-                load_who();
-            }
-        }
-    })
-}
