@@ -39,7 +39,7 @@ function add_content_all(data){
             str += '<tr class="tr_title">';
             str += '<td colspan="2">';
             str += '<input type="checkbox" data-id="'+obj._id.$id+'">';
-            str += '<span><a href="/yuqing/filter_detail?'+obj._id.$id+','+obj.rep_id.$id+'#reporter" title="'+obj.title+'">'+obj.title+'</a></span>';
+            str += '<span><a target="_blank" href="/yuqing/filter_detail?'+obj._id.$id+','+obj.rep_id.$id+'#reporter" title="'+obj.title+'">'+obj.title+'</a></span>';
             str += '</td>';
             str += '<td>【'+(obj.source?obj.source:'')+'】</td>';
             str += '<td><span class="label label-danger">'+obj.yq_tag+'</span></td>';
@@ -80,7 +80,7 @@ function add_content_title(data){
             str += '<tr class="tr_title">';
             str += '<td colspan="2">';
             str += '<input type="checkbox" data-id="'+obj._id.$id+'">';
-            str += '<span><a href="/yuqing/filter_detail?yid='+obj._id.$id+'#reporter">'+obj.title+'</a></span>';
+            str += '<span><a target="_blank" href="/yuqing/filter_detail?yid='+obj._id.$id+'#reporter">'+obj.title+'</a></span>';
             str += '</td>';
             str += '<td>【'+(obj.source?obj.source:'')+'】</td>';
             str += '<td><span class="label label-danger">'+obj.yq_tag+'</span></td>';
