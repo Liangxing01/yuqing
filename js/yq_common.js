@@ -27,6 +27,7 @@ $(function(){
 
     //搜索按钮
     $('.btn-search').click(function(){
+        page_num = 1;
         arr_all[4] =  $('#search_input').val();
         load_who();//加载页面
     });
@@ -60,6 +61,7 @@ $(function(){
                 layer.msg("搜索词为空，请重新输入");
                 return;
             }
+            page_num = 1;
             arr_all[4] = $(this).val();
             load_who();
         }
