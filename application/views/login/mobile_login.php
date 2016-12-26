@@ -109,7 +109,7 @@
 
     <form  role="form" id="form_login">
         <div class="form-title" >
-            <h2>网络舆情工作平台</h2>
+            <h2>网信工作管理平台</h2>
         </div>
         <div class="form-group">
             <input type="text" class="form-control" name="username" id="username" placeholder="账号" autocomplete="off">
