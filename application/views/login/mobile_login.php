@@ -132,10 +132,10 @@
 
 
 <!-- BEGIN JS -->
-<script src="/js/jquery-2.1.1.min.js"></script><!-- BASIC JQUERY LIB. JS -->
-<script src="/js/bootstrap.min.js"></script><!-- BOOTSTRAP JS -->
-<script src="/js/jquery.validate.min.js"></script>
-<script src="/js/public.js"></script>
+<script src="/s_src/jquery-2.1.1.min.js"></script><!-- BASIC JQUERY LIB. JS -->
+<script src="/s_src/bootstrap.min.js"></script><!-- BOOTSTRAP JS -->
+<script src="/s_src/jquery.validate.min.js"></script>
+<script src="/s_src/public.js"></script>
 <!-- END JS -->
 <script>
     // jq validate 插件初始化
