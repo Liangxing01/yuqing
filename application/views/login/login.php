@@ -15,11 +15,11 @@
         登录
     </title>
     <!-- BEGIN STYLESHEET-->
-    <link href="/css/bootstrap.min.css" rel="stylesheet"><!-- BOOTSTRAP CSS -->
-    <link href="/css/bootstrap-reset.css" rel="stylesheet"><!-- BOOTSTRAP CSS -->
-    <link href="/assets/font-awesome/css/font-awesome.css" rel="stylesheet"><!-- FONT AWESOME ICON CSS -->
-    <link href="/css/style.css" rel="stylesheet"><!-- THEME BASIC CSS -->
-    <link href="/css/style-responsive.css" rel="stylesheet"><!-- THEME RESPONSIVE CSS -->
+    <link href="/s_src/bootstrap.min.css" rel="stylesheet"><!-- BOOTSTRAP CSS -->
+    <link href="/s_src/bootstrap-reset.css" rel="stylesheet"><!-- BOOTSTRAP CSS -->
+    <link href="/s_src/font-awesome.css" rel="stylesheet"><!-- FONT AWESOME ICON CSS -->
+    <link href="/s_src/style.css" rel="stylesheet"><!-- THEME BASIC CSS -->
+    <link href="/s_src/style-responsive.css" rel="stylesheet"><!-- THEME RESPONSIVE CSS -->
     <!--[if lt IE 9]>
     <script src="/js/html5shiv.js">
     </script>
@@ -149,10 +149,10 @@
 </div>
 <!-- END  FOOTER -->
 <!-- BEGIN JS -->
-<script src="/js/jquery-2.1.1.min.js"></script><!-- BASIC JQUERY LIB. JS -->
-<script src="/js/bootstrap.min.js"></script><!-- BOOTSTRAP JS -->
-<script src="/js/jquery.validate.min.js"></script>
-<script src="/js/public.js"></script>
+<script src="/s_src/jquery-2.1.1.min.js"></script><!-- BASIC JQUERY LIB. JS -->
+<script src="/s_src/bootstrap.min.js"></script><!-- BOOTSTRAP JS -->
+<script src="/s_src/jquery.validate.min.js"></script>
+<script src="/s_src/public.js"></script>
 <!-- END JS -->
 
 <!-- Page Script -->
