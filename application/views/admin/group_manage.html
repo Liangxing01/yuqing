@@ -34,6 +34,12 @@
                                 <div class="col-xs-8 col-sm-8 col-md-8 col-lg-9">
                                     <input type="text" name="groupname" id="groupname"   class="form-control layui-input">
                                 </div>
+
+                                <label class="col-xs-4 col-sm-4 col-md-4 col-lg-3 control-label">类别:</label>
+                                <select class="form-control" name="type" id="type">
+                                    <option value="0">单位&nbsp;</option>
+                                    <option value="2">集合</option>
+                                </select>
                             </div>
 
 
@@ -161,6 +167,7 @@
             dataType : 'json',
             data: {
                 "groupname": $("#groupname").val(),
+                "type" : $("#type option:selected").val(),
                 'gid':nodes[0].id,
             },
             success: function (data) {
@@ -299,6 +306,7 @@
             },
             success:function(data){
                     $("#groupname").val(data.name);
+                    $("#type").val(data.type);
             }
         })
     }

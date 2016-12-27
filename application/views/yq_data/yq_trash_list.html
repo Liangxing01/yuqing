@@ -1,0 +1,79 @@
+<link rel="stylesheet" href="/css/yq_data.css">
+<!-- BEGIN MAIN CONTENT -->
+<section id="main-content">
+    <!-- BEGIN WRAPPER  -->
+    <section class="wrapper site-min-height">
+        <!-- BEGIN ROW  -->
+        <div class="row">
+            <div class="col-lg-12">
+                <section class="panel">
+                    <header class="panel-heading clear" style="line-height: 34px;background: #31b0d5;color: #fff;">
+                        <div id="chonse_title">
+                            <h4>垃圾箱</h4>
+                        </div>
+                        <div class="input-group file-search" style="float: right;">
+                            <input type="text" class="search-input" placeholder="搜索关键词" id="search_input"/>
+                            <i class="fa fa-search btn-search"></i>
+                        </div>
+                    </header>
+                    <div class="tab-content">
+                        <!--country START-->
+                        <div role="tabpanel" class="tab-pane active">
+                            <div class="panel-body clear">
+                                <!-- Tab panes -->
+                                <div class="tab-content">
+                                    <div role="tabpanel" class="tab-pane active" id="all_type">
+                                        <div class="clear">总数据量：<span class="total_num">0</span>条</div>
+                                        <!-- Nav tabs -->
+                                        <div id="nav_content" class="clear">
+                                            <ul class="nav nav-tabs content_nav" role="tablist" id="how_show">
+                                                <li role="presentation" class="active"><a href="javascript:void(0)" role="tab" data-toggle="tab">列表信息</a></li>
+                                            </ul>
+                                            <div>
+                                                <input type="checkbox" class="all_choose" />全选
+                                                <span class="label label-danger" data-toggle="modal" data-target="#model_garbage" id="add_garbage">取消标记垃圾信息</span>
+                                                <a href="/yuqing/yq_block_list" class="label label-info">进入忽略信息库</a>
+                                                <span class="active" id="sort"><i class="fa fa-tasks"></i>按时间发布 <i class="fa fa-sort-amount-desc sort"></i></span>
+                                            </div>
+                                        </div>
+                                        <div role="tabpanel" class="tab-pane active" id="show_all">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!--country END-->
+
+                    </div>
+                </section>
+
+            </div>
+        </div>
+        </div>
+        <!-- END WRAPPER  -->
+    </section>
+    <!-- END MAIN CONTENT -->
+
+    <div class="modal fade" id="model_garbage">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">垃圾信息列表</h4>
+                </div>
+                <div class="modal-body">
+                    <ul class="list-group">
+
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="garbage_sure" onclick=ignore_this_yq(this,'trash')>确定</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</section>
+<script src="/js/public.js"></script>
+<script src="/js/yq_trash_list.js"></script>
+<script src="/js/yq_common.js"></script>
+

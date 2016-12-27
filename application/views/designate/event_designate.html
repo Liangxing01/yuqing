@@ -706,6 +706,12 @@
         var main_processor = $("#input_con_qiantou").val();
         var watcher = $("#input_con_checkman").val();
 
+        if(reply_time && reply_time < 10){
+            layer.msg("首回时间最小为10分钟", {anim:6, time:1000});
+            layer.close(layer_index);
+            return false;
+        }
+
         $.ajax({
             url: "/designate/commit_event_designate",
             method: "post",

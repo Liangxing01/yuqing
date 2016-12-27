@@ -1,0 +1,242 @@
+
+<style>
+	.fa{
+		font-weight: 600;
+	}
+	.table-inbox tr td .fa-circle{
+		color: #d5d5d5;
+	}
+	.table-inbox tr td .fa-circle.inbox-started,.table-inbox tr td .fa-circle:hover{
+		color: #ff133a;
+	}
+
+	.attachment-mail ul li a{
+		border: 1px solid #dddddd;
+		display: block;
+	}
+    .attachment_list li{
+       position: relative;
+    }
+    .attachment_list li .attr_down{
+       position: absolute;
+       left:50%;
+       top:50%;
+       transform: translate(-50%,-50%);
+       -webkit-transform: translate(-50%,-50%);
+       -moz-transform: translate(-50%,-50%);
+       -o-transform: translate(-50%,-50%);
+    }
+    .attachment_list li:hover .file_img{
+       display: block;
+       background: rgba(0,0,0,0.4);
+    }
+    .attachment_list .file_img{
+       display: none;
+       position:absolute;
+       width:100%;
+       height:100%;
+       top:0;
+       left:0;
+    }
+</style>
+	
+<!-- BEGIN MAIN CONTENT -->
+         <section id="main-content">
+		 <!-- BEGIN WRAPPER  -->
+            <section class="wrapper site-min-height">
+               <div class="mail-box">
+                  <aside class="sm-side">
+				     <!-- INBOX HEADER -->
+                     <div class="user-head">
+                        <a href="javascript:;" class="inbox-avatar">
+                        <img src="<{$avatar}>" width="64" height="60" alt="">
+                        </a>
+                        <div class="user-name">
+                           <h5><a href="#"><{$name}></a></h5>
+
+                        </div>
+                     </div>
+					 <!-- INBOX HEADER -->
+					 <!-- INBOX BODY -->
+                     <div class="inbox-body" style="">
+                        <a class="btn btn-compose" data-toggle="modal" href="/common/show_write_email">
+                        <img src="../../img/write_email.png" width="30" />写邮件
+                        </a>
+
+                     </div>
+					 <!-- INBOX HEADER -->
+					 <!-- INBOX NAV -->
+                     <ul class="inbox-nav inbox-divider">
+                        <li class="active">
+                           <a href="/common/show_emails"><i class="fa fa-inbox"></i> 收件箱 <span class="label label-danger pull-right rec_num"></span></a>
+                        </li>
+                        <li>
+                           <a href="/common/show_emails?from=send"><i class="fa fa-envelope-o"></i> 发件箱</a>
+                        </li>
+                     </ul>
+                  </aside>
+                  
+                  
+				  <aside class="lg-side">
+                     <div class="inbox-head">
+                        <h3>邮件内容</h3>
+                        <form class="pull-right position" action="#">
+                           <div class="input-append">
+                              <input type="text" placeholder="搜索你的邮件" class="sr-input">
+                              <button type="button" class="btn sr-btn"><i class="fa fa-search"></i></button>
+                           </div>
+                        </form>
+                     </div>
+                     <div class="inbox-body" style="min-height: 600px;">
+                        <div class="heading-inbox row">
+                           <div class="col-md-8">
+                              <div class="compose-btn">
+                                 <a class="btn btn-sm btn-info replay_receive" href=""><i class="fa fa-reply"></i> 回复</a>
+                                 <!--<button title="" data-placement="top" data-toggle="tooltip" type="button" data-original-title="打印" class="btn  btn-sm tooltips"><i class="fa fa-print"></i> </button>-->
+                                 <button title="" data-placement="top" data-toggle="tooltip" data-original-title="草稿箱" class="btn btn-sm tooltips"><i class="fa fa-trash-o"></i></button>
+                              </div>
+                           </div>
+                           <div class="col-md-4 text-right">
+                              <p class="date"><{$info['time']}></p>
+                           </div>
+                           <div class="col-md-12">
+                              <h4>
+                                 <{$info['title']}>
+                              </h4>
+                           </div>
+                        </div>
+                        <div class="sender-info">
+                           <div class="row">
+                              <div class="col-md-12">
+                                 <img alt="" src="<{$info['sender_avatar']}>">
+                                 <strong>发件人 : <{$info['sender_name']}></strong>
+
+                              </div>
+                           </div>
+                        </div>
+                        <div class="view-mail">
+                           <{$info['body']}>
+                        </div>
+                        <div class="attachment-mail">
+                           <p>
+                              <span><i class="fa fa-paperclip"></i> 附件列表</span>
+
+
+                           </p>
+                           <ul class="attachment_list">
+                              <!--<li>
+                                 <a href="#" class="atch-thumb">
+                                 <img src="../../../img/email_pdf.png" alt="img" />
+                                 </a>
+                                 <div class="file_img">
+                                    <span class="btn btn-md btn-info attr_down">下载</span>
+                                 </div>
+                                 <div class="file-name">
+                                    名字名字名字名字.pdf
+                                 </div>
+                                 &lt;!&ndash;<span>30KB</span>
+                                 <div class="links">
+                                    <a href="#">View</a> -
+                                    <a href="#">Download</a>
+                                 </div>&ndash;&gt;
+                              </li>-->
+                           </ul>
+                        </div>
+                     </div>
+                  </aside>
+               </div>
+            </section>
+			<!-- END WRAPPER  -->
+         </section>
+<script language="javascript" src="/js/common_email.js"></script>
+<script>
+   $(function(){
+      receive_replay(); //收件箱回复
+      get_attachment(); //获取附件
+      get_unread_email();  //获取未读邮件数目
+   })
+
+
+   function get_unread_email(){
+      $.ajax({
+         url:'/common/get_unread_num',
+         type:"get",
+         dataType:'json',
+         success:function(data){
+            if(data.unread_num){
+               $('.rec_num').html(data.unread_num);
+            }
+         }
+      })
+   }
+   function get_attachment(){
+      var num = window.location.href.indexOf('?id=');
+      var email_id = window.location.href.substr(num+4);   //附件id
+      var att_id = '<{$attID}>';
+      $.ajax({
+         url:'/common/get_att_info',
+         type:'POST',
+         data:{
+            att_ids:att_id,
+            eid:email_id
+         },
+         dataType:'json',
+         success:function(data){
+            if(data.length){
+               $('.attachment_list').html('');//清空原有附件
+               var len = data.length;
+               var attr_list = '';
+               for(var i =0 ;i<len;i++){
+                  attr_list += '<li>';
+                  attr_list += '<a href="javascript:return false;" class="atch-thumb">';
+                  attr_list += get_file_type(data[i].file_name,data[i].loc);
+                  attr_list += '</a>';
+                  attr_list += '<div class="file_img">';
+                  if(data[i].is_exist == 1){
+                     attr_list += '<a href="/common/att_download?fid='+data[i].id+'&eid='+email_id+'" class="btn btn-md btn-info attr_down">下载</a>';
+                  }else{
+                     attr_list += '<span class="attr_down" style="color:#fff;font-size: 18px">已过期</span>';
+                  }
+                  attr_list += '</div>';
+                  attr_list += '<div class="file-name">'+data[i].file_name+'</div>';
+                  attr_list += '</li>';
+               }
+               $('.attachment_list').append(attr_list);
+            }
+         }
+      })
+
+   }
+
+   //获取文件类型
+   function get_file_type(name,loc){
+      if(name.match(/(\.|\/)(doc|docx)$/ig)){ //文档类型
+         return '<img src="../../../img/email_word.png">';
+      }
+      if(name.match(/(\.|\/)(xlsx)$/ig)){ //表格类型
+         return '<img src="../../../img/email_excel.png">';
+      }
+      if(name.match(/(\.|\/)(ppt|pptx)$/ig)){ //ppt类型
+         return '<img src="../../../img/email_ppt.png">';
+      }
+      if(name.match(/(\.|\/)(pdf)$/ig)){ //文档类型
+         return '<img src="../../../img/email_pdf.png.png">';
+      }
+      if(name.match(/(\.|\/)(jpg|png|jpeg)$/ig)){
+           return '<img src='+loc+' width="130px">';
+      }
+      return '<img src="/img/">';
+   }
+   /*console.log('<{$info['sender']}>');*/
+
+
+   //收件箱回复
+   function receive_replay(){
+      var num = window.location.href.indexOf('?id=');
+      var reply_eid = window.location.href.substr(num+4);   //附件id
+      var reply_uid = "<{$info['sender']}>";
+      $('.replay_receive').attr('href','/common/reply_email?reply_uid='+reply_uid+'&reply_eid='+reply_eid);
+   }
+</script>
+         
+

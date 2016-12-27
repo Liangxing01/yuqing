@@ -66,11 +66,11 @@
             color: white;
         }
         #username{
-            background:url(/img/mobile/admin.png) no-repeat 10px center;
+            background:url(/s_src/admin.png) no-repeat 10px center;
             font-size: 1.4em;
         }
         #password{
-            background:url(/img/mobile/password.png)  no-repeat 10px center;
+            background:url(/s_src/password.png)  no-repeat 10px center;
             font-size: 1.4em;
         }
 
@@ -87,7 +87,7 @@
             cursor: pointer;
             margin-top: 20px;
         }
-		label{ 
+		label{
 			color: #ffe300;
 			position: relative;
 			top: -3.0em;
@@ -100,16 +100,16 @@
 
     </style>
 </head>
-<body style="width: 100%; height: 100%; background: url(/img/mobile/logobg.png) no-repeat; background-size: 100%;">
+<body style="width: 100%; height: 100%; background: url(/s_src/logobg.png) no-repeat; background-size: 100%;">
 <!--<div class="admin_login">
     <img src="/img/mobile/logobg.png" />
 </div>-->
 <div class="form_login" id="box">
-    <div class="form_logo"><img src="/img/mobile/logo.png" width="80"></div>
+    <div class="form_logo"><img src="/s_src/logo.png" width="80"></div>
 
     <form  role="form" id="form_login">
         <div class="form-title" >
-            <h2>网络舆情工作平台</h2>
+            <h2>网信工作管理平台</h2>
         </div>
         <div class="form-group">
             <input type="text" class="form-control" name="username" id="username" placeholder="账号" autocomplete="off">
@@ -132,10 +132,10 @@
 
 
 <!-- BEGIN JS -->
-<script src="/js/jquery-2.1.1.min.js"></script><!-- BASIC JQUERY LIB. JS -->
-<script src="/js/bootstrap.min.js"></script><!-- BOOTSTRAP JS -->
-<script src="/js/jquery.validate.min.js"></script>
-<script src="/js/public.js"></script>
+<script src="/s_src/jquery-2.1.1.min.js"></script><!-- BASIC JQUERY LIB. JS -->
+<script src="/s_src/bootstrap.min.js"></script><!-- BOOTSTRAP JS -->
+<script src="/s_src/jquery.validate.min.js"></script>
+<script src="/s_src/public.js"></script>
 <!-- END JS -->
 <script>
     // jq validate 插件初始化

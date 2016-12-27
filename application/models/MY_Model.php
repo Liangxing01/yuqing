@@ -109,39 +109,88 @@ class MY_Model extends CI_Model {
     /*
      * 获取 处理人事件报警 提示
      */
-    public function get_processor_alert($uid){
-        $data = $this->db->select('ea.title,ea.event_id,from_unixtime(ea.time) time')->from('event_alert as ea')
-            ->where('ea.uid',$uid)
-            ->where('ea.time - unix_timestamp(now()) < 300')// 时间小于5分钟开始报警
-            ->where('ea.state',1)
-            ->limit(6)
+    public function get_processor_alert($uid)
+    {
+        $data = $this->db->select('ea.id,ea.title,ea.event_id,from_unixtime(ea.time) time')->from('event_alert as ea')
+            ->where(array('ea.uid' => $uid, "type" => 3))
+            ->group_start()
+                ->group_start()
+                ->where(array(
+                    "ea.time - unix_timestamp(now()) >" => 0,
+                    "ea.time - unix_timestamp(now()) <" => 300, //5分钟内报警
+                    "state" => 2))
+                ->group_end()
+                ->or_group_start()
+                ->where('ea.state', 1)
+                ->group_end()
+            ->group_end()
             ->get()->result_array();
+
+        //取消报警
+        $msg_id = array();
+        foreach ($data AS $item) {
+            $msg_id[] = $item["id"];
+        }
+        if (!empty($msg_id)) {
+            $this->db->where_in("id", $msg_id)->update("event_alert", array("state" => 1));
+        }
+
         return $data;
     }
 
     /*
      * 获取 指派人事件报警 超时报警
      */
-    public function get_desi_alert($uid){
-        $data = $this->db->select('ea.title,ea.event_id,from_unixtime(ea.time) time')->from('event_alert as ea')
-            ->where('ea.uid',$uid)
-            ->where('unix_timestamp(now()) > ea.time')// 超时开始报警
-            ->where('ea.state',1)
-            ->limit(6)
+    public function get_desi_alert($uid)
+    {
+        $data = $this->db->select('ea.id,ea.title,ea.event_id,from_unixtime(ea.time) time')->from('event_alert as ea')
+            ->where(array('ea.uid' => $uid, "type" => 4))
+            ->group_start()
+                ->group_start()
+                ->where(array(
+                    'unix_timestamp(now()) - ea.time >' => 0, // 超时开始报警
+                    "state" => 2))
+                ->group_end()
+                ->or_group_start()
+                ->where('ea.state', 1)
+                ->group_end()
+            ->group_end()
             ->get()->result_array();
+
+        //取消报警
+        $msg_id = array();
+        foreach ($data AS $item) {
+            $msg_id[] = $item["id"];
+        }
+        if (!empty($msg_id)) {
+            $this->db->where_in("id", $msg_id)->update("event_alert", array("state" => 1));
+        }
+
         return $data;
     }
 
     //获取用户个人信息
     public function get_user_info($uid){
-        $data = $this->db->select('u.group_id,u.username,u.name,u.sex,u.avatar,group.name as group_name')->from('user AS u')
-            ->join('group','group.id = u.group_id','left')
+        $data = $this->db->select('u.username,u.name,u.sex,u.avatar')->from('user AS u')
             ->where('u.id',$uid)
             ->get()->result_array();
+
+        //查询所属单位
+        $dep_data = $this->db->select('g.name')
+            ->from('group as g')
+            ->join('user_group as ug','ug.uid ='.$uid)
+            ->where('g.id = ug.gid')
+            ->get()->result_array();
+        $deps = "";
+        foreach ($dep_data as $dep){
+            $deps .= $dep['name']." ";
+        }
+        $data[0]['group_name'] = $deps;
         return $data;
 
     }
 
+    //判断对这件事 是否有督办权
     public function check_duban($uid,$event_id){
         $res = $this->db->select('watcher')->from('event_watch')
             ->where('event_id',$event_id)
@@ -169,11 +218,12 @@ class MY_Model extends CI_Model {
             ->get()->row_array();
         if(!empty($old_avatar) && $old_avatar['avatar'] != "/img/avatar/avatar.png"){
             $old_avatar_url = $old_avatar['avatar'];
-            unlink($_SERVER['DOCUMENT_ROOT'].$old_avatar_url);
+            @unlink($_SERVER['DOCUMENT_ROOT'].$old_avatar_url);
         }
 
         $this->db->where('id',$uid);
         $res = $this->db->update('user',$data);
+        $this->session->set_userdata("avatar", $data["avatar"]);
         return $res;
     }
 
@@ -215,17 +265,34 @@ class MY_Model extends CI_Model {
 
     }
 
+
     public function insert_msg($data){
         $this->db->insert('msg',$data);
     }
 
-    public function get_msg(){
-        $res = $this->db->select('name,msg,url')->from('msg')
-            ->limit(5)
-            ->order_by('time','DESC')
-            ->get()->result_array();
-        return $res;
+
+    /**
+     * 首页最新消息接口
+     * @return Json 字符串 [ {"title": "标题", "type": "1", "url": "跳转链接", "时间": "unix时间戳"} ]
+     * 说明: 类型 0 = 信息上报消息; 1 = 事件指派消息; 2 = 事件督办消息
+     */
+    public function get_msg()
+    {
+        $uid = $this->session->uid;
+        $gid = $this->session->gid;
+        $result = array();
+        if ($gid != "") {
+            $group_id = explode(",", $gid);
+            $result = $this->db->select('title, type, url, time')
+                ->where("send_uid", $uid)
+                ->or_where_in("send_gid", $group_id)
+                ->limit(5)
+                ->order_by('time', 'DESC')
+                ->get("business_msg")->result_array();
+        }
+        return json_encode($result);
     }
+
 
     /**
      *  获取职位

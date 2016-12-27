@@ -18,6 +18,7 @@ class Welcome extends MY_Controller
      */
     public function index()
     {
+        $this->load->helper(array("public"));
         $this->assign("active_title", "home_page");
         $this->assign("active_parent", "home_parent");
         /*$weather = $this->my_model->weather();
@@ -25,24 +26,11 @@ class Welcome extends MY_Controller
         $login = $this->my_model->get_login_list($this->session->userdata('uid'), 5);
         $this->assign("avatar", $this->session->avatar);
         $this->assign('login', $login);
-        if(isMobile()){
+        if (isMobile()) {
             $this->m_all_display("m_index.html");
-        }else{
+        } else {
             $this->all_display('index.html');
         }
-
-    }
-    
-    /**
-     * 手机版首页
-     */
-    public function m_index(){
-    	$this->assign("active_title", "home_page");
-        $this->assign("active_parent", "home_parent");
-        $login = $this->my_model->get_login_list($this->session->userdata('uid'), 5);
-        $this->assign("avatar", $this->session->avatar);
-        $this->assign('login', $login);
-        $this->m_all_display('m_index.html');
     }
 
 
@@ -86,16 +74,15 @@ class Welcome extends MY_Controller
     {
         $uid = $this->session->userdata('uid');
         $pri = explode(",", $this->session->userdata('privilege'));
-        $alarm_arr = array(
-            'zp_alarm' => array(),
-            'processor_alarm' => array()
-        );
+        $alarm_arr = array();
         foreach ($pri as $one) {
             switch ($one) {
+                //指派人提醒
                 case 2 :
                     $zp_alarm = $this->my_model->get_desi_alert($uid);
                     $alarm_arr['zp_alarm'] = $zp_alarm;
                     break;
+                //处理人提醒
                 case 3 :
                     $processor_alarm = $this->my_model->get_processor_alert($uid);
                     $alarm_arr['processor_alarm'] = $processor_alarm;
@@ -122,7 +109,7 @@ class Welcome extends MY_Controller
         if ($res['res']) {
             $data = array(
                 'res' => 1,
-                'id'  => $res['id']
+                'id' => $res['id']
             );
         } else {
             $data = array(
@@ -167,7 +154,6 @@ class Welcome extends MY_Controller
         $res[0]['privilege'] = implode(' ', $pri);
         return $res[0];
     }
-
 
 
     //修改头像接口
@@ -226,7 +212,8 @@ class Welcome extends MY_Controller
     /**
      * 6M 视频会议 视图载入
      */
-    public function meeting(){
+    public function meeting()
+    {
         $this->assign("active_title", "6m_page");
         $this->assign("active_parent", "6m_parent");
         $this->all_display("6m_meeting.html");
@@ -236,15 +223,16 @@ class Welcome extends MY_Controller
      * 轮询检测最新的任务和消息通知
      *
      */
-    public function get_new_msg(){
+    public function get_new_msg()
+    {
         $res = $this->my_model->get_new_msg();
-        if($res == "new_unhandle"){
+        if ($res == "new_unhandle") {
             echo json_encode(
                 array(
                     'res' => "new_unhandle"
                 )
             );
-        }else if($res == "new_info"){
+        } else if ($res == "new_info") {
             echo json_encode(
                 array(
                     'res' => "new_info"
@@ -256,20 +244,43 @@ class Welcome extends MY_Controller
     /**
      * 一个开直播，通知所有人
      */
-    public function open_meeting(){
+    public function open_meeting()
+    {
         $data = array(
             'publisher_id' => $this->session->userdata('uid'),
-            'name'         => $this->session->userdata('name'),
-            'msg'          => '我开视频会议啦！',
-            'time'         => time(),
-            'url'          => 'https://m.v6plus.com/'.$this->session->userdata('username')
+            'name' => $this->session->userdata('name'),
+            'msg' => '我开视频会议啦！',
+            'time' => time(),
+            'url' => 'https://m.v6plus.com/' . $this->session->userdata('username')
         );
         $this->my_model->insert_msg($data);
     }
 
-    public function get_msg(){
+
+    /**
+     * 首页 最新消息接口
+     * Json 字符串 [ {"title": "标题", "type": "1", "url": "跳转链接", "时间": "unix时间戳"} ]
+     * 说明: 类型 0 = 信息上报消息; 1 = 事件指派消息; 2 = 事件督办消息
+     */
+    public function get_msg()
+    {
         $res = $this->my_model->get_msg();
-        echo json_encode($res);
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output($res);
+    }
+
+
+    /**
+     * 绑定websocket客户端 client_id 到 uid
+     */
+    public function bind_uid()
+    {
+        $client_id = $this->input->post("client_id");
+        if (!isset($client_id) || $client_id == null || $client_id == "") {
+            show_404();
+        }
+        $this->identity->bind_uid($client_id);
     }
 
 

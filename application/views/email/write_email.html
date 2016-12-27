@@ -1,0 +1,432 @@
+<script src="/js/layerUI/layui.js" ></script>
+<link href="/js/layerUI/css/layui.css"  rel="stylesheet">
+<link rel="stylesheet" href="/css/ssi-uploader.min.css">
+<link rel="stylesheet" href="/assets/ztree/zTreeStyle/zTreeStyle.css">
+<!-- Jquery Tags Input CSS -->
+<link rel="stylesheet" href="/assets/jquery-tags-input/jquery.tagsinput.min.css">
+<style>
+.inbox-divider{
+	border-bottom: none;
+}
+@media only screen and (max-width:1024px ) {
+	.modal-header{
+		width: 25% !important;
+		background: white;
+		border-top: 2px solid #ef695e;
+		color: #6a6a6a;
+		border-radius: initial;
+	}
+}
+.modal-header{
+	width: 15%;
+	background: white;
+	border-top: 2px solid #ef695e;
+	color: #6a6a6a;
+	border-radius: initial;
+}
+.modal-content{
+	 background: #e5e8ef;
+}
+.modal-body{
+	background: white;
+}	
+.form-group{
+	border-bottom: 1px solid #dddddd;
+}
+.form-horizontal .form-group{
+	margin-left: 0;
+}
+.form-group input{
+	border: none;
+}
+.control-label{
+	/*text-decoration: underline;*/
+	font-weight: 900 !important;
+}
+textarea{
+	resize: none;
+}
+.btn-send, .btn-send:hover{
+	background: #47a8c4;
+}
+.panel-body{ height: 600px; overflow-y: auto ;}
+#pic{
+    display: inline-block;
+    width:40px;
+    opacity: 0;
+    z-index: 10;
+    position: absolute;
+    cursor: pointer;
+}
+</style>
+	
+<!-- BEGIN MAIN CONTENT -->
+         <section id="main-content">
+		 <!-- BEGIN WRAPPER  -->
+            <section class="wrapper site-min-height">
+               <div class="mail-box">
+                  <aside class="sm-side">
+				     <!-- INBOX HEADER -->
+                     <div class="user-head">
+                        <a href="javascript:;" class="inbox-avatar">
+                        <img src="<{$avatar}>" width="64" height="60" alt="">
+                        </a>
+                        <div class="user-name">
+                           <h5><a href="#"><{$name}></a></h5>
+                        </div>
+
+                     </div>
+					 <!-- INBOX HEADER -->
+                                                          
+                  </aside>
+                 
+				  <aside class="lg-side">
+                     <div class="inbox-head">
+                        <h3>写邮件</h3>
+
+                     </div>
+                     
+                  </aside>
+                    
+               </div>
+               
+               <div class="mail-box">
+               	<aside class="sm-side" style="width: 10%; text-align: center;">
+				    
+					 <!-- INBOX BODY -->
+                     <div class="inbox-body">
+                        <a class="btn btn-compose" data-toggle="modal" href="#myModal" style="border-radius: 50% ; width: 60px; height:60px;">
+                        <img src="../../img/write_email.png" width="30" />
+                        </a>
+
+                     </div>
+					 <!-- INBOX HEADER -->
+					 <!-- INBOX NAV -->
+                     <ul class="inbox-nav inbox-divider">
+                        <li>
+                           <a href="/common/show_emails" title="收件箱"><i class="fa fa-inbox"></i> </a>
+                        </li>
+                        <li>
+                           <a href="/common/show_emails?from=send" title="发件箱"><i class="fa fa-envelope-o"></i> </a>
+                        </li>
+                     </ul>                  
+                  </aside>
+                  
+                  
+                  <aside class="lg-side" style="width: 60%; background: #e5e8ef;">
+                    
+                     <div class="inbox-body" style="padding: initial;">
+                     	                          
+                              <div class="modal-content">
+                                 <!--<div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                    <h4 class="modal-title">写邮件</h4>
+                                 </div>-->
+                                 <div class="modal-body">
+                                    <form class="form-horizontal" role="form" enctype="multipart/form-data" id="email_form">
+                                       <div class="form-group" style="border-bottom:none;">
+                                          <label class="col-lg-2 control-label" style="text-decoration: underline;">收件人</label>
+                                          <div class="col-lg-10">
+                                             <input type="text" class="form-control" id="inputEmail1" placeholder="" name="tags">
+                                              <input type="hidden" id="receive_uid" name="user_id"/>
+                                          </div>
+                                       </div>
+                                       
+                                       <div class="form-group">
+                                          <label class="col-lg-2 control-label">主题</label>
+                                          <div class="col-lg-10">
+                                             <input type="text" class="form-control" style="border: none;" value="<{if isset($reply_title) }><{$reply_title}><{/if}>" id="inputPassword1" placeholder="" name="theme">
+                                          </div>
+                                       </div>
+                                       <div class="form-group" style="border-bottom: none;">
+                                          <div class="control-label">
+                                              <input type="hidden" id="id" name="id"/>
+                                              <span type="file"><i class="fa fa-paperclip"></i> 添加附件</span>
+                                              <input name="file" class="fileinput-button" type="file" id="pic" multiple>
+                                              <span class="btn btn-xs btn-info td_file">添加</span>
+                                              <select name="level_choose" id="" style="float: right">
+                                                  <option value="1">一般</option>
+                                                  <option value="2">高优先级</option>
+                                              </select>
+                                              <span  style="float: right;">等级：</span>
+
+                                              <div style="clear: both"></div>
+                                              <table role="presentation" class="table table-striped">
+                                                  <tbody id="pic_files"></tbody>
+                                              </table>
+				                           </div>
+                                       </div>
+                                       
+                                       <div class="form-group" style="border-bottom: none;">                                          
+                                          
+                                             <textarea name="content_email" id="email-Message"  placeholder="输入你想说的话..." class="form-control" cols="30" rows="10"></textarea>
+                                          
+                                       </div>
+                                       <div class="form-group" style="border-bottom: none;">
+                                          <div class="col-lg-10"> 
+                                             <span class="btn btn-md btn-info my_own" >发送</span>
+                                          </div>
+                                       </div>
+                                    </form>
+                                 </div>
+                              </div>
+                     </div>
+                  </aside>
+                 
+                  <aside class="lg-side" style="width: 30%;">
+                    
+                     <div class="inbox-body" style="padding: 0;">
+                        <div class="heading-inbox row">
+                           <div class="col-md-12">
+                              <h4 style="padding-bottom: 17px; text-align: center;">
+                                组织关系
+                                  <button class="btn btn-xs btn-danger" style="float: right;margin-right:10px;" onclick="add_tags()">添加</button>
+                              </h4>
+                           </div>
+                        </div>
+                        
+                        <div class="panel-body">
+                            <ul class="nav prod-cat ztree" id="show_struct">
+                                组织关系……
+                            </ul>
+                        </div>
+                        
+                     </div>
+                  </aside>
+                   <input type="hidden" data-id="<{$reply_uid}>" id="reply_uid">
+                   <input type="hidden" data-id="<{$reply_name}>" id="reply_name">
+               </div>
+            </section>
+			<!-- END WRAPPER  -->
+         </section>
+<script src="/js/ssi-uploader.min.js"></script>
+<script src="/assets/ztree/jquery.ztree.all.min.js"></script>
+<script src="/assets/jquery-tags-input/jquery.tagsinput.min.js"></script>
+<script src="/js/jquery.validate.min.js"></script><!-- VALIDATE JS  -->
+<script>
+    /**
+     * Ztree && MultiSelect 插件
+     */
+    var onlineTree;
+
+    var setting = {
+        async: {
+            enable: true,
+            url: "/common/get_email_tree",
+            autoParam: ["id", "name=n", "level=lv"]
+            // dataFilter: filter
+        },
+        check:{
+            autoCheckTrigger:false,
+            chkStyle:"checkbox",
+            enable: true,
+            chkboxType:{ "Y": "ps", "N": "ps" }
+        },
+        callback:{
+            onAsyncSuccess: zTreeOnAsyncSuccess,//异步加载完执行
+        }
+    };
+
+    function zTreeOnAsyncSuccess(event, treeId, treeNode, msg) {
+        //去掉组织结构的选择项
+        var rootNode = onlineTree.getNodeByParam("id", 0, null);//得到组织结构树
+        rootNode.nocheck = true;
+        onlineTree.refresh();//更改属性后，刷新界面
+    }
+    //当节点选中时选择
+    function zTreeCheck(event, treeId, treeNode) {
+        if (treeNode.isdepartment == 1) {//个人
+            treeNode.getParentNode().checked = false;
+            //   console.log(treeNode.getParentNode());
+        } else if (treeNode.isdepartment == 0) {//单位
+            var children_arr = treeNode.children;
+            for (var i in children_arr) {
+                children_arr[i].checked = false;
+            }
+        }
+        onlineTree.refresh();
+    }
+    onlineTree = $.fn.zTree.init($("#show_struct"), setting);
+
+    //添加按钮事件
+    function add_tags(){
+        var nodes = onlineTree.getCheckedNodes();
+        var arr_id = [];
+        var arr_name = [];
+        for(var i in nodes){
+            if(nodes[i].isdepartment == 1){
+                arr_id.push(nodes[i].id);
+                arr_name.push(nodes[i].name);
+                if (!$("#inputEmail1").tagExist(nodes[i].id+'-'+nodes[i].name)) {
+                    $("#inputEmail1").addTag(nodes[i].id+'-'+nodes[i].name);
+                }
+            }
+
+        }
+        var arr2 = arr_id.join(',')
+        $('#receive_uid').val(arr2)
+    }
+    //input tags 初始化
+    $('#inputEmail1').tagsInput({
+        width: 'auto',
+        defaultText: "",
+        delimiter: "_",
+        interactive: false,
+        onRemoveTag:delete_tags //删除tags标签回调函数
+    });
+
+    //删除标签的回调函数
+    function delete_tags(obj){
+       var total = $('#inputEmail1').val();
+        var str = total.split('_');
+        var new_id_arr = [];
+        for (var i in str){
+            var start = str[i].indexOf('-');
+            var id = str[i].substr(0,start);
+            new_id_arr.push(id);
+        }
+        $('#receive_uid').val(new_id_arr.join(','));
+    }
+    
+    /*
+    * 富文本编辑器
+    * */
+	layui.use('layedit', function(){
+    var layedit = layui.layedit;
+    var index = layedit.build('email-Message',{
+            uploadImage: {url: '/common/email_upload_img', type: 'post'}
+      }); //建立编辑器
+
+        // 绑定发送按钮
+        $('.my_own').click(function(){
+            $('#email-Message').val("");
+            $('#email-Message').val(layedit.getContent(index));
+            console.log(layedit.getContent(index));
+           if(!$('#receive_uid').val()){
+                layer.msg('请选择收件人');
+                return false;
+            }
+            if (!$('input[name="theme"]').val()) {
+                layer.msg("标题不能为空");
+                return false;
+            }
+            if (!$('#email-Message').val() || $('#email-Message').val() =='<br>') {
+                layer.msg("邮件内容不能为空");
+                return false;
+            }
+            var att_id = [];
+            $('.cancle-file').each(function(){
+                att_id.push($(this).data('id'));
+            })
+            att_id = att_id.join(',');
+
+            $.ajax({
+                url:'/common/write_email',
+                dataType:'json',
+                data:{
+                    title:$('input[name="theme"]').val(),
+                    body:$('#email-Message').val(),
+                    priority_level:$('select[name="level_choose"]').val(),
+                    uids:$('#receive_uid').val(),
+                    attID:att_id
+                },
+                type:'POST',
+                success:function(data){
+                    if(data.res == 1){
+                        layer.msg('发送成功');
+                        window.location.href = '/common/show_emails?from=send';
+                    }else{
+                        layer.msg('发送失败')
+                    }
+
+                }
+            })
+        })
+	});
+    //检测是否是回复邮件
+    function check_receive(){
+        if(window.location.href.match(/reply_email/ig)){
+            var re_uid = $('#reply_uid').data('id');
+            var re_name = $('#reply_name').data('id');
+            if(re_uid&&re_name){
+                $('#inputEmail1').addTag(re_uid+'-'+re_name);
+                $('#receive_uid').val(re_uid);
+            }
+        }
+    }
+    $(function(){
+        check_receive();
+    })
+
+
+</script>
+<script src="/js/cloud_disk.js"></script>
+<script id="template-upload" type="text/x-tmpl">
+{% for (var i=0, file; file=o.files[i]; i++) { %}
+    <tr class="template-upload fade">
+        <td>
+            <span class="preview"></span>
+        </td>
+        <td>
+            <p class="name">{%=file.name%}</p>
+            <strong class="error text-danger"></strong>
+        </td>
+        <td>
+            <p class="size">Processing...</p>
+            <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="progress-bar progress-bar-success" style="width:0%;"></div></div>
+        </td>
+        <td>
+            {% if (!i && !o.options.autoUpload) { %}
+                <button class="btn btn-primary start" disabled>
+                    <span>开始</span>
+                </button>
+            {% } %}
+            {% if (!i) { %}
+                <button class="btn btn-warning cancel">
+                    <span>取消</span>
+                </button>
+            {% } %}
+        </td>
+    </tr>
+{% } %}
+
+
+</script>
+<!-- The template to display files available for download -->
+<script id="template-download" type="text/x-tmpl">
+{% for (var i=0, file; file=o.files[i]; i++) { %}
+    <tr class="template-download fade">
+        <td>
+            <span class="preview">
+                {% if (file.isPic) { %}
+                    <img src="{%=file.url%}">
+                {% } %}
+            </span>
+        </td>
+        <td>
+            <p class="name">
+                    <span>{%=file.name%}提交成功！</span>
+        </td>
+        <td>
+            <button class="cancle-file" data-id="{%=file.id%}">取消上传</button>
+        </td>
+        <td>
+        </td>
+    </tr>
+{% } %}
+
+
+</script>
+<script src="/js/upload_file/load-image.js"></script>
+<script src="/js/upload_file/tmpl.js"></script>
+<script src="/js/upload_file/vendor/jquery.ui.widget.js"></script>
+<!-- The basic File Upload plugin -->
+<script src="/js/upload_file/jquery.fileupload.js"></script>
+<!-- The File Upload processing plugin -->
+<script src="/js/upload_file/jquery.fileupload-process.js"></script>
+<script src="/js/upload_file/jquery.fileupload-validate.js"></script>
+<script src="/js/upload_file/jquery.fileupload-ui.js"></script>
+<!-- The File Upload image preview & resize plugin -->
+<script src="/js/upload_file/jquery.fileupload-image.js"></script>
+<!-- The main application script -->
+<script src="/js/upload_file/w_email.js"></script>

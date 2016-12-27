@@ -12,9 +12,40 @@
 	.tq1 p{ font-size: 1.4em;  color: #72d0eb; margin: 0px;}
 	.xx{ background: url(../../img/index_xx.png) no-repeat -2px -5px;}
 	.xxt{ font-size: 2.0em; color: white;}
+    .demo-lx{text-align:center;text-decoration: blink}
+    #msg tr td a{
+      width: 300px;
+      display: inline-block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: red;
+    }
+    @media only screen and (min-width: 768px) and (max-width: 1200px){
+      #msg tr td a{
+        width:126px;
+      }
+    }
+    @media only screen and (min-width: 1200px) and (max-width: 1400px){
+      #msg tr td a{
+        width:156px;
+      }
+    }
+    @media only screen and (max-width: 375px) {
+      #msg tr td a{
+        width:50px;
+      }
+    }
+    @media only screen and (max-width: 768px) {
+      #msg tr td a{
+        width:150px;
+      }
+    }
+
 </style>
       <!-- BEGIN MAIN CONTENT -->
       <link href="/css/tasks.css" rel="stylesheet"><!-- TASK CSS-->
+<script language="javascript" src="/js/public.js"></script>
       
       <section id="main-content">
 	  <!-- BEGIN WRAPPER  -->
@@ -176,66 +207,45 @@
                     </p>
                   </div>
                 </div>
-                <table class="table table-hover personal-task">
+                <table class="table personal-task">
                   <tbody id="msg">
-
                     <tr>
-                      <td>
-                        1
-                      </td>
-                      <td style="text-align: left;">
-                        <span id="td1"></span>
-                        <a id="a1" href="" style="color: red;"></a>
-                      </td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
                     </tr>
-
                     <tr>
-                      <td>
-                        2
-                      </td>
-                      <td style="text-align: left;">
-                        <span id="td2"></span>
-                        <a id="a2" href="" style="color: red;"></a>
-                      </td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
                     </tr>
-
                     <tr>
-                      <td>
-                        3
-                      </td>
-                      <td style="text-align: left;">
-                        <span id="td3"></span>
-                        <a id="a3" href="" style="color: red;"></a>
-                      </td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
                     </tr>
-
                     <tr>
-                      <td>
-                        4
-                      </td>
-                      <td style="text-align: left;">
-                        <span id="td4"></span>
-                        <a id="a4" href="" style="color: red;"></a>
-                      </td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
                     </tr>
-
                     <tr>
-                      <td>
-                        5
-                      </td>
-                      <td  style="text-align: left;">
-                        <span id="td5"></span>
-                        <a id="a5" href="" style="color: red;"></a>
-                      </td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
                     </tr>
-
                   </tbody>
                 </table>
               </section>
           <!-- END PANEL -->
             </div>
 
-            <div class="col-lg-6">
+            <div class="col-lg-6 col-md-6">
               <section class="panel">
                 <div class="panel-body">
                   <a href="#" class="task-thumb">
@@ -291,122 +301,40 @@
       <script src="/assets/morris.js-0.4.3/raphael-min.js" ></script><!-- MORRIS  JS -->
 <script>
   get_all_msg();
-  var message = {   //title闪烁
-    time: 0,
-    title: document.title,
-    timer: null,
-    // 显示新消息提示
-    show: function () {
-      var title = message.title.replace("【　　　】", "").replace("【新消息】", "");
-      // 定时器，设置消息切换频率闪烁效果就此产生
-      message.timer = setTimeout(function () {
-        message.time++;
-        message.show();
-        if (message.time % 2 == 0) {
-          document.title = "【新消息!!】" + title
-        }
-        else {
-          document.title = "【　　　】" + title
-        };
-      }, 600);
-      return [message.timer, message.title];
-    },
-    // 取消新消息提示
-    clear: function () {
-      clearTimeout(message.timer);
-      document.title = message.title;
-    }
-  };
-  /*window.onblur = function(){
-    //message.show();
-  }
-  window.onfocus = function(){
-    message.clear();
-  }*/
- //页面加载时绑定点击事件，单击取消闪烁提示
-  function get_msg() {
-    $.ajax({
-      url:'/welcome/get_new_msg',
-      type :'get',
-      dataType:'json',
-      success:function(data){
-        //message.show();
-        if(data.res == "new_unhandle"){
-          message.show();
-          layer.confirm("您有新的待处理任务获得！",{
-              btn:['开始处理','取消报警'],anim:6,title:'通知'
-          },function () {
-              location.href = '/handler/wait_to_handle';
-          },function (index) {
-              layer.close(index);
-              message.clear();
-              clearInterval(get_msg_timer);
-          });
-          var au = document.createElement("audio");
-          au.preload="auto";
-          au.src = "/tips.wav";
-          au.play();
 
-        }else if(data.res == "new_info"){
-          message.show();
-          layer.confirm("您有新的上报信息获得！",{
-            btn:['开始处理','取消报警'],anim:6,title:'通知'
-          },function () {
-            location.href = '/designate/info_not_handle';
-          },function (index) {
-            layer.close(index);
-            message.clear();  //取消闪烁
-            clearInterval(get_msg_timer);
-          });
-
-          var au = document.createElement("audio");
-          au.preload="auto";
-          au.src = "/tips.wav";
-          au.play();
-        }
-      },
-      error:function(){
-
-      }
-    });
-  }
-  var get_msg_timer = setInterval(get_msg,3000);
-
-  function get_all_msg() {
+  //获取历史记录消息
+  function get_all_msg(){
     $.ajax({
       url:'/welcome/get_msg',
       type :'get',
       dataType:'json',
       success:function(data){
-        var json = eval(data);
-        for(var i = 0; i< 5 ;i++){
-            $("#td"+(i+1)).html(json[i].name+':'+json[i].msg+"  ");
-            $("#a"+(i+1)).attr('href',json[i].url);
-          $("#a"+(i+1)).html("加入视频会议！");
-            /*var tr = $("<tr></tr>");
-            var fir_td = $("<td></td>");
-            var sec_td = $("<td></td>");
-            sec_td.attr('style','text-align: left');
-            fir_td.append(i+1);
-            var url = $("<a></a>")
-            url.attr('style','color:red');
-            url.attr('href',json[i].url);
-            url.attr('target','_blank');
-            url.append("点击加入视频会议！");
-            sec_td.append(json[i].name+':'+json[i].msg+"  ");
-            sec_td.append(url);
-            tr.append(fir_td);
-            tr.append(sec_td);
-            $("#msg").append(tr);*/
+        if(data){
+          var len = data.length;
+          var list = '';
+          for(var i = 0;i<len;i++){
+            list += '<tr>';
+            list += '<td></td>';
+            switch(data[i].type){
+              case '0':
+                list += '<td><span class="label label-info">信息上报</span></td>';break;
+              case '1':
+                list += '<td><span class="label label-primary">事件指派</span></td>';break;
+              case '2':
+                list += '<td><span class="label label-danger">事件督办</span></td>';break;
+            };
+            list += '<td><a href="'+data[i].url+'">'+data[i].title+'</a></td>';
+            list += '<td><span class="badge bg-important">'+timeToDate(data[i].time*1000)+'</span></td>';
+          }
+          $('#msg').html(list);
+          reload_num();
+        }else{
+          $('#msg').html('<tr><td style="text-align: center">暂无历史消息</td></tr>')
         }
 
-      },
-      error:function(){
-
       }
-    });
+    })
   }
-  var get_all_msg_timer = setInterval(get_all_msg,4000);
 </script>
 <script>
   function open_meeting() {

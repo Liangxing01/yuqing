@@ -1,0 +1,304 @@
+<style>
+	.detail_title{
+		border-radius: 10px;
+		border:1px solid #0099ee;
+		display: inline-block;
+		overflow: hidden;
+	}
+	.detail_title a{
+		display: inline-block;
+		padding: 10px 20px;
+
+	}
+	.detail_title a.active{
+		background: #0099ee;
+		color: #fff;
+	}
+	.data_detail_main p{
+		text-indent: 2em;
+		font-size: 16px;
+	}
+	.detail_list{
+		border-right: 1px solid #DCDCDC;
+	}
+	.detail_list li{
+		line-height: 30px;
+	}
+	.detail_list li a b{
+		text-decoration: underline;
+		font-style: normal;
+		color: #7a7a7a;
+	}
+	.detail_list li a span{
+		color: #AAAAAA;
+		padding-left: 10px;
+	}
+
+	.b_color{
+		color:#222222;
+	}
+	.keyword{
+		line-height: 36px;
+	}
+	.keyword span{
+		margin-right: 5px;
+	}
+	.leavel{
+		text-align: center;
+		font-size: 18px;
+	}
+	.leavel input{
+		margin-left:8px;;
+	}
+	#sure_info{
+		display: none;
+	}
+	.reporter_man {
+		display: none;
+		color: red;
+	}
+	#where_from{
+		display: none;
+		float: left;
+	}
+</style>
+<!-- BEGIN MAIN CONTENT -->
+<section id="main-content">
+    <!-- BEGIN WRAPPER  -->
+    <section class="wrapper site-min-height">
+        <!-- BEGIN ROW  -->
+        <div class="row">
+            <div class="col-lg-12">
+                <section class="panel">
+                    <div class="panel-body clear">
+                    	<div class="detail_title">
+                    		<a href="" class="active">进入舆情快照</a>
+							<a href="" class="look_page">浏览原始网页</a>
+							<a href="">网页取证</a>
+                    	</div>
+						<div style="float: right" >
+							<div  id="where_from">
+								舆情等级：
+								<select name="">
+									<option value="全国">全国</option>
+									<option value="全市">全市</option>
+									<option value="全区">全区</option>
+									<option value="无效信息">无效信息</option>
+								</select>
+							</div>
+							<button class="btn btn-md btn-primary" data-toggle="modal" data-target="#model_reporter" id="reporter_1" ><i class="fa fa-share"></i>上报此舆情 </button>
+							<button class="btn btn-md btn-primary" id="sure_info">确定此舆情 </button>
+						</div>
+                    	<div class="row" style="margin-top: 20px; font-size:16px; color: #000000;">
+							<div class="col-md-12">
+								<p class="release_man">发布人: <span></span></p>
+							</div>
+                    		<div class="col-md-4">
+	                    		<p class="msg_from"><b>文章来源：</b><a href="" style="text-decoration: underline; color: #5fc1f8;"></a></p>
+	                    	</div>
+	                    	<div class="col-md-8">
+	                    		<p class="publish_time"><b>发布时间：</b><a href="" style="text-decoration: underline; color: #5fc1f8;">2016-12-17&nbsp;18:47:55</a></p>
+	                    	</div>
+							<div class="col-md-4">
+								<p class="area">地域：<span>重庆市</span></p>
+							</div>
+	                    	<div class="col-md-8">
+	                    		<p class="msg_type">文章状态：<span></span></p>
+	                    	</div>
+							<div class="col-md-12" style="word-break: break-all;word-wrap:break-word;">
+								<p class="keyword">关键词：<span></span></p>
+							</div>
+							<div class="col-md-4 reporter_man">
+								<p>首报人 :<span class="man"></span></p>
+							</div>
+							<div class="col-md-8 reporter_man">
+								<p>首报时间 :<span class="time"></span></p>
+							</div>
+	                    	<div class="col-md-12">
+	                    		<p class="msg_url">原文链接:</p>
+	                    	</div>
+                    	</div>
+                    </div>
+                </section>
+                <section class="panel">
+                	<div class="panel-body clear">
+						<div class="row" style="text-align: center;">
+							<div class="col-md-12">
+								<h3 class="msg_title b_color">标题</h3>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-12 data_detail_main">
+								<p></p>
+							</div>
+						</div>
+                    </div> 
+                </section>
+                <section class="panel">
+                	<div class="panel-body">
+                		<div class="row">
+                			<div class="col-md-6" style=";">
+                				<h3 class="b_color">转载信息</h3>
+                				<ul class="detail_list">
+                					<li><a href="javascript:void(0)">暂无相关转载</a></li>
+                				</ul>
+                			</div>	
+                			<div class="col-md-6">
+                				<h3 class="b_color">相关报道</h3>
+                				<ul>
+                					<li><a href="">暂无相关报道</a></li>
+                				</ul>
+                			</div>	
+                		</div>
+                	</div>
+                </section>
+            </div>
+        </div>
+        </div>
+        <!-- END WRAPPER  -->
+    </section>
+    <!-- END MAIN CONTENT -->
+	<div class="modal fade" id="model_reporter">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+					<h4 class="modal-title">舆情等级列表</h4>
+				</div>
+				<div class="modal-body leavel" style="text-align: center;font-size: 18px">
+					标记舆情等级：
+					<input type="radio" id="country" name="address" value="全区" checked>
+					<label for="country">区级</label>
+					<input type="radio" id="city" name="address" value="全市">
+					<label for="city">市级</label>
+					<input type="radio" id="coun" name="address" value="全国">
+					<label for="coun">国家级</label>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" id="re_sure">确定</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+</section>
+<script src='/js/public.js'></script>
+<script>
+	$(function(){
+		get_content();
+
+		$('#re_sure').click(function(){
+			var val = $('.leavel input[type="radio"]:checked').val();
+			var fid = window.location.search.slice(1).split(',');
+			$.ajax({
+				type:'get',
+				url:server_url+'/yuqing/rep_this_yq?yid='+fid[0]+'&tag='+val,
+				dataType:'json',
+				success:function(data){
+					layer.msg(data.msg);
+					$('#model_reporter').modal('hide');
+					$('#reporter_1').hide();
+				}
+			})
+		})
+	})
+
+	function get_content(){
+		var yid = window.location.search.slice(1).split(',');
+		var has_btn = window.location.hash.slice(1);
+		if(has_btn === 'record'){
+			$('#reporter_1').hide();
+		}else if( has_btn === 'reporter'){
+			$('#reporter_1').hide();
+			$('#sure_info').show();
+			$('.reporter_man').show();
+			$('#where_from').show();
+			get_reporter_info();
+		}
+		var url = '/yuqing/show_yq_detail?yid=';
+		if(window.location.href.indexOf('filter_rec_detail')!= -1){
+			url = '/yuqing/show_cfm_detail?yid=';
+		}
+		$.ajax({
+			url:server_url+url+yid[0],
+			type:"GET",
+			dataType:'json',
+			success:function(data){
+				if(data != false){
+					$('.release_man span').html(data.yq_author?data.yq_author:'');	//发布人
+					$('.msg_from a').html(data.source?data.source:'');			//文章来源
+					$('.publish_time a').html(timeToDate((data.yq_pubdate?data.yq_pubdate:'')*1000));	//发布时间
+					$('.area span').html();		//地区
+					$('.msg_type span').html(data.yq_sentiment?'负面':'') //正负面
+
+					if(typeof(data.keyword) != 'undefined'){
+						var i=0 , str = '',len = data.keyword.length;
+						for(;i<len;++i){
+							str += random_label(data.keyword[i]);
+						}
+						$('.keyword').append(str);	//关键字
+					}
+
+					$('.msg_url').append( "<a href='"+(data.url?data.url:'')+"' target='_blank'>"+(data.url?data.url:'')+"</a>");	//文章链接
+					$('.msg_title').html(data.title?data.title:'');		//文章标题
+					$('.data_detail_main p').html(data.content?data.content:'');
+					$('.detail_title .look_page').attr('href',data.url?data.url:'');
+					$('.detail_title .look_page').attr('target','_blank')
+				}
+
+			}
+		})
+	}
+
+	function get_reporter_info(){
+		var arr = window.location.search.slice(1).split(',');
+		$.ajax({
+			url:server_url+'/yuqing/get_rep_info?rep_id='+arr[1],
+			dataType:'json',
+			type:'GET',
+			success:function(data){
+				if(data){
+					$('.reporter_man .man').html(data.first_name);
+					$('.reporter_man .time').html(timeToDate(data.time*1000))
+					$('#where_from select').val(data.tag);
+				}
+			}
+		})
+	}
+
+	//随机label标签
+	function random_label(content){
+		var num = Math.floor(Math.random()*6);
+		switch (num){
+			case 0:
+				return '<span class="label label-default">'+content+'</span>';
+			case 1:
+				return '<span class="label label-primary">'+content+'</span>';
+			case 2:
+				return '<span class="label label-success">'+content+'</span>';
+			case 3:
+				return '<span class="label label-info">'+content+'</span>';
+			case 4:
+				return '<span class="label label-warning">'+content+'</span>';
+			case 5:
+				return '<span class="label label-danger">'+content+'</span>';
+		}
+	}
+
+	$('#sure_info').click(function(){
+		var val = $('#where_from select').val();
+
+		var layer3 = layer.confirm('确定将此舆情标记为：<span style="color:red">'+val+'</span>&nbsp;等级',function(){
+			var arr2 = window.location.search.slice(1).split(',');
+			$.ajax({
+				url:server_url+"/yuqing/cfm_yq?yid="+arr2[0]+'&rep_id='+arr2[1]+'&tag='+val,
+				type:'GET',
+				dataType:'json',
+				success:function(data){
+					layer.msg(data.msg);
+					layer.close(layer3);
+				}
+			});
+		})
+	})
+</script>

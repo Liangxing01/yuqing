@@ -22,6 +22,7 @@ class MY_Controller extends CI_Controller
     {
         $this->load->model('MY_Model','my_model');
         $privilege = explode(",", $this->session->privilege);
+        $uid = $this->session->uid;
         sort($privilege);
         $name = $this->session->userdata('name');
         $this->assign('name',$name);
@@ -59,11 +60,17 @@ class MY_Controller extends CI_Controller
             $this->ci_smarty->display('menu/v6_meeting.html');
         }
 
+        // 舆情管控菜单
+        if ($uid == 85 || $uid == 91) {
+            $this->ci_smarty->display('menu/menu_yuqingctl.html');
+        }
+
+        $this->ci_smarty->display('menu/menu_filesys.html');
         $this->ci_smarty->display('menu/menu_common.html');
         $this->ci_smarty->display($html);
         $this->ci_smarty->display('footer.html');
     }
-    
+
     // 手机版 共用显示header,sidebar,footer
     public function m_all_display($html)
     {
@@ -90,7 +97,7 @@ class MY_Controller extends CI_Controller
                     $this->ci_smarty->display('menu/m_menu_manager.html');
                     break;
                 case 3 :
-//                    $this->ci_smarty->display('menu/menu_processor.html');
+                    $this->ci_smarty->display('menu/menu_processor.html');
                     break;
                 case 4:
 //                    $this->ci_smarty->display('menu/menu_watcher.html');
@@ -100,7 +107,6 @@ class MY_Controller extends CI_Controller
                     break;
             }
         }
-
 
         $this->ci_smarty->display('menu/menu_common.html');
         $this->ci_smarty->display($html);

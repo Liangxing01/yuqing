@@ -1,0 +1,97 @@
+<link rel="stylesheet" href="/css/yq_data.css">
+<style>
+    .btn-search{
+        color: red;
+    }
+</style>
+<!-- BEGIN MAIN CONTENT -->
+<section id="main-content">
+    <!-- BEGIN WRAPPER  -->
+    <section class="wrapper site-min-height">
+        <!-- BEGIN ROW  -->
+        <div class="row">
+            <div class="col-lg-12">
+                <section class="panel">
+                    <header class="panel-heading clear" style="line-height: 34px;background: #e4393c;color: #fff;">
+                        <div id="chonse_title">
+                            <h4>忽略库</h4>
+                        </div>
+                        <div class="input-group file-search" style="float: right;">
+                            <input type="text" class="search-input" placeholder="搜索关键词" id="search_input"/>
+                            <i class="fa fa-search btn-search"></i>
+                        </div>
+                    </header>
+                    <div class="tab-content">
+                        <!--country START-->
+                        <div role="tabpanel" class="tab-pane active">
+                            <div class="panel-body clear">
+                                <!-- Tab panes -->
+                                <div class="tab-content">
+                                    <div role="tabpanel" class="tab-pane active" id="all_type">
+                                        <div id="all_nav">
+                                            <ul class="nav nav-tabs" role="tablist" id="what_type" >
+                                                <li role="presentation" class="active"><a href="javascript:void(0)" role="tab" data-toggle="tab"><i class="fa fa-list-ul"></i>全部</a></li>
+                                                <li role="presentation"><a href="javascript:void(0)" role="tab" data-toggle="tab"><i class="fa fa-list-alt"></i>新闻</a></li>
+                                                <li role="presentation"><a href="javascript:void(0)" role="tab" data-toggle="tab"><i class="fa fa-compress"></i>论坛</a></li>
+                                                <li role="presentation"><a href="javascript:void(0)" role="tab" data-toggle="tab"><i class="fa fa-android"></i>博客</a></li>
+                                                <li role="presentation"><a href="javascript:void(0)" role="tab" data-toggle="tab"><i class="fa fa-weibo"></i>微博</a></li>
+                                                <li role="presentation"><a href="javascript:void(0)" role="tab" data-toggle="tab"><i class="fa fa-credit-card"></i>贴吧</a></li>
+                                                <li role="presentation"><a href="javascript:void(0)" role="tab" data-toggle="tab"><i class="fa fa-apple"></i>微信</a></li>
+                                                <li role="presentation"><a href="javascript:void(0)" role="tab" data-toggle="tab"><i class="fa fa-ellipsis-h"></i>其他</a></li>
+                                            </ul>
+                                            <div class="clear">总数据量：<span class="total_num">0</span>条</div>
+                                        </div>
+
+                                        <!-- Nav tabs -->
+                                        <div id="nav_content" class="clear">
+                                            <ul class="nav nav-tabs content_nav" role="tablist" id="how_show">
+                                                <li role="presentation" class="active"><a href="javascript:void(0)" role="tab" data-toggle="tab">列表信息</a></li>
+                                            </ul>
+                                            <div>
+                                                <input type="checkbox" class="all_choose" />全选
+                                                <span class="label label-danger" data-toggle="modal" data-target="#model_garbage" id="add_garbage">取消标记忽略信息</span>
+                                                <a href="/yuqing/yq_trash_list" class="label label-info">进入垃圾箱</a>
+                                                <span class="active" id="sort"><i class="fa fa-tasks"></i>按时间发布 <i class="fa fa-sort-amount-desc sort"></i></span>
+                                            </div>
+                                        </div>
+                                        <div role="tabpanel" class="tab-pane active" id="show_all">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!--country END-->
+
+                    </div>
+                </section>
+
+            </div>
+        </div>
+        </div>
+        <!-- END WRAPPER  -->
+    </section>
+    <!-- END MAIN CONTENT -->
+
+    <div class="modal fade" id="model_garbage">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">忽略信息列表</h4>
+                </div>
+                <div class="modal-body">
+                    <ul class="list-group">
+
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="garbage_sure" onclick=ignore_this_yq(this,'useless')>确定</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</section>
+<script src="/js/public.js"></script>
+<script src="/js/yq_block_list.js"></script>
+<script src="/js/yq_common.js"></script>
+

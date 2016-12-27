@@ -1,0 +1,160 @@
+<link rel="stylesheet" href="/css/clound_disk.css">
+<style>
+	.td_file{
+		position:absolute;
+	}
+	#pic{
+		z-index: 3;
+		width:80px;
+		height: 40px;
+		opacity: 0;
+	}
+</style>
+<section id="main-content">
+    <section class="wrapper site-min-height">
+        <!-- BEGIN ROW  -->
+        <div class="row">
+            <div class="col-lg-12">
+                <section class="panel" style="border-top: 2px solid #2a8ba7; border-radius:inherit;min-height: 600px;">
+                    <div class="panel-body">
+                    	
+		            	<div class="text-btn">
+		            		<button class="btn btn-md upload"><img src="../../img/upload.png" />上传</button>
+		            		<button class="btn btn-md del"><img src="../../img/del.png" />删除</button>
+		            		<!--<button class="btn btn-md send"><img src="../../img/send.png" />发送</button>-->
+							<button class="btn btn-md btn-info add_search" onclick="search_files()">搜索</button>
+	            			<input type="text"  class="file-search-text file-search"  placeholder="搜索你的文件" />
+		            	</div>
+                		
+            			<div class="My_pan_title">全部文件<span style="float: right;">已全部加载，共<span class="all">3</span>个文件</span></div>
+            			
+            			<div class="My_pan_list">
+						<table border='0' cellspacing="0" cellpadding="0" width="100%" class="file_name" >
+							<thead>
+								<tr>
+									<th width="50%">
+										<div class="choose_all">
+											<input name="" type="checkbox" class="file-chexkbox all_choose" value="" />全选
+										</div>
+										文档名
+									</th>
+									<th width="10%">大小</th>
+									<th width="30%">时间</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody>
+								<!--<tr>
+									<td >
+										<input name="" type="checkbox" class="file-chexkbox" value="" />
+										<span class="file-file file-ex">e<i>x</i></span>
+										你的多情出卖我的爱情赔了我的命.docx
+									</td>
+									<td>3.9M</td>
+									<td >2016-12-6&nbsp;15:35:35</td>
+									<td>
+										<a href="" class="btn btn-info btn-sm">下載</a>
+									</td>
+								</tr>-->
+							</tbody>
+						</table>
+            				
+            			</div> 
+            			
+            			<ul class="my_pan_page">
+							<li class="index"><a href="javascript:void(0)">首页</a></li>
+							<li class="prev"><a href="javascript:void(0)">上一页</a></li>
+							<li class="special"><input type="text" value="1">/<span class="total">12</span><a href="javascript: goto_page()">跳转</a></li>
+							<li class="next"><a href="javascript:void(0)">下一页</a></li>
+							<li class="last"><a href="javascript:void(0)">尾页</a></li>
+            			</ul>
+		            </div>
+					<div id="form1" style="display: none;">
+						<div style="padding: 20px">
+							<form class="form-horizontal tasi-form layui-form" enctype="multipart/form-data">
+								<input type="hidden" id="id" name="id"/>
+								<span class="btn btn-md btn-primary td_file">选择文件</span>
+								<input name="file" class="fileinput-button" type="file" id="pic" multiple>
+								<div style="clear: both"></div>
+								<table role="presentation" class="table table-striped">
+									<tbody id="pic_files"></tbody>
+								</table>
+							</form>
+						</div>
+					</div>
+
+                </section>
+            </div>
+        </div>
+    </section>
+</section>
+<script src="/js/cloud_disk.js"></script>
+<script id="template-upload" type="text/x-tmpl">
+{% for (var i=0, file; file=o.files[i]; i++) { %}
+    <tr class="template-upload fade">
+        <td>
+            <span class="preview"></span>
+        </td>
+        <td>
+            <p class="name">{%=file.name%}</p>
+            <strong class="error text-danger"></strong>
+        </td>
+        <td>
+            <p class="size">Processing...</p>
+            <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="progress-bar progress-bar-success" style="width:0%;"></div></div>
+        </td>
+        <td>
+            {% if (!i && !o.options.autoUpload) { %}
+                <button class="btn btn-primary start" disabled>
+                    <span>开始</span>
+                </button>
+            {% } %}
+            {% if (!i) { %}
+                <button class="btn btn-warning cancel">
+                    <span>取消</span>
+                </button>
+            {% } %}
+        </td>
+    </tr>
+{% } %}
+
+
+</script>
+<!-- The template to display files available for download -->
+<script id="template-download" type="text/x-tmpl">
+{% for (var i=0, file; file=o.files[i]; i++) { %}
+    <tr class="template-download fade">
+        <td>
+            <span class="preview">
+                {% if (file.isPic) { %}
+                    <img src="{%=file.url%}">
+                {% } %}
+            </span>
+        </td>
+        <td>
+            <p class="name">
+                    <span>{%=file.name%}提交成功！</span>
+        </td>
+        <td>
+
+        </td>
+        <td>
+        </td>
+    </tr>
+{% } %}
+
+
+</script>
+<script src="/js/upload_file/load-image.js"></script>
+<script src="/js/upload_file/tmpl.js"></script>
+<script src="/js/upload_file/vendor/jquery.ui.widget.js"></script>
+<!-- The basic File Upload plugin -->
+<script src="/js/upload_file/jquery.fileupload.js"></script>
+<!-- The File Upload processing plugin -->
+<script src="/js/upload_file/jquery.fileupload-process.js"></script>
+<script src="/js/upload_file/jquery.fileupload-validate.js"></script>
+<script src="/js/upload_file/jquery.fileupload-ui.js"></script>
+<!-- The File Upload image preview & resize plugin -->
+<script src="/js/upload_file/jquery.fileupload-image.js"></script>
+<!-- The main application script -->
+<script src="/js/upload_file/e_mail.js"></script>

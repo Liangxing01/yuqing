@@ -108,9 +108,9 @@
             <div class="col-lg-12">
                 <section class="panel">
                     <header class="panel-heading">
-                        <div style="float: left; width: 12%;"> 
-                       	<i class="fa fa-hand-o-down"></i>
-                        <span class="">事件追踪</span>
+                        <div style="float: left; width: 12%;">
+                            <a class="btn btn-info btn-sm" href="/common/event_detail?eid=<{$eid}>"><i class="fa fa-reply"></i>事件详情</a>
+                            <span class="label label-primary">事件追踪</span>
                         </div>
                         
                         <div class="cankao">
@@ -152,7 +152,7 @@
                                 <!-- /.inner-content -->
                             </li>
                             <!-- END HIGHLIGHT TIMELINE MOMENT -->
-                            
+
                         </ul>
                     </div>
                    
@@ -245,6 +245,7 @@
 <input type="hidden" name="usertype" value="<{$usertype}>" id="usertype"/>
 
 <script>
+
 	var eid=document.getElementById('eid').value,
          history_daytime="";//用来存时间抽上最上面的时间，用来判断总结性评论是新添加，还是在下面插入
 	$("input[name='zj_buttom']").click(function(){
@@ -566,7 +567,9 @@
 			    	}
 				});
 			})
-		}
+		}else{
+            $("#sjwc").hide();
+        }
 	}  	
 	tagier();
 

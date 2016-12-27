@@ -1,6 +1,7 @@
 .DS_Store
 
 application/config/database.php
+application/config/mongo_db.php
 uploads/*
 ci_session/*
 template_c/*

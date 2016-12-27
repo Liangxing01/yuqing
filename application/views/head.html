@@ -6,14 +6,14 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
-    <meta name="author" content="Olive Enterprise">
+    <meta name="author" content="v6plus">
     <!-- END META -->
 
     <!-- BEGIN SHORTCUT ICON -->
     <link rel="shortcut icon" href="/img/favicon.ico">
     <!-- END SHORTCUT ICON -->
     <title>
-        重庆·巴南网络舆情工作平台
+        重庆·巴南网信工作管理平台
     </title>
     <!-- BEGIN STYLESHEET-->
     <link rel="shortcut icon" href=" /img/logo.ico" />
@@ -28,6 +28,7 @@
     <script language="javascript" src="/js/jquery-2.1.1.min.js"></script><!-- BASIC JQUERY JS  -->
 
     <script language="javascript" src="/js/layer/layer.js"></script><!--  layer JS  -->
+    <script language="javaScript" src="/js/webSocket.js"></script>
     <!--[if lt IE 9]>
     <script src="/js/html5shiv.js">
     </script>
@@ -40,7 +41,7 @@
     	.fa-bars:before{ content: url(../../img/logo.png);}
     	.sidebar-toggle-box{ padding-right: 10px; margin-top: 12px;}
     	.mc{ font-family: '黑体'; font-size: 16px; font-weight: 300; color: white; margin-top: 10px;}
-        #alarm_title{
+        .alarm_title{
             width:210px;
             overflow:hidden;
             white-space:nowrap;
@@ -64,7 +65,7 @@
         </div>
         <!-- SIDEBAR TOGGLE BUTTON  END-->
         <a href="/" class="logo">
-            网络舆情工作平台
+            网信工作管理平台
           <span>
             重庆·巴南
           </span>
@@ -122,18 +123,18 @@
 
                 <!-- START NOTIFY NOTIFICATION BAR -->
 
-                <li id="notification_bar1" title="待处理事件提醒" class="dropdown">
+                <li id="notification_bar1" title="事件超时提醒" class="dropdown" style="display: none">
                     <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                         <i class="fa fa-bell-o">
                         </i>
-                <span class="badge bg-warning" id="bar_num">
+                <span class="badge bg-warning bar_num">
                 </span>
                     </a>
                     <ul class="dropdown-menu extended notification">
                         <li class="notify-arrow notify-arrow-blue">
                         </li>
                         <li>
-                            <p class="blue" id="notify_total">
+                            <p class="blue notify_total">
                             </p>
                         </li>
                         <li class="notify-all">
@@ -146,18 +147,18 @@
                 <!-- END NOTIFY NOTIFICATION BAR -->
                 <!-- START NOTIFY NOTIFICATION BAR -->
 
-                <li id="notification_bar2" title="指派事件首回提醒" class="dropdown" style="display:none">
+                <li id="notification_bar2" title="事件首回提醒" class="dropdown" style="display:none">
                     <a data-toggle="dropdown" class="dropdown-toggle" >
                         <i class="fa fa-bell">
                         </i>
-                <span class="badge bg-warning" id="bar_num">
+                <span class="badge bg-warning bar_num">
                 </span>
                     </a>
                     <ul class="dropdown-menu extended notification">
                         <li class="notify-arrow notify-arrow-blue">
                         </li>
                         <li>
-                            <p class="blue" id="notify_total">
+                            <p class="blue notify_total">
                             </p>
                         </li>
                         <li class="notify-all">
@@ -230,3 +231,4 @@
         <!-- END USER LOGIN DROPDOWN  -->
     </header>
     <!-- END HEADER -->
+</section>

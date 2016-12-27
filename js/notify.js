@@ -1,33 +1,26 @@
 $(function(){
-   
-    setInterval("get_notify()",600000);
     get_notify();
 })
 
 
-function updatotal(){
-    var num=document.getElementById("total");
-    console.log(num.value);
-    if(num.value<=0){	    	
-    	return;
-    }else{
-    	num.value=num.value-1;
-    }
-}
 function showNotify(data,target)
 {
-    var notice=target.find('#bar_num');
-    if (data.length==0) notice.hide();
+    var notice=target.find('.bar_num');
+    if (data === undefined || data.length===0 ) {
+        notice.hide();
+        target.find('.notify_total').html("你有<span>0</span>条新信息");
+        return;
+    }
     else{
         notice.html(data.length);
         notice.show();
     }
-    target.find('#notify_total').html("你有<label id='total'>"+data.length+"</label>新信息");
+    target.find('.notify_total').html("你有<span>"+data.length+"</span>新信息");
     
     var str='';
     $.each(data,function(index,v){
-        var i='<li onclick="updatotal()"><a href="/common/event_detail?eid='+v.event_id+'" title="'+v.title+'">' +
-            '<p id="alarm_title">'+
+        var i='<li><a href="/common/event_detail?eid='+v.event_id+'&option=cancel_alert" title="'+v.title+'">' +
+            '<p class="alarm_title">'+
             v.title+
             '</p><span class="small italic">'+
             v.time+
@@ -40,11 +33,20 @@ function showNotify(data,target)
   
 
 function get_notify(){
-    $.getJSON('/welcome/get_event_alert','',function(data){
-        if (typeof data.zp_alarm!='undefined'){
-            $('#notification_bar2').show();
-            showNotify(data.zp_alarm,$('#notification_bar2'));
+    $.ajax({
+        type:'get',
+        dataType:'json',
+        url:'/welcome/get_event_alert',
+        success:function(data){
+            if(data.processor_alarm){//提前首回提醒
+                $('#notification_bar2').show();
+                showNotify(data.processor_alarm,$('#notification_bar2'));
+            }
+            if(data.zp_alarm){//超时提醒
+                $('#notification_bar1').show();
+                showNotify(data.zp_alarm,$('#notification_bar1'));
+            }
         }
-        showNotify(data.processor_alarm,$('#notification_bar1'));
-    });
+    })
 }
+

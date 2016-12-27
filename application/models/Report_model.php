@@ -11,48 +11,65 @@ class Report_model extends CI_Model {
     }
 
     /**
-     * 添加事件或更新
-     * @param $arr 事件相关数据
+     * 添加事件信息
+     * @param $arr 事件信息
      * @return mixed 影响条数
      */
-    public function add_or_update($arr){
+    public function add_info($arr)
+    {
+        //检测url是否重复
         $dup = 0;
-        if ($arr['url'] !== null){
+        if ($arr['url'] !== null) {
             $judge = $this->db->select("*")
                 ->from("info")
-                ->where(array('url'=>$arr['url']))
-                ->limit(10,0)
+                ->where(array('url' => $arr['url']))
+                ->limit(10, 0)
                 ->get()->result_array();
-            if ($judge != null){
+            if ($judge != null) {
                 $dup = 1;
             }
         }
-        $id = $arr['id'];
-
+        //事件信息数据
         $data = array(
             'title' => $arr['title'],
             'url' => $arr['url'],
             'source' => $arr['source'],
             'description' => $arr['description'],
             'publisher' => $arr['uid'],
-            'time' => $arr['time'],
-            'state'=> 0,
-            'duplicate'=>$dup
+            'time' => time(),
+            'state' => 0,
+            'duplicate' => $dup
         );
-        if ($id == null){
-            $res = $this->db->insert('yq_info',$data);
-            $id = $this->db->insert_id();
-        }else{
-            $this->db->where('info.id',$arr['id']);
-            $this->db->update('info',$data);
+        $res = $this->db->insert('yq_info', $data);
+        $info_id = $this->db->insert_id();
+        if ($res) {
+            //TODO 上报消息 推送
+            try {
+                //连接消息服务器
+                $this->load->library("Gateway");
+                Gateway::$registerAddress = $this->config->item("VM_registerAddress");
+
+                //业务消息推送
+                //用户 上报信息 推送给在线指派人
+                $managers = $this->db->select("user.id")
+                    ->join("user_privilege", "user_privilege.uid = user.id")
+                    ->where("user_privilege.pid", 2)
+                    ->get("user")->result_array();
+                foreach ($managers AS $manager) {
+                    Gateway::sendToUid($manager["id"], json_encode(array(
+                        "title" => $data["title"],
+                        "time" => $data["time"],
+                        "type" => 0,
+                        "url" => "/designate/info_detail?id=" . $info_id
+                    )));
+                }
+            } catch (Exception $e) {
+                log_message("error", $e->getMessage());
+            }
+            return $info_id;
+        } else {
+            return false;
         }
-        if($res){
-            $res = array(
-                'nu' => 1,
-                'id' => $id
-            );
-        }
-        return $res;
     }
 
     /**
