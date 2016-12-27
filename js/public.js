@@ -1,4 +1,4 @@
-var server_url = '';
+var server_url = 'http://192.168.0.135:81';
 
 /**
  * Unix时间戳转Y-m-d H:i:s
