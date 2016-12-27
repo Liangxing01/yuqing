@@ -359,9 +359,9 @@ class Designate extends MY_controller
         $this->assign("active_title", "designate_parent");
         $this->assign("active_parent", "event_search");
 
-        if(isMobile()){
+        if (isMobile()) {
             $this->m_all_display("designate/event_tracer.html");
-        }else{
+        } else {
             $this->all_display("designate/event_tracer.html");
         }
 
@@ -388,7 +388,8 @@ class Designate extends MY_controller
     /**
      * 事件 首回时间
      */
-    public function event_reply_time(){
+    public function event_reply_time()
+    {
         $event_id = $this->input->post("eid");
         $reply_time = $this->input->post("reply_time");
         if (!isset($event_id) || $event_id == null || $event_id == "") {
@@ -646,7 +647,10 @@ class Designate extends MY_controller
     /**
      * 用户在线 视图载入
      */
-    public function online_tree(){
+    public function online_tree()
+    {
+        $online_user_num = $this->designate->count_online_user();
+        $this->assign("online_user_num", $online_user_num);
         $this->all_display("designate/online_user.html");
     }
 
@@ -680,7 +684,7 @@ class Designate extends MY_controller
             echo "该用户不在线";
         }
         $clients = Gateway::getClientIdByUid($uid);
-        foreach($clients AS $client){
+        foreach ($clients AS $client) {
             var_dump(Gateway::getSession($client));
         }
     }
