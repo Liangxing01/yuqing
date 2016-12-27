@@ -187,7 +187,7 @@ var message = {   //title闪烁
         }
         var title = message.title.replace("【　　　】", "").replace("【新消息!!】", "");
         // 定时器，设置消息切换频率闪烁效果就此产生
-        message.timer = setTimeout(function () {
+        message.timer = setInterval(function () {
             message.time++;
             message.show();
             if (message.time % 2 == 0) {
@@ -197,11 +197,11 @@ var message = {   //title闪烁
                 document.title = "【　　　】" + title
             };
         }, 600);
-        return [message.timer, message.title];
+        //return [message.timer, message.title];
     },
     // 取消新消息提示
     clear: function () {
-        clearTimeout(message.timer);
+        clearInterval(message.timer);
         document.title = message.title;
     }
 };
