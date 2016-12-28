@@ -8,7 +8,7 @@ function sroll_ajax(type){
         var fn = add_content_title;
     }
     var layer2 = layer.load(2);
-    var arr = {"sort":arr_all[3],"length":page_length,"search":arr_all[4],"media_type":arr_all[1],"ya_tag":arr_all[5]};
+    var arr = {"sort":arr_all[3],"length":page_length,"search":arr_all[4],"media_type":arr_all[1],"yq_tag":arr_all[5]};
     $.ajax({
         type:'POST',
         url:server_url+'/yuqing/get_yqData_by_page',
@@ -206,7 +206,7 @@ $(function(){
     
     //来源选择框的选择
     $("#source_from").change(function(){
-        arr_all[5] = this.val();
+        arr_all[5] = $(this).val();
         page_num = 1 ; //初始化查询页码
         load_who();
     })
