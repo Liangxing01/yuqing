@@ -20,9 +20,10 @@ class Identity_Auth
      * 设置认证session[uid, username, name, gid, gname, privilege]
      * @param $username
      * @param $password
+     * @param $login_type
      * @return bool
      */
-    public function user_auth($username, $password)
+    public function user_auth($username, $password, $login_type)
     {
         $this->CI->load->database();
 
@@ -32,8 +33,12 @@ class Identity_Auth
 
         if ($user->num_rows() > 0) {
             //更新用户认证token
-            $token = md5($user->row()->username . time());
-            $this->CI->db->where("id", $user->row()->id)->update("user", array("token" => $token));
+            $token = md5($user->row()->username . time() . $login_type);
+            if ($login_type == 1) {
+                $this->CI->db->where("id", $user->row()->id)->update("user", array("m_token" => $token));
+            } else {
+                $this->CI->db->where("id", $user->row()->id)->update("user", array("token" => $token));
+            }
 
             //用户认证session
             $privilege = $this->get_privilege($user->row()->id);
@@ -45,14 +50,20 @@ class Identity_Auth
                 "gid" => $group["id"],
                 "gname" => $group["name"],
                 "avatar" => $user->row()->avatar,
-                "privilege" => $privilege ? $privilege : "",
-                "p_token" => $token     //pc端webscoket认证token
+                "privilege" => $privilege ? $privilege : ""
             );
+
+            //设置token
+            if ($login_type == 1) {
+                $userdata["m_token"] = $token;
+            } else {
+                $userdata["p_token"] = $token; //pc端webscoket认证token
+            }
             $this->CI->session->set_userdata($userdata);
 
             //下线不合法用户
 //            $this->unofficial_offline();
-            return true;
+            return $userdata;
         } else {
             return false;
         }

@@ -8,6 +8,11 @@
 		top:7px;
 		left:200px;;
 	}
+	.nav_select{
+		position: absolute;
+		top:7px;
+		left:400px;
+	}
 </style>
 <!-- BEGIN MAIN CONTENT -->
 <section id="main-content">
@@ -22,7 +27,7 @@
                         	实时舆情抓取信息
                         </div>
                         <div class="input-group file-search" style="float: right;">
-                        	<input type="text" class="search-input" placeholder="搜索关键词" id="search_input"/>
+                        	<input type="text" class="search-input" placeholder="搜索标题、内容关键词" id="search_input"/>
                 			<i class="fa fa-search btn-search"></i>
                         </div>
                     </header>
@@ -55,6 +60,14 @@
 										  <li role="presentation"><a href="javascript:void(0)" role="tab" data-toggle="tab">只看标题</a></li>
 										</ul>
 										<span class="label label-success time_to_updata">开启定时刷新</span>
+										<div class="nav_select">
+											来源选择：
+											<select name="" id="source_from">
+												<option value="全部">全部</option>
+												<option value="百度舆情">百度舆情</option>
+												<option value="知云网">知云网</option>
+											</select>
+										</div>
 										<div>
 											<span class="all_total">0</span>
 											<input type="checkbox" class="all_choose" />全选
