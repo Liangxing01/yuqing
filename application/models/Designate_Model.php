@@ -1126,4 +1126,32 @@ class Designate_Model extends CI_Model
             return false;
         }
     }
+
+
+    /**
+     * 获得当前总在线人数
+     * @return int
+     */
+    public function count_online_user()
+    {
+        $users = $this->db->select("id")->get("user")->result_array();
+        $num = 0;
+        try {
+            //连接消息服务器
+            $this->load->library("Gateway");
+            Gateway::$registerAddress = $this->config->item("VM_registerAddress");
+
+            //获取在线人数
+            foreach ($users AS $user) {
+                if (Gateway::isUidOnline($user["id"]) != 0) {
+                    $num++;
+                }
+            }
+            return $num;
+
+        } catch (Exception $e) {
+            log_message("error", $e->getMessage());
+            return 0;
+        }
+    }
 }

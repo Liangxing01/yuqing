@@ -651,6 +651,8 @@ class Designate extends MY_controller
     {
         $this->assign("active_title", "rollcall_parent");
         $this->assign("active_parent", "onlineTree");
+        $online_user_num = $this->designate->count_online_user();
+        $this->assign("online_user_num", $online_user_num);
         $this->all_display("designate/online_user.html");
     }
 

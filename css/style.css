@@ -456,6 +456,7 @@ a.logo:hover,a.logo:focus {
 
 a.logo span {
 	color: white;
+	font-size:18px
 }
 
 #top_menu .nav>li,ul.top-menu>li {
