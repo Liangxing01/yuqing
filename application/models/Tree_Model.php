@@ -503,7 +503,7 @@ class Tree_Model extends CI_Model
         $this->load->library("Gateway");
         Gateway::$registerAddress = $this->config->item("VM_registerAddress");
 
-        $users = $this->db->select("user.id, user.name, user_group.id AS group_id")
+        $users = $this->db->select("user.id, user.name, user_group.gid AS group_id")
             ->join("user_group", "user_group.uid = user.id", "left")
             ->get("user")->result_array();
 
@@ -519,7 +519,7 @@ class Tree_Model extends CI_Model
         foreach ($users AS $user) {
             if (Gateway::isUidOnline($user["id"]) != 0) {
                 $online_user[] = $user;
-                $online_group_id = $user["group_id"];
+                $online_group_id[] = $user["group_id"];
             }
         }
 
@@ -543,7 +543,7 @@ class Tree_Model extends CI_Model
                         "id" => $user["id"],
                         "name" => $user["name"],
                         "isdepartment" => 1,
-                        "type" => "/assets/ztree/zTreeStyle/img/admin_online.png"
+                        "icon" => "/assets/ztree/zTreeStyle/img/admin_online.png"
                     );
                     $group_node["children"][] = $tree_node;
                 }
