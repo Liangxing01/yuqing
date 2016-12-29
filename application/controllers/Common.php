@@ -700,6 +700,41 @@ class Common extends MY_Controller
         echo json_encode($email_info);
     }
 
+    /**
+     * ---------------------------点名系统 回复我在线 -------------------------
+     */
+    /**
+     * 确认我在线
+     */
+    public function cfm_online(){
+        $this->load->model('Common_Model','common');
+        $gid = $this->input->get('gid');
+        $cid = $this->input->get('call_id');
+        $res = $this->common->cfm_is_online($cid,$gid);
+        if($res){
+            echo json_encode(array(
+                'res' => 1,
+                'msg' => '签到成功！^_^'
+            ));
+        }else{
+            echo json_encode(array(
+                'res' => 0,
+                'msg' => '错误'
+            ));
+        }
+    }
+
+    /**
+     * 分页查看 点名记录
+     */
+    public function get_call_list(){
+        $this->load->model('Common_Model','common');
+        $page_num  = $this->input->get('page_num');
+        $length    = $this->input->get('length');
+        $call_data = $this->common->get_call_data($page_num,$length);
+
+    }
+
 
     public function test(){
         $a = "1481272759";

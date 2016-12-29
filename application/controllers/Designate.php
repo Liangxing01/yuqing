@@ -693,4 +693,35 @@ class Designate extends MY_controller
         echo Gateway::getAllClientCount();
     }
 
+    /**
+     *  --------------------------点名系统------------------------------------
+     */
+    /**
+     * 发起点名
+     */
+    public function make_call(){
+        $msg        = $this->input->post('message');
+        $delay_time = $this->input->post('delay_time');
+        $gids       = $this->input->post('gids');
+        if((int)$delay_time > 5){
+            echo 'Error Time';
+        }else{
+            $start_time = $delay_time * 60;
+            $res = $this->designate->make_call($gids,$msg,$start_time);
+            if($res){
+                echo json_encode(array(
+                        'res' => 1,
+                        'msg' => '发起点名成功，请2分钟后查看点名结果'
+                    )
+                );
+            }else{
+                echo json_encode(array(
+                        'res' => 0,
+                        'msg' => '点名失败'
+                    )
+                );
+            }
+        }
+    }
+
 }
