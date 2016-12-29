@@ -1154,4 +1154,63 @@ class Designate_Model extends CI_Model
             return 0;
         }
     }
+
+
+    /**
+     * 获取点名组
+     * @param $type
+     * @param $keyword
+     */
+    public function get_call_list($type, $keyword)
+    {
+        if ($type == "area") {
+            $root = $this->db->select("id, uid, name, lft, rgt")->where("name", "组织关系")->get("relation")->row_array();
+            $leader = $this->db->select("id, uid, name, lft, rgt")->where("name", "区领导")->get("relation")->row_array();
+            $work_group = $this->db->select("id, uid, name, lft, rgt")->where("name", "涉区楼盘专项工作组")->get("relation")->row_array();
+            $street = $this->db->select("id, uid, name, lft, rgt")->where("name", "镇街")->get("relation")->row_array();
+            $not_in = $this->db->select("id")
+                ->where(array("lft >=" => $leader["lft"], "rgt <=" => $leader["rgt"]))
+                ->or_group_start()
+                ->where(array("lft >" => $work_group["lft"], "rgt <" => $work_group["rgt"]))
+                ->group_end()
+                ->or_group_start()
+                ->where(array("lft >" => $street["lft"], "rgt <" => $street["rgt"]))
+                ->group_end()
+                ->get("relation")->result_array();
+            $not_in_area = array();
+            foreach ($not_in AS $node) {
+                $not_in_area[] = $node["id"];
+            }
+            if ($keyword == null) {
+                $result = $this->db->select("id, uid, name, type")
+                    ->where("type", 0)
+                    ->where(array("lft >" => $root["lft"], "rgt <" => $root["rgt"]))
+                    ->where_not_in("id", $not_in_area)
+                    ->get("relation")->result_array();
+            } else {
+                $result = $this->db->select("id, uid, name, type")
+                    ->where("type", 0)
+                    ->where(array("lft >" => $root["lft"], "rgt <" => $root["rgt"]))
+                    ->where_not_in("id", $not_in_area)
+                    ->like("name", $keyword)
+                    ->get("relation")->result_array();
+            }
+        } else {
+            $street = $this->db->select("id, uid, name, lft, rgt")->where("name", "镇街")->get("relation")->row_array();
+            if ($keyword == null) {
+                $result = $this->db->select("id, uid, name, type")
+                    ->where("type", 0)
+                    ->where(array("lft >" => $street["lft"], "rgt <" => $street["rgt"]))
+                    ->get("relation")->result_array();
+            } else {
+                var_dump($keyword);
+                $result = $this->db->select("id, uid, name, type")
+                    ->where("type", 0)
+                    ->where(array("lft >" => $street["lft"], "rgt <" => $street["rgt"]))
+                    ->like("name", $keyword)
+                    ->get("relation")->result_array();
+            }
+        }
+        return $result;
+    }
 }

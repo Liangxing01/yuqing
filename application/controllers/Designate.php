@@ -669,6 +669,24 @@ class Designate extends MY_controller
 
 
     /**
+     * 获取组
+     * POST: type, keyword
+     */
+    public function get_call_list()
+    {
+        $type = $this->input->post("type");
+        $keyword = $this->input->post("keyword");
+        if ($type == null) {
+            show_404();
+        }
+        $result = $this->designate->get_call_list($type, $keyword);
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($result));
+    }
+
+
+    /**
      * 统计在线情况
      */
     public function get_online_tree()
