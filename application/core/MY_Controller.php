@@ -60,6 +60,11 @@ class MY_Controller extends CI_Controller
             $this->ci_smarty->display('menu/v6_meeting.html');
         }
 
+        // 点名菜单
+        if (in_array(2, $privilege)) {
+            $this->ci_smarty->display("menu/menu_rollcall.html");
+        }
+
         // 舆情管控菜单
         if ($uid == 85 || $uid == 91) {
             $this->ci_smarty->display('menu/menu_yuqingctl.html');
