@@ -84,8 +84,9 @@ class Tree_Model extends CI_Model
      * 获取 邮件 通讯录列表
      * 排除 领导 和 工作组
      */
-    public function get_email_tree(){
-        $root  = $this->db->query("SELECT lft, rgt FROM yq_relation WHERE name='组织关系'")->first_row('array');
+    public function get_email_tree()
+    {
+        $root = $this->db->query("SELECT lft, rgt FROM yq_relation WHERE name='组织关系'")->first_row('array');
 
         //查出区委办公室的 节点信息
         $quwei = $this->db->query("SELECT lft, rgt FROM yq_relation WHERE name='区委办公室'")->first_row('array');
@@ -114,7 +115,7 @@ class Tree_Model extends CI_Model
                 }
 
                 //排除 区领导 和 工作组
-                if($row['lft'] >= 2 && $row['rgt'] < $quwei['lft'] ){
+                if ($row['lft'] >= 2 && $row['rgt'] < $quwei['lft']) {
                     continue;
                 }
 
@@ -502,83 +503,54 @@ class Tree_Model extends CI_Model
         $this->load->library("Gateway");
         Gateway::$registerAddress = $this->config->item("VM_registerAddress");
 
-        //生成 组织关系树
-        $root = $this->db->query("SELECT lft, rgt FROM yq_relation WHERE name='组织关系'")->first_row('array');
+        $users = $this->db->select("user.id, user.name, user_group.id AS group_id")
+            ->join("user_group", "user_group.uid = user.id", "left")
+            ->get("user")->result_array();
 
-        // 以一个空的$right栈开始
-        $right = array();
-
-        // 获得root节点的所有子节点
-        $sql = "SELECT name, lft, rgt, type, uid FROM yq_relation WHERE lft BETWEEN ? AND ? ORDER BY lft ASC";
-        $result = $this->db->query($sql, array($root['lft'], $root['rgt']))->result_array();
-
-        $tree_json = "";
-        // 显示
-        foreach ($result AS $row) {
-            // 检查栈里面有没有元素
-            if (count($right) > 0) {
-
-                // 检查我们是否需要从栈中删除一个节点
-                while ($right[count($right) - 1]["rgt"] < $row['rgt']) {
-                    if ($right[count($right) - 1]["rgt"] - $right[count($right) - 1]["lft"] != 1) {
-                        $tree_json .= "]},";
-                    } else {
-                        $tree_json .= "},";
-                    }
-                    array_pop($right);
-                }
-
-                //判断用户节点是否在线
-                $online = 0;      //无状态
-                $icon = ""; //状态图标
-                if ($row["type"] == 1) {
-                    if (Gateway::isUidOnline($row["uid"]) == 0) {
-                        $online = 2; //不在线
-                        $icon = "";
-                    } else {
-                        $online = 1; //在线
-                        $icon = "_online";
-                    }
-                }
-
-                //判断是否为父节点
-                if ($row["rgt"] - $row["lft"] != 1) {
-                    if ($row["type"] == 0 || $row["type"] == 2) {
-                        $tree_json .= "{name: '" . $row["name"] . "',id:" . $row["uid"] . ",online:" . $online . ",isdepartment:" . $row["type"] . ",icon:'/assets/ztree/zTreeStyle/img/group.png',open:false,children:[";
-                    } else {
-                        $tree_json .= "{name: '" . $row["name"] . "',id:" . $row["uid"] . ",online:" . $online . ",isdepartment:" . $row["type"] . ",icon:'/assets/ztree/zTreeStyle/img/admin" . $icon . ".png',open:false,children:[";
-                    }
-                } else {
-                    if ($row["type"] == 0 || $row["type"] == 2) {
-                        $tree_json .= "{name: '" . $row["name"] . "',id:" . $row["uid"] . ",online:" . $online . ",isdepartment:" . $row["type"] . ",icon:'/assets/ztree/zTreeStyle/img/group.png'";
-                    } else {
-                        $tree_json .= "{name: '" . $row["name"] . "',id:" . $row["uid"] . ",online:" . $online . ",isdepartment:" . $row["type"] . ",icon:'/assets/ztree/zTreeStyle/img/admin" . $icon . ".png'";
-                    }
-                }
-
-            } else {
-                $tree_json .= "{name:'" . $row["name"] . "'";
-                if ($row["rgt"] - $row["lft"] != 1) {
-                    $tree_json .= ",id:0,open:true,children:[";
-                }
+        //生成树
+        $tree = array(
+            "id" => 0,
+            "name" => "在线用户",
+            "open" => true,
+            "children" => array()
+        );
+        $online_user = array();
+        $online_group_id = array();
+        foreach ($users AS $user) {
+            if (Gateway::isUidOnline($user["id"]) != 0) {
+                $online_user[] = $user;
+                $online_group_id = $user["group_id"];
             }
-
-            // 把这个节点添加到栈中
-            $right[] = $row;
         }
 
-        //闭合括号
-        while (!empty($right)) {
-            if ($right[count($right) - 1]["rgt"] - $right[count($right) - 1]["lft"] != 1) {
-                $tree_json .= "]}";
-            } else {
-                $tree_json .= "}";
-            }
-            array_pop($right);
+        if (empty($online_group_id) || empty($online_user)) {
+            return json_encode($tree);
         }
 
-        $tree_json = str_replace(",]", "]", $tree_json);
-        return $tree_json;
+        $online_group = $this->db->select("id, name")->where_in("id", $online_group_id)->get("group")->result_array();
+
+        foreach ($online_group AS $group) {
+            $group_node = array(
+                "id" => $group["id"],
+                "name" => $group["name"],
+                "isdepartment" => 0,
+                "open" => true,
+                "children" => array()
+            );
+            foreach ($online_user AS $user) {
+                if ($group["id"] == $user["group_id"]) {
+                    $tree_node = array(
+                        "id" => $user["id"],
+                        "name" => $user["name"],
+                        "isdepartment" => 1,
+                        "type" => "/assets/ztree/zTreeStyle/img/admin_online.png"
+                    );
+                    $group_node["children"][] = $tree_node;
+                }
+            }
+            $tree["children"][] = $group_node;
+        }
+        return json_encode($tree);
     }
 
 
