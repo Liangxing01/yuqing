@@ -132,6 +132,7 @@ class Admin_Model extends CI_Model {
      * 插入子节点
      */
     public function insert_children_node($data){
+        var_dump($data);
         $parent_id = $data['parent_id'] ? $data['parent_id'] : null;
         $uid   = $data['uid'];
         $name  = $data['name'];
@@ -143,6 +144,7 @@ class Admin_Model extends CI_Model {
             ->where('uid',$parent_id)
             ->where('type',0)
             ->get()->row_array();
+        var_dump($parent_node_info);
         if(!empty($parent_node_info)){
             //父级节点左右值都加2
             $this->db->query("update yq_relation set lft=lft+2 where lft>=".$parent_node_info['rgt']);
