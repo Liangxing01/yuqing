@@ -66,7 +66,7 @@ class MY_Controller extends CI_Controller
         }
 
         // 舆情管控菜单
-        if ($uid == 85 || $uid == 91) {
+        if ($uid == 9 || $uid == 10) {
             $this->ci_smarty->display('menu/menu_yuqingctl.html');
         }
 
