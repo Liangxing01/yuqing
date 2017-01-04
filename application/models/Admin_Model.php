@@ -370,6 +370,39 @@ class Admin_Model extends CI_Model {
         return $res1 && $res3;
     }
 
+    /**
+     * 删除用户
+     * @param: uid
+     */
+    public function del_user($data){
+        $uid = $data['uid'];
+
+        //开始事务
+        $this->db->trans_begin();
+
+        //删除关系表数据
+        $this->delete_node($uid);
+        //更新user_group表 is_exist 字段为0
+        $up = array(
+            'is_exist' => 0
+        );
+        $this->db->where('uid',$uid);
+        $this->db->update('user_group',$up);
+
+        //更新用户表 is_exist = 0
+        $this->db->where('id',$uid);
+        $this->db->update('user',$up);
+
+        if($this->db->trans_status() === FALSE){
+            $this->db->trans_rollback();
+            return false;
+        }else{
+            $this->db->trans_commit();
+            return true;
+        }
+
+    }
+
 
     /**
      * 删除节点
@@ -377,12 +410,11 @@ class Admin_Model extends CI_Model {
     public function delete_node($id)
     {
 
-        $node = $this->db->query("SELECT lft, rgt, rgt - lft + 1 AS width FROM yq_relation WHERE uid = $id")->first_row("array");
-        $re1 = $this->db->query("DELETE FROM yq_relation WHERE lft BETWEEN ? AND ?", array($node['lft'], $node['rgt']));
-        $re2 = $this->db->query("UPDATE yq_relation SET rgt = rgt - ? WHERE rgt > ?", array($node['width'], $node['rgt']));
-        $re3 = $this->db->query("UPDATE yq_relation SET lft = lft - ? WHERE lft > ?", array($node['width'], $node['rgt']));
+        $node = $this->db->query("SELECT lft, rgt, rgt - lft + 1 AS width FROM yq_relation WHERE uid = $id AND `type` = 1")->first_row("array");
+        $this->db->query("DELETE FROM yq_relation WHERE lft BETWEEN ? AND ?", array($node['lft'], $node['rgt']));
+        $this->db->query("UPDATE yq_relation SET rgt = rgt - ? WHERE rgt > ?", array($node['width'], $node['rgt']));
+        $this->db->query("UPDATE yq_relation SET lft = lft - ? WHERE lft > ?", array($node['width'], $node['rgt']));
 
-        return $re1&&$re2&&$re3;
     }
 
 

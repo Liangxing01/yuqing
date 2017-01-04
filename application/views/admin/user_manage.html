@@ -87,8 +87,9 @@
                         </div>
                         <div style="height: 30px; clear: both;"></div>
                         <div class="text-center" style="position: absolute; bottom: 10px; width: 80%;margin-left: 10%">
-                        	<button id="submit" class="btn btn-success btn-md col-md-5 col-sm-6" onclick="sub_or_up(this)">添加</button>
-                            <button id="updata" class="btn btn-info btn-md col-md-5 col-sm-6 " onclick="sub_or_up(this)">更新</button>
+                        	<button id="submit" class="btn btn-success btn-md col-md-3 col-sm-3" onclick="sub_or_up(this)">添加</button>
+                            <button id="updata" class="btn btn-info btn-md col-md-3 col-sm-3 " onclick="sub_or_up(this)">更新</button>
+                            <button id="del" class="btn btn-warning btn-md col-md-3 col-sm-3" onclick="del_user(this)">删除</button>
                     	</div>
                     	
                     </section>
@@ -174,7 +175,29 @@
     treeObj = $.fn.zTree.init($("#treePartment"), setting);
 
 
-
+    function del_user(that) {
+        var nodes = treeObj.getCheckedNodes(true);//获取到被选中的集成
+        var uid = window.sessionStorage.getItem('uid');//获取点击用户的uid
+        layer.confirm('删除后不可恢复，确认删除？',{icon: 3, title:'提示'},function () {
+            $.ajax({
+                url: "/admin/del_user",
+                method: "post",
+                dataType : 'json',
+                data: {
+                    'uid':uid
+                },
+                success: function (data) {
+                    if (data.res == 1){
+                        layer.msg('删除成功!');
+                        treeObj.reAsyncChildNodes(null,"refresh",false);
+                        treeObj2.reAsyncChildNodes(null,"refresh",false);
+                    }else {
+                        layer.msg('删除失败！',{anim:6});
+                    }
+                }
+            });
+        });
+    }
 
     function sub_or_up(that){
         var nodes = treeObj.getCheckedNodes(true);//获取到被选中的集成
@@ -299,6 +322,8 @@
                 }
             });
         }
+
+
 
     }
 
