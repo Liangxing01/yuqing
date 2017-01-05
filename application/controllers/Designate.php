@@ -481,6 +481,24 @@ class Designate extends MY_controller
 
 
     /**
+     * 修改事件等级
+     * POST: rank, event_id
+     */
+    public function edit_event_rank()
+    {
+        $event_id = $this->input->post("event_id");
+        $rank = $this->input->post("rank");
+        $result = $this->designate->edit_event_rank($event_id, $rank);
+        //返回结果
+        if ($result) {
+            echo 1;
+        } else {
+            echo 0;
+        }
+    }
+
+
+    /**
      * 事件跟踪列表 视图载入
      */
     public function event_search()

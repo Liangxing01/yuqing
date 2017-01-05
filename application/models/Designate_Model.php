@@ -1108,6 +1108,18 @@ class Designate_Model extends CI_Model
         }
     }
 
+
+    /**
+     * 修改事件等级
+     * @param int $event_id 事件id
+     * @param int $rank 事件等级
+     */
+    public function edit_event_rank($event_id, $rank)
+    {
+        return $this->db->set(array("rank" => $rank))->where("id", $event_id)->update("event");
+    }
+
+
     /**
      * 检查url是否重复
      * @param $url
