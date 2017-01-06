@@ -60,13 +60,13 @@ class Reporter extends MY_controller
         $uid = $this->session->userdata('uid');
         $data = array('title' => $title, 'source' => $source, 'url' => $url, 'description' => $description, 'uid' => $uid);
         $result = $this->report->add_info($data);
-        if($result !== false){
+        if ($result !== false) {
             //插入附件信息
             if ($attachment != "") {
                 $this->insert_attachment($attachment, $result);
             }
             echo json_encode(array("res" => 1));
-        }else{
+        } else {
             echo json_encode(array("res" => 0));
         }
     }
@@ -110,6 +110,38 @@ class Reporter extends MY_controller
 
         $uid = $this->session->userdata('uid');
         $data = $this->report->get_all_report($pData, $uid);
+
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($data));
+    }
+
+
+    /**
+     * 单位记录 数据接口
+     */
+    public function get_group_record()
+    {
+        $pData['sEcho'] = $this->input->post('psEcho', true);           //DataTables 用来生成的信息
+        $pData['start'] = $this->input->post('iDisplayStart', true);    //显示的起始索引
+        $pData['length'] = $this->input->post('iDisplayLength', true);  //每页显示的行数
+        $pData['sort_th'] = $this->input->post('iSortCol_0', true);     //排序的列 默认第2列
+        $pData['sort_type'] = $this->input->post('sSortDir_0', true);   //排序的方向 默认 desc
+
+        if ($pData['start'] == NULL) {
+            $pData['start'] = 0;
+        }
+        if ($pData['length'] == NULL) {
+            $pData['length'] = 10;
+        }
+        if ($pData["sort_th"] == NULL) {
+            $pData["sort_th"] = 1;
+        }
+        if ($pData['sort_type'] == NULL) {
+            $pData['sort_type'] = "desc";
+        }
+
+        $data = $this->report->get_group_record($pData);
 
         $this->output
             ->set_content_type('application/json')
