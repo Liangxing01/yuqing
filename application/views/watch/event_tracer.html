@@ -240,7 +240,9 @@
     });
 
     function getLocalTime(nS) {
-        return new Date(parseInt(nS) * 1000).toLocaleString().replace(/:\d{1,2}$/,' ');
+//        return new Date(parseInt(nS) * 1000).toLocaleString().replace(/:\d{1,2}$/,' ');
+        //2017-01-09 更换时间显示格式 lx
+        return timeToDate(nS*1000);
     }
     //模板替换工具
     function formatTemplate(dta, tmpl) {

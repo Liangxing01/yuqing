@@ -285,6 +285,17 @@ class Admin extends MY_Controller
         }
     }
 
+    /**
+     * 移动单位
+     */
+    public function move_group()
+    {
+        $parent_id = $this->input->get("parent_id");
+        $node_id = $this->input->get("node_id");
+        $this->load->model("Tree_Model", "tree");
+        $this->tree->move_tree_node($parent_id, $node_id);
+    }
+
     public function get_node_info()
     {
         $data = $this->input->post();

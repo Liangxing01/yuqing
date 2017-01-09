@@ -97,10 +97,10 @@
 	                    		<p class="msg_from"><b>文章来源：</b><a href="" style="text-decoration: underline; color: #5fc1f8;"></a></p>
 	                    	</div>
 	                    	<div class="col-md-8">
-	                    		<p class="publish_time"><b>发布时间：</b><a href="" style="text-decoration: underline; color: #5fc1f8;">2016-12-17&nbsp;18:47:55</a></p>
+	                    		<p class="publish_time"><b>发布时间：</b><a href="" style="text-decoration: underline; color: #5fc1f8;"></a></p>
 	                    	</div>
 							<div class="col-md-4">
-								<p class="area">地域：<span>重庆市</span></p>
+								<p class="area">地域：<span></span></p>
 							</div>
 	                    	<div class="col-md-8">
 	                    		<p class="msg_type">文章状态：<span></span></p>
@@ -228,7 +228,7 @@
 					$('.release_man span').html(data.yq_author?data.yq_author:'');	//发布人
 					$('.msg_from a').html(data.source?data.source:'');			//文章来源
 					$('.publish_time a').html(timeToDate((data.yq_pubdate?data.yq_pubdate:'')*1000));	//发布时间
-					$('.area span').html();		//地区
+					$('.area span').html(data.yq_geo?data.yq_geo:'暂无地域信息');		//地区
 					$('.msg_type span').html(data.yq_sentiment?'负面':'') //正负面
 
 					if(typeof(data.keyword) != 'undefined'){

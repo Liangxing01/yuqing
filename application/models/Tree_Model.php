@@ -9,6 +9,7 @@ class Tree_Model extends CI_Model
         $this->load->database();
     }
 
+
     /**
      * 生成组织关系树的 Json数据
      * @return Json字符串
@@ -21,7 +22,7 @@ class Tree_Model extends CI_Model
         $right = array();
 
         // 获得root节点的所有子节点
-        $sql = "SELECT name, lft, rgt, type, uid FROM yq_relation WHERE lft BETWEEN ? AND ? ORDER BY lft ASC";
+        $sql = "SELECT id, name, lft, rgt, type, uid FROM yq_relation WHERE lft BETWEEN ? AND ? ORDER BY lft ASC";
         $result = $this->db->query($sql, array($root['lft'], $root['rgt']))->result_array();
 
         $tree_json = "";
@@ -43,15 +44,15 @@ class Tree_Model extends CI_Model
                 //判断是否为父节点
                 if ($row["rgt"] - $row["lft"] != 1) {
                     if ($row["type"] == 0 || $row["type"] == 2) {
-                        $tree_json .= "{name: '" . $row["name"] . "',id:" . $row["uid"] . ",isdepartment:" . $row["type"] . ",icon:'/assets/ztree/zTreeStyle/img/group.png',open:false,children:[";
+                        $tree_json .= "{name: '" . $row["name"] . "',id:" . $row["uid"] . ",tid:" . $row["id"] . ",isdepartment:" . $row["type"] . ",icon:'/assets/ztree/zTreeStyle/img/group.png',open:false,children:[";
                     } else {
-                        $tree_json .= "{name: '" . $row["name"] . "',id:" . $row["uid"] . ",isdepartment:" . $row["type"] . ",icon:'/assets/ztree/zTreeStyle/img/admin.png',open:false,children:[";
+                        $tree_json .= "{name: '" . $row["name"] . "',id:" . $row["uid"] . ",tid:" . $row["id"] . ",isdepartment:" . $row["type"] . ",icon:'/assets/ztree/zTreeStyle/img/admin.png',open:false,children:[";
                     }
                 } else {
                     if ($row["type"] == 0 || $row["type"] == 2) {
-                        $tree_json .= "{name: '" . $row["name"] . "',id:" . $row["uid"] . ",isdepartment:" . $row["type"] . ",icon:'/assets/ztree/zTreeStyle/img/group.png'";
+                        $tree_json .= "{name: '" . $row["name"] . "',id:" . $row["uid"] . ",tid:" . $row["id"] . ",isdepartment:" . $row["type"] . ",icon:'/assets/ztree/zTreeStyle/img/group.png'";
                     } else {
-                        $tree_json .= "{name: '" . $row["name"] . "',id:" . $row["uid"] . ",isdepartment:" . $row["type"] . ",icon:'/assets/ztree/zTreeStyle/img/admin.png'";
+                        $tree_json .= "{name: '" . $row["name"] . "',id:" . $row["uid"] . ",tid:" . $row["id"] . ",isdepartment:" . $row["type"] . ",icon:'/assets/ztree/zTreeStyle/img/admin.png'";
                     }
                 }
 
@@ -79,6 +80,7 @@ class Tree_Model extends CI_Model
         $tree_json = str_replace(",]", "]", $tree_json);
         return $tree_json;
     }
+
 
     /**
      * 获取 邮件 通讯录列表
@@ -611,6 +613,74 @@ class Tree_Model extends CI_Model
             $tree["children"][] = $group_node;
         }
         return json_encode($tree);
+    }
+
+
+    /**
+     * 移动 节点
+     * @param int $parent_id 父节点id
+     * @param int $node_id 节点id
+     * @return bool
+     */
+    public function move_tree_node($parent_id, $node_id)
+    {
+        $node = $this->db->select("id, lft, rgt")
+            ->where("id", $node_id)
+            ->get("relation")->row_array();
+
+        $nodes = $this->db->select("id, lft, rgt")
+            ->where(array("lft >= " => $node["lft"], "rgt <= " => $node["rgt"]))
+            ->order_by("lft", "ASC")
+            ->get("relation")->result_array();
+
+        $nodes_desc = $this->db->select("id, lft, rgt")
+            ->where(array("lft >= " => $node["lft"], "rgt <= " => $node["rgt"]))
+            ->order_by("rgt", "DESC")
+            ->get("relation")->result_array();
+
+        $parent_node = $this->db->select("id, lft, rgt")->where("id", $parent_id)
+            ->get("relation")->row_array();
+
+        $count = count($nodes);
+        $length = $count * 2;
+
+        $this->db->trans_begin();
+        $this->db->where(array("rgt >" => $node["rgt"]))->set("rgt", "rgt - $length", FALSE)->update("relation");
+        $this->db->where(array("lft >" => $node["rgt"]))->set("lft", "lft - $length", FALSE)->update("relation");
+
+        //判断移动节点在目标节点的 上下 前后
+        if ($parent_node["rgt"] > $node["rgt"]) {
+            $node_lft = $parent_node["rgt"] - $length; // 节点 新的左值
+        } else {
+            $node_lft = $parent_node["rgt"];
+        }
+        $node_rgt = $node_lft + $length - 1; // 节点 新的右值
+
+        //更新左值
+        $step = $node_lft;
+        for ($i = 0; $i < $count; $i++) {
+            $nodes[$i]["lft"] = $step++;
+            unset($nodes[$i]["rgt"]);
+        }
+        //更新右值
+        $step = $node_rgt;
+        for ($i = 0; $i < $count; $i++) {
+            $nodes_desc[$i]["rgt"] = $step--;
+            unset($nodes_desc[$i]["lft"]);
+        }
+        $new_nodes = array_merge_recursive($nodes, $nodes_desc);
+
+        $this->db->where("rgt >=", $node_lft)->set("rgt", "rgt + $length", FALSE)->update("relation"); //更新目的父节点
+        $this->db->where("lft >", $node_lft)->set("lft", "lft + $length", FALSE)->update("relation"); //更新目的父节点
+        $this->db->update_batch("relation", $new_nodes, "id"); //更新移动的节点
+
+        if ($this->db->trans_status() === FALSE) {
+            $this->db->trans_rollback();
+            return false;
+        } else {
+            $this->db->trans_commit();
+            return true;
+        }
     }
 
 
