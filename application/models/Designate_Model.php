@@ -1119,9 +1119,19 @@ class Designate_Model extends CI_Model
             ->where('url', $url)
             ->where('id !=' . $id)
             ->get()->num_rows();
+
+        $rep_info = $this->db->select('id')->from('info')
+            ->where('url', $url)
+            ->order_by('time','ASC')
+            ->get()->result_array();
         if ($res >= 1) {
-            //重复了
-            return true;
+            if($rep_info[0]['id'] == $id){
+                //第一个上报人 不提示重复
+                return false;
+            }else{
+                return true;
+            }
+
         } else {
             return false;
         }
