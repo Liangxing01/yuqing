@@ -1151,6 +1151,90 @@ class Designate_Model extends CI_Model
 
 
     /**
+     * ---------------------------点名系统---------------------------
+     */
+    /**
+     * 发起点名
+     * @param $gids 被点名的组 id
+     * @param $msg
+     * @param $start_time 开始点名的时间偏移量
+     */
+    public function make_call($gids,$msg,$start_time){
+        //插入数据库操作，涉及到 call call_list call_response 三张表
+
+        //开始事务
+        $this->db->trans_begin();
+        //插入 call表
+        $insert_call = array(
+            'uid'        => $this->session->userdata('uid'),
+            'message'    => $msg,
+            'start_time' => time()+$start_time,
+            'time'       => time()
+        );
+        $this->db->insert('call',$insert_call);
+        $call_id = $this->db->insert_id();
+
+        //插入 call_list表
+        $insert_list = array();
+        $g_arr = explode(',',$gids);
+        foreach ($g_arr as $gid){
+            array_push($insert_list,array(
+                'call_id' => $call_id,
+                'gid'     => $gid
+            ));
+        }
+        $this->db->insert_batch('call_list',$insert_list);
+
+        //插入 call_response表，默认设置state = 0
+        $rep_info = array();
+        foreach ($g_arr as $gid){
+            $uid_arr = $this->db->select('uid')->from('user_group')
+                ->where('gid',$gid)
+                ->get()->result_array();
+            foreach ($uid_arr as $uid){
+                array_push($rep_info,array(
+                    'call_id'   => $call_id,
+                    'gid'       => $gid,
+                    'uid'       => $uid,
+                    'state'     => 0
+                ));
+            }
+        }
+        $this->db->insert_batch('call_response',$rep_info);
+
+        if ($this->db->trans_status() === FALSE) {
+            $this->db->trans_rollback();
+            return false;
+        } else {
+            $this->db->trans_commit();
+            //TODO 点名信息推送
+            try {
+                //连接消息服务器
+                $this->load->library("Gateway");
+                Gateway::$registerAddress = $this->config->item("VM_registerAddress");
+
+                //业务消息推送
+                //用户 事件指派消息推送
+                foreach ($g_arr AS $gid) {
+                    Gateway::sendToGroup($gid, json_encode(array(
+                        "title" => '点名考勤',
+                        "type"  => 'call_name',
+                        "time"  => time(),
+                        "msg"   => $msg,
+                        "gid"   => $gid,
+                        "call_id" => $call_id
+                    )));
+                }
+            } catch (Exception $e) {
+                log_message("error", $e->getMessage());
+            }
+            return true;
+        }
+
+    }
+
+    /**
+     *
      * 获得当前总在线人数
      * @return int
      */
@@ -1176,4 +1260,64 @@ class Designate_Model extends CI_Model
             return 0;
         }
     }
+
+
+    /**
+     * 获取点名组
+     * @param $type
+     * @param $keyword
+     */
+    public function get_call_list($type, $keyword)
+    {
+        if ($type == "area") {
+            $root = $this->db->select("id, uid, name, lft, rgt")->where("name", "组织关系")->get("relation")->row_array();
+            $leader = $this->db->select("id, uid, name, lft, rgt")->where("name", "区领导")->get("relation")->row_array();
+            $work_group = $this->db->select("id, uid, name, lft, rgt")->where("name", "涉区楼盘专项工作组")->get("relation")->row_array();
+            $street = $this->db->select("id, uid, name, lft, rgt")->where("name", "镇街")->get("relation")->row_array();
+            $not_in = $this->db->select("id")
+                ->where(array("lft >=" => $leader["lft"], "rgt <=" => $leader["rgt"]))
+                ->or_group_start()
+                ->where(array("lft >" => $work_group["lft"], "rgt <" => $work_group["rgt"]))
+                ->group_end()
+                ->or_group_start()
+                ->where(array("lft >" => $street["lft"], "rgt <" => $street["rgt"]))
+                ->group_end()
+                ->get("relation")->result_array();
+            $not_in_area = array();
+            foreach ($not_in AS $node) {
+                $not_in_area[] = $node["id"];
+            }
+            if ($keyword == null) {
+                $result = $this->db->select("id, uid, name, type")
+                    ->where("type", 0)
+                    ->where(array("lft >" => $root["lft"], "rgt <" => $root["rgt"]))
+                    ->where_not_in("id", $not_in_area)
+                    ->get("relation")->result_array();
+            } else {
+                $result = $this->db->select("id, uid, name, type")
+                    ->where("type", 0)
+                    ->where(array("lft >" => $root["lft"], "rgt <" => $root["rgt"]))
+                    ->where_not_in("id", $not_in_area)
+                    ->like("name", $keyword)
+                    ->get("relation")->result_array();
+            }
+        } else {
+            $street = $this->db->select("id, uid, name, lft, rgt")->where("name", "镇街")->get("relation")->row_array();
+            if ($keyword == null) {
+                $result = $this->db->select("id, uid, name, type")
+                    ->where("type", 0)
+                    ->where(array("lft >" => $street["lft"], "rgt <" => $street["rgt"]))
+                    ->get("relation")->result_array();
+            } else {
+                var_dump($keyword);
+                $result = $this->db->select("id, uid, name, type")
+                    ->where("type", 0)
+                    ->where(array("lft >" => $street["lft"], "rgt <" => $street["rgt"]))
+                    ->like("name", $keyword)
+                    ->get("relation")->result_array();
+            }
+        }
+        return $result;
+    }
+
 }

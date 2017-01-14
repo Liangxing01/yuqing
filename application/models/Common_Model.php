@@ -1012,6 +1012,45 @@ class Common_Model extends CI_Model
     }
 
 
+    /**
+     * -------------------------点名系统-------------------------
+     */
+    /**
+     * 确认我在线
+     * @param $call_id
+     * @param $gid
+     * @return bool
+     */
+    public function cfm_is_online($call_id,$gid){
+        $uid = $this->session->userdata('uid');
+        $update_info = array(
+            'state' => 1
+        );
+        $this->db->where('call_id',$call_id);
+        $this->db->where('gid',$gid);
+        $this->db->where('uid',$uid);
+        $res = $this->db->update('call_response',$update_info);
+        return $res;
+    }
+
+    /**
+     * 分页获取签到记录
+     * @param $page_num
+     * @param $limit
+     */
+    public function get_call_data($page_num,$length){
+        $offset = $offset = ((int)$page_num - 1) * $length;  //数据 偏移量
+        $gids   = $this->session->userdata('gid');
+        $g_arr  = explode(',',$gids);
+        $call_info['info'] = $this->db->select('c.id,c.time')
+            ->from('call_list as cl')
+            ->where_in('cl.gid',$g_arr)
+            ->group_by('cl.call_id')
+            ->join('call as c','c.id = cl.call_id');
+
+    }
+
+
 
 
 

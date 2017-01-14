@@ -667,9 +667,40 @@ class Designate extends MY_controller
      */
     public function online_tree()
     {
+        $this->assign("active_title", "rollcall_parent");
+        $this->assign("active_parent", "onlineTree");
         $online_user_num = $this->designate->count_online_user();
         $this->assign("online_user_num", $online_user_num);
         $this->all_display("designate/online_user.html");
+    }
+
+
+    /**
+     * 点名 视图载入
+     */
+    public function roll_call()
+    {
+        $this->assign("active_title", "rollcall_parent");
+        $this->assign("active_parent", "rollCall");
+        $this->all_display("designate/roll_call.html");
+    }
+
+
+    /**
+     * 获取组
+     * POST: type, keyword
+     */
+    public function get_call_list()
+    {
+        $type = $this->input->post("type");
+        $keyword = $this->input->post("keyword");
+        if ($type == null) {
+            show_404();
+        }
+        $result = $this->designate->get_call_list($type, $keyword);
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($result));
     }
 
 
@@ -713,6 +744,37 @@ class Designate extends MY_controller
         $this->load->library("Gateway");
         Gateway::$registerAddress = $this->config->item("VM_registerAddress");
         echo Gateway::getAllClientCount();
+    }
+
+    /**
+     *  --------------------------点名系统------------------------------------
+     */
+    /**
+     * 发起点名
+     */
+    public function make_call(){
+        $msg        = $this->input->post('message');
+        $delay_time = $this->input->post('delay_time');
+        $gids       = $this->input->post('gids');
+        if((int)$delay_time > 5){
+            echo 'Error Time';
+        }else{
+            $start_time = $delay_time * 60;
+            $res = $this->designate->make_call($gids,$msg,$start_time);
+            if($res){
+                echo json_encode(array(
+                        'res' => 1,
+                        'msg' => '发起点名成功，请2分钟后查看点名结果'
+                    )
+                );
+            }else{
+                echo json_encode(array(
+                        'res' => 0,
+                        'msg' => '点名失败'
+                    )
+                );
+            }
+        }
     }
 
 }
