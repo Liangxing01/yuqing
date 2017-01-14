@@ -128,9 +128,9 @@ class Sheet_Model extends CI_Model {
 
         //拼接sql语句,判断有选择时间没有
         if(empty($start) || empty($end)){
-            $where = "1=1";
+            $where = "and 1=1";
         }else{
-            $where = "event.start_time >= $start AND event.start_time <= $end";
+            $where = "and yq_event.start_time >= $start AND yq_event.start_time <= $end";
         }
 
         //设置 title
@@ -164,6 +164,8 @@ class Sheet_Model extends CI_Model {
         $objPHPExcel->getActiveSheet()->getColumnDimension('K')->setAutoSize(true);
         $objPHPExcel->getActiveSheet()->getColumnDimension('L')->setAutoSize(true);
 
+
+
         //查询数据库 获取 数据
         $info_arr = $this->db->query("select yq_event.id,yq_group.name as gname,yq_info.time as rep_time,yq_info.source,
 yq_info.title,yq_info.url, if((select yq_user.name from yq_user where yq_user.id = yq_event.`main_processor`)!= '',
@@ -177,7 +179,7 @@ left join yq_group on (yq_group.id = yq_user_group.`gid` or yq_group.id = yq_eve
 left join yq_event_info on yq_event_info.`event_id` = yq_event_designate.event_id
 left join yq_info  on yq_event_info.`info_id` = yq_info.id
 left join yq_user  on yq_user.id  = yq_event_designate.`processor`
-where  yq_info.duplicate = 0 and ( yq_event.state = '已指派' or yq_event.state = '已完成' or yq_event.state = '待审核')")
+where  yq_info.duplicate = 0 and ( yq_event.state = '已指派' or yq_event.state = '已完成' or yq_event.state = '待审核')" . $where)
         ->result_array();
 
         foreach ($info_arr as $k => $v){
@@ -191,8 +193,8 @@ where  yq_info.duplicate = 0 and ( yq_event.state = '已指派' or yq_event.stat
             $objPHPExcel->setActiveSheetIndex(0)->setCellValue('H'.($k+2), '');
             $objPHPExcel->setActiveSheetIndex(0)->setCellValue('I'.($k+2), $v['首接人']);
             $objPHPExcel->setActiveSheetIndex(0)->setCellValue('J'.($k+2), date('Y-m-d H:i:s',$v['交办时间']));
-            $objPHPExcel->setActiveSheetIndex(0)->setCellValue('K'.($k+2), date('Y-m-d H:i:s',$v['first_reply']));
-            $objPHPExcel->setActiveSheetIndex(0)->setCellValue('L'.($k+2), date('Y-m-d H:i:s',$v['end_time']));
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValue('K'.($k+2), $v['first_reply'] ? date('Y-m-d H:i:s',$v['first_reply']) : '');
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValue('L'.($k+2), $v['end_time'] ? date('Y-m-d H:i:s',$v['end_time']) :'');
             $objPHPExcel->setActiveSheetIndex(0)->setCellValue('M'.($k+2), '');
             $objPHPExcel->setActiveSheetIndex(0)->setCellValue('N'.($k+2), '');
             $objPHPExcel->setActiveSheetIndex(0)->setCellValue('O'.($k+2), '');
