@@ -1,0 +1,82 @@
+<!-- BOOTSTRAP DATEPICKER PLUGIN CSS -->
+<link rel="stylesheet" type="text/css" href="/assets/bootstrap-datepicker-r/css/bootstrap-datepicker.css">
+<!-- DATATABLE CSS -->
+<link rel="stylesheet" href="/assets/data-tables/DT_bootstrap.css">
+
+<!-- Common CSS -->
+<link rel="stylesheet" href="/css/common.css">
+
+<!-- BEGIN MAIN CONTENT -->
+<section id="main-content">
+    <section class="wrapper site-min-height">
+        <!-- BEGIN ROW  -->
+        <div class="row">
+            <div class="col-lg-12">
+                <section class="panel">
+                    <header class="panel-heading">
+                        <span class="label label-primary">导出报表</span>
+                        <span class="tools pull-right">
+                           <a href="javascript:;" class="fa fa-refresh"></a>
+                           </span>
+                    </header>
+                    <div class="panel-body">
+                        <!-- 检索内容选择框 -->
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label>时间范围:</label>
+                                <div class="input-daterange input-group" id="datepicker">
+                                    <input type="text" id="start" class="input-sm form-control" name="start"/>
+                                    <span class="input-group-addon">到</span>
+                                    <input type="text" id="end" class="input-sm form-control" name="end"/>
+                                </div>
+                            </div>
+
+                            <div class="col-md-1 m-t-24">
+                                <button title="清空" class="btn btn-info" id="reset-button">清空
+                                </button>
+                            </div>
+
+                            <div class="m-t-24">
+                                <button title="导出网络台账类别表"  class="btn btn-warning" id="type">导出网络台账类别表
+                                </button>
+                                <button title="导出网络舆情台账"  class="btn btn-warning" id="yuqing">导出网络舆情台账
+                                </button>
+                            </div>
+
+                        </div>
+
+
+                </section>
+            </div>
+        </div>
+        <!-- END ROW  -->
+    </section>
+</section>
+
+
+<!-- BOOTSTRAP DATEPICKER JS  -->
+<script src="/assets/bootstrap-datepicker-r/js/bootstrap-datepicker.js"></script>
+<script charset="utf-8"
+        src="/assets/bootstrap-datepicker-r/locales/bootstrap-datepicker.zh-CN.min.js"></script><!-- BOOTSTRAP DATEPICKER JS  -->
+<script src="/js/public.js"></script>
+
+<script>
+    $('.input-daterange').datepicker({
+        language: "zh-CN"
+    });
+
+    //清空按钮 监听
+    $("#reset-button").on("click", function () {
+        $("#start").val("");
+        $("#end").val("");
+    });
+
+    $("#type").on('click',function () {
+        location.href = "/report_sheet/export_types?start="+dateToTime($("#start").val())+'&end='+dateToTime($("#end").val());
+    })
+
+    $("#yuqing").on('click',function () {
+        location.href = "/report_sheet/export_yuqing?start="+dateToTime($("#start").val())+'&end='+dateToTime($("#end").val());
+    })
+
+</script>

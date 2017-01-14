@@ -63,6 +63,7 @@ class MY_Controller extends CI_Controller
         // 点名菜单
         if (in_array(2, $privilege)) {
             $this->ci_smarty->display("menu/menu_rollcall.html");
+            $this->ci_smarty->display("menu/menu_sheet.html");
         }
 
         // 舆情管控菜单
