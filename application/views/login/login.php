@@ -136,7 +136,7 @@
 <!-- BEGIN FOOTER -->
 <footer class="site-footer" style="position: absolute; bottom: 0px; width: 100%;">
     <div class="text-center">
-        2016 &copy;重庆·巴南
+        2016-2017 &copy;重庆·巴南
         <a href="" target="_blank">
             网信工作管理平台
         </a>
