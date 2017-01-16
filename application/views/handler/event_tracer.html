@@ -342,14 +342,12 @@
                     value.usertype_style="background: #ff6c60;color:#000";//
                     value.buletan="";//如果在右边不为空
                     value.p_style="color:#000";
-                    if(screen.width<500){//判断屏幕大小
-                       	   htmlstr+='<li class="item-timeline item-timeline-'+value.id+'-flag" style="display:none"></li>';
-                        }else{
-                       	   htmlstr+='<li class="item-timeline item-timeline-'+value.id+'-flag"></li>';
-                        }
-                    
                     htmlstr+=formatTemplate(value, li_item_tpl);//加载模板
-
+                    if(screen.width<500){//判断屏幕大小
+                        htmlstr+='<li class="item-timeline item-timeline-'+value.id+'-flag" style="display:none"></li>';
+                    }else{
+                        htmlstr+='<li class="item-timeline item-timeline-'+value.id+'-flag"></li>';
+                    }
                 }else{
                     value.usertype_style="";
                     value.buletan="right:-7px; left: auto";
