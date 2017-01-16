@@ -242,6 +242,18 @@
     </li>
     <li class="item-timeline"></li>
 </script>
+<script type="text/template" id="commnet_audit">
+    <li class="item-timeline highlight text-center">
+        <div class="buletan_icon" style="right:-7px; left: auto"></div>
+        <div class="inner-content">
+            <h2 class="text-info"><i class="fa fa-flag-checkered"></i></h2>
+            <h4>事件流待审核</h4>
+            <p class="text-muted">{daytime}</p>
+        </div>
+        <!-- /.inner-content -->
+    </li>
+    <li class="item-timeline"></li>
+</script>
 <!-- <div id="one1"></div>-->
 <!-- END SECTION -->
 <input type="hidden" name="title" value="<{$title}>">
@@ -375,6 +387,20 @@
                     $(".item-timeline-"+value.id+"").height($(".item-timeline-"+value.id+"").height())//解决动态加载文档流问题
                     $(".item-timeline-"+value.id+"-flag").height($(".item-timeline-"+value.id+"").height());
                 });
+
+                //事件待审核操作
+                if( $("#state").val() == '未审核'){
+                    var comment_finish_tpl=$('script[id="commnet_audit"]').html();
+                    var commnetObj=new Object();
+                    if($("#end_time").val()!=''){
+                        commnetObj.daytime=getLocalTime($("#end_time").val());
+                    }else{
+                        commnetObj.daytime=="";
+                    }
+                    var strhtml=formatTemplate(commnetObj, comment_finish_tpl);//得到当前字符串
+                    $("#comment").prepend(strhtml);
+                }
+
                 //事件完成进行操作
                 if($("#done_state").val()==1){
                     var comment_finish_tpl=$('script[id="commnet_finish"]').html();
