@@ -327,7 +327,7 @@ class Designate extends MY_controller
         $done_btn = $this->designate->check_done_btn($event_id);   //事件审核按钮
         $this->assign('title', $einfo['title']);
         $this->assign('rank', $einfo['rank']);
-        if ($einfo['state'] == "已完成" || $einfo['state'] == '未审核') {
+        if ($einfo['state'] == "已完成") {
             $done_state = 1;
         } else {
             $done_state = 0;
@@ -340,6 +340,7 @@ class Designate extends MY_controller
         $this->assign('done_state', $done_state);
         $this->assign('eid', $event_id);
         $this->assign('can_show_done_btn', $done_btn);
+        $this->assign('state',$einfo['state']);
 
         //个人信息
         $this->load->model('MY_Model', 'my_model');
