@@ -68,6 +68,8 @@ class Sheet_Model extends CI_Model {
             ->join('user_group','user_group.uid = info.publisher','left')
             ->join('group','group.id = user_group.gid','left')
             ->join('type','type.id = info.type','left')
+            ->where('info.state',2)    //已确认信息
+            ->where('info.duplicate',0)//不重复的信息
             ->where($where)
             ->group_by('group.id')
             ->get()->result_array();
