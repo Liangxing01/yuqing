@@ -1139,13 +1139,28 @@ class Designate_Model extends CI_Model
         if ($res >= 1) {
             if($rep_info[0]['id'] == $id){
                 //第一个上报人 不提示重复
-                return false;
+                return array(
+                    'res' => false
+                );
             }else{
-                return true;
+                //重复的id返回给前端
+                $dup_id = '';
+                foreach ($rep_info as $item){
+                    if($item['id'] != $id){
+                        $dup_id .= $item['id'].',';
+                    }
+                }
+                $dup_id = substr($dup_id,0,-1);
+                return array(
+                    'res'    => true,
+                    'dup_id' => $dup_id
+                );
             }
 
         } else {
-            return false;
+            return array(
+                'res' => false
+            );
         }
     }
 

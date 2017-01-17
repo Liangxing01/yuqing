@@ -41,7 +41,8 @@
                         <p class="col-md-4"><strong>链接:</strong><span id="clip_1">
                             <{$info['url']}></span>
                             <button class="btn btn-xs btn-success copy_btn"  id="clip_yijian" data-clipboard-target="clip_1">复制</button>
-                            <span id="repeat_warning" class="col-md-12" style="display:none;color: red;font-size: 12px;">注意:该链接已经有人提交过了</span>
+                            <span id="repeat_warning" class="col-md-12" style="display:none;color: red;font-size: 12px;">
+                                注意:该链接已经有人提交过了</span>
                         </p>
                 </div>
 
@@ -102,13 +103,14 @@
                     <label for="source">来源:</label>
                     <input type="text" class="form-control" id="source" name="source" value="<{$info['source']}>">
                 </div>
-                <input type="hidden" name="id" id="info_id" value="<{$info['id']}>">
+
                 <div class="col-md-3 m-t-25">
                     <a href="javascript:void(0);" id="commit-info-btn" class="btn btn-sm btn-info"><i
                             class="fa fa-right"></i> 确认</a>
                 </div>
             </div>
             <{/if}>
+                <input type="hidden" name="id" id="info_id" value="<{$info['id']}>">
         </div>
     </section>
 </section>
@@ -130,9 +132,21 @@
             success: function (data) {
                 if(data.res == '1'){
                     $("#repeat_warning").css('display','block');
-                    $("input[name = 'duplicate']")[1].checked = true;
-                }else{
-                    $("input[name = 'duplicate']")[0].checked = true;
+                    var dup_arr = data.dup_id.split(',');
+                    $("#repeat_warning").append('<br>');
+                    $("#repeat_warning").append('重复信息查看:');
+                    for(var i = 0;i <dup_arr.length;i++){
+                        $("#repeat_warning").append("<a target='_blank' href='/designate/info_detail?id="+dup_arr[i]+"'>"+dup_arr[i]+"</a>"+"&nbsp;");
+                    }
+                    if(typeof $("input[name = 'duplicate']")[1] != 'undefined'){
+                        $("input[name = 'duplicate']")[1].checked = true;
+                    }
+
+                }else {
+                    if (typeof $("input[name = 'duplicate']")[0] !='undefined') {
+                        $("input[name = 'duplicate']")[0].checked = true;
+                    }
+
                 }
             }
         });
