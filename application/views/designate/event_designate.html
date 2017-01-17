@@ -623,7 +623,7 @@
         layer.open({
             type: 1,
             title: "已确认信息列表",
-            closeBtn: 0,
+            closeBtn: 1,
             shadeClose: true,
             area: "800px",
             content: $('#info_choose_table')
@@ -636,7 +636,7 @@
         layer.open({
             type: 1,
             title: "事件列表",
-            closeBtn: 0,
+            closeBtn: 1,
             shadeClose: true,
             area: "850px",
             content: $('#event_choose_table')
@@ -645,6 +645,8 @@
 
     //添加事件信息
     function add_event_info(id, title) {
+        var e = new RegExp('_', "g");
+        title = title.replace(e, ' ');
         var tag = "#" + id + "-" + title;
         if (!$("#info_id").tagExist(tag)) {
             $("#info_id").addTag(tag);
@@ -706,8 +708,8 @@
         var main_processor = $("#input_con_qiantou").val();
         var watcher = $("#input_con_checkman").val();
 
-        if(reply_time && reply_time < 10){
-            layer.msg("首回时间最小为10分钟", {anim:6, time:1000});
+        if (reply_time && reply_time < 10) {
+            layer.msg("首回时间最小为10分钟", {anim: 6, time: 1000});
             layer.close(layer_index);
             return false;
         }
