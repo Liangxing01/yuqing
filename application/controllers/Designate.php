@@ -136,9 +136,10 @@ class Designate extends MY_controller
         $id = $this->input->post('id');
 
         $res = $this->designate->check_url($url, $id);
-        if ($res) {
+        if ($res['res']) {
             echo json_encode(array(
-                'res' => 1
+                'res'    => 1,
+                'dup_id' => $res['dup_id']
             ));
         } else {
             echo json_encode(array(
