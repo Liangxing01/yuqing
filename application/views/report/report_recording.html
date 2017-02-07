@@ -214,10 +214,19 @@
                 'sClass': "text-center",
                 'orderable': false,
                 "mRender": function (data) {
-                    if (data == "2") {
-                        return "已采纳";
-                    } else {
-                        return "未采纳";
+                    switch (data) {
+                        case "-1":
+                            return "<button class='btn btn-danger btn-xs'>无效信息</button>";
+                            break;
+                        case "0":
+                            return "<button class='btn btn-info btn-xs'>未采纳</button>";
+                            break;
+                        case "1":
+                            return "<button class='btn btn-info btn-xs'>未采纳</button>";
+                            break;
+                        case "2":
+                            return "<button class='btn btn-success btn-xs'>已采纳</button>";
+                            break;
                     }
                 }
             },

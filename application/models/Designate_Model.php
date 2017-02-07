@@ -22,6 +22,7 @@ class Designate_Model extends CI_Model
             ->from("info")
             ->join("user", "user.id = info.publisher", "left")
             ->where("state !=", 2)
+            ->where("state !=", -1) //不是无效信息和已确认信息
             ->group_start()
             ->like("info.id", $pInfo["search"])
             ->or_like("info.source", $pInfo["search"])
@@ -36,6 +37,7 @@ class Designate_Model extends CI_Model
         $total = $this->db->from("info")
             ->join("user", "user.id = info.publisher", "left")
             ->where("state !=", 2)
+            ->where("state !=", -1) //不是无效信息和已确认信息
             ->group_start()
             ->like("info.id", $pInfo["search"])
             ->or_like("info.source", $pInfo["search"])
@@ -176,7 +178,13 @@ class Designate_Model extends CI_Model
      */
     public function info_commit($data)
     {
-        return $this->db->set(array("type" => $data["type"], "duplicate" => $data["duplicate"], "state" => 2, "source" => $data["source"]))
+        //判断信息是否是无效信息
+        if($data['trash'] == 1){
+            $state = -1;
+        }else{
+            $state = 2;
+        }
+        return $this->db->set(array("type" => $data["type"], "duplicate" => $data["duplicate"], "state" => $state, "source" => $data["source"]))
             ->where(array("id" => $data["id"]))
             ->update("info");
     }

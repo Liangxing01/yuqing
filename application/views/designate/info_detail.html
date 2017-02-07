@@ -79,7 +79,7 @@
                 </div>
             </div>
 
-            <{if $info['state'] != 2}>
+            <{if $info['state'] != 2 && $info['state'] != -1}>
             <div class="form-inbox row">
                 <div class="shadow-line"></div>
                 <div class="col-md-3">
@@ -97,6 +97,15 @@
                     <div class="m-t-5">
                         <input type="radio" name="duplicate" value="0" checked>不是
                         <input type="radio" name="duplicate" value="1">是
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <label>
+                        是否是无效垃圾信息?
+                    </label>
+                    <div class="m-t-5">
+                        <input type="radio" name="trash" value="0" checked>不是
+                        <input type="radio" name="trash" value="1">是
                     </div>
                 </div>
                 <div class="col-md-2">
@@ -160,12 +169,13 @@
         layer.confirm('确认后不可修改', {icon: 3, title: '提示'}, function (index) {
             var id = $("#info_id").val();
             var type = $('select#type option:selected').val();
-            var duplicate = $('input:radio:checked').val();
+            var duplicate = $("input[name='duplicate']:checked").val();
+            var trash = $("input[name='trash']:checked").val();
             var source = $('#source').val();
             var layer_index = layer.load(2);
             $.ajax({
                 type: "POST",
-                data: {"id": id, "type": type, "duplicate": duplicate, "source": source},
+                data: {"id": id, "type": type, "duplicate": duplicate, "source": source,"trash":trash},
                 url: "/designate/commit_info",
                 success: function (data) {
                     layer.close(layer_index);
