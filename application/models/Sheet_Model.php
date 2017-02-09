@@ -181,7 +181,9 @@ left join yq_group on (yq_group.id = yq_user_group.`gid` or yq_group.id = yq_eve
 left join yq_event_info on yq_event_info.`event_id` = yq_event_designate.event_id
 left join yq_info  on yq_event_info.`info_id` = yq_info.id
 left join yq_user  on yq_user.id  = yq_event_designate.`processor`
-where  yq_info.duplicate = 0 and ( yq_event.state = '已指派' or yq_event.state = '已完成' or yq_event.state = '待审核')" . $where)
+where  yq_info.duplicate = 0 and ( yq_event.state = '已指派' or yq_event.state = '已完成' or yq_event.state = '待审核')
+and yq_event.main_processor = yq_event_designate.`processor`
+" . $where)
         ->result_array();
 
         foreach ($info_arr as $k => $v){
