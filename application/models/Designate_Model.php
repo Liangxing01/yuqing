@@ -110,7 +110,7 @@ class Designate_Model extends CI_Model
      */
     public function get_info($info_id)
     {
-        $info = $this->db->select("info.id, info.title, info.description, type.name AS type, info.url, info.state, info.source, user.name AS publisher, info.time")
+        $info = $this->db->select("info.id,info.relate_scope, info.title, info.description, type.name AS type, info.url, info.state, info.source, user.name AS publisher, info.time")
             ->from("info")
             ->join("type", "type.id = info.type", "left")
             ->join("user", "user.id = info.publisher", "left")
@@ -140,7 +140,7 @@ class Designate_Model extends CI_Model
         if (!($e_can && $i != 0)) {
             return false;
         } else {
-            $info = $this->db->select("info.id, type.name AS type, info.url, info.source, info.description, user.name AS publisher, info.time")
+            $info = $this->db->select("info.id,info.relate_scope,type.name AS type, info.url, info.source, info.description, user.name AS publisher, info.time")
                 ->join("user", "user.id = info.publisher")
                 ->join("type", "info.type = type.id", "left")
                 ->where("info.id", $info_id)
@@ -184,7 +184,8 @@ class Designate_Model extends CI_Model
         }else{
             $state = 2;
         }
-        return $this->db->set(array("type" => $data["type"], "duplicate" => $data["duplicate"], "state" => $state, "source" => $data["source"]))
+        return $this->db->set(array("type" => $data["type"], "duplicate" => $data["duplicate"], "relate_scope" => $data['relate_scope'],
+            "state" => $state, "source" => $data["source"]))
             ->where(array("id" => $data["id"]))
             ->update("info");
     }
