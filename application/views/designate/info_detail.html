@@ -184,6 +184,7 @@
             delimiter: ",",
             interactive: false
         });
+
         // 添加领域信息按钮功能函数 
         $('.addInfo').click(function(){
             var targetEle = $('.info_modal input:checked');
@@ -214,6 +215,23 @@
             }
 
         })
+
+        //图片描述的弹出框
+        $('.info_des_img').delegate('img','click',function(){
+            var data = [];
+            $('.info_des_img img').each(function(){
+                var src = $(this).attr('src');
+                data.push({"src":src});
+            })
+            
+            layer.photos({
+                photos:{
+                    title:"放大图",
+                    data:data
+                },
+                anim:5
+            })
+        })  
     });
     //检查url是否重复
     function check_url_repeat() {
