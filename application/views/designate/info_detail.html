@@ -177,24 +177,31 @@
 <!-- Page Script -->
 <script language="javascript">
     $(function(){
-        var checkNum = 0;
+        var checkNum = 0;   //领域多选框个数
 
         //inputtags的初始化
         $('#info_tag').tagsInput({
-            width: '400px',
-            height: '34px',
-            defaultText: "",
-            delimiter: ",",
-            interactive: false
+            'width': '400px',
+            'height': '34px',
+            'defaultText': "",
+            'delimiter': ",",
+            'interactive': false,
+            'onRemoveTag': function(){
+                $('.info_modal input').each(function(){
+                    $(this).attr('disabled',false)
+                })
+            },
         });
 
         //领域选择按钮
         $('.tags_choose').click(function(){
+
             $('.info_modal input').each(function(){
                 this.checked = false;
             })
             if($("#info_tag").val() !== ""){
                 var conList = $('#info_tag').val().split(',');
+                checkNum = conList.length;
                 for(var i = 0,len = conList.length;i<len;i++){
                     $('.info_modal input[data-content="'+conList[i]+'"]')[0].checked = true;
                 }
