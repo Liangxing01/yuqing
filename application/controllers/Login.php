@@ -45,6 +45,7 @@ class Login extends MY_controller
             "message" => "用户名或密码错误"
         );
 
+        //判断是否移动端登陆 1:移动端
         $login_type = $login_type == 1 ? 1 : 0;
         $result = $this->identity->user_auth($username, $password, $login_type);
 
@@ -65,6 +66,10 @@ class Login extends MY_controller
             $return["message"] = "登陆成功";
             if ($login_type == 1) {
                 $return["m_token"] = $result["m_token"];
+                $return['name'] = $result["name"];
+                $return['gname'] = $result["gname"];
+                $return['avatar'] = $result["avatar"];
+                $return['privilege'] = $result["privilege"];
             }
             $this->output
                 ->set_content_type('application/json')

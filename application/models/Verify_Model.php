@@ -3,16 +3,36 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Verify_Model extends CI_Model
 {
+    /**
+     * @const int 上报人权限
+     */
+    const reporter = 1;
+
+    /**
+     * @const int 指派人权限
+     */
+    const manager = 2;
+
+    /**
+     * @const int 处理人权限
+     */
+    const processor = 3;
+
+    /**
+     * @const int 督办人权限
+     */
+    const watcher = 4;
+
+    /**
+     * @const int 管理员权限
+     */
+    const admin = 5;
+
+
     public function __construct()
     {
         parent::__construct();
         $this->load->database();
-
-        define("reporter", 1);   //上报人权限
-        define("manager", 2);    //指派人权限
-        define("processor", 3);  //处理人权限
-        define("watcher", 4);    //督办人权限
-        define("admin", 5);      //管理员权限
     }
 
 
@@ -23,7 +43,7 @@ class Verify_Model extends CI_Model
     public function is_manager()
     {
         $privilege = explode(",", $this->session->privilege);
-        if (in_array(manager, $privilege)) {
+        if (in_array(self::manager, $privilege)) {
             return true;
         }
         return false;
@@ -37,7 +57,7 @@ class Verify_Model extends CI_Model
     public function is_processor()
     {
         $privilege = explode(",", $this->session->privilege);
-        if (in_array(processor, $privilege)) {
+        if (in_array(self::processor, $privilege)) {
             return true;
         }
         return false;
@@ -51,7 +71,7 @@ class Verify_Model extends CI_Model
     public function is_watcher()
     {
         $privilege = explode(",", $this->session->privilege);
-        if (in_array(watcher, $privilege)) {
+        if (in_array(self::watcher, $privilege)) {
             return true;
         }
         return false;
@@ -69,20 +89,20 @@ class Verify_Model extends CI_Model
         $_p = explode(",", $this->session->userdata('privilege'));
         foreach ($_p as $one) {
             switch ($one) {
-                case manager :
+                case self::manager :
                     return true;
                     break;
-                case processor :
+                case self::processor :
                     if ($this->processor_see_event($event_id, $uid)) {
                         return true;
                     }
                     break;
-                case watcher :
+                case self::watcher :
                     if ($this->watcher_see_event($event_id, $uid)) {
                         return true;
                     }
                     break;
-                case admin :
+                case self::admin :
                     return true;
                     break;
                 default :
