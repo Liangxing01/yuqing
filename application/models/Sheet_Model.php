@@ -162,6 +162,7 @@ class Sheet_Model extends CI_Model {
         $objPHPExcel->getActiveSheet()->getColumnDimension('E')->setAutoSize(true);
         $objPHPExcel->getActiveSheet()->getColumnDimension('F')->setAutoSize(true);
         $objPHPExcel->getActiveSheet()->getColumnDimension('G')->setAutoSize(true);
+        $objPHPExcel->getActiveSheet()->getColumnDimension('H')->setAutoSize(true);
         $objPHPExcel->getActiveSheet()->getColumnDimension('J')->setAutoSize(true);
         $objPHPExcel->getActiveSheet()->getColumnDimension('K')->setAutoSize(true);
         $objPHPExcel->getActiveSheet()->getColumnDimension('L')->setAutoSize(true);
@@ -170,7 +171,7 @@ class Sheet_Model extends CI_Model {
 
         //查询数据库 获取 数据
         $info_arr = $this->db->query("select yq_event.id,yq_group.name as gname,yq_info.time as rep_time,yq_info.source,
-yq_info.title,yq_info.url, if((select yq_user.name from yq_user where yq_user.id = yq_event.`main_processor`)!= '',
+yq_info.title,yq_info.url,yq_info.relate_scope, if((select yq_user.name from yq_user where yq_user.id = yq_event.`main_processor`)!= '',
 (select yq_user.name from yq_user where yq_user.id = yq_event.`main_processor`),
 (select yq_group.name from yq_group where yq_group.id = yq_event_designate.`group`)) as \"首接人\",
 yq_event_designate.time as \"交办时间\",yq_event.first_reply,yq_event.`end_time`
@@ -182,7 +183,7 @@ left join yq_event_info on yq_event_info.`event_id` = yq_event_designate.event_i
 left join yq_info  on yq_event_info.`info_id` = yq_info.id
 left join yq_user  on yq_user.id  = yq_event_designate.`processor`
 where  yq_info.duplicate = 0 and ( yq_event.state = '已指派' or yq_event.state = '已完成' or yq_event.state = '待审核')
-and yq_event.main_processor = yq_event_designate.`processor`
+and (yq_event.main_processor = yq_event_designate.`processor` or yq_event.group = yq_event_designate.`group`)
 " . $where)
         ->result_array();
 
@@ -194,7 +195,7 @@ and yq_event.main_processor = yq_event_designate.`processor`
             $objPHPExcel->setActiveSheetIndex(0)->setCellValue('E'.($k+2), $v['title']);
             $objPHPExcel->setActiveSheetIndex(0)->setCellValue('F'.($k+2), $v['url']);
             $objPHPExcel->setActiveSheetIndex(0)->setCellValue('G'.($k+2), $v['首接人']);
-            $objPHPExcel->setActiveSheetIndex(0)->setCellValue('H'.($k+2), '');
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValue('H'.($k+2), $v['relate_scope']);
             $objPHPExcel->setActiveSheetIndex(0)->setCellValue('I'.($k+2), $v['首接人']);
             $objPHPExcel->setActiveSheetIndex(0)->setCellValue('J'.($k+2), date('Y-m-d H:i:s',$v['交办时间']));
             $objPHPExcel->setActiveSheetIndex(0)->setCellValue('K'.($k+2), $v['first_reply'] ? date('Y-m-d H:i:s',$v['first_reply']) : '');
