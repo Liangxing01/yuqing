@@ -185,6 +185,7 @@ class Identity_Auth
     //检测移动端用户登陆
     public function m_is_authentic()
     {
+        $this->CI->load->database();
         $m_token = $this->CI->input->get_request_header("TOKEN", TRUE);
         if ($this->CI->session->has_userdata("m_token") && $this->CI->session->has_userdata("uid") && $m_token) {
             // 验证session是否过期

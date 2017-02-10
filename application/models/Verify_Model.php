@@ -6,27 +6,27 @@ class Verify_Model extends CI_Model
     /**
      * @const int 上报人权限
      */
-    const reporter = 1;
+    const REPORTER = 1;
 
     /**
      * @const int 指派人权限
      */
-    const manager = 2;
+    const MANAGER = 2;
 
     /**
      * @const int 处理人权限
      */
-    const processor = 3;
+    const PROCESSOR = 3;
 
     /**
      * @const int 督办人权限
      */
-    const watcher = 4;
+    const WATCHER = 4;
 
     /**
      * @const int 管理员权限
      */
-    const admin = 5;
+    const ADMIN = 5;
 
 
     public function __construct()
@@ -43,7 +43,7 @@ class Verify_Model extends CI_Model
     public function is_manager()
     {
         $privilege = explode(",", $this->session->privilege);
-        if (in_array(self::manager, $privilege)) {
+        if (in_array(self::MANAGER, $privilege)) {
             return true;
         }
         return false;
@@ -57,7 +57,7 @@ class Verify_Model extends CI_Model
     public function is_processor()
     {
         $privilege = explode(",", $this->session->privilege);
-        if (in_array(self::processor, $privilege)) {
+        if (in_array(self::PROCESSOR, $privilege)) {
             return true;
         }
         return false;
@@ -71,7 +71,7 @@ class Verify_Model extends CI_Model
     public function is_watcher()
     {
         $privilege = explode(",", $this->session->privilege);
-        if (in_array(self::watcher, $privilege)) {
+        if (in_array(self::WATCHER, $privilege)) {
             return true;
         }
         return false;
@@ -89,20 +89,20 @@ class Verify_Model extends CI_Model
         $_p = explode(",", $this->session->userdata('privilege'));
         foreach ($_p as $one) {
             switch ($one) {
-                case self::manager :
+                case self::MANAGER :
                     return true;
                     break;
-                case self::processor :
+                case self::PROCESSOR :
                     if ($this->processor_see_event($event_id, $uid)) {
                         return true;
                     }
                     break;
-                case self::watcher :
+                case self::WATCHER :
                     if ($this->watcher_see_event($event_id, $uid)) {
                         return true;
                     }
                     break;
-                case self::admin :
+                case self::ADMIN :
                     return true;
                     break;
                 default :
