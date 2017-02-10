@@ -188,6 +188,20 @@
             interactive: false
         });
 
+        //领域选择按钮
+        $('.tags_choose').click(function(){
+            $('.info_modal input').each(function(){
+                this.checked = false;
+            })
+            if($("#info_tag").val() !== ""){
+                var conList = $('#info_tag').val().split(',');
+                for(var i = 0,len = conList.length;i<len;i++){
+                    $('.info_modal input[data-content="'+conList[i]+'"]')[0].checked = true;
+                }
+            }
+            
+        })
+
         //多选框的点击事件
         $('.info_modal').delegate('input','click',function(){
             if(this.checked == true){
