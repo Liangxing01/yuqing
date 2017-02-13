@@ -25,7 +25,7 @@ class Info extends CI_Controller
 
     /**
      * 提交记录 分页数据接口
-     * POST参数:pageNum, size
+     * POST参数:page_num, size
      * @return string Json
      */
     public function get_info_record()
@@ -47,7 +47,7 @@ class Info extends CI_Controller
      */
     public function get_info_detail()
     {
-        
+
     }
 
 
