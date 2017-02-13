@@ -11,7 +11,7 @@ class Info extends CI_Controller
     {
         parent::__construct();
         $this->identity->m_is_authentic();
-        $this->load->model("API_Model/Info_Model", "info");
+        $this->load->model("API_Models/Info_Model", "info");
     }
 
 
@@ -47,7 +47,11 @@ class Info extends CI_Controller
      */
     public function get_info_detail()
     {
-
+        $info_id = $this->input->post("id");
+        $result = $this->info->get_info_detail($info_id);
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($result));
     }
 
 
