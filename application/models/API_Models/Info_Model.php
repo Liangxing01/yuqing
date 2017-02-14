@@ -68,6 +68,10 @@ class Info_Model extends CI_Model
             ->limit($size, $start)
             ->order_by("time", "desc")
             ->get("info")->result_array();
+
+        $this->success["total"] = $this->db->join("user", "user.id = info.publisher", "left")
+            ->where(array("user.id" => $uid))
+            ->get("info")->num_rows();
         return $this->success;
     }
 
