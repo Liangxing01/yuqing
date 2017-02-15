@@ -88,4 +88,16 @@ class Report_sheet extends MY_Controller {
         //导出报表
         $this->sheet->export_yuqing((int)$start,(int)$end);
     }
+
+    /**
+     * 单一舆情综合情况导出
+     */
+    public function export_event(){
+        $eid  = $this->input->get('eid');
+        $data = array(
+            'eid' => $eid
+        );
+        //导出报表
+        $this->sheet->export_one_event($data);
+    }
 }
