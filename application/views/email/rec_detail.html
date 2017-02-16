@@ -194,7 +194,7 @@
                   attr_list += '<div class="file_img">';
 
                   if(data[i].is_secret == 1){
-                    attr_list += '<a href="/js/PDFreader/web/viewer.html?file="'+data[i].loc+' class="btn btn-md btn-danger attr_down" target="_blank">预览(涉密)</a>'
+                    attr_list += '<a href="/js/PDFreader/generic/web/viewer.html?file='+data[i].loc+' "class="btn btn-md btn-danger attr_down" target="_blank">预览(涉密)</a>'
                   }else{
                     if(data[i].is_exist == 1){
                        attr_list += '<a href="/common/att_download?fid='+data[i].id+'&eid='+email_id+'" class="btn btn-md btn-info attr_down">下载</a>';
@@ -226,7 +226,7 @@
          return '<img src="../../../img/email_ppt.png">';
       }
       if(name.match(/(\.|\/)(pdf)$/ig)){ //文档类型
-         return '<img src="../../../img/email_pdf.png.png">';
+         return '<img src="../../../img/email_pdf.png">';
       }
       if(name.match(/(\.|\/)(jpg|png|jpeg)$/ig)){
            return '<img src='+loc+' width="130px">';

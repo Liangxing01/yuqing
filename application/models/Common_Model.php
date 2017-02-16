@@ -635,7 +635,7 @@ class Common_Model extends CI_Model
         $id_arr = explode(',',$ids);
         $att_info_arr = array();
         foreach ($id_arr as $id){
-            $info = $this->db->select('id,file_name,loc,size,is_exist')
+            $info = $this->db->select('id,file_name,loc,size,is_exist,is_secret')
                 ->from('email_attachment')
                 ->where('id',$id)
                 ->where('eid',$eid)
@@ -669,10 +669,15 @@ class Common_Model extends CI_Model
             //插入附件信息表，先通过fid 找到file表的信息，然后插入到 email_attach 表里面
             $att_arr = array();
             foreach ($attID as $att){
+                //以 '-' 分隔出 attid 和 涉密文件标志位
+                $arr    = explode('-',$att);
+                $att_id = $arr[0];
+                $is_secret = $arr[1];
                 $file_info = $this->db->select('old_name as file_name,type,size,upload_time,new_name')
                     ->from('file')
-                    ->where('id',$att)
+                    ->where('id',$att_id)
                     ->get()->row_array();
+                $file_info['is_secret'] = $is_secret;
                 $file_info['eid'] = $eid;
                 $file_info['is_exist'] = 1;
                 $file_info['expire_time'] = (int)$file_info['upload_time'] + 1209600;
