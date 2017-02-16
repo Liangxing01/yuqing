@@ -59,7 +59,14 @@ textarea{
     cursor: pointer;
 }
 
-.lock-icon{ font-size: 18px;visibility:hidden; }
+.lock-icon{ 
+    display: inline-block;
+    width: 35px;
+    height: 35px;
+    background: url(/img/secret.png) no-repeat;
+    background-size: 100%;
+    visibility:hidden;
+  }
 </style>
 	
 <!-- BEGIN MAIN CONTENT -->
@@ -438,10 +445,10 @@ textarea{
             <button class="cancle-file" data-id="{%=file.id%}">取消上传</button>
         </td>
         <td>
-            <span>标记为加密信息</span>
             <input type="checkbox" name="encryptionInfo" onclick="changeRed(this)" class="secretInput">
+            <span>涉密</span>
         </td>
-        <td><i class="fa fa-lock lock-icon"></i></td>
+        <td><span class="lock-icon"></span></td>
     </tr>
 {% } %}
 
