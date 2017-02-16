@@ -9,31 +9,21 @@ class Info_Model extends CI_Model
      * @var array
      * code 0 请求成功
      */
-    private $success = array(
-        "code" => 0,
-        "message" => "Request Success",
-        "data" => array()
-    );
+    private $success;
 
     /**
      * 数据接口 返回值
      * @var array
      * code 1 参数错误
      */
-    private $param_error = array(
-        "code" => 1,
-        "message" => "Bad Request Params",
-    );
+    private $param_error;
 
     /**
      * 数据接口 返回值
      * @var array
      * code 2 权限错误
      */
-    private $privilege_error = array(
-        "code" => 2,
-        "message" => "No Privilege",
-    );
+    private $privilege_error;
 
 
     /**
@@ -44,6 +34,11 @@ class Info_Model extends CI_Model
         parent::__construct();
         // 载入 权限模型
         $this->load->model("Verify_Model", "verify");
+        // 载入 api 返回值
+        $this->load->helper("api");
+        $this->success = APIResponseBody::$success;
+        $this->param_error = APIResponseBody::$param_error;
+        $this->privilege_error = APIResponseBody::$privilege_error;
     }
 
 
@@ -194,30 +189,70 @@ class Info_Model extends CI_Model
 
     /**
      * 获取上报记录
-     * @param $page_num int 页码
-     * @param $size int 每页大小
+     * @param int $page_num 页码
+     * @param int $size 每页大小
+     * @param string $record_type 返回记录类型
      * @return array
      */
-    public function get_info_record_data($page_num, $size)
+    public function get_info_record_data($page_num, $size, $record_type = 'reported')
     {
         // 检测参数
         if (!(is_int($page_num) && is_int($size))) {
             return $this->param_error;
         }
+        if (!$record_type) {
+            // 默认返回上报记录
+            $record_type = 'reported';
+        }
         // 查询数据
         $start = ($page_num - 1) * $size;
         $uid = $this->session->uid;
-        $this->success["data"] = $this->db->select("info.id, title, url, time")
-            ->join("user", "user.id = info.publisher", "left")
-            ->where(array("user.id" => $uid))
-            ->limit($size, $start)
-            ->order_by("time", "desc")
-            ->get("info")->result_array();
+        switch ($record_type) {
+            case 'reported':
+                // 返回上报记录
+                $this->success["data"] = $this->db->select("info.id, title, url, time")
+                    ->join("user", "user.id = info.publisher", "left")
+                    ->where(array("user.id" => $uid))
+                    ->limit($size, $start)
+                    ->order_by("time", "desc")
+                    ->get("info")->result_array();
 
-        $this->success["total"] = $this->db->join("user", "user.id = info.publisher", "left")
-            ->where(array("user.id" => $uid))
-            ->get("info")->num_rows();
-        return $this->success;
+                $this->success["total"] = $this->db->join("user", "user.id = info.publisher", "left")
+                    ->where(array("user.id" => $uid))
+                    ->get("info")->num_rows();
+                return $this->success;
+                break;
+            case 'unconfirmed':
+                // 返回未确认信息
+                // 权限验证
+                if (!$this->verify->is_manager()) {
+                    return $this->privilege_error;
+                }
+//                $this->success["data"] = $this->db->select("info.id, info.title, source, type.name AS type, user.name AS publisher, time, duplicate, state")
+//                    ->from("info")
+//                    ->join("user", "user.id = info.publisher", "left")
+//                    ->join("type", "type.id = info.type", "left")
+//                    ->where($where)
+//                    ->group_start()
+//                    ->like("info.id", $pInfo["search"])
+//                    ->or_like("info.source", $pInfo["search"])
+//                    ->or_like("type.name", $pInfo["search"])
+//                    ->or_like("user.name", $pInfo["search"])
+//                    ->or_like("info.title", $pInfo["search"])
+//                    ->group_end()
+//                    ->order_by("time", $pInfo["sort_type"])
+//                    ->limit($pInfo["length"], $pInfo["start"])
+//                    ->get()->result_array();
+//
+//                $this->success["total"] = $this->db->join("user", "user.id = info.publisher", "left")
+//                    ->where(array("user.id" => $uid))
+//                    ->get("info")->num_rows();
+                return $this->success;
+                break;
+            default:
+                return $this->param_error;
+                break;
+        }
     }
 
 
@@ -241,16 +276,18 @@ class Info_Model extends CI_Model
             ->where(array("info.id" => $info_id))
             ->get()->row_array();
         // 附件信息
-        $attachments = $this->db->select("id, name, url, type")
+        $attachments = $this->db->select("id, type, url")
             ->where("info_id", $info_id)
             ->get("info_attachment")->result_array();
-        $info['video'] = array();
         $info['picture'] = array();
+        $info['video'] = array();
         foreach ($attachments AS $attachment) {
             if ($attachment["type"] == "pic") {
-                $info['video'][] = $attachment;
-            } else {
+                unset($attachment['type']);
                 $info['picture'][] = $attachment;
+            } else {
+                unset($attachment['type']);
+                $info['video'][] = $attachment;
             }
         }
 

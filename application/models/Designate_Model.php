@@ -747,6 +747,7 @@ class Designate_Model extends CI_Model
                 "send_gid" => null,
                 "time" => $time,
                 "url" => "/common/event_detail?eid=" . $event_id,
+                "m_id" => $event_id,
                 "state" => 0    //消息未读
             );
         }
@@ -758,6 +759,7 @@ class Designate_Model extends CI_Model
                 "send_gid" => $group,
                 "time" => $time,
                 "url" => "/common/event_detail?eid=" . $event_id,
+                "m_id" => $event_id,
                 "state" => 0    //消息未读
             );
         }
@@ -769,6 +771,7 @@ class Designate_Model extends CI_Model
                 "send_gid" => null,
                 "time" => $time,
                 "url" => "/common/event_detail?eid=" . $event_id,
+                "m_id" => $event_id,
                 "state" => 0    //消息未读
             );
         }
