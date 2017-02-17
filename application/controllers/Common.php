@@ -767,6 +767,17 @@ class Common extends MY_Controller
     }
 
     /**
+     * 接口：获取某个文件的 具体打印情况
+     * GET fid 文件id
+     */
+    public function get_print_record(){
+        $this->load->model('Common_Model','common');
+        $fid = $this->input->get('fid');
+        $print_record = $this->common->get_print_record($fid);
+        echo json_encode($print_record);
+    }
+
+    /**
      * ---------------------------点名系统 回复我在线 -------------------------
      */
     /**

@@ -680,6 +680,7 @@ class Common_Model extends CI_Model
                 $file_info['is_secret'] = $is_secret;
                 $file_info['eid'] = $eid;
                 $file_info['is_exist'] = 1;
+                $file_info['print_num'] = 0;
                 $file_info['expire_time'] = (int)$file_info['upload_time'] + 1209600;
                 $file_info['loc'] = '/uploads/eUploads/' . $file_info['new_name'];
 
@@ -1081,6 +1082,19 @@ class Common_Model extends CI_Model
         $data['iTotalRecords'] = $total;
 
         return $data;
+    }
+
+    /**
+     * 获取单文件的 打印记录
+     * @param $fid 文件id
+     */
+    public function get_print_record($fid){
+        $record = $this->db->select('user.name,pu.time')
+            ->from('print_user as pu')
+            ->join('user','user.id = pu.uid')
+            ->where('email_attID',$fid)
+            ->get()->result_array();
+        return $record;
     }
 
 
