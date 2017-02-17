@@ -18,7 +18,8 @@ class Report_model extends CI_Model
      */
     public function add_info($arr)
     {
-        //检测url是否重复
+        $time = time();
+        // 检测url是否重复
         $dup = 0;
         if ($arr['url'] !== null) {
             $judge = $this->db->select("*")
@@ -30,20 +31,46 @@ class Report_model extends CI_Model
                 $dup = 1;
             }
         }
-        //事件信息数据
+        // 开始信息上报事务流程
+        $this->db->trans_begin();
+        // 事件信息数据
         $data = array(
             'title' => $arr['title'],
             'url' => $arr['url'],
             'source' => $arr['source'],
             'description' => $arr['description'],
             'publisher' => $arr['uid'],
-            'time' => time(),
+            'time' => $time,
             'state' => 0,
             'duplicate' => $dup
         );
-        $res = $this->db->insert('yq_info', $data);
-        $info_id = $this->db->insert_id();
-        if ($res) {
+        $this->db->insert('yq_info', $data); // 插入数据
+        $info_id = $this->db->insert_id(); // 信息ID
+        // 信息上报推送消息数据
+        $info_msg = array();
+        $this->load->model("User_Model", "user");
+        $managers = $this->user->get_managers();
+        foreach ($managers AS $manager) {
+            $info_msg[] = array(
+                "title" => $data["title"],
+                "type" => 0,    //上报消息类型
+                "send_uid" => $manager["id"],
+                "send_gid" => null,
+                "time" => $time,
+                "url" => "/designate/info_detail?id=" . $info_id,
+                "m_id" => $info_id,
+                "state" => 0    //消息未读
+            );
+        }
+        if (!empty($info_msg)) {
+            $this->db->insert_batch("business_msg", $info_msg); // 插入数据
+        }
+        // 完成信息上报事务
+        if ($this->db->trans_status() === FALSE) {
+            $this->db->trans_rollback();
+            return false;
+        } else {
+            $this->db->trans_commit();
             //TODO 上报消息 推送
             try {
                 //连接消息服务器
@@ -52,15 +79,11 @@ class Report_model extends CI_Model
 
                 //业务消息推送
                 //用户 上报信息 推送给在线指派人
-                $managers = $this->db->select("user.id")
-                    ->join("user_privilege", "user_privilege.uid = user.id")
-                    ->where("user_privilege.pid", 2)
-                    ->get("user")->result_array();
                 foreach ($managers AS $manager) {
                     Gateway::sendToUid($manager["id"], json_encode(array(
                         "title" => $data["title"],
                         "time" => $data["time"],
-                        "type" => 0,
+                        "type" => 0, //上报消息类型
                         "url" => "/designate/info_detail?id=" . $info_id
                     )));
                 }
@@ -68,8 +91,6 @@ class Report_model extends CI_Model
                 log_message("error", $e->getMessage());
             }
             return $info_id;
-        } else {
-            return false;
         }
     }
 
