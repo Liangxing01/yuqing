@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <!--
 Copyright 2012 Mozilla Foundation
 
@@ -43,7 +43,8 @@ http://sourceforge.net/adobe/cmap/wiki/License/
 
   </head>
 
-  <body tabindex="1" class="loadingInProgress">
+  <!-- oncopy: prohibit web copy function, modify by lx 2017.2.17-->
+  <body tabindex="1" class="loadingInProgress"  oncopy="return false;" oncontextmenu="return false">
     <div id="outerContainer">
 
       <div id="sidebarContainer">
@@ -412,7 +413,40 @@ http://sourceforge.net/adobe/cmap/wiki/License/
     </div>
   </div>
 </div>
+    
+    <!-- printFun：Transfer print file information，modify by lx 2017.2.17 -->
+    <script type="text/javascript">
 
+      function getXMLHttpRequest(){  
+          var xhr;  
+          if(window.ActiveXObject) {  
+                   xhr= new ActiveXObject("Microsoft.XMLHTTP");  
+          }else if (window.XMLHttpRequest) {  
+                   xhr= new XMLHttpRequest();  
+          }else {  
+                   xhr= null;  
+          }  
+          return xhr;  
+      }
+
+      window.onload = function(){
+        var printEle = document.getElementById('print');
+
+          printEle.addEventListener('click',function(){
+              var fid = window.location.href.slice(window.location.href.indexOf('&')+1);
+              
+              var xhr = getXMLHttpRequest();
+              xhr.open('GET','/common/make_print?fid='+fid);
+              xhr.onreadystatechange = function(data){
+                if( xhr.readystate == 4 && xhr.status== 200){
+                    console.log("成功");
+                }
+              }
+              xhr.send(null);
+          })
+      }
+    </script>
+<!-- printFun end -->
   </body>
 </html>
 

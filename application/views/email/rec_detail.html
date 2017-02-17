@@ -194,7 +194,7 @@
                   attr_list += '<div class="file_img">';
 
                   if(data[i].is_secret == 1){
-                    attr_list += '<a href="/js/PDFreader/generic/web/viewer.html?file='+data[i].loc+' "class="btn btn-md btn-danger attr_down" target="_blank">预览(涉密)</a>'
+                    attr_list += '<a href="/js/PDFreader/generic/web/viewer.html?file='+data[i].loc+'&'+data[i].id+'"class="btn btn-md btn-danger attr_down" target="_blank">预览(涉密)</a>'
                   }else{
                     if(data[i].is_exist == 1){
                        attr_list += '<a href="/common/att_download?fid='+data[i].id+'&eid='+email_id+'" class="btn btn-md btn-info attr_down">下载</a>';
