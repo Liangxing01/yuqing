@@ -702,6 +702,71 @@ class Common extends MY_Controller
     }
 
     /**
+     * --------------------------涉密文件 模块接口----------------------------
+     */
+    /**
+     * 用户选择打印记录，文档打印次数加1，记录打印用户和时间
+     * GET
+     * @param fid 文件对应id
+     */
+    public function make_print(){
+        $fid = $this->input->get('fid');
+        $this->load->model('Common_Model','common');
+        $res = $this->common->record_print($fid);
+
+        if($res){
+            echo json_encode(array(
+                'res' => 1
+            ));
+        }else{
+            echo json_encode(array(
+                'res' => 0
+            ));
+        }
+    }
+
+    /**
+     * 展示 涉密文件流转记录
+     */
+    public function show_secret_record(){
+        $this->assign("active_title", "secret_file_record");
+        $this->assign("active_parent", "file_parent");
+        $this->all_display("email/secret_record.html");
+    }
+
+    /**
+     * 分页获取 涉密文件 记录
+     */
+    public function get_secret_record(){
+        $this->load->model('Common_Model','common');
+        $pData['sEcho'] = $this->input->post('psEcho', true);           //DataTables 用来生成的信息
+        $pData['start'] = $this->input->post('iDisplayStart', true);    //显示的起始索引
+        $pData['length'] = $this->input->post('iDisplayLength', true);  //每页显示的行数
+        $pData['sort_th'] = $this->input->post('iSortCol_0', true);     //排序的列 默认第三列
+        $pData['sort_type'] = $this->input->post('sSortDir_0', true);   //排序的方向 默认 desc
+        $pData['search'] = $this->input->post('sSearch', true);         //全局搜索关键字 默认为空
+
+        if ($pData['start'] == NULL) {
+            $pData['start'] = 0;
+        }
+        if ($pData['length'] == NULL) {
+            $pData['length'] = 10;
+        }
+        if ($pData["sort_th"] == NULL) {
+            $pData["sort_th"] = 6;
+        }
+        if ($pData['sort_type'] == NULL) {
+            $pData['sort_type'] = "desc";
+        }
+        if ($pData['search'] == NULL) {
+            $pData['search'] = '';
+        }
+
+        $data = $this->common->get_secret_list($pData);
+        echo json_encode($data);
+    }
+
+    /**
      * ---------------------------点名系统 回复我在线 -------------------------
      */
     /**

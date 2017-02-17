@@ -1016,6 +1016,73 @@ class Common_Model extends CI_Model
         return $res;
     }
 
+    /**
+     * ------------------------涉密文件 模块---------------------
+     */
+    /**
+     * 记录打印人和时间，打印一次 计数加一
+     * @param $fid 文档id
+     * @return bool
+     */
+    public function record_print($fid){
+        $this->db->trans_begin();
+
+        //打印记录数加1
+        $this->db->set('print_num','print_num + 1',FALSE);
+        $this->db->where('id',$fid);
+        $this->db->update('email_attachment');
+
+        //记录打印人、时间
+        $this->db->insert('print_user',array(
+            'email_attID' => $fid,
+            'uid'         => $this->session->userdata('uid'),
+            'time'        => time()
+        ));
+
+        if($this->db->trans_status() === FALSE){
+            $this->db->trans_rollback();
+            $res = false;
+        }else{
+            $this->db->trans_commit();
+            $res = true;
+        }
+
+        return $res;
+
+    }
+
+    public function get_secret_list($pInfo){
+        $data['aaData'] = $this->db->select("ea.id,email.title,ea.file_name,user.name,ea.print_num,email.time")
+            ->from('email_attachment as ea')
+            ->join('email','email.id = ea.eid')
+            ->join('user','user.id = email.sender')
+            ->group_start()
+            ->like('ea.file_name',$pInfo['search'])
+            ->group_end()
+            ->where('ea.is_secret',1)
+            ->order_by('email.time',$pInfo['sort_type'])
+            ->limit($pInfo['length'],$pInfo['start'])
+            ->get()->result_array();
+
+        $total = $this->db->select("ea.id,email.title,ea.file_name,user.name,ea.print_num,email.time")
+            ->from('email_attachment as ea')
+            ->join('email','email.id = ea.eid')
+            ->join('user','user.id = email.sender')
+            ->group_start()
+            ->like('ea.file_name',$pInfo['search'])
+            ->group_end()
+            ->where('ea.is_secret',1)
+            ->get()->num_rows();
+
+        $data['sEcho'] = $pInfo['sEcho'];
+
+        $data['iTotalDisplayRecords'] = $total;
+
+        $data['iTotalRecords'] = $total;
+
+        return $data;
+    }
+
 
     /**
      * -------------------------点名系统-------------------------
