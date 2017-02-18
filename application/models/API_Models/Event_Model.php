@@ -44,11 +44,11 @@ class Event_Model extends CI_Model
 
     /**
      * 获取事件处理 回复时间线 分页数据
-     * @param $page_num
-     * @param $size
-     * @param $type
-     * @param $event_id
-     * @param $parent_id
+     * @param int $page_num
+     * @param int $size
+     * @param string $type
+     * @param int $event_id
+     * @param int $parent_id
      * @return array
      */
     public function get_response_timeline_data($page_num, $size, $type, $event_id, $parent_id)
@@ -112,7 +112,75 @@ class Event_Model extends CI_Model
     }
 
 
-    //判断用户是否为事件督察组
+    /**
+     * 获取事件列表 分页数据
+     * @param int $page_num
+     * @param int $size
+     * @param string $data_type
+     * @param string $user_type
+     * @return array
+     */
+    public function get_event_list_data($page_num, $size, $data_type, $user_type)
+    {
+        $uid = $this->session->uid;
+        // 检查权限
+        switch ($user_type) {
+            case "manager":
+                if (!$this->verify->is_manager($uid)) {
+                    return $this->privilege_error;
+                }
+                break;
+            case "processor":
+                if (!$this->verify->is_processor($uid)) {
+                    return $this->privilege_error;
+                }
+                break;
+            case "watcher":
+                if (!$this->verify->is_watcher($uid)) {
+                    return $this->privilege_error;
+                }
+                break;
+            default:
+                return $this->param_error;
+                break;
+        }
+        // 检查参数
+        if (is_int($page_num) && is_int($size)) {
+            $start = ($page_num - 1) * $size;
+        } else {
+            return $this->param_error;
+        }
+        // 查询数据 TODO 角色不同数据不同
+        switch ($data_type) {
+            case 'all':
+                $data = $this->db->select("event.id, event.title, A.name AS manager, B.name AS main_processor, C.name AS main_group, event.rank, event.state, event.start_time")
+                    ->from("event")
+                    ->join("user A", "A.id = event.manager", "left")
+                    ->join("user B", "B.id = event.main_processor", "left")
+                    ->join("group C", "C.id = event.group", "left")
+                    ->order_by("start_time", "desc")
+                    ->limit($size, $start)
+                    ->get()->result_array();
+                $total = $this->db->select("event.id")
+                    ->from("event")
+                    ->get()->num_rows();
+                $this->success['data'] = $data;
+                $this->success['total'] = $total;
+                return $this->success;
+                break;
+            default:
+                return $this->param_error;
+                break;
+        }
+    }
+
+
+    /**
+     * 判断用户是否为事件督察组
+     * @param int $eid
+     * @param int $uid
+     * @return bool
+     */
     protected function is_event_watcher($eid, $uid)
     {
         $res = $this->db->where(array("event_id" => $eid, "watcher" => $uid))->get("event_watch")->num_rows();

@@ -71,4 +71,22 @@ class Event extends CI_Controller
             ->set_output(json_encode($result));
     }
 
+
+    /**
+     * 事件列表
+     * POST参数: page_num 页码, size 条数, data_type 数据类型, usertype: 用户类型
+     * 类型参数可选(全部事件:all)默认返回全部
+     */
+    public function get_event_list()
+    {
+        $page_num = (int)$this->input->post("page_num");
+        $size = (int)$this->input->post("size");
+        $data_type = $this->input->post("data_type"); // 请求结果类型
+        $user_type = $this->input->post("user_type"); // 用户类型
+        $result = $this->event->get_event_list_data($page_num, $size, $data_type, $user_type);
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($result));
+    }
+
 }
