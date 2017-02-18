@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <!--
 Copyright 2012 Mozilla Foundation
 
@@ -429,6 +429,17 @@ http://sourceforge.net/adobe/cmap/wiki/License/
           return xhr;  
       }
 
+
+      document.onkeydown = function(e){
+        var keycode = e.keyCode || e.which;
+        if(e.ctrlKey && keycode== 83){ //Ctrl + S
+          alert(1)
+          e.preventDefault();
+          window.event.returnValue= false;
+          return false;
+        }
+      }
+
       window.onload = function(){
         var printEle = document.getElementById('print');
 
@@ -445,6 +456,8 @@ http://sourceforge.net/adobe/cmap/wiki/License/
               xhr.send(null);
           })
       }
+
+
     </script>
 <!-- printFun end -->
   </body>

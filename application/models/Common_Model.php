@@ -1052,6 +1052,11 @@ class Common_Model extends CI_Model
 
     }
 
+    /**
+     * 获取 涉密文件列表
+     * @param $pInfo
+     * @return mixed
+     */
     public function get_secret_list($pInfo){
         $data['aaData'] = $this->db->select("ea.id,email.title,ea.file_name,user.name,ea.print_num,email.time")
             ->from('email_attachment as ea')

@@ -31,6 +31,7 @@ class MY_Controller extends CI_Controller
         $this->assign('username',$username);
         $job = $this->my_model->get_job();
         $this->assign('job',$job);
+        $this->assign('privilege',$privilege);
         $this->ci_smarty->display('head.html');
         $this->ci_smarty->display('menu/menu_home.html');
 
