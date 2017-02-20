@@ -176,6 +176,50 @@ class Event_Model extends CI_Model
 
 
     /**
+     * 获取事件详情
+     * @param int $event_id 事件ID
+     * @return array
+     */
+    public function get_event_detail_data($event_id)
+    {
+        // 检查权限
+        if (!$this->verify->can_see_event($event_id)) {
+            return $this->privilege_error;
+        }
+        // 检查参数
+        if (is_null($event_id)) {
+            return $this->param_error;
+        }
+        // 查询数据
+        $data = array();
+        $data["detail"] = $this->db->select("event.id, event.title, event.description, reply_time, A.name AS manager, B.name AS main_processor, C.name AS main_group, event.rank, event.state, event.start_time, event.end_time")
+            ->from("event")
+            ->join("user A", "A.id = event.manager", "left")
+            ->join("user B", "B.id = event.main_processor", "left")
+            ->join("group C", "C.id = event.group", "left")
+            ->where("event.id", $event_id)
+            ->get()->row_array();
+        // 信息列表
+        $data["info_list"] = $this->db->select("info.id, info.title")
+            ->from("info")
+            ->where("info.id IN (SELECT `info_id` FROM `yq_event_info` WHERE `event_id` = $event_id)")
+            ->get()->result_array();
+        // 关联事件
+        $data["relate_event"] = $this->db->select("event.id, event.title")
+            ->from("event")
+            ->where("event.id IN (SELECT `relate_id` FROM `yq_event_relate` WHERE `event_id` = $event_id)")
+            ->get()->result_array();
+        // 参考文件
+        $data["attachment"] = $this->db->select("id, name")
+            ->from("event_attachment")
+            ->where("event_id", $event_id)
+            ->get()->result_array();
+        $this->success["data"] = $data;
+        return $this->success;
+    }
+
+
+    /**
      * 判断用户是否为事件督察组
      * @param int $eid
      * @param int $uid

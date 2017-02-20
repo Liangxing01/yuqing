@@ -8,48 +8,13 @@ class Event extends CI_Controller
 {
 
     /**
-     * 数据接口 返回值
-     * @var array
-     * code 0 请求成功
-     */
-    private $success;
-
-    /**
-     * 数据接口 返回值
-     * @var array
-     * code 1 参数错误
-     */
-    private $param_error;
-
-    /**
-     * 数据接口 返回值
-     * @var array
-     * code 2 权限错误
-     */
-    private $privilege_error;
-
-
-    /**
-     * Info_Model constructor.
+     * Event constructor.
      */
     public function __construct()
     {
         parent::__construct();
         $this->identity->m_is_authentic();
         $this->load->model("API_Models/Event_Model", "event");
-    }
-
-
-    /**
-     * 事件查询 分页数据
-     * POST参数:pageNum, size
-     * @return string Json
-     */
-    public function search_event()
-    {
-        //分页参数 pageNum size
-        //查询参数暂略
-        //默认按 时间 DESC 排序
     }
 
 
@@ -89,4 +54,17 @@ class Event extends CI_Controller
             ->set_output(json_encode($result));
     }
 
+
+    /**
+     * 事件详情
+     * POST参数: id 事件ID
+     */
+    public function get_event_detail()
+    {
+        $event_id = $this->input->post("id");
+        $result = $this->event->get_event_detail_data($event_id);
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($result));
+    }
 }
