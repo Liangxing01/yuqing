@@ -18,6 +18,7 @@ class Common extends MY_Controller
     {
         $option = $this->input->get("option");
         $event_id = $this->input->get("eid");
+        $type = $this->input->get("type");
 
         //更新事件报警状态为0
         if ($option == "cancel_alert") {
@@ -37,19 +38,18 @@ class Common extends MY_Controller
 
         $role = 0;
 
-        //判断是否是指派人
-        if ($this->verify->is_manager()) {
-            $role = 2;
-        }
-
-        //判断是否是处理人
-        if ($this->verify->is_processor()) {
-            $role = 3;
-        }
-
-        //判断是否是督办人
-        if ($this->verify->is_watcher()) {
-            $role = 4;
+        switch($type){
+            case "manager":
+                $role = 2;
+                break;
+            case "processor":
+                $role = 3;
+                break;
+            case "watcher":
+                $role = 4;
+                break;
+            default:
+                break;
         }
 
         $this->load->model("Designate_Model", "designate");
