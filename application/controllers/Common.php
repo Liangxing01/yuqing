@@ -42,15 +42,14 @@ class Common extends MY_Controller
             $role = 2;
         }
 
+        //判断是否是处理人
+        if ($this->verify->is_processor()) {
+            $role = 3;
+        }
+
         //判断是否是督办人
         if ($this->verify->is_watcher()) {
             $role = 4;
-        }
-
-        //判断是否是处理人
-        //注意:处理人最后判断
-        if ($this->verify->is_processor()) {
-            $role = 3;
         }
 
         $this->load->model("Designate_Model", "designate");
