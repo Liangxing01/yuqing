@@ -244,6 +244,11 @@ class Designate extends MY_controller
         $data["watcher"] = $this->input->post("watcher", true);               //督办人
         $data["attachment"] = $this->input->post("attachment", true);         //附件
 
+        //判断是否是改派，改派先删除原有记录 再添加记录
+        $flag = $this->input->post('reset');
+        if($flag == 1){
+            $this->del_desi_info();
+        }
         $result = $this->designate->event_designate($data);
         if ($result) {
             echo 1;   //指派成功
