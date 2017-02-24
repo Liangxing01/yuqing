@@ -763,7 +763,7 @@
             return false;
         }
 
-        var eid = isReassignment();
+        var eid = isReassignment() || '';
         if( eid !== '' && eid !== null && eid !== undefined){
             var reset = 1;
         } else{
@@ -785,7 +785,8 @@
                 'main_processor': main_processor,
                 'watcher': watcher,
                 'attachment': window.FILES,
-                'reset': reset
+                'reset': reset,
+                'eid' : eid
             },
             success: function (data) {
                 layer.close(layer_index);

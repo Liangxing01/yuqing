@@ -246,8 +246,9 @@ class Designate extends MY_controller
 
         //判断是否是改派，改派先删除原有记录 再添加记录
         $flag = $this->input->post('reset');
+        $eid  = $this->input->post('eid');
         if($flag == 1){
-            $this->del_desi_info();
+            $this->designate->del_designate($eid);
         }
         $result = $this->designate->event_designate($data);
         if ($result) {
@@ -310,10 +311,6 @@ class Designate extends MY_controller
         echo json_encode($info);
     }
 
-    public function del_desi_info(){
-        $eid = $this->input->get('eid');
-        $this->designate->del_designate($eid);
-    }
 
 
     /**
