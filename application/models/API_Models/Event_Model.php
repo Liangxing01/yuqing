@@ -220,6 +220,59 @@ class Event_Model extends CI_Model
 
 
     /**
+     * 发表回复
+     * @param int $event_id 事件ID
+     * @param int $pid 父评论ID
+     * @param string $content 评论内容
+     * @return array
+     */
+    public function insert_comment($event_id, $pid, $content)
+    {
+        // 权限判断
+        if (!$this->verify->can_see_event($event_id)) {
+            return $this->privilege_error;
+        }
+        // 插入数据
+        $speaker = $this->session->userdata('uid');
+        $name = $this->session->userdata('name');
+        $time = time();
+        $this->db->trans_begin();
+        if (is_null($pid)) {
+            // 父评论
+            $data = array(
+                'event_id' => $event_id,
+                'description' => $content,
+                'speaker' => $speaker,
+                'name' => $name,
+                'time' => $time
+            );
+            $this->db->insert('event_log', $data);
+            $id = $this->db->insert_id();
+        } else {
+            // 子评论
+            $data = array(
+                'event_id' => $event_id,
+                'pid' => $pid,
+                'description' => $content,
+                'speaker' => $speaker,
+                'name' => $name,
+                'time' => $time
+            );
+            $this->db->insert('event_log', $data);
+            $id = $this->db->insert_id();
+        }
+        if ($this->db->trans_status() === FALSE) {
+            $this->db->trans_rollback();
+            return $this->param_error;
+        } else {
+            $this->db->trans_commit();
+            $this->success["data"]["id"] = $id;
+            return $this->success;
+        }
+    }
+
+
+    /**
      * 判断用户是否为事件督察组
      * @param int $eid
      * @param int $uid

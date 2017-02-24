@@ -38,6 +38,23 @@ class Event extends CI_Controller
 
 
     /**
+     * 事件处理 发表回复
+     * POST参数:id 事件id, pid 父评论id, content 评论内容
+     * 父评论id 可选
+     */
+    public function post_comment()
+    {
+        $event_id = $this->input->post('id');
+        $pid = $this->input->post('pid');
+        $content = $this->input->post('content');
+        $result = $this->event->insert_comment($event_id, $pid, $content);
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($result));
+    }
+
+
+    /**
      * 事件列表
      * POST参数: page_num 页码, size 条数, data_type 数据类型, usertype: 用户类型
      * 类型参数可选(全部事件:all)默认返回全部
