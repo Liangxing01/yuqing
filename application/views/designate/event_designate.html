@@ -331,8 +331,6 @@
     //事件指派 表单
     $(function () {
 
-        isReastContent();  //判断是否是改派页面
-
         $.validator.setDefaults({
             submitHandler: function () {
                 var layer_index = layer.load(2);
@@ -618,6 +616,9 @@
             }
 
         });
+
+
+        isReastContent();  //判断是否是改派页面
     });
     
     //判断是否是改派页面
@@ -644,23 +645,16 @@
                 url: '/designate/get_designate_info?eid=' + eid,
                 dataType: 'json',
                 success:function (data) {
-                    console.log(data);
                     $('#title').val( data.title);
                     for ( var i = 0 ; i < data.info_list.length; i++){
-                        var tag = "#" + data.info_list[i].id + "-" + data.info_list[i].title;
-                        if (!$("#info_id").tagExist(tag)) {
-                            $("#info_id").addTag(tag);
-                        }
+                        add_event_info(data.info_list[i].id, data.info_list[i].title);
                     }
                     $('#description').val( data.description);
                     $('#rank').val( data.rank);
-                    $('.spinner-input').val(data.replay_time)
+                    $("#reply_time").spinner("value", data.reply_time);
 
                     for ( var j = 0 ; j < data.relate_list.length; j++){
-                        var tag = "#" + data.relate_list[j].id + "-" + data.relate_list[j].title;
-                        if (!$("#relate_event").tagExist(tag)) {
-                            $("#relate_event").addTag(tag);
-                        }
+                        add_relate_event(data.relate_list[j].relate_id, data.relate_list[j].title)
                     }
                 }
             })
@@ -769,6 +763,13 @@
             return false;
         }
 
+        var eid = isReassignment();
+        if( eid !== '' && eid !== null && eid !== undefined){
+            var reset = 1;
+        } else{
+            var reset = 0;
+        }
+
         $.ajax({
             url: "/designate/commit_event_designate",
             method: "post",
@@ -783,7 +784,8 @@
                 'processor': processor,
                 'main_processor': main_processor,
                 'watcher': watcher,
-                'attachment': window.FILES
+                'attachment': window.FILES,
+                'reset': reset
             },
             success: function (data) {
                 layer.close(layer_index);
@@ -795,23 +797,7 @@
                     layer.msg("操作失败", {anim: 6, time: 1000});
                 }
             }
-        });
-
-        var eid = isReassignment();
-        if( eid !== '' && eid !== null && eid !== undefined){
-            $.ajax({
-                type: 'GET',
-                url: "/designate/del_desi_info?eid=" + eid,
-                dataType: 'json',
-                success: function (){
-
-                },
-                error:function() {
-                    layer.msg("改派失败", {anim: 6, time: 1000});
-                }
-            })
-        } 
-        
+        });        
     }
 
     /**
