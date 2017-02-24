@@ -330,6 +330,9 @@
 
     //事件指派 表单
     $(function () {
+
+        isReastContent();  //判断是否是改派页面
+
         $.validator.setDefaults({
             submitHandler: function () {
                 var layer_index = layer.load(2);
@@ -616,6 +619,54 @@
 
         });
     });
+    
+    //判断是否是改派页面
+    function isReassignment () {
+        if (window.location.search !== ''){
+
+            var searchArr = window.location.search.split('&');
+            var eid = window.location.search.split('&')[0].slice(5); //获取eid
+            var type = window.location.search.split('&')[1].slice(5); //获取类型
+
+            if ( type === "reset"){ //改派页面
+                return eid;
+            }
+        }
+    }
+    
+    //改派页面填充内容
+    function isReastContent () {
+        var eid = isReassignment();
+
+        if( eid !== '' || eid !== undefined || eid !== null){
+            $.ajax({
+                type: 'GET',
+                url: '/designate/get_designate_info?eid=' + eid,
+                dataType: 'json',
+                success:function (data) {
+                    console.log(data);
+                    $('#title').val( data.title);
+                    for ( var i = 0 ; i < data.info_list.length; i++){
+                        var tag = "#" + data.info_list[i].id + "-" + data.info_list[i].title;
+                        if (!$("#info_id").tagExist(tag)) {
+                            $("#info_id").addTag(tag);
+                        }
+                    }
+                    $('#description').val( data.description);
+                    $('#rank').val( data.rank);
+                    $('.spinner-input').val(data.replay_time)
+
+                    for ( var j = 0 ; j < data.relate_list.length; j++){
+                        var tag = "#" + data.relate_list[j].id + "-" + data.relate_list[j].title;
+                        if (!$("#relate_event").tagExist(tag)) {
+                            $("#relate_event").addTag(tag);
+                        }
+                    }
+                }
+            })
+        }
+    }
+
 
     //弹出确认信息表格
     function open_event_info_table() {
@@ -745,6 +796,22 @@
                 }
             }
         });
+
+        var eid = isReassignment();
+        if( eid !== '' && eid !== null && eid !== undefined){
+            $.ajax({
+                type: 'GET',
+                url: "/designate/del_desi_info?eid=" + eid,
+                dataType: 'json',
+                success: function (){
+
+                },
+                error:function() {
+                    layer.msg("改派失败", {anim: 6, time: 1000});
+                }
+            })
+        } 
+        
     }
 
     /**

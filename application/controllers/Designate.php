@@ -305,7 +305,7 @@ class Designate extends MY_controller
         echo json_encode($info);
     }
 
-    public function test1(){
+    public function del_desi_info(){
         $eid = $this->input->get('eid');
         $this->designate->del_designate($eid);
     }
