@@ -291,6 +291,31 @@ class Designate extends MY_controller
 
 
     /**
+     * ----------------------------事件改派 接口----------------------
+     */
+
+    /**
+     * 接口: 获取已指派的事件信息 填充到页面表单
+     */
+
+    public function get_designate_info(){
+        $eid  = $this->input->get('eid');
+        $info = $this->designate->designate_info($eid);
+
+        echo json_encode($info);
+    }
+
+    public function test1(){
+        $eid = $this->input->get('eid');
+        $this->designate->del_designate($eid);
+    }
+
+
+    /**
+     * -------------------------------------------------------------
+     */
+
+    /**
      * 事件处理 timeline 视图载入
      */
     public function event_tracer()

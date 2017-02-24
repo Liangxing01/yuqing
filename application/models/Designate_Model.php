@@ -849,6 +849,105 @@ class Designate_Model extends CI_Model
         }
     }
 
+    /**
+     * 事件改派 获取已指派信息
+     * @param $eid
+     * @return $info array
+     */
+    public function designate_info($eid){
+        $einfo = $this->db->select('event.title,event.description,event.rank,event.reply_time,event.main_processor')
+            ->from('event')
+            ->where('event.id',$eid)
+            ->get()->row_array();
+
+
+        $info_arr = $this->db->select('event.id as eid,info.id,info.title')
+            ->from('event')
+            ->join('event_info','event_info.event_id = event.id')
+            ->join('info','info.id = event_info.info_id')
+            ->where('event.id', $eid)
+            ->get()->result_array();
+
+        //合并 info_arr 形成info_list
+        $einfo['info_list'] = $info_arr;
+
+        //查询相关事件 形成 relate_list
+        $relate_arr = $this->db->select('event_relate.relate_id,event.title')
+            ->from('event_relate')
+            ->join('event','event.id = event_relate.relate_id')
+            ->where('event_relate.event_id',$eid)
+            ->get()->result_array();
+        $einfo['relate_list'] = $relate_arr;
+
+        //查询事件 督办人
+        $watcher_arr = $this->db->select('event_watch.watcher')
+            ->from('event_watch')
+            ->where('event_watch.event_id',$eid)
+            ->get()->result_array();
+        $einfo['watcher_list'] = $watcher_arr;
+
+        return $einfo;
+    }
+
+    /**
+     * 事件改派 删除原有 改派的一系列记录
+     * @param eid
+     * @return bool 删除成功 or 失败
+     */
+    public function del_designate($eid){
+        //一次删除 event_designate,event_att,event_info,event_log,event_watch表的数据
+        $this->db->trans_begin();
+
+        $this->db->where('m_id',$eid);
+        $this->db->delete('yq_business_msg');
+
+        $this->db->where('id');
+        $this->db->delete('event');
+
+        $this->db->where('event_id',$eid);
+        $this->db->delete('event_alert');
+
+        $this->db->where('event_id',$eid);
+        $this->db->delete('event_designate');
+
+        $this->db->where('event_id',$eid);
+        $this->db->delete('event_info');
+
+        $this->db->where('event_id',$eid);
+        $this->db->delete('event_log');
+
+        $this->db->where('event_id',$eid);
+        $this->db->delete('event_relate');
+
+        $this->db->where('event_id',$eid);
+        $this->db->delete('event_watch');
+
+        //删除 事件绑定的文档
+        $att_arr = $this->db->select('url')
+            ->from('event_attachment')
+            ->where('event_id',$eid)
+            ->get()->result_array();
+
+        //循环删除文件
+        if(!empty($att_arr)){
+            foreach ($att_arr as $att){
+                @unlink($_SERVER['DOCUMENT_ROOT'] . $att['url']);
+            }
+        }
+
+        //删除att 表里面的数据
+        $this->db->where('event_id',$eid);
+        $this->db->delete('event_attachment');
+
+        if ($this->db->trans_status() === FALSE) {
+            $this->db->trans_rollback();
+            return false;
+        } else {
+            $this->db->trans_commit();
+            return true;
+        }
+    }
+
 
     /**
      * 事件增派 插入数据
