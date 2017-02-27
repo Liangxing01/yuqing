@@ -901,7 +901,7 @@ class Designate_Model extends CI_Model
         $this->db->where('m_id',$eid);
         $this->db->delete('yq_business_msg');
 
-        $this->db->where('id');
+        $this->db->where('id',$eid);
         $this->db->delete('event');
 
         $this->db->where('event_id',$eid);
