@@ -123,6 +123,7 @@ class Event_Model extends CI_Model
     public function get_event_list_data($page_num, $size, $data_type, $user_type)
     {
         $uid = $this->session->uid;
+        $gid = explode(',', $this->session->userdata('gid')); // array 用户的组ID
         // 检查权限
         switch ($user_type) {
             case "manager":
@@ -150,9 +151,10 @@ class Event_Model extends CI_Model
         } else {
             return $this->param_error;
         }
-        // 查询数据 TODO 角色不同数据不同
-        switch ($data_type) {
-            case 'all':
+        // 查询数据
+        $user_data_type = $user_type . "_" . $data_type;
+        switch ($user_data_type) {
+            case 'manager_all':
                 $data = $this->db->select("event.id, event.title, A.name AS manager, B.name AS main_processor, C.name AS main_group, event.rank, event.state, event.start_time")
                     ->from("event")
                     ->join("user A", "A.id = event.manager", "left")
@@ -163,6 +165,131 @@ class Event_Model extends CI_Model
                     ->get()->result_array();
                 $total = $this->db->select("event.id")
                     ->from("event")
+                    ->get()->num_rows();
+                $this->success['data'] = $data;
+                $this->success['total'] = $total;
+                return $this->success;
+                break;
+//            case "processor_all":
+//                $data = $this->db->select("event_designate.event_id, event.title, event.rank, event.start_time, event.end_time, user.name, event_designate.state")
+//                    ->from("event_designate")
+//                    ->join('event', 'event.id = event_designate.event_id', 'left')
+//                    ->join('user', 'user.id = event_designate.manager', 'left')
+//                    ->group_start()
+//                    ->where('event_designate.processor', $uid)
+//                    ->or_where_in('event_designate.group', $gid)
+//                    ->group_end()
+//                    ->limit($size, $start)
+//                    ->order_by('event_designate.time', "desc")
+//                    ->get()->result_array();
+//                $total = $this->db->select("event_designate.event_id")
+//                    ->from("event_designate")
+//                    ->group_start()
+//                    ->where('event_designate.processor', $uid)
+//                    ->or_where_in('event_designate.group', $gid)
+//                    ->group_end()
+//                    ->get()->num_rows();
+//                $this->success['data'] = $data;
+//                $this->success['total'] = $total;
+//                return $this->success;
+//                break;
+            case "processor_undo":
+                $data = $this->db->select("event_designate.event_id, event.title, event.rank, event.start_time, event.end_time, user.name, event_designate.state")
+                    ->from("event_designate")
+                    ->join('event', 'event.id = event_designate.event_id', 'left')
+                    ->join('user', 'user.id = event_designate.manager', 'left')
+                    ->where(array("event_designate.state" => "未处理"))
+                    ->group_start()
+                    ->where('event_designate.processor', $uid)
+                    ->or_where_in('event_designate.group', $gid)
+                    ->group_end()
+                    ->limit($size, $start)
+                    ->order_by('event_designate.time', "desc")
+                    ->get()->result_array();
+                $total = $this->db->select("event_designate.event_id")
+                    ->from("event_designate")
+                    ->where(array("event_designate.state" => "未处理"))
+                    ->group_start()
+                    ->where('event_designate.processor', $uid)
+                    ->or_where_in('event_designate.group', $gid)
+                    ->group_end()
+                    ->get()->num_rows();
+                $this->success['data'] = $data;
+                $this->success['total'] = $total;
+                return $this->success;
+                break;
+            case "processor_doing":
+                $data = $this->db->select("event_designate.event_id, event.title, event.rank, event.start_time, event.end_time, user.name, event_designate.state")
+                    ->from("event_designate")
+                    ->join('event', 'event.id = event_designate.event_id', 'left')
+                    ->join('user', 'user.id = event_designate.manager', 'left')
+                    ->where(array("event_designate.state" => "处理中"))
+                    ->group_start()
+                    ->where('event_designate.processor', $uid)
+                    ->or_where_in('event_designate.group', $gid)
+                    ->group_end()
+                    ->limit($size, $start)
+                    ->order_by('event_designate.time', "desc")
+                    ->get()->result_array();
+                $total = $this->db->select("event_designate.event_id")
+                    ->from("event_designate")
+                    ->where(array("event_designate.state" => "处理中"))
+                    ->group_start()
+                    ->where('event_designate.processor', $uid)
+                    ->or_where_in('event_designate.group', $gid)
+                    ->group_end()
+                    ->get()->num_rows();
+                $this->success['data'] = $data;
+                $this->success['total'] = $total;
+                return $this->success;
+                break;
+            case "processor_done":
+                $data = $this->db->select("event_designate.event_id, event.title, event.rank, event.start_time, event.end_time, user.name, event.state")
+                    ->from("event_designate")
+                    ->join('event', 'event.id = event_designate.event_id', 'left')
+                    ->join('user', 'user.id = event_designate.manager', 'left')
+                    ->group_start()
+                    ->where("event.state", "未审核")
+                    ->or_where("event.state", "已完成")
+                    ->group_end()
+                    ->group_start()
+                    ->where('event_designate.processor', $uid)
+                    ->or_where_in('event_designate.group', $gid)
+                    ->group_end()
+                    ->limit($size, $start)
+                    ->order_by('event_designate.time', "desc")
+                    ->get()->result_array();
+                $total = $this->db->select("event_designate.event_id")
+                    ->from("event_designate")
+                    ->join('event', 'event.id = event_designate.event_id', 'left')
+                    ->group_start()
+                    ->where("event.state", "未审核")
+                    ->or_where("event.state", "已完成")
+                    ->group_end()
+                    ->group_start()
+                    ->where('event_designate.processor', $uid)
+                    ->or_where_in('event_designate.group', $gid)
+                    ->group_end()
+                    ->get()->num_rows();
+                $this->success['data'] = $data;
+                $this->success['total'] = $total;
+                return $this->success;
+                break;
+            case "watcher_all":
+                $data = $this->db->select("event.id, event.title, A.name AS manager, B.name AS main_processor, C.name AS main_group, event.rank, event.state, event.start_time")
+                    ->from("event")
+                    ->join("user A", "A.id = event.manager", "left")
+                    ->join("user B", "B.id = event.main_processor", "left")
+                    ->join("group C", "C.id = event.group", "left")
+                    ->join("event_watch D", "D.event_id = event.id", "left")
+                    ->where("D.watcher", $uid)
+                    ->order_by("event.start_time", "desc")
+                    ->limit($size, $start)
+                    ->get()->result_array();
+                $total = $this->db->select("event.id")
+                    ->from("event")
+                    ->join("event_watch D", "D.event_id = event.id", "left")
+                    ->where("D.watcher", $uid)
                     ->get()->num_rows();
                 $this->success['data'] = $data;
                 $this->success['total'] = $total;
