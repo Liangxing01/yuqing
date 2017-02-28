@@ -84,4 +84,20 @@ class Event extends CI_Controller
             ->set_content_type('application/json')
             ->set_output(json_encode($result));
     }
+
+
+    /**
+     * 事件审核
+     * POST参数: id 事件ID, option: verify_success=审核通过 verify_failed=审核不通过 commit=提交审核
+     */
+    public function event_check()
+    {
+        $event_id = $this->input->post("id");
+        $option = $this->input->post("option");
+        $result = $this->event->event_check($event_id, $option);
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($result));
+    }
+
 }

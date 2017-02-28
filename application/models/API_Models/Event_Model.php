@@ -400,6 +400,101 @@ class Event_Model extends CI_Model
 
 
     /**
+     * @param int $event_id 事件ID
+     * @param string $option 操作
+     * @return array
+     */
+    function event_check($event_id, $option)
+    {
+        // 检查权限
+        if (!$this->verify->can_see_event($event_id)) {
+            return $this->privilege_error;
+        }
+        // 事件审核操作
+        $time = time();
+        $uid = $this->session->uid; // 用户id
+        $gid = explode(',', $this->session->gid); // 用户组 id
+        switch ($option) {
+            case "verify_success":
+                // 指派人确认通过审核
+                if ($this->verify->is_manager()) {
+                    // 确认事件状态'未审核'才能操作
+                    $n = $this->db->select("id")->where(array("id" => $event_id, "state" => "未审核"))->get("event")->num_rows();
+                    if ($n != 1) {
+                        return $this->param_error;
+                    }
+                    $this->db->set(array("state" => "已完成", "end_time" => $time))->where(array('id' => $event_id, 'state' => '未审核'))->update("event");
+                    return $this->success;
+                } else {
+                    return $this->privilege_error;
+                }
+                break;
+            case "verify_failed":
+                // 指派人不通过审核
+                if ($this->verify->is_manager()) {
+                    // 确认事件状态'未审核'才能操作
+                    $n = $this->db->select("id")->where(array("id" => $event_id, "state" => "未审核"))->get("event")->num_rows();
+                    if ($n != 1) {
+                        return $this->param_error;
+                    }
+                    $this->db->trans_begin();
+                    $this->db->set(array("state" => "已指派"))->where(array('id' => $event_id, 'state' => '未审核'))->update("event");
+                    $this->db->set(array("state" => "处理中"))->where(array('event_id' => $event_id, 'state' => '已完成'))->update("event_designate");
+                    if ($this->db->trans_status() === FALSE) {
+                        $this->db->trans_rollback();
+                        return $this->param_error;
+                    } else {
+                        $this->db->trans_commit();
+                        return $this->success;
+                    }
+                } else {
+                    return $this->privilege_error;
+                }
+                break;
+            case "commit":
+                // 处理人提交审核
+                if ($this->is_main_processor($uid, $gid, $event_id)) {
+                    // 开始事务
+                    $this->db->trans_begin();
+                    // 修改事件状态为'未审核'
+                    $this->db->where(array('id' => $event_id, 'state' => '已指派'))->update('event', array('state' => '未审核', 'end_time' => $time));
+                    // 指派表状态为'已完成'
+                    $this->db->where(array('event_id' => $event_id, 'state' => '处理中'))->update('event_designate', array('state' => '已完成'));
+                    if ($this->db->trans_status() === FALSE) {
+                        $this->db->trans_rollback();
+                        return $this->param_error;
+                    } else {
+                        $this->db->trans_commit();
+                        return $this->success;
+                    }
+                } else {
+                    return $this->privilege_error;
+                }
+                break;
+            default:
+                return $this->param_error;
+        }
+    }
+
+
+    /**
+     * @param int $uid
+     * @param array $gid
+     * @param int $event_id
+     * @return bool
+     */
+    protected function is_main_processor($uid, $gid, $event_id)
+    {
+        $event = $this->db->select('main_processor, group')->get_where('event', array('id' => $event_id))->row();
+        if (in_array($event->group, $gid) || $event->main_processor == $uid) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+    /**
      * 判断用户是否为事件督察组
      * @param int $eid
      * @param int $uid
