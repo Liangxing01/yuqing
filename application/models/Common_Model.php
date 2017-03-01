@@ -12,6 +12,7 @@ class Common_Model extends CI_Model
     {
         parent::__construct();
         $this->load->database();
+        $this->load->model("Verify_Model", "verify");
     }
 
     /**
@@ -184,7 +185,7 @@ class Common_Model extends CI_Model
             return false;
         }
         //用户是否可以下载该文件
-        $this->load->model("Verify_Model", "verify");
+
         $e_can = $this->verify->can_see_event($attachment_info["event_id"]);
         if (!$e_can) {
             return false;
@@ -1058,7 +1059,7 @@ class Common_Model extends CI_Model
      * @return mixed
      */
     public function get_secret_list($pInfo){
-        $data['aaData'] = $this->db->select("ea.id,email.title,ea.file_name,user.name,ea.print_num,email.time")
+        $data['aaData'] = $this->db->select("ea.id,email.title,ea.file_name,user.name,ea.print_num,email.time,ea.is_exist")
             ->from('email_attachment as ea')
             ->join('email','email.id = ea.eid')
             ->join('user','user.id = email.sender')
@@ -1100,6 +1101,33 @@ class Common_Model extends CI_Model
             ->where('email_attID',$fid)
             ->get()->result_array();
         return $record;
+    }
+
+    /**
+     * 删除 涉密文件
+     * @param $fid 文件id
+     * @return bool
+     */
+    public function del_att_by_id($fid){
+        //检查是否有 指派人权限
+        $check = $this->verify->is_manager();
+        if(!$check){
+            return false;
+        }
+        $result = $this->db->select('loc')
+            ->from('email_attachment')
+            ->where('id',$fid)
+            ->get()->row_array();
+        //删除文件
+        @unlink($_SERVER['DOCUMENT_ROOT'] . $result['loc']);
+
+        //更新 is_exist 字段为0
+        $update = array(
+            'is_exist' => 0
+        );
+        $this->db->where('id',$fid);
+        $res = $this->db->update('email_attachment',$update);
+        return $res;
     }
 
 

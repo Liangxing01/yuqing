@@ -776,6 +776,21 @@ class Common extends MY_Controller
     }
 
     /**
+     * 接口：删除 涉密文件
+     * GET fid 文件id
+     */
+    public function del_sec_att(){
+        $this->load->model('Common_Model','common');
+        $fid = $this->input->get('fid');
+        $res = $this->common->del_att_by_id($fid);
+        if($res){
+            echo 1;
+        }else{
+            echo 0;
+        }
+    }
+
+    /**
      * ---------------------------点名系统 回复我在线 -------------------------
      */
     /**
