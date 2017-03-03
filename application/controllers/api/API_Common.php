@@ -21,4 +21,13 @@ class API_Common extends CI_Controller
             ->set_content_type('application/json')
             ->set_output(json_encode($result));
     }
+
+
+    /**
+     * 用户登出 接口
+     */
+    public function logout()
+    {
+        $this->identity->m_destroy();
+    }
 }

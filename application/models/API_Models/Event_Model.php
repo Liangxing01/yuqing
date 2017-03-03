@@ -154,7 +154,7 @@ class Event_Model extends CI_Model
         // 查询数据
         $user_data_type = $user_type . "_" . $data_type;
         switch ($user_data_type) {
-            case 'manager_all':
+            case 'manager_all_event':
                 $data = $this->db->select("event.id, event.title, A.name AS manager, B.name AS main_processor, C.name AS main_group, event.rank, event.state, event.start_time")
                     ->from("event")
                     ->join("user A", "A.id = event.manager", "left")
@@ -165,6 +165,25 @@ class Event_Model extends CI_Model
                     ->get()->result_array();
                 $total = $this->db->select("event.id")
                     ->from("event")
+                    ->get()->num_rows();
+                $this->success['data'] = $data;
+                $this->success['total'] = $total;
+                return $this->success;
+                break;
+            case "manager_undo_event":
+                // 未审核事件列表
+                $data = $this->db->select("event.id, event.title, A.name AS manager, B.name AS main_processor, C.name AS main_group, event.rank, event.state, event.start_time")
+                    ->from("event")
+                    ->join("user A", "A.id = event.manager", "left")
+                    ->join("user B", "B.id = event.main_processor", "left")
+                    ->join("group C", "C.id = event.group", "left")
+                    ->where("event.state", "未审核")
+                    ->order_by("start_time", "desc")
+                    ->limit($size, $start)
+                    ->get()->result_array();
+                $total = $this->db->select("event.id")
+                    ->from("event")
+                    ->where("event.state", "未审核")
                     ->get()->num_rows();
                 $this->success['data'] = $data;
                 $this->success['total'] = $total;
@@ -194,6 +213,7 @@ class Event_Model extends CI_Model
 //                return $this->success;
 //                break;
             case "processor_undo":
+                // 未处理列表
                 $data = $this->db->select("event_designate.event_id, event.title, event.rank, event.start_time, event.end_time, user.name, event_designate.state")
                     ->from("event_designate")
                     ->join('event', 'event.id = event_designate.event_id', 'left')
@@ -219,6 +239,7 @@ class Event_Model extends CI_Model
                 return $this->success;
                 break;
             case "processor_doing":
+                // 处理中列表
                 $data = $this->db->select("event_designate.event_id, event.title, event.rank, event.start_time, event.end_time, user.name, event_designate.state")
                     ->from("event_designate")
                     ->join('event', 'event.id = event_designate.event_id', 'left')
@@ -244,6 +265,7 @@ class Event_Model extends CI_Model
                 return $this->success;
                 break;
             case "processor_done":
+                // 已完成列表
                 $data = $this->db->select("event_designate.event_id, event.title, event.rank, event.start_time, event.end_time, user.name, event.state")
                     ->from("event_designate")
                     ->join('event', 'event.id = event_designate.event_id', 'left')

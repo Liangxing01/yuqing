@@ -226,4 +226,11 @@ class Identity_Auth
         exit(0);
     }
 
+    //注销移动端用户
+    public function m_destroy()
+    {
+        session_destroy();
+        exit(0);
+    }
+
 }

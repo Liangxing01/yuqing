@@ -223,7 +223,7 @@ class Info_Model extends CI_Model
                 return $this->success;
                 break;
             case 'unconfirmed':
-                // 返回未确认信息
+                // TODO 返回未确认信息
                 // 权限验证
                 if (!$this->verify->is_manager()) {
                     return $this->privilege_error;
@@ -247,6 +247,68 @@ class Info_Model extends CI_Model
 //                $this->success["total"] = $this->db->join("user", "user.id = info.publisher", "left")
 //                    ->where(array("user.id" => $uid))
 //                    ->get("info")->num_rows();
+                return $this->success;
+                break;
+            default:
+                return $this->param_error;
+                break;
+        }
+    }
+
+
+    /**
+     * 获取上报信息列表
+     * @param int $page_num
+     * @param int $size
+     * @param string $data_type
+     * @return array
+     */
+    public function get_info_list_data($page_num, $size, $data_type)
+    {
+        // 检测参数
+        if (is_int($page_num) && is_int($size)) {
+            $start = ($page_num - 1) * $size;
+        } else {
+            return $this->param_error;
+        }
+        // 检测权限
+        if (!$this->verify->is_manager()) {
+            return $this->privilege_error;
+        }
+        // 查询数据
+        switch ($data_type) {
+            case "all_message" :
+                // 所有数据
+                $data = $this->db->select("info.id, info.title, source, type.name AS type, user.name AS publisher, time, duplicate, state")
+                    ->from("info")
+                    ->join("user", "user.id = info.publisher", "left")
+                    ->join("type", "type.id = info.type", "left")
+                    ->order_by("time", "desc")
+                    ->limit($size, $start)
+                    ->get()->result_array();
+                $total = $this->db->select("info.id")
+                    ->from("info")
+                    ->get()->num_rows();
+                $this->success['data'] = $data;
+                $this->success['total'] = $total;
+                return $this->success;
+                break;
+            case "undo_message":
+                // 未确认数据
+                $data = $this->db->select("info.id, info.title, source, type.name AS type, user.name AS publisher, time, duplicate, state")
+                    ->from("info")
+                    ->join("user", "user.id = info.publisher", "left")
+                    ->join("type", "type.id = info.type", "left")
+                    ->where(array("info.state >=" => 0, "info.state <" => 2))
+                    ->order_by("time", "desc")
+                    ->limit($size, $start)
+                    ->get()->result_array();
+                $total = $this->db->select("info.id")
+                    ->from("info")
+                    ->where(array("info.state >=" => 0, "info.state <" => 2))
+                    ->get()->num_rows();
+                $this->success['data'] = $data;
+                $this->success['total'] = $total;
                 return $this->success;
                 break;
             default:
