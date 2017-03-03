@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Api_Common extends CI_Controller
+class Api_common extends CI_Controller
 {
     public function __construct()
     {
