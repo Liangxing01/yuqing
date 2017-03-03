@@ -1,11 +1,11 @@
 <link rel="stylesheet" href="/css/common.css">
 <!-- Jquery Tags Input CSS -->
 <link rel="stylesheet" href="/assets/jquery-tags-input/jquery.tagsinput.min.css">
-<link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
+<!-- <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css"> -->
 <script src="/js/ZeroClipboard.min.js"></script>
 <!-- Tags Input -->
 <script src="/assets/jquery-tags-input/jquery.tagsinput.min.js"></script>
-<script type="text/javascript" src="/js/bootstrap.min.js"></script>
+<!-- <script type="text/javascript" src="/js/bootstrap.min.js"></script> -->
 <style>
     .inbox-body {
         background: #FFF;
@@ -106,7 +106,7 @@
                     <div class="col-md-9 info_detail_pos">
                         <label for="info_tag">涉及领域</label>
                         <input class="tags" id="info_tag">
-                        <span class="btn btn-md btn-primary tags_choose" data-toggle="modal" data-target="#tagsModal">选择</span>
+                        <span class="btn btn-md btn-primary tags_choose" data-toggle="modal" data-target="#tagsModal" aria-hidden="true">选择</span>
                     </div>
                 </div>
                 
@@ -177,17 +177,63 @@
 <!-- Page Script -->
 <script language="javascript">
     $(function(){
+        var checkNum = 0;   //领域多选框个数
+
         //inputtags的初始化
         $('#info_tag').tagsInput({
-            width: '400px',
-            height: '34px',
-            defaultText: "",
-            delimiter: ",",
-            interactive: false
+            'width': '400px',
+            'height': '34px',
+            'defaultText': "",
+            'delimiter': ",",
+            'interactive': false,
+            'onRemoveTag': function(){
+                $('.info_modal input').each(function(){
+                    $(this).attr('disabled',false)
+                })
+            },
         });
+
+        //领域选择按钮
+        $('.tags_choose').click(function(){
+
+            $('.info_modal input').each(function(){
+                this.checked = false;
+            })
+            if($("#info_tag").val() !== ""){
+                var conList = $('#info_tag').val().split(',');
+                checkNum = conList.length;
+                for(var i = 0,len = conList.length;i<len;i++){
+                    $('.info_modal input[data-content="'+conList[i]+'"]')[0].checked = true;
+                }
+            }
+            
+        })
+
+        //多选框的点击事件
+        $('.info_modal').delegate('input','click',function(){
+            if(this.checked == true){
+                checkNum++;
+            }else{
+                checkNum--;
+            }
+
+            if(checkNum>4){
+                layer.msg('最多选择四项',{"anim":6});
+                this.checked = false;
+                checkNum--;
+                $('.info_modal input:not(:checked)').each(function(){
+                    $(this).attr("disabled","disabled");
+                });
+            }else{
+                $('.info_modal input:disabled').each(function(){
+                    $(this).attr("disabled",false);
+                });
+            }
+        })
 
         // 添加领域信息按钮功能函数 
         $('.addInfo').click(function(){
+            $('#info_tag').importTags("");  //清空输入框
             var targetEle = $('.info_modal input:checked');
             if(targetEle.length > 4){
                 layer.msg('你至多只能选择四个领域信息类！');
@@ -201,16 +247,13 @@
                     var cont = $(this).data('content');
                     tagsId.push(id);
                     tagsCon.push(cont);
-
-                    if(!$("#info_tag").tagExist(cont)){
+                   /* if(!$("#info_tag").tagExist(cont)){
                         $("#info_tag").addTag(cont);
-                    }
-                    
+                    }*/
                 });
                 tagsIdList = tagsId.join(',');
                 tagsConList = tagsCon.join(',');
-
-                $('#info_tag').data("id",tagsIdList);
+                $('#info_tag').importTags(tagsConList);
                 $('#tagsModal').modal('hide');
                 }  
             }

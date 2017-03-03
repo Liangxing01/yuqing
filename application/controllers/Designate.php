@@ -244,6 +244,12 @@ class Designate extends MY_controller
         $data["watcher"] = $this->input->post("watcher", true);               //督办人
         $data["attachment"] = $this->input->post("attachment", true);         //附件
 
+        //判断是否是改派，改派先删除原有记录 再添加记录
+        $flag = $this->input->post('reset');
+        $eid  = $this->input->post('eid');
+        if($flag == 1){
+            $this->designate->del_designate($eid);
+        }
         $result = $this->designate->event_designate($data);
         if ($result) {
             echo 1;   //指派成功
@@ -289,6 +295,27 @@ class Designate extends MY_controller
             ->set_output(json_encode($res));
     }
 
+
+    /**
+     * ----------------------------事件改派 接口----------------------
+     */
+
+    /**
+     * 接口: 获取已指派的事件信息 填充到页面表单
+     */
+
+    public function get_designate_info(){
+        $eid  = $this->input->get('eid');
+        $info = $this->designate->designate_info($eid);
+
+        echo json_encode($info);
+    }
+
+
+
+    /**
+     * -------------------------------------------------------------
+     */
 
     /**
      * 事件处理 timeline 视图载入

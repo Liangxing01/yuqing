@@ -20,6 +20,7 @@ class URL_Model extends CI_Model {
      * 4601 管控 命令执行
      */
     public function run4601($codes){
+        //政府管控
         $host = "2001:250:221::6";
         $port = 2222;
         $username = "root";
@@ -34,6 +35,23 @@ class URL_Model extends CI_Model {
         $run_code = substr($str,0,-1);
         //var_dump($run_code);
         ssh2_exec($connection, $run_code);
+
+
+        //公司管控
+        $com_host = "2001:250:221:9:7::1";
+        $com_port = 2222;
+        $com_username = "root";
+        $com_password = "v6plusv6plus";
+        $com_connection = ssh2_connect($com_host, $com_port);
+        ssh2_auth_password($com_connection, $com_username, $com_password);
+
+        $str = "";
+        foreach ($codes as $code){
+            $str .= $code . " \n";
+        }
+        $run_code = substr($str,0,-1);
+        ssh2_exec($com_connection, $run_code);
+
     }
 
     /**

@@ -58,6 +58,15 @@ textarea{
     position: absolute;
     cursor: pointer;
 }
+
+.lock-icon{ 
+    display: inline-block;
+    width: 35px;
+    height: 35px;
+    background: url(/img/secret.png) no-repeat;
+    background-size: 100%;
+    visibility:hidden;
+  }
 </style>
 	
 <!-- BEGIN MAIN CONTENT -->
@@ -315,8 +324,12 @@ textarea{
                 return false;
             }
             var att_id = [];
+
+
             $('.cancle-file').each(function(){
-                att_id.push($(this).data('id'));
+                var isSecret = $(this).parent().siblings().find('.secretInput')[0].checked ? 1:0;
+
+                att_id.push($(this).data('id') + '-' + isSecret);
             })
             att_id = att_id.join(',');
 
@@ -354,6 +367,26 @@ textarea{
             }
         }
     }
+
+    function changeRed(obj){
+       if(obj.checked){
+          var part = $(obj).parent().parent();
+          var fileName = part.find('.name span').html();
+          var fileType = fileName.slice(fileName.indexOf('.')+1);
+          
+          if(fileType !== 'pdf'){
+            layer.msg("加密文件请上传pdf格式");
+            obj.checked = false;
+            return;
+          }else{
+            part.find('.lock-icon').css('visibility','visible');
+          }
+        }else{
+          $(obj).parent().parent().find('.lock-icon').css('visibility','hidden');
+        }
+    }
+
+
     $(function(){
         check_receive();
     })
@@ -387,6 +420,7 @@ textarea{
                 </button>
             {% } %}
         </td>
+        <td></td>
     </tr>
 {% } %}
 
@@ -405,13 +439,16 @@ textarea{
         </td>
         <td>
             <p class="name">
-                    <span>{%=file.name%}提交成功！</span>
+                    <span>{%=file.name%}</span>提交成功！
         </td>
         <td>
             <button class="cancle-file" data-id="{%=file.id%}">取消上传</button>
         </td>
         <td>
+            <input type="checkbox" name="encryptionInfo" onclick="changeRed(this)" class="secretInput">
+            <span>涉密</span>
         </td>
+        <td><span class="lock-icon"></span></td>
     </tr>
 {% } %}
 

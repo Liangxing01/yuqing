@@ -227,4 +227,199 @@ and (yq_event.main_processor = yq_event_designate.`processor` or yq_event.group 
         $objWriter->save('php://output');
 
     }
+
+    /**
+     * 导出单一舆情 综合情况
+     * 按勾选选项排序展示
+     */
+    public function export_one_event($data){
+        $this->load->library('PHPExcel');
+        $objPHPExcel = new PHPExcel();
+
+        /*以下是一些设置 ，什么作者  标题啊之类的*/
+        $objPHPExcel->getProperties()->setCreator("重庆巴南网信办")
+            ->setLastModifiedBy("v6plus")
+            ->setTitle("网络舆情综合情况表")
+            ->setSubject("网络舆情综合情况表")
+            ->setDescription("网络舆情综合情况表")
+            ->setKeywords("网络舆情综合情况表")
+            ->setCategory("网络舆情综合情况表");
+
+        $objPHPExcel->setActiveSheetIndex(0);
+
+        // 所有单元格默认高度
+        $objPHPExcel->getActiveSheet()->getDefaultRowDimension()->setRowHeight(45);
+
+        $objPHPExcel->getActiveSheet()->getColumnDimension('A')->setWidth(15);
+        $objPHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth(25);
+        $objPHPExcel->getActiveSheet()->getColumnDimension('C')->setWidth(10);
+        $objPHPExcel->getActiveSheet()->getColumnDimension('D')->setWidth(25);
+
+        //设置默认字体 大小
+        $objPHPExcel->getActiveSheet()->getStyle('A2:D14')->getFont()->setName('宋体');
+        $objPHPExcel->getActiveSheet()->getStyle('A2:D14')->getFont()->setSize(12);
+        $objPHPExcel->getActiveSheet()->getStyle('A2:D14')->getAlignment()->setWrapText(true);//自动换行
+
+        //加边框
+        $objPHPExcel->getActiveSheet()->getStyle("A2:D14")->applyFromArray(
+            array(
+                'borders' => array(
+                    'allborders' => array(
+                        'style' => PHPExcel_Style_Border::BORDER_THIN
+                    )
+                )
+            )
+        );
+
+        //垂直居中
+        $objPHPExcel->getActiveSheet()->getStyle('A2:D14')->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+        $objPHPExcel->getActiveSheet()->getStyle('A2:D14')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+
+        //设置部分空格 向左对齐
+        $objPHPExcel->getActiveSheet()->getStyle('B9')->getAlignment()->setHorizontal();
+        $objPHPExcel->getActiveSheet()->getStyle('B13')->getAlignment()->setHorizontal();
+        $objPHPExcel->getActiveSheet()->getStyle('B7')->getAlignment()->setHorizontal();
+        //合并单元格 填写标题
+        $objPHPExcel->getActiveSheet()->mergeCells('A1:D1');
+        $objPHPExcel->getActiveSheet()->setCellValue('A1', '网络舆情综合情况表');
+        //设置加粗 居中
+        $objPHPExcel->getActiveSheet()->getStyle('A1')->getFont()->setSize(20);
+        $objPHPExcel->getActiveSheet()->getStyle('A1')->getFont()->setBold(true);
+        $objPHPExcel->getActiveSheet()->getStyle('A1')->getFont()->setName('宋体');
+        $objPHPExcel->getActiveSheet()->getStyle('A1:D1')->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+        $objPHPExcel->getActiveSheet()->getStyle('A1:D1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+
+        /**
+         * 根据 eid 查询数据库信息，然后填充表格
+         */
+        $event_info = $this->db->query("select yq_event.id,yq_event.title,yq_event.start_time as time,if(yq_event.main_processor != '',
+        (select yq_user.name from yq_user where yq_user.id = yq_event.`main_processor`),
+        (select yq_group.name from yq_group where yq_group.id = yq_event.`group`)) as host_person,
+        if(yq_event.group != '',(select yq_group.name from yq_group where yq_group.id = yq_event.`group`),
+        (select yq_group.name FROM yq_group join yq_event on yq_event.id = ".$data['eid']."
+        join yq_user_group on yq_user_group.uid = yq_event.main_processor 
+        where yq_group.id = yq_user_group.gid)) 
+        as host_group,
+        yq_event.first_reply,yq_event.end_time from yq_event
+        where yq_event.id = ".$data['eid'])->row_array();
+
+
+        $objPHPExcel->getActiveSheet()->setTitle($event_info['title']);
+        // 填写舆情标题
+        $objPHPExcel->getActiveSheet()->mergeCells('B2:D2');
+        $objPHPExcel->getActiveSheet()->setCellValue('A2', '舆情标题');
+        $objPHPExcel->getActiveSheet()->setCellValue('B2', $event_info['title']);
+
+        //填写时间
+        $objPHPExcel->getActiveSheet()->setCellValue('A3', '时间');
+        $objPHPExcel->getActiveSheet()->setCellValue('B3', $event_info['time'] ? date("Y-m-d H:i:s",$event_info['time']) : '无');
+
+        //填写地点
+        $objPHPExcel->getActiveSheet()->setCellValue('C3', '地点');
+        $objPHPExcel->getActiveSheet()->setCellValue('D3', '');
+
+        //承办单位
+        $objPHPExcel->getActiveSheet()->setCellValue('A4', '承办单位');
+        $objPHPExcel->getActiveSheet()->setCellValue('B4', $event_info['host_group']);
+
+        //承办人
+        $objPHPExcel->getActiveSheet()->setCellValue('C4', '承办人');
+        $objPHPExcel->getActiveSheet()->setCellValue('D4', $event_info['host_person']);
+
+        //首回时间
+        $objPHPExcel->getActiveSheet()->setCellValue('A5', '首回时间');
+        $objPHPExcel->getActiveSheet()->setCellValue('B5', $event_info['first_reply'] ? date("Y-m-d H:i:s",$event_info['first_reply']) : '无');
+
+        //办结时间
+        $objPHPExcel->getActiveSheet()->setCellValue('C5', '办结时间');
+        $objPHPExcel->getActiveSheet()->setCellValue('D5', $event_info['end_time'] ? date("Y-m-d H:i:s",$event_info['end_time']) : '无');
+
+        //办结回复
+        $objPHPExcel->getActiveSheet()->setCellValue('A6', '办结回复');
+        $objPHPExcel->getActiveSheet()->setCellValue('B6', '');
+
+        /**
+         * 联表查询 一个事件对应的 所有上报信息
+         */
+        $info_list = $this->db->select("info.description,info.url")->from('event')
+            ->join('event_info','event_info.event_id = event.id')
+            ->join('info','info.id = event_info.info_id')
+            ->where('event.id',$data['eid'])
+            ->get()->result_array();
+
+        //拼接摘要和网络链接
+        $des = "";
+        $url = "";
+        foreach ($info_list as $k => $item){
+            $des .= "$k:".$item['description']."\n";
+            $url .= "$k:".$item['url']."\n";
+        }
+
+        //原贴摘要
+        $objPHPExcel->getActiveSheet()->mergeCells('B7:D7');
+        $objPHPExcel->getActiveSheet()->setCellValue('A7', '原贴摘要');
+        $objPHPExcel->getActiveSheet()->setCellValue('B7', $des);
+
+        //原文截图
+        $objPHPExcel->getActiveSheet()->mergeCells('B8:D8');
+        $objPHPExcel->getActiveSheet()->setCellValue('A8', '原文截图');
+        $objPHPExcel->getActiveSheet()->setCellValue('B8', '');
+
+        //始发网络链接
+        $objPHPExcel->getActiveSheet()->setCellValue('A9', '始发网络链接');
+        $objPHPExcel->getActiveSheet()->setCellValue('B9', $url);
+
+        //舆情截图
+        $objPHPExcel->getActiveSheet()->setCellValue('C9', '舆情截图');
+        $objPHPExcel->getActiveSheet()->setCellValue('D9', '');
+
+        //转发情况
+        $objPHPExcel->getActiveSheet()->setCellValue('A10', '转发情况(含转发链接及时间)');
+        $objPHPExcel->getActiveSheet()->setCellValue('B10', '');
+
+        //转发数量统计
+        $objPHPExcel->getActiveSheet()->setCellValue('C10', '转发数量统计');
+        $objPHPExcel->getActiveSheet()->setCellValue('D10', '');
+
+        //转发平台统计
+        $objPHPExcel->getActiveSheet()->mergeCells('B11:D11');
+        $objPHPExcel->getActiveSheet()->setCellValue('A11', '转发平台统计');
+        $objPHPExcel->getActiveSheet()->setCellValue('B11', '');
+
+        //评论数量及趋势
+        $objPHPExcel->getActiveSheet()->mergeCells('B12:D12');
+        $objPHPExcel->getActiveSheet()->setCellValue('A12', '评论数量及趋势');
+        $objPHPExcel->getActiveSheet()->setCellValue('B12', '');
+
+        /**
+         * 检索查询 交互日志
+         */
+        $log = $this->db->select("l.description,l.pid,l.id,l.time,user.name,l.speaker")
+            ->from('event_log AS l')
+            ->where('l.event_id', $data['eid'])
+            ->join('user','l.speaker = user.id')
+            ->order_by('time', 'DESC')->get()
+            ->result_array();
+        //var_dump($log);
+        //拼接日志 形成 "时间 某某某:XXXX"
+        $format_log = "";
+        foreach ($log as $item){
+            $format_log .= date("Y-m-d",$item['time'])." ".$item['name'].":".$item['description']."\n";
+        }
+        //处置情况
+        $objPHPExcel->getActiveSheet()->mergeCells('A13:A14');
+        $objPHPExcel->getActiveSheet()->mergeCells('B13:D14');
+        $objPHPExcel->getActiveSheet()->setCellValue('A13', '处置情况');
+        $objPHPExcel->getActiveSheet()->setCellValue('B13', $format_log);
+
+
+
+        header('Content-Disposition: attachment;filename="'.$event_info['title'].'--舆情综合情况表'.'.xlsx"');
+
+        header('Content-Type: application/vnd.ms-excel');
+        header('Cache-Control: max-age=0');
+        header("Content-Type: application/download");
+        $objWriter = new PHPExcel_Writer_Excel2007($objPHPExcel);
+        $objWriter->save('php://output');
+    }
 }
