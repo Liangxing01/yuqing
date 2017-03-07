@@ -432,7 +432,7 @@
                 var done_state = $("#done_state").val();
                 if(done_state == 1){
                     $("textarea").attr('disabled','disabled');
-                    $('input').attr("disabled","disabled");
+                    $('input:not(#reply_time)').attr("disabled","disabled");
                     $("#sjwc").hide();
                 }
 
@@ -675,7 +675,7 @@
         var done_state = $("#done_state").val();
         if(done_state == 1){
             $("textarea").attr('disabled','disabled');
-            $('input').attr("disabled","disabled");
+            $('input:not(#reply_time)').attr("disabled","disabled");
             $("#sjwc").hide();
         }
 
