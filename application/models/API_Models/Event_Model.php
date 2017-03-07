@@ -341,7 +341,7 @@ class Event_Model extends CI_Model
         }
         // 查询数据
         $data = array();
-        $data["detail"] = $this->db->select("event.id, event.title, event.description, reply_time, A.name AS manager, B.name AS main_processor, C.name AS main_group, event.rank, event.state, event.start_time, event.end_time")
+        $data["detail"] = $this->db->select("event.id, event.title, event.description, first_reply AS reply_time, A.name AS manager, B.name AS main_processor, C.name AS main_group, event.rank, event.state, event.start_time, event.end_time")
             ->from("event")
             ->join("user A", "A.id = event.manager", "left")
             ->join("user B", "B.id = event.main_processor", "left")
