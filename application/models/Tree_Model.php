@@ -168,9 +168,13 @@ class Tree_Model extends CI_Model
      */
     public function get_group_tree()
     {
-        $group = $this->db->select("group.id, group.name")->get("group")->result_array();
+        $group = $this->db->select("group.id, group.name, relation.id AS tid")
+            ->join("relation", "relation.uid = group.id", "left")
+            ->where("relation.type = 0 or relation.type = 2")
+            ->get("group")->result_array();
         $tree = array(
             "id" => 0,
+            "tid" => 1,
             "name" => "单位",
             "open" => true,
             "children" => array()
@@ -178,6 +182,7 @@ class Tree_Model extends CI_Model
         foreach ($group AS $g) {
             $tree["children"][] = array(
                 "id" => $g["id"],
+                "tid" => $g["tid"],
                 "name" => $g["name"],
                 "icon" => '/assets/ztree/zTreeStyle/img/group.png'
             );

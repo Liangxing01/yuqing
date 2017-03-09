@@ -118,9 +118,10 @@ class Event_Model extends CI_Model
      * @param int $size
      * @param string $data_type
      * @param string $user_type
+     * @param string $keyword
      * @return array
      */
-    public function get_event_list_data($page_num, $size, $data_type, $user_type)
+    public function get_event_list_data($page_num, $size, $data_type, $user_type, $keyword)
     {
         $uid = $this->session->uid;
         $gid = explode(',', $this->session->userdata('gid')); // array 用户的组ID
@@ -151,12 +152,14 @@ class Event_Model extends CI_Model
         } else {
             return $this->param_error;
         }
+        $keyword = is_null($keyword) ? "" : $keyword;
         // 查询数据
         $user_data_type = $user_type . "_" . $data_type;
         switch ($user_data_type) {
             case 'manager_all_event':
                 $data = $this->db->select("event.id, event.title, A.name AS manager, B.name AS main_processor, C.name AS main_group, event.rank, event.state, event.start_time")
                     ->from("event")
+                    ->like("event.title", $keyword)
                     ->join("user A", "A.id = event.manager", "left")
                     ->join("user B", "B.id = event.main_processor", "left")
                     ->join("group C", "C.id = event.group", "left")
@@ -164,6 +167,7 @@ class Event_Model extends CI_Model
                     ->limit($size, $start)
                     ->get()->result_array();
                 $total = $this->db->select("event.id")
+                    ->like("event.title", $keyword)
                     ->from("event")
                     ->get()->num_rows();
                 $this->success['data'] = $data;
@@ -178,40 +182,19 @@ class Event_Model extends CI_Model
                     ->join("user B", "B.id = event.main_processor", "left")
                     ->join("group C", "C.id = event.group", "left")
                     ->where("event.state", "未审核")
+                    ->like("event.title", $keyword)
                     ->order_by("start_time", "desc")
                     ->limit($size, $start)
                     ->get()->result_array();
                 $total = $this->db->select("event.id")
                     ->from("event")
                     ->where("event.state", "未审核")
+                    ->like("event.title", $keyword)
                     ->get()->num_rows();
                 $this->success['data'] = $data;
                 $this->success['total'] = $total;
                 return $this->success;
                 break;
-//            case "processor_all":
-//                $data = $this->db->select("event_designate.event_id, event.title, event.rank, event.start_time, event.end_time, user.name, event_designate.state")
-//                    ->from("event_designate")
-//                    ->join('event', 'event.id = event_designate.event_id', 'left')
-//                    ->join('user', 'user.id = event_designate.manager', 'left')
-//                    ->group_start()
-//                    ->where('event_designate.processor', $uid)
-//                    ->or_where_in('event_designate.group', $gid)
-//                    ->group_end()
-//                    ->limit($size, $start)
-//                    ->order_by('event_designate.time', "desc")
-//                    ->get()->result_array();
-//                $total = $this->db->select("event_designate.event_id")
-//                    ->from("event_designate")
-//                    ->group_start()
-//                    ->where('event_designate.processor', $uid)
-//                    ->or_where_in('event_designate.group', $gid)
-//                    ->group_end()
-//                    ->get()->num_rows();
-//                $this->success['data'] = $data;
-//                $this->success['total'] = $total;
-//                return $this->success;
-//                break;
             case "processor_undo":
                 // 未处理列表
                 $data = $this->db->select("event_designate.event_id, event.title, event.rank, event.start_time, event.end_time, user.name, event_designate.state")
@@ -219,6 +202,7 @@ class Event_Model extends CI_Model
                     ->join('event', 'event.id = event_designate.event_id', 'left')
                     ->join('user', 'user.id = event_designate.manager', 'left')
                     ->where(array("event_designate.state" => "未处理"))
+                    ->like("event.title", $keyword)
                     ->group_start()
                     ->where('event_designate.processor', $uid)
                     ->or_where_in('event_designate.group', $gid)
@@ -228,7 +212,9 @@ class Event_Model extends CI_Model
                     ->get()->result_array();
                 $total = $this->db->select("event_designate.event_id")
                     ->from("event_designate")
+                    ->join('event', 'event.id = event_designate.event_id', 'left')
                     ->where(array("event_designate.state" => "未处理"))
+                    ->like("event.title", $keyword)
                     ->group_start()
                     ->where('event_designate.processor', $uid)
                     ->or_where_in('event_designate.group', $gid)
@@ -245,6 +231,7 @@ class Event_Model extends CI_Model
                     ->join('event', 'event.id = event_designate.event_id', 'left')
                     ->join('user', 'user.id = event_designate.manager', 'left')
                     ->where(array("event_designate.state" => "处理中"))
+                    ->like("event.title", $keyword)
                     ->group_start()
                     ->where('event_designate.processor', $uid)
                     ->or_where_in('event_designate.group', $gid)
@@ -254,7 +241,9 @@ class Event_Model extends CI_Model
                     ->get()->result_array();
                 $total = $this->db->select("event_designate.event_id")
                     ->from("event_designate")
+                    ->join('event', 'event.id = event_designate.event_id', 'left')
                     ->where(array("event_designate.state" => "处理中"))
+                    ->like("event.title", $keyword)
                     ->group_start()
                     ->where('event_designate.processor', $uid)
                     ->or_where_in('event_designate.group', $gid)
@@ -278,6 +267,7 @@ class Event_Model extends CI_Model
                     ->where('event_designate.processor', $uid)
                     ->or_where_in('event_designate.group', $gid)
                     ->group_end()
+                    ->like("event.title", $keyword)
                     ->limit($size, $start)
                     ->order_by('event_designate.time', "desc")
                     ->get()->result_array();
@@ -292,6 +282,7 @@ class Event_Model extends CI_Model
                     ->where('event_designate.processor', $uid)
                     ->or_where_in('event_designate.group', $gid)
                     ->group_end()
+                    ->like("event.title", $keyword)
                     ->get()->num_rows();
                 $this->success['data'] = $data;
                 $this->success['total'] = $total;
@@ -305,6 +296,7 @@ class Event_Model extends CI_Model
                     ->join("group C", "C.id = event.group", "left")
                     ->join("event_watch D", "D.event_id = event.id", "left")
                     ->where("D.watcher", $uid)
+                    ->like("event.title", $keyword)
                     ->order_by("event.start_time", "desc")
                     ->limit($size, $start)
                     ->get()->result_array();
@@ -312,6 +304,7 @@ class Event_Model extends CI_Model
                     ->from("event")
                     ->join("event_watch D", "D.event_id = event.id", "left")
                     ->where("D.watcher", $uid)
+                    ->like("event.title", $keyword)
                     ->get()->num_rows();
                 $this->success['data'] = $data;
                 $this->success['total'] = $total;
