@@ -223,9 +223,10 @@ class Info_Model extends CI_Model
      * @param int $page_num
      * @param int $size
      * @param string $data_type
+     * @param string $keyword
      * @return array
      */
-    public function get_info_list_data($page_num, $size, $data_type)
+    public function get_info_list_data($page_num, $size, $data_type, $keyword)
     {
         // 检测参数
         if (is_int($page_num) && is_int($size)) {
@@ -243,6 +244,7 @@ class Info_Model extends CI_Model
                 // 所有数据
                 $data = $this->db->select("info.id, info.title, source, type.name AS type, user.name AS publisher, time, duplicate, state")
                     ->from("info")
+                    ->like("info.title", $keyword)
                     ->join("user", "user.id = info.publisher", "left")
                     ->join("type", "type.id = info.type", "left")
                     ->order_by("time", "desc")
@@ -250,6 +252,7 @@ class Info_Model extends CI_Model
                     ->get()->result_array();
                 $total = $this->db->select("info.id")
                     ->from("info")
+                    ->like("info.title", $keyword)
                     ->get()->num_rows();
                 $this->success['data'] = $data;
                 $this->success['total'] = $total;
@@ -262,12 +265,14 @@ class Info_Model extends CI_Model
                     ->join("user", "user.id = info.publisher", "left")
                     ->join("type", "type.id = info.type", "left")
                     ->where(array("info.state >=" => 0, "info.state <" => 2))
+                    ->like("info.title", $keyword)
                     ->order_by("time", "desc")
                     ->limit($size, $start)
                     ->get()->result_array();
                 $total = $this->db->select("info.id")
                     ->from("info")
                     ->where(array("info.state >=" => 0, "info.state <" => 2))
+                    ->like("info.title", $keyword)
                     ->get()->num_rows();
                 $this->success['data'] = $data;
                 $this->success['total'] = $total;

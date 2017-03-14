@@ -70,7 +70,7 @@ class Info extends CI_Controller
 
     /**
      * 上报信息列表 分页数据接口 (指派)
-     * POST参数:page_num 页码, size 条数, data_type 记录类型
+     * POST参数:page_num 页码, size 条数, data_type 记录类型, keyword 关键词搜索
      * 记录类型参数可选(所有记录:all_message, 未确认记录:undo_message)默认返回所有记录
      * @return string Json
      */
@@ -80,7 +80,8 @@ class Info extends CI_Controller
         $page_num = (int)$this->input->post("page_num");
         $size = (int)$this->input->post("size");
         $data_type = $this->input->post("data_type");
-        $result = $this->info->get_info_list_data($page_num, $size, $data_type);
+        $keyword = $this->input->post("keyword");
+        $result = $this->info->get_info_list_data($page_num, $size, $data_type, $keyword);
         $this->output
             ->set_content_type('application/json')
             ->set_output(json_encode($result));
