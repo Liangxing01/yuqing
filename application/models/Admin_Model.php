@@ -32,7 +32,8 @@ class Admin_Model extends CI_Model {
             'name'     => $data['name'],
             'sex'      => $data['sex'],
             'job'      => $data['job'],
-            "avatar"   => "/img/avatar/avatar.png"
+            "avatar"   => "/img/avatar/avatar.png",
+            'is_exist' => 1
         );
         //开始事务
         $this->db->trans_begin();
@@ -481,7 +482,7 @@ class Admin_Model extends CI_Model {
     public function username_is_repeat($uid,$username){
         $uid_row = $this->db->select('id')->from('user')
             ->where('username',$username)
-            ->where('is_exist',1)
+            ->where('is_exist != 0')
             ->get()->row_array();
 
 
