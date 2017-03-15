@@ -185,7 +185,16 @@
                 "sTitle": "url",
                 "mData": "url",
                 'sClass': "text-center",
-                'orderable': false
+                'orderable': false,
+                'mRender' : function (data) {
+                    var strLen = '';
+                    if( screen.width > 1366 ){
+                        strLen = 60 ;
+                    }else{
+                        strLen = 40 ;
+                    }
+                    return data.length > strLen ? data.slice(0, strLen) + "..." : data
+                }
             },
             {
                 "sTitle": "来源",

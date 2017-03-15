@@ -52,8 +52,7 @@ class Info extends CI_Controller
 
     /**
      * 上报信息列表 分页数据接口 (上报)
-     * POST参数:page_num 页码, size 条数, type 记录类型
-     * 记录类型参数可选(未确认记录:unconfirmed, 上报记录:reported)默认返回上报记录
+     * POST参数 page_num: 页码, size: 条数, keyword: 搜索关键词
      * @return string Json
      */
     public function get_info_record()
@@ -61,8 +60,8 @@ class Info extends CI_Controller
         //默认按 时间 DESC 排序
         $page_num = (int)$this->input->post("page_num");
         $size = (int)$this->input->post("size");
-        $record_type = $this->input->post("type");
-        $result = $this->info->get_info_record_data($page_num, $size, $record_type);
+        $keyword = $this->input->post("keyword");
+        $result = $this->info->get_info_record_data($page_num, $size, $keyword);
         $this->output
             ->set_content_type('application/json')
             ->set_output(json_encode($result));
@@ -71,7 +70,7 @@ class Info extends CI_Controller
 
     /**
      * 上报信息列表 分页数据接口 (指派)
-     * POST参数:page_num 页码, size 条数, data_type 记录类型
+     * POST参数:page_num 页码, size 条数, data_type 记录类型, keyword 关键词搜索
      * 记录类型参数可选(所有记录:all_message, 未确认记录:undo_message)默认返回所有记录
      * @return string Json
      */
@@ -81,7 +80,8 @@ class Info extends CI_Controller
         $page_num = (int)$this->input->post("page_num");
         $size = (int)$this->input->post("size");
         $data_type = $this->input->post("data_type");
-        $result = $this->info->get_info_list_data($page_num, $size, $data_type);
+        $keyword = $this->input->post("keyword");
+        $result = $this->info->get_info_list_data($page_num, $size, $data_type, $keyword);
         $this->output
             ->set_content_type('application/json')
             ->set_output(json_encode($result));

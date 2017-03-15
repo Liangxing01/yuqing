@@ -56,14 +56,14 @@ class API_Common_Model extends CI_Model
         );
         // 指派任务数据
         $data['manager'] = array(
-            // 未查看
-            'unread_num' => $this->db->select('id')->from('info')->where('state', 0)->get()->num_rows(),
-            // 已指派
-            'designate_num' => $this->db->select('id')->from('event')->where('state', '已指派')->get()->num_rows(),
+            // 未确认信息
+            'unconfirmed_info_num' => $this->db->select('id')->from('info')->where(array('state <' => 2, 'state >' => -1))->get()->num_rows(),
+            // 全部信息
+            'all_info_num' => $this->db->select('id')->from('info')->get()->num_rows(),
             // 未审核
-            'unconfirmed_num' => $this->db->select('id')->from('event')->where('state', '未审核')->get()->num_rows(),
-            // 已完成
-            'done_num' => $this->db->select('id')->from('event')->where('state', '已完成')->get()->num_rows()
+            'unverified_event_num' => $this->db->select('id')->from('event')->where('state', '未审核')->get()->num_rows(),
+            // 全部事件
+            'all_event_num' => $this->db->select('id')->from('event')->get()->num_rows(),
         );
         // 处理任务数据
         $unread_num = $this->db->select('id')->from('event_designate')->where('processor', $uid)->where('state', '待处理')->get()->num_rows();

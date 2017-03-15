@@ -191,68 +191,30 @@ class Info_Model extends CI_Model
      * 获取上报记录
      * @param int $page_num 页码
      * @param int $size 每页大小
-     * @param string $record_type 返回记录类型
+     * @param string $keyword
      * @return array
      */
-    public function get_info_record_data($page_num, $size, $record_type = 'reported')
+    public function get_info_record_data($page_num, $size, $keyword)
     {
         // 检测参数
         if (!(is_int($page_num) && is_int($size))) {
             return $this->param_error;
         }
-        if (!$record_type) {
-            // 默认返回上报记录
-            $record_type = 'reported';
-        }
         // 查询数据
         $start = ($page_num - 1) * $size;
         $uid = $this->session->uid;
-        switch ($record_type) {
-            case 'reported':
-                // 返回上报记录
-                $this->success["data"] = $this->db->select("info.id, title, url, time")
-                    ->join("user", "user.id = info.publisher", "left")
-                    ->where(array("user.id" => $uid))
-                    ->limit($size, $start)
-                    ->order_by("time", "desc")
-                    ->get("info")->result_array();
+        $keyword = is_null($keyword) ? "" : $keyword;
+        // 返回上报记录
+        $this->success["total"] = $this->db->join("user", "user.id = info.publisher", "left")
+            ->where(array("user.id" => $uid))
+            ->like("info.title", $keyword)
+            ->count_all_results("info", false);
+        $this->success["data"] = $this->db->select("info.id, title, url, time")
+            ->limit($size, $start)
+            ->order_by("time", "desc")
+            ->get()->result_array();
 
-                $this->success["total"] = $this->db->join("user", "user.id = info.publisher", "left")
-                    ->where(array("user.id" => $uid))
-                    ->get("info")->num_rows();
-                return $this->success;
-                break;
-            case 'unconfirmed':
-                // TODO 返回未确认信息
-                // 权限验证
-                if (!$this->verify->is_manager()) {
-                    return $this->privilege_error;
-                }
-//                $this->success["data"] = $this->db->select("info.id, info.title, source, type.name AS type, user.name AS publisher, time, duplicate, state")
-//                    ->from("info")
-//                    ->join("user", "user.id = info.publisher", "left")
-//                    ->join("type", "type.id = info.type", "left")
-//                    ->where($where)
-//                    ->group_start()
-//                    ->like("info.id", $pInfo["search"])
-//                    ->or_like("info.source", $pInfo["search"])
-//                    ->or_like("type.name", $pInfo["search"])
-//                    ->or_like("user.name", $pInfo["search"])
-//                    ->or_like("info.title", $pInfo["search"])
-//                    ->group_end()
-//                    ->order_by("time", $pInfo["sort_type"])
-//                    ->limit($pInfo["length"], $pInfo["start"])
-//                    ->get()->result_array();
-//
-//                $this->success["total"] = $this->db->join("user", "user.id = info.publisher", "left")
-//                    ->where(array("user.id" => $uid))
-//                    ->get("info")->num_rows();
-                return $this->success;
-                break;
-            default:
-                return $this->param_error;
-                break;
-        }
+        return $this->success;
     }
 
 
@@ -261,9 +223,10 @@ class Info_Model extends CI_Model
      * @param int $page_num
      * @param int $size
      * @param string $data_type
+     * @param string $keyword
      * @return array
      */
-    public function get_info_list_data($page_num, $size, $data_type)
+    public function get_info_list_data($page_num, $size, $data_type, $keyword)
     {
         // 检测参数
         if (is_int($page_num) && is_int($size)) {
@@ -281,6 +244,7 @@ class Info_Model extends CI_Model
                 // 所有数据
                 $data = $this->db->select("info.id, info.title, source, type.name AS type, user.name AS publisher, time, duplicate, state")
                     ->from("info")
+                    ->like("info.title", $keyword)
                     ->join("user", "user.id = info.publisher", "left")
                     ->join("type", "type.id = info.type", "left")
                     ->order_by("time", "desc")
@@ -288,6 +252,7 @@ class Info_Model extends CI_Model
                     ->get()->result_array();
                 $total = $this->db->select("info.id")
                     ->from("info")
+                    ->like("info.title", $keyword)
                     ->get()->num_rows();
                 $this->success['data'] = $data;
                 $this->success['total'] = $total;
@@ -300,12 +265,14 @@ class Info_Model extends CI_Model
                     ->join("user", "user.id = info.publisher", "left")
                     ->join("type", "type.id = info.type", "left")
                     ->where(array("info.state >=" => 0, "info.state <" => 2))
+                    ->like("info.title", $keyword)
                     ->order_by("time", "desc")
                     ->limit($size, $start)
                     ->get()->result_array();
                 $total = $this->db->select("info.id")
                     ->from("info")
                     ->where(array("info.state >=" => 0, "info.state <" => 2))
+                    ->like("info.title", $keyword)
                     ->get()->num_rows();
                 $this->success['data'] = $data;
                 $this->success['total'] = $total;

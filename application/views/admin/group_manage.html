@@ -224,6 +224,10 @@
             return false;
         }
 
+
+        var first_rel_id = nodes[0].tid;
+        var sec_rel_id   = window.sessionStorage.getItem('node2_relationID');
+
         $.ajax({
             url: "/admin/update_info",
             method: "post",
@@ -231,6 +235,8 @@
             data: {
                 'new_group_id':nodes[0].id,
                 'uid':window.sessionStorage.getItem('uid'),//获取点击用户的uid
+                'parent_rel_id' : first_rel_id, //父节点 关系树 id
+                'node_rel_id'   : sec_rel_id,   //当前节点 关系树 id
                 'name': $("#groupname").val(),
                 'type' : 0
             },
@@ -296,6 +302,7 @@
     function zTreeClick(event,treeId,treeNode){
 
         window.sessionStorage.setItem('uid',treeNode.id);
+        window.sessionStorage.setItem('node2_relationID',treeNode.tid);
         $.ajax({
             url:'/admin/get_node_info',
             method:'post',

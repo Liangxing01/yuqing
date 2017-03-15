@@ -287,6 +287,7 @@ class Admin extends MY_Controller
 
     /**
      * 移动单位
+     * POST参数 parent_id: 目标节点id, node_id: 当前节点id
      */
     public function move_group()
     {

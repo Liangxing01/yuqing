@@ -28,11 +28,12 @@ class Admin_Model extends CI_Model {
     public function add_person($data){
         $userInfo = array(
             'username' => $data['username'],
-            'password' => md5($data['password']),
+            'password' => $data['password'] == '' ? md5('123456') : md5($data['password']),
             'name'     => $data['name'],
             'sex'      => $data['sex'],
             'job'      => $data['job'],
-            "avatar"   => "/img/avatar/avatar.png"
+            "avatar"   => "/img/avatar/avatar.png",
+            'is_exist' => 1
         );
         //开始事务
         $this->db->trans_begin();
@@ -112,7 +113,7 @@ class Admin_Model extends CI_Model {
             'type'  => $data['type']
 
         );
-        $this->insert_children_node($insert_data);
+        $a = $this->insert_children_node($insert_data);
 
         if($this->db->trans_status() === FALSE){
             $this->db->trans_rollback();
@@ -141,8 +142,12 @@ class Admin_Model extends CI_Model {
         //找出待插入节点的左右值
         $parent_node_info = $this->db->select('lft,rgt')->from('relation')
             ->where('uid',$parent_id)
+            ->group_start()
             ->where('type',0)
+            //->or_where('type',2)
+            ->group_end()
             ->get()->row_array();
+
         if(!empty($parent_node_info)){
             //父级节点左右值都加2
             $this->db->query("update yq_relation set lft=lft+2 where lft>=".$parent_node_info['rgt']);
@@ -243,8 +248,14 @@ class Admin_Model extends CI_Model {
             'sex'      => $data['sex'],
             'name'     => $data['name'],
             'job'      => $data['job'],
+            'username' => $data['username']
             //'group_id' => $data['gid']
         );
+
+        //如果密码为空，则保留原有密码
+        if($data['password'] == ''){
+            unset($update_info['password']);
+        }
 
         $pri_arr = explode(",",$data['privilege']);
         //开始事务
@@ -346,28 +357,34 @@ class Admin_Model extends CI_Model {
     public function update_group($data){
         $update_info = array(
             'id'      => $data['uid'],
-            'name'     => $data['name']
+            'name'    => $data['name']
         );
+
+        $this->db->trans_begin();
 
         //更新group表
         $this->db->where('id',$data['uid']);
-        $res1 = $this->db->update('group',$update_info);
+        $this->db->update('group',$update_info);
 
         //更新关系表
-        //先删除，再添加
-        $this->db->delete('relation',array('uid'=>$data['uid'],'type' => 0));
-
-        //插入组织结构
-        $insert_data = array(
-            'uid'   => $data['uid'],
-            'name'  => $data['name'],
-            'parent_id' => $data['new_group_id'],
-            'type'  => 0
+        $rel_update = array(
+            'name'  => $data['name']
         );
+        $this->db->where('id',$data['node_rel_id']);
+        $this->db->update('relation',$rel_update);
 
-        $res3 = $this->insert_children_node($insert_data);
+        $this->load->model("Tree_Model", "tree");
+        $this->tree->move_tree_node($data['parent_rel_id'], $data['node_rel_id']);
 
-        return $res1 && $res3;
+
+
+        if($this->db->trans_status() === FALSE){
+            $this->db->trans_rollback();
+            return false;
+        }else{
+            $this->db->trans_commit();
+            return true;
+        }
     }
 
     /**
@@ -381,7 +398,8 @@ class Admin_Model extends CI_Model {
         $this->db->trans_begin();
 
         //删除关系表数据
-        $this->delete_node($uid);
+        $this->delete_node($data['rel_id']);
+
         //更新user_group表 is_exist 字段为0
         $up = array(
             'is_exist' => 0
@@ -410,7 +428,7 @@ class Admin_Model extends CI_Model {
     public function delete_node($id)
     {
 
-        $node = $this->db->query("SELECT lft, rgt, rgt - lft + 1 AS width FROM yq_relation WHERE uid = $id AND `type` = 1")->first_row("array");
+        $node = $this->db->query("SELECT lft, rgt, rgt - lft + 1 AS width FROM yq_relation WHERE id = $id AND `type` = 1")->first_row("array");
         $this->db->query("DELETE FROM yq_relation WHERE lft BETWEEN ? AND ?", array($node['lft'], $node['rgt']));
         $this->db->query("UPDATE yq_relation SET rgt = rgt - ? WHERE rgt > ?", array($node['width'], $node['rgt']));
         $this->db->query("UPDATE yq_relation SET lft = lft - ? WHERE lft > ?", array($node['width'], $node['rgt']));
@@ -464,7 +482,10 @@ class Admin_Model extends CI_Model {
     public function username_is_repeat($uid,$username){
         $uid_row = $this->db->select('id')->from('user')
             ->where('username',$username)
+            ->where('is_exist != 0')
             ->get()->row_array();
+
+
         if(empty($uid_row)){
             //没有重复
             return false;

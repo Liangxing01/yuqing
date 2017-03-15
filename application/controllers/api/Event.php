@@ -20,8 +20,8 @@ class Event extends CI_Controller
 
     /**
      * 事件处理 回复时间线数据
-     * POST参数:page_num 页码, size 条数, type 类型, id , pid
-     * 记录类型参数可选(未确认记录:f_record, 上报记录:c_record)默认返回父评论
+     * POST参数 page_num: 页码, size: 条数, type: [f_record=父评论, c_record=子评论], id: 事件ID, pid: 父评论ID
+     * 默认返回父评论
      */
     public function response_timeline()
     {
@@ -39,7 +39,7 @@ class Event extends CI_Controller
 
     /**
      * 事件处理 发表回复
-     * POST参数:id 事件id, pid 父评论id, content 评论内容
+     * POST参数 id: 事件id, pid: 父评论id, content: 评论内容
      * 父评论id 可选
      */
     public function post_comment()
@@ -56,7 +56,7 @@ class Event extends CI_Controller
 
     /**
      * 事件列表
-     * POST参数: page_num 页码, size 条数, data_type 数据类型, usertype: 用户类型
+     * POST参数 page_num: 页码, size: 条数, data_type: 数据类型, usertype: 用户类型, keyword: 模糊查询关键字
      * 类型参数可选(全部事件:all)默认返回全部
      */
     public function get_event_list()
@@ -65,7 +65,8 @@ class Event extends CI_Controller
         $size = (int)$this->input->post("size");
         $data_type = $this->input->post("data_type"); // 请求结果类型
         $user_type = $this->input->post("user_type"); // 用户类型
-        $result = $this->event->get_event_list_data($page_num, $size, $data_type, $user_type);
+        $keyword = $this->input->post("keyword"); // 模糊搜索关键词
+        $result = $this->event->get_event_list_data($page_num, $size, $data_type, $user_type, $keyword);
         $this->output
             ->set_content_type('application/json')
             ->set_output(json_encode($result));
@@ -74,7 +75,7 @@ class Event extends CI_Controller
 
     /**
      * 事件详情
-     * POST参数: id 事件ID
+     * POST参数 id: 事件ID
      */
     public function get_event_detail()
     {
@@ -88,7 +89,7 @@ class Event extends CI_Controller
 
     /**
      * 事件审核
-     * POST参数: id 事件ID, option: verify_success=审核通过 verify_failed=审核不通过 commit=提交审核
+     * POST参数 id: 事件ID, option: [verify_success=审核通过, verify_failed=审核不通过, commit=提交审核]
      */
     public function event_check()
     {
