@@ -482,9 +482,12 @@ class Admin_Model extends CI_Model {
     public function username_is_repeat($uid,$username){
         $uid_row = $this->db->select('id')->from('user')
             ->where('username',$username)
-            ->where('is_exist != 0')
+            ->group_start()
+            ->where('is_exist',1)
+            ->or_where('is_exist is NULL')
+            ->group_end()
             ->get()->row_array();
-
+        
 
         if(empty($uid_row)){
             //没有重复
