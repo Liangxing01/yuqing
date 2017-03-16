@@ -638,9 +638,6 @@ class Tree_Model extends CI_Model
             ->order_by("lft", "ASC")
             ->get("relation")->result_array();
 
-        $parent_node = $this->db->select("id, lft, rgt")->where("id", $parent_id)
-            ->get("relation")->row_array();
-
         //待移动节点区间长度
         $length = $node['rgt'] - $node['lft'] + 1;
 
@@ -648,23 +645,24 @@ class Tree_Model extends CI_Model
         $this->db->where(array("rgt >" => $node["rgt"]))->set("rgt", "rgt - $length", FALSE)->update("relation");
         $this->db->where(array("lft >" => $node["rgt"]))->set("lft", "lft - $length", FALSE)->update("relation");
 
+        $parent_node = $this->db->select("id, lft, rgt")->where("id", $parent_id)->get("relation")->row_array();
+
         //计算目的节点与待插入节点的距离
-        $diff = $parent_node['rgt'] - $node['rgt'];
-        $step = (abs($diff) - 1) * (abs($diff) / $diff);
+        $diff = $node['lft'] - $parent_node['rgt'];
 
         //节点新的左值
-        $node_lft2 = $node['lft'] + $step;
+        $node_lft = $parent_node['rgt'];
 
         //更新插入节点的值
         $count = count($nodes);
         for ($i = 0; $i < $count; $i++) {
-            $nodes[$i]["lft"] += $step;
-            $nodes[$i]["rgt"] += $step;
+            $nodes[$i]["lft"] -= $diff;
+            $nodes[$i]["rgt"] -= $diff;
         }
         $new_nodes = $nodes;
 
-        $this->db->where("rgt >=", $node_lft2)->set("rgt", "rgt + $length", FALSE)->update("relation"); //更新目的父节点
-        $this->db->where("lft >", $node_lft2)->set("lft", "lft + $length", FALSE)->update("relation"); //更新目的父节点
+        $this->db->where("rgt >=", $node_lft)->set("rgt", "rgt + $length", FALSE)->update("relation"); //更新目的父节点
+        $this->db->where("lft >", $node_lft)->set("lft", "lft + $length", FALSE)->update("relation"); //更新目的父节点
         $this->db->update_batch("relation", $new_nodes, "id"); //更新移动的节点
 
         if ($this->db->trans_status() === FALSE) {
