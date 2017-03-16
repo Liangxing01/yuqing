@@ -638,45 +638,33 @@ class Tree_Model extends CI_Model
             ->order_by("lft", "ASC")
             ->get("relation")->result_array();
 
-        $nodes_desc = $this->db->select("id, lft, rgt")
-            ->where(array("lft >= " => $node["lft"], "rgt <= " => $node["rgt"]))
-            ->order_by("rgt", "DESC")
-            ->get("relation")->result_array();
-
         $parent_node = $this->db->select("id, lft, rgt")->where("id", $parent_id)
             ->get("relation")->row_array();
 
-        $count = count($nodes);
-        $length = $count * 2;
+        //待移动节点区间长度
+        $length = $node['rgt'] - $node['lft'] + 1;
 
         $this->db->trans_begin();
         $this->db->where(array("rgt >" => $node["rgt"]))->set("rgt", "rgt - $length", FALSE)->update("relation");
         $this->db->where(array("lft >" => $node["rgt"]))->set("lft", "lft - $length", FALSE)->update("relation");
 
-        //判断移动节点在目标节点的 上下 前后
-        if ($parent_node["rgt"] > $node["rgt"]) {
-            $node_lft = $parent_node["rgt"] - $length; // 节点 新的左值
-        } else {
-            $node_lft = $parent_node["rgt"];
-        }
-        $node_rgt = $node_lft + $length - 1; // 节点 新的右值
+        //计算目的节点与待插入节点的距离
+        $diff = $parent_node['rgt'] - $node['rgt'];
+        $step = (abs($diff) - 1) * (abs($diff) / $diff);
 
-        //更新左值
-        $step = $node_lft;
-        for ($i = 0; $i < $count; $i++) {
-            $nodes[$i]["lft"] = $step++;
-            unset($nodes[$i]["rgt"]);
-        }
-        //更新右值
-        $step = $node_rgt;
-        for ($i = 0; $i < $count; $i++) {
-            $nodes_desc[$i]["rgt"] = $step--;
-            unset($nodes_desc[$i]["lft"]);
-        }
-        $new_nodes = array_merge_recursive($nodes, $nodes_desc);
+        //节点新的左值
+        $node_lft2 = $node['lft'] + $step;
 
-        $this->db->where("rgt >=", $node_lft)->set("rgt", "rgt + $length", FALSE)->update("relation"); //更新目的父节点
-        $this->db->where("lft >", $node_lft)->set("lft", "lft + $length", FALSE)->update("relation"); //更新目的父节点
+        //更新插入节点的值
+        $count = count($nodes);
+        for ($i = 0; $i < $count; $i++) {
+            $nodes[$i]["lft"] += $step;
+            $nodes[$i]["rgt"] += $step;
+        }
+        $new_nodes = $nodes;
+
+        $this->db->where("rgt >=", $node_lft2)->set("rgt", "rgt + $length", FALSE)->update("relation"); //更新目的父节点
+        $this->db->where("lft >", $node_lft2)->set("lft", "lft + $length", FALSE)->update("relation"); //更新目的父节点
         $this->db->update_batch("relation", $new_nodes, "id"); //更新移动的节点
 
         if ($this->db->trans_status() === FALSE) {
