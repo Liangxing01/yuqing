@@ -13,10 +13,13 @@ class Api_common extends CI_Controller
 
     /**
      * 移动端APP 首页数据接口
+     * POST: page_num: 当前页码, size: 每页显示数
      */
     public function get_summary_info()
     {
-        $result = $this->common->get_summary_data();
+        $page_num = (int)$this->input->post("page_num");
+        $size = (int)$this->input->post("size");
+        $result = $this->common->get_summary_data($page_num, $size);
         $this->output
             ->set_content_type('application/json')
             ->set_output(json_encode($result));
