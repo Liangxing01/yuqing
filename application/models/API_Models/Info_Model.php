@@ -235,7 +235,7 @@ class Info_Model extends CI_Model
             return $this->param_error;
         }
         // 检测权限
-        if (!$this->verify->is_manager()) {
+        if (!($this->verify->is_manager() || $this->verify->is_watcher())) {
             return $this->privilege_error;
         }
         // 查询数据

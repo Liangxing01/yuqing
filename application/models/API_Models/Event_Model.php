@@ -128,7 +128,7 @@ class Event_Model extends CI_Model
         // 检查权限
         switch ($user_type) {
             case "manager":
-                if (!$this->verify->is_manager($uid)) {
+                if (!($this->verify->is_manager($uid) || $this->verify->is_watcher($uid))) {
                     return $this->privilege_error;
                 }
                 break;
