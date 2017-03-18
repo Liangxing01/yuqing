@@ -159,6 +159,7 @@ class Event_Model extends CI_Model
             case 'manager_all_event':
                 $data = $this->db->select("event.id, event.title, A.name AS manager, B.name AS main_processor, C.name AS main_group, event.rank, event.state, event.start_time")
                     ->from("event")
+                    ->where("event.state", "已完成")
                     ->like("event.title", $keyword)
                     ->join("user A", "A.id = event.manager", "left")
                     ->join("user B", "B.id = event.main_processor", "left")
@@ -167,6 +168,7 @@ class Event_Model extends CI_Model
                     ->limit($size, $start)
                     ->get()->result_array();
                 $total = $this->db->select("event.id")
+                    ->where("event.state", "已完成")
                     ->like("event.title", $keyword)
                     ->from("event")
                     ->get()->num_rows();

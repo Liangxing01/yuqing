@@ -244,6 +244,7 @@ class Info_Model extends CI_Model
                 // 所有数据
                 $data = $this->db->select("info.id, info.title, source, type.name AS type, user.name AS publisher, time, duplicate, state")
                     ->from("info")
+                    ->where(array('state' => 2, 'duplicate' => 0))
                     ->like("info.title", $keyword)
                     ->join("user", "user.id = info.publisher", "left")
                     ->join("type", "type.id = info.type", "left")
@@ -252,6 +253,7 @@ class Info_Model extends CI_Model
                     ->get()->result_array();
                 $total = $this->db->select("info.id")
                     ->from("info")
+                    ->where(array('state' => 2, 'duplicate' => 0))
                     ->like("info.title", $keyword)
                     ->get()->num_rows();
                 $this->success['data'] = $data;
