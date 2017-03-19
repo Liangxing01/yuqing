@@ -376,6 +376,10 @@ class Event_Model extends CI_Model
         if (!$this->verify->can_see_event($event_id)) {
             return $this->privilege_error;
         }
+        if (!$this->is_event_completed($event_id)) {
+            $this->param_error['message'] = "事件已完成,不可再回复";
+            return $this->param_error;
+        }
         // 插入数据
         $speaker = $this->session->userdata('uid');
         $name = $this->session->userdata('name');
@@ -525,5 +529,17 @@ class Event_Model extends CI_Model
         } else {
             return false;
         }
+    }
+
+
+    /**
+     * 判断事件是否完成
+     * @param $eid
+     * @return bool
+     */
+    protected function is_event_completed($eid)
+    {
+        $result = $this->db->select("id")->from("event")->where(array("id" => $eid, "state" => '已完成'))->get()->num_rows();
+        return $result == 0;
     }
 }
