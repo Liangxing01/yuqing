@@ -75,7 +75,7 @@ class API_Common_Model extends CI_Model
             'all_event_num' => $this->db->select('id')->from('event')->where('state', '已完成')->get()->num_rows(),
         );
         // 处理任务数据
-        $unread_num = $this->db->select('id')->from('event_designate')->where('processor', $uid)->where('state', '待处理')->get()->num_rows();
+        $unread_num = $this->db->select('id')->from('event_designate')->where('processor', $uid)->where('state', '未处理')->get()->num_rows();
         $doing_num = $this->db->select('id')->from('event_designate')->where('processor', $uid)->where('state', '处理中')->get()->num_rows();
         $done_num = $this->db->select('e.id')->from('event_designate AS ed')->join('event AS e', 'e.id = ed.event_id', 'left')
             ->where('ed.processor', $uid)
