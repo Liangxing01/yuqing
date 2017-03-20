@@ -54,7 +54,7 @@ class Event_Model extends CI_Model
     public function get_response_timeline_data($page_num, $size, $type, $event_id, $parent_id)
     {
         // 检查权限
-        if (!$this->verify->can_see_event($event_id)) {
+        if (!$this->can_see_event($event_id)) {
             return $this->privilege_error;
         }
         // 检查参数
@@ -82,7 +82,7 @@ class Event_Model extends CI_Model
                     ->get()->result_array();
                 $total = $this->db->where(array("event_log.event_id" => $event_id, "pid" => null))->get("event_log")->num_rows(); // 总条数
                 foreach ($data AS $key => $val) {
-                    $data[$key]['usertype'] = $this->is_event_watcher($event_id, $val['speaker']) ? 1 : 0;
+                    $data[$key]['usertype'] = $this->verify->is_watcher($val['speaker']) ? 1 : 0;
                 }
                 $this->success['data'] = $data;
                 $this->success['total'] = $total;
@@ -98,7 +98,7 @@ class Event_Model extends CI_Model
                     ->order_by("time", "desc")
                     ->get()->result_array();
                 foreach ($data AS $key => $val) {
-                    $data[$key]['usertype'] = $this->is_event_watcher($event_id, $val['speaker']) ? 1 : 0;
+                    $data[$key]['usertype'] = $this->verify->is_watcher($val['speaker']) ? 1 : 0;
                 }
                 $total = $this->db->where("pid", $parent_id)->get("event_log")->num_rows(); // 总条数
                 $this->success['data'] = $data;
@@ -327,7 +327,7 @@ class Event_Model extends CI_Model
     public function get_event_detail_data($event_id)
     {
         // 检查权限
-        if (!$this->verify->can_see_event($event_id)) {
+        if (!$this->can_see_event($event_id)) {
             return $this->privilege_error;
         }
         // 检查参数
@@ -373,8 +373,12 @@ class Event_Model extends CI_Model
     public function insert_comment($event_id, $pid, $content)
     {
         // 权限判断
-        if (!$this->verify->can_see_event($event_id)) {
+        if (!$this->can_see_event($event_id)) {
             return $this->privilege_error;
+        }
+        if (!$this->is_event_completed($event_id)) {
+            $this->param_error['message'] = "事件已完成,不可再回复";
+            return $this->param_error;
         }
         // 插入数据
         $speaker = $this->session->userdata('uid');
@@ -417,11 +421,12 @@ class Event_Model extends CI_Model
 
 
     /**
+     * 事件审核
      * @param int $event_id 事件ID
      * @param string $option 操作
      * @return array
      */
-    function event_check($event_id, $option)
+    public function event_check($event_id, $option)
     {
         // 检查权限
         if (!$this->verify->can_see_event($event_id)) {
@@ -495,6 +500,7 @@ class Event_Model extends CI_Model
 
 
     /**
+     * 判断是否是事件负责人
      * @param int $uid
      * @param array $gid
      * @param int $event_id
@@ -525,5 +531,28 @@ class Event_Model extends CI_Model
         } else {
             return false;
         }
+    }
+
+
+    /**
+     * 判断事件是否完成
+     * @param $eid
+     * @return bool
+     */
+    protected function is_event_completed($eid)
+    {
+        $result = $this->db->select("id")->from("event")->where(array("id" => $eid, "state" => '已完成'))->get()->num_rows();
+        return $result == 0;
+    }
+
+
+    /**
+     * 判断是否可以查看事件
+     * @param $event_id
+     * @return bool
+     */
+    protected function can_see_event($event_id)
+    {
+        return $this->verify->can_see_event($event_id) || $this->verify->is_watcher();
     }
 }
