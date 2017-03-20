@@ -65,12 +65,17 @@ class Verify_Model extends CI_Model
 
 
     /**
-     * 验证处理人权限
+     * 验证督办人权限
+     * @param int $uid
      * @return bool
      */
-    public function is_watcher()
+    public function is_watcher($uid = null)
     {
-        $privilege = explode(",", $this->session->privilege);
+        if (!is_null($uid)) {
+            $privilege = $this->get_privilege_list($uid);
+        } else {
+            $privilege = explode(",", $this->session->privilege);
+        }
         if (in_array(self::WATCHER, $privilege)) {
             return true;
         }
@@ -171,5 +176,22 @@ class Verify_Model extends CI_Model
         return false;
     }
 
+
+    /**
+     * 获得权限数组
+     * @param int $uid
+     * @return array
+     */
+    protected function get_privilege_list($uid)
+    {
+        $privileges = $this->db->select("pid")->where("uid", $uid)->get("user_privilege")->result_array();
+        $ret = array();
+        if (!empty($privileges)) {
+            foreach ($privileges AS $p) {
+                $ret[] = $p["pid"];
+            }
+        }
+        return $ret;
+    }
 
 }
