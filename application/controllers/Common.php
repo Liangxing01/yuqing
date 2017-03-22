@@ -467,8 +467,7 @@ class Common extends MY_Controller
         $email_info = array(
             'title' => $this->input->post('title'),
             'body'  => $this->input->post('body'),
-            'priority_level' => $this->input->post('priority_level'),
-            'type'  => $this->input->post('type') //$type 判定是邮件还是通知 email/notice
+            'priority_level' => $this->input->post('priority_level')
         );
 
         $receiveID = array(
@@ -766,6 +765,17 @@ class Common extends MY_Controller
         $this->assign("active_title", "email_sys");
         $this->assign("active_parent", "file_parent");
         $this->all_display("email/notice_detail.html");
+    }
+
+    /**
+     * 接口：获取 未读指令数
+     */
+    public function get_unread_notice_num(){
+        $this->load->model('Common_Model','common');
+        $num = $this->common->get_unread_num('notice');
+        echo json_encode(array(
+            'unread_num' => $num
+        ));
     }
 
     /**
