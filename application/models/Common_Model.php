@@ -906,7 +906,7 @@ class Common_Model extends CI_Model
     /**
      * 分页显示 发件箱 列表
      */
-    public function get_send_emails_info($q){
+    public function get_send_emails_info($q,$type){
         $uid = $this->session->userdata('uid');
         $res = array();
         $res['emails'] = $this->db->select('e.id,ea.eid as has_att,e.title,e.priority_level,e.time')
@@ -914,6 +914,7 @@ class Common_Model extends CI_Model
             ->join('email_attachment as ea','e.id = ea.eid','left')
             ->group_by('e.id')
             ->where('e.sender',$uid)
+            ->where('e.type',$type)   //查询 邮件类型
             ->group_start()
             ->like('e.title',$q['search'])
             ->or_like('e.priority_level',$q['search'])
@@ -926,6 +927,7 @@ class Common_Model extends CI_Model
         $res['num'] = $this->db->select('e.id,e.title,e.priority_level,e.time')
             ->from('email as e')
             ->where('e.sender',$uid)
+            ->where('e.type',$type)   //查询 邮件类型
             ->group_start()
             ->like('e.title',$q['search'])
             ->or_like('e.priority_level',$q['search'])
@@ -939,7 +941,7 @@ class Common_Model extends CI_Model
      * 分页显示 收件箱 列表
      * $q['state'] 已读 未读 状态
      */
-    public function get_rec_emails_info($q){
+    public function get_rec_emails_info($q,$type){
         $uid  = $this->session->userdata('uid');
         $gids = $this->session->userdata('gid');
         $gid_arr = explode(',',$gids);
@@ -959,6 +961,7 @@ class Common_Model extends CI_Model
                 ->like('e.title',$q['search'])
                 ->or_like('u.name',$q['search'])
                 ->group_end()
+                ->where('e.type',$type)   //查询 邮件类型
                 ->limit($q['length'],$q['start'])
                 ->order_by('e.time','DESC')
                 ->get()->result_array();
@@ -976,6 +979,7 @@ class Common_Model extends CI_Model
                 ->like('e.title',$q['search'])
                 ->or_like('u.name',$q['search'])
                 ->group_end()
+                ->where('e.type',$type)   //查询 邮件类型
                 ->get()->num_rows();
         }else{
             $res['emails'] = $this->db->select('e.id,ea.id as has_att,e.title,u.name as sender_name,e.priority_level,e.time,eu.state')
@@ -985,6 +989,7 @@ class Common_Model extends CI_Model
                 ->join('email_attachment as ea','e.id = ea.eid','left')
                 ->group_by('e.id')
                 ->where('eu.state',$q['state'])
+                ->where('e.type',$type)   //查询 邮件类型
                 ->group_start()
                 ->where('eu.receiver_id',$uid)
                 ->or_where_in('eu.receiver_gid',$gid_arr)
@@ -1003,6 +1008,7 @@ class Common_Model extends CI_Model
                 ->join('email_user as eu','eu.email_id = e.id')
                 ->join('user as u','u.id = e.sender')
                 ->where('eu.state',$q['state'])
+                ->where('e.type',$type)   //查询 邮件类型
                 ->group_start()
                 ->where('eu.receiver_id',$uid)
                 ->or_where_in('eu.receiver_gid',$gid_arr)
@@ -1016,6 +1022,40 @@ class Common_Model extends CI_Model
 
 
         return $res;
+    }
+
+    /**
+     * @param $res_text
+     * @param $notice_id  指令id
+     * 回复指令
+     */
+    public function response_notice($res_text,$notice_id){
+        $uid = $this->session->userdata('uid');
+        $this->db->where('email_id',$notice_id);
+        $this->db->where('receiver_id',$uid);
+        $res = $this->db->update('email_user',array(
+            'response_text' => $res_text,
+            'state'         => 1,
+            'response_time' => time()
+        ));
+        return $res;
+    }
+
+    /**
+     * @param $notice_id 指令id
+     * @return array
+     * 查看 指令 回复情况
+     */
+    public function response_list($notice_id){
+        $notice_list = $this->db->select('user.name,group.name.email_user.response_time')
+            ->from('email_user')
+            ->join('user','email_user.receiver_id = user.id')
+            ->join('user_group','user_group.uid = user.id')
+            ->join('group','group.id = user_group.gid')
+            ->where('user_group.is_exist',1)
+            ->where('email_user.email_id',$notice_id)
+            ->get()->result_array();
+        return $notice_list;
     }
 
     /**

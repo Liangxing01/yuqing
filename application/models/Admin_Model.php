@@ -487,7 +487,7 @@ class Admin_Model extends CI_Model {
             ->or_where('is_exist is NULL')
             ->group_end()
             ->get()->row_array();
-        
+
 
         if(empty($uid_row)){
             //没有重复

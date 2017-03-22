@@ -467,7 +467,8 @@ class Common extends MY_Controller
         $email_info = array(
             'title' => $this->input->post('title'),
             'body'  => $this->input->post('body'),
-            'priority_level' => $this->input->post('priority_level')
+            'priority_level' => $this->input->post('priority_level'),
+            'type'  => $this->input->post('type') //$type 判定是邮件还是通知 email/notice
         );
 
         $receiveID = array(
@@ -481,6 +482,7 @@ class Common extends MY_Controller
         }else{
             $attID_arr = array();
         }
+
         $res = $this->common->insert_email($email_info,$receiveID,$attID_arr);
         if($res){
             echo json_encode(array(
@@ -685,7 +687,7 @@ class Common extends MY_Controller
     public function get_all_sends(){
         $this->load->model('Common_Model','common');
         $query_data = $this->input->post();
-        $email_info = $this->common->get_send_emails_info($query_data);
+        $email_info = $this->common->get_send_emails_info($query_data,'email');
         echo json_encode($email_info);
     }
 
@@ -695,8 +697,75 @@ class Common extends MY_Controller
     public function get_all_rec(){
         $this->load->model('Common_Model','common');
         $query_data = $this->input->post();
-        $email_info = $this->common->get_rec_emails_info($query_data);
+        $email_info = $this->common->get_rec_emails_info($query_data,'email');
         echo json_encode($email_info);
+    }
+
+    /**
+     * -----------------------指令下达----------------------------------------
+     */
+    /**
+     * 分页显示收到的指令
+     */
+    public function get_rec_notice(){
+        $this->load->model('Common_Model','common');
+        $query_data = $this->input->post();
+        $email_info = $this->common->get_rec_emails_info($query_data,'notice');
+        echo json_encode($email_info);
+    }
+
+    /**
+     * 接口：回复指令接口
+     */
+    public function response_notice(){
+        $res_text  = $this->input->post('res_text');
+        $notice_id = $this->input->post('notice_id');
+        $this->load->model('Common_Model','common');
+        $res = $this->common->response_notice($res_text,$notice_id);
+        if($res){
+            echo json_encode(array(
+                'res' => 1
+            ));
+        }else{
+            echo json_encode(array(
+                'res' => 0
+            ));
+        }
+    }
+
+    /**
+     * 接口：获取 指令 回复情况
+     */
+    public function get_response_list(){
+        $this->load->model('Common_Model','common');
+        $notice_id   = $this->input->get('notice_id');
+        $notice_list = $this->common->response_list($notice_id);
+        echo json_encode($notice_list);
+    }
+
+    /**
+     * 显示 指令详情
+     */
+    public function show_notice_detail(){
+        $this->load->model("Common_Model", "common");
+        /*$eid = $this->input->get('id');
+        if (!isset($eid) || $eid == null || $eid == "") {
+            show_404();
+        }*/
+
+        /*$email_info = $this->common->rece_email_detail($eid);
+
+        if($email_info == false){
+            show_404();
+        }else{
+            $this->assign('info',$email_info['info']);
+            $this->assign('attID', implode(',',$email_info['attID']));
+
+        }*/
+
+        $this->assign("active_title", "email_sys");
+        $this->assign("active_parent", "file_parent");
+        $this->all_display("email/notice_detail.html");
     }
 
     /**
