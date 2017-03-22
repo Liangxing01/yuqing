@@ -66,6 +66,19 @@ class Welcome extends MY_Controller
 
     }
 
+
+    /**
+     * 首页全站通知列表
+     */
+    public function get_site_message()
+    {
+        $result = $this->my_model->get_site_message_list();
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($result));
+    }
+
+
     /*
      * 主页接口：获取警告事件
      * 根据权限判断 来返回 警告事件
