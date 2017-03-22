@@ -809,6 +809,17 @@ class Designate extends MY_controller
     /**
      * ------------------------指令系统--------------------
      */
+
+    /**
+     * 分页显示发出的指令
+     */
+    public function get_send_notice(){
+        $this->load->model('Common_Model','common');
+        $query_data = $this->input->post();
+        $email_info = $this->common->get_send_emails_info($query_data,'email');
+        echo json_encode($email_info);
+    }
+
     /**
      * 发布指令
      */

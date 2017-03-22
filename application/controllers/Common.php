@@ -713,6 +713,7 @@ class Common extends MY_Controller
         echo json_encode($email_info);
     }
 
+
     /**
      * 接口：回复指令接口
      */
@@ -747,12 +748,12 @@ class Common extends MY_Controller
      */
     public function show_notice_detail(){
         $this->load->model("Common_Model", "common");
-        /*$eid = $this->input->get('id');
+        $eid = $this->input->get('id');
         if (!isset($eid) || $eid == null || $eid == "") {
             show_404();
-        }*/
+        }
 
-        /*$email_info = $this->common->rece_email_detail($eid);
+        $email_info = $this->common->rece_email_detail($eid);
 
         if($email_info == false){
             show_404();
@@ -760,7 +761,7 @@ class Common extends MY_Controller
             $this->assign('info',$email_info['info']);
             $this->assign('attID', implode(',',$email_info['attID']));
 
-        }*/
+        }
 
         $this->assign("active_title", "email_sys");
         $this->assign("active_parent", "file_parent");
