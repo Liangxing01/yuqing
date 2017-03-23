@@ -319,7 +319,11 @@ class MY_Model extends CI_Model
      */
     public function get_site_message_list()
     {
-        return $this->db->select("id, title, content, time")->where("type", "all")->get("announce")->result_array();
+        return $this->db->select("id, title, content, time")
+            ->where("type", "all")
+            ->order_by("time", "desc")
+            ->limit(5)
+            ->get("announce")->result_array();
     }
 
 }
