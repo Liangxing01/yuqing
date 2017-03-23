@@ -821,6 +821,36 @@ class Designate extends MY_controller
     }
 
     /**
+     * 显示 指令详情
+     * 角色 发送者
+     */
+    public function show_notice_detail(){
+        $this->load->model("Common_Model", "common");
+        $eid = $this->input->get('id');
+
+        if (!isset($eid) || $eid == null || $eid == "") {
+            show_404();
+        }
+
+
+        $email_info = $this->common->rece_email_detail($eid);
+
+        if($email_info == false){
+            show_404();
+        }else{
+            $this->assign('info',$email_info['info']);
+            $this->assign('attID', implode(',',$email_info['attID']));
+
+        }
+
+        $this->assign("role",'sender');
+        $this->assign("response_text",'');
+        $this->assign("active_title", "email_sys");
+        $this->assign("active_parent", "file_parent");
+        $this->all_display("email/notice_detail.html");
+    }
+
+    /**
      * 发布指令
      */
     public function publish_notice(){

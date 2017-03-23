@@ -913,9 +913,10 @@ class Common_Model extends CI_Model
     public function get_send_emails_info($q,$type){
         $uid = $this->session->userdata('uid');
         $res = array();
-        $res['emails'] = $this->db->select('e.id,ea.eid as has_att,e.title,e.priority_level,e.time')
+        $res['emails'] = $this->db->select('e.id,ea.eid as has_att,u.name as sender_name,e.title,e.priority_level,e.time')
             ->from('email as e')
             ->join('email_attachment as ea','e.id = ea.eid','left')
+            ->join('user','user.id = e.sender')
             ->group_by('e.id')
             ->where('e.sender',$uid)
             ->where('e.type',$type)   //查询 邮件类型
@@ -1060,6 +1061,25 @@ class Common_Model extends CI_Model
             ->where('email_user.email_id',$notice_id)
             ->get()->result_array();
         return $notice_list;
+    }
+
+    /**
+     * @param $eid
+     * @return array 我的回复信息
+     */
+    public function get_my_response($eid){
+        $uid = $this->session->userdata('uid');
+        $response_arr = $this->db->select('response_text,response_time')
+            ->from('email_user')
+            ->where('email_id',$eid)
+            ->where('receiver_id',$uid)
+            ->get()->row_array();
+        if(empty($response_arr)){
+            return '';
+        }else{
+            return $response_arr;
+        }
+
     }
 
     /**
