@@ -61,10 +61,11 @@ class MY_Controller extends CI_Controller
             $this->ci_smarty->display('menu/v6_meeting.html');
         }
 
-        // 点名菜单
+        // 点名菜单、报表菜单、通知管理菜单
         if (in_array(2, $privilege)) {
             $this->ci_smarty->display("menu/menu_rollcall.html");
             $this->ci_smarty->display("menu/menu_sheet.html");
+            $this->ci_smarty->display("menu/menu_notice.html");
         }
 
         // 舆情管控菜单

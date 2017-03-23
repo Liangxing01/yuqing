@@ -138,7 +138,7 @@ class Designate extends MY_controller
         $res = $this->designate->check_url($url, $id);
         if ($res['res']) {
             echo json_encode(array(
-                'res'    => 1,
+                'res' => 1,
                 'dup_id' => $res['dup_id']
             ));
         } else {
@@ -246,8 +246,8 @@ class Designate extends MY_controller
 
         //判断是否是改派，改派先删除原有记录 再添加记录
         $flag = $this->input->post('reset');
-        $eid  = $this->input->post('eid');
-        if($flag == 1){
+        $eid = $this->input->post('eid');
+        if ($flag == 1) {
             $this->designate->del_designate($eid);
         }
         $result = $this->designate->event_designate($data);
@@ -304,8 +304,9 @@ class Designate extends MY_controller
      * 接口: 获取已指派的事件信息 填充到页面表单
      */
 
-    public function get_designate_info(){
-        $eid  = $this->input->get('eid');
+    public function get_designate_info()
+    {
+        $eid = $this->input->get('eid');
         $info = $this->designate->designate_info($eid);
 
         echo json_encode($info);
@@ -368,7 +369,7 @@ class Designate extends MY_controller
         $this->assign('done_state', $done_state);
         $this->assign('eid', $event_id);
         $this->assign('can_show_done_btn', $done_btn);
-        $this->assign('state',$einfo['state']);
+        $this->assign('state', $einfo['state']);
 
         //个人信息
         $this->load->model('MY_Model', 'my_model');
@@ -781,22 +782,23 @@ class Designate extends MY_controller
     /**
      * 发起点名
      */
-    public function make_call(){
-        $msg        = $this->input->post('message');
+    public function make_call()
+    {
+        $msg = $this->input->post('message');
         $delay_time = $this->input->post('delay_time');
-        $gids       = $this->input->post('gids');
-        if((int)$delay_time > 5){
+        $gids = $this->input->post('gids');
+        if ((int)$delay_time > 5) {
             echo 'Error Time';
-        }else{
+        } else {
             $start_time = $delay_time * 60;
-            $res = $this->designate->make_call($gids,$msg,$start_time);
-            if($res){
+            $res = $this->designate->make_call($gids, $msg, $start_time);
+            if ($res) {
                 echo json_encode(array(
                         'res' => 1,
                         'msg' => '发起点名成功，请2分钟后查看点名结果'
                     )
                 );
-            }else{
+            } else {
                 echo json_encode(array(
                         'res' => 0,
                         'msg' => '点名失败'
@@ -804,6 +806,80 @@ class Designate extends MY_controller
                 );
             }
         }
+    }
+
+
+    /**
+     * 显示 通知列表
+     */
+    public function show_notice_list()
+    {
+        $this->assign("active_title", "notice_parent");
+        $this->assign("active_parent", "notice_list");
+        $this->all_display("designate/notice_list.html");
+    }
+
+
+    /**
+     * 获取 通知列表 分页数据
+     */
+    public function get_notice_list_data()
+    {
+        $pData['sEcho'] = $this->input->post('psEcho', true);           //DataTables 用来生成的信息
+        $pData['start'] = $this->input->post('iDisplayStart', true);    //显示的起始索引
+        $pData['length'] = $this->input->post('iDisplayLength', true);  //每页显示的行数
+        $pData['sort_type'] = $this->input->post('sSortDir_0', true);   //排序的方向 默认 desc
+
+        if ($pData['start'] == NULL) {
+            $pData['start'] = 0;
+        }
+        if ($pData['length'] == NULL) {
+            $pData['length'] = 10;
+        }
+        if ($pData['sort_type'] == NULL) {
+            $pData['sort_type'] = "desc";
+        }
+
+        $data = $this->designate->get_notice_list_data($pData);
+        echo json_encode($data);
+    }
+
+
+    /**
+     * 删除 通知
+     * POST: nid 通知id
+     * 1: 删除成功; 0: 删除失败
+     */
+    public function delete_notice()
+    {
+        $notice_id = $this->input->post("nid");
+        if (!is_null($notice_id)) {
+            echo $this->designate->delete_notice($notice_id) ? 1 : 0;
+        } else {
+            echo 0;
+        }
+    }
+
+
+    /**
+     * 获取 通知详情
+     * POST: nid 通知id
+     */
+    public function get_notice_detail()
+    {
+        $notice_id = $this->input->post("nid");
+        $result = $this->designate->get_notice_detail($notice_id);
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($result));
+    }
+
+
+    /**
+     * 发布通知
+     */
+    public function post_notice()
+    {
     }
 
 }

@@ -56,7 +56,7 @@ class MY_Model extends CI_Model
         $unread_num = $this->db->select('id')
             ->from('event_designate')
             ->where('processor', $uid)
-            ->where('state', '待处理')->get()->num_rows();
+            ->where('state', '未处理')->get()->num_rows();
         $doing_num = $this->db->select('id')
             ->from('event_designate')
             ->where('processor', $uid)
