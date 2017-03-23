@@ -918,7 +918,7 @@ class Designate extends MY_controller
         }
 
         $this->assign("role",'sender');
-        $this->assign("response_text",'');
+        $this->assign("has_res",0);
         $this->assign("active_title", "email_sys");
         $this->assign("active_parent", "file_parent");
         $this->all_display("email/notice_detail.html");

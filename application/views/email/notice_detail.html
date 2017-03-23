@@ -109,7 +109,7 @@
                         	
                         	<h3><{$info['title']}>	</h3>
                         	
-                        	<div class="col-md-12">
+                        	<div class="col-md-12 m-receive-user">
                         		<div class="col-md-2">收件人：</div>
                         		<div class="col-md-10"><{$name}></div>
                         	</div>
@@ -180,12 +180,13 @@
 <script type="text/javascript" src="/js/public.js"></script>
 <script type="text/javascript">
 
-$(function(){
-   get_unread_notice();
-   get_attachment();
-   isSendNotice();
-})
- 
+    $(function(){
+       get_unread_notice();
+       get_attachment();
+       isSendNotice();
+    })
+  
+    //获取未读下达指令
    function get_unread_notice(){
       $.ajax({
           url: "/common/get_unread_notice_num",
@@ -199,6 +200,7 @@ $(function(){
       })
    }
 
+   //获取附件
    function get_attachment(){
         var num = window.location.href.indexOf('?id=');
         var email_id = window.location.href.substr(num+4);   //附件id
@@ -226,11 +228,13 @@ $(function(){
 
     }
 
+    //判断是否是指令分送
     function isSendNotice(){
         var num = window.location.href.indexOf('?id=');
         var email_id = window.location.href.substr(num+4);
         var role = "<{$role}>";
         if( role == "sender" ){
+          $('.m-receive-user').hide();
           $.ajax({
             url: '/common/get_response_list?notice_id=' + email_id,
             type: "get",
@@ -256,21 +260,29 @@ $(function(){
           })
         }else if( role == "receiver"){
           $('.m-sender-content').hide();
-          var resText = '<{$response_text}>';   //是否有回复内容
-        
-          if( resText.response_text ){
-              $('.m-notice-response').hide();
-              $('.m-notice-sender-contet').html(resText.response_text);
-              $('.m-notice-sender-time').html(timeToDate(resText.response_time*1000))
+          var num = window.location.href.indexOf('?id=');
+          var email_id = window.location.href.substr(num+4);
+          var hasRes = <{$has_res}>;
+          if( hasRes ){
+            $.ajax({
+                url: "/common/get_my_res?id="+email_id,
+                type: "get",
+                dataType: 'json',
+                success:function(data){
+                    if(data){
+                      $('.m-notice-response').hide();
+                      $('.m-notice-sender-contet').html(data.response_text);
+                      $('.m-notice-sender-time').html(timeToDate(data.response_time*1000));
+                    }
+                }
+            })
           }else{
-              $('.m-notice-sender').hide();
+            $('.m-notice-sender').hide();
           }
         }
-
-        
-
     }
 
+    //回复指令按钮功能函数
     $('#basic-addon2').click(function(){
         var num = window.location.href.indexOf('?id=');
         var email_id = window.location.href.substr(num+4);

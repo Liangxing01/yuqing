@@ -769,7 +769,7 @@ class Common extends MY_Controller
             $this->assign('attID', implode(',',$email_info['attID']));
 
         }
-        if(empty($response)){
+        if($response['response_text'] == ''){
             $this->assign("has_res",0);
         }else{
             $this->assign("has_res",1);

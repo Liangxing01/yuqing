@@ -1081,7 +1081,7 @@ class Common_Model extends CI_Model
             ->where('email_id',$eid)
             ->where('receiver_id',$uid)
             ->get()->row_array();
-
+        
             return $response_arr;
 
 
