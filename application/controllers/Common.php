@@ -769,12 +769,26 @@ class Common extends MY_Controller
             $this->assign('attID', implode(',',$email_info['attID']));
 
         }
+        if(empty($response)){
+            $this->assign("has_res",0);
+        }else{
+            $this->assign("has_res",1);
+        }
 
         $this->assign("role",'receiver');
-        $this->assign("response_text",json_encode($response));
         $this->assign("active_title", "email_sys");
         $this->assign("active_parent", "file_parent");
         $this->all_display("email/notice_detail.html");
+    }
+
+    /**
+     * 接口：获取自己的回复
+     */
+    public function get_my_res(){
+        $this->load->model("Common_Model", "common");
+        $eid = $this->input->get('id');
+        $my_res = $this->common->get_my_response($eid);
+        echo json_encode($my_res);
     }
 
     /**

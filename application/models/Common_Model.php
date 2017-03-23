@@ -1081,11 +1081,9 @@ class Common_Model extends CI_Model
             ->where('email_id',$eid)
             ->where('receiver_id',$uid)
             ->get()->row_array();
-        if(empty($response_arr)){
-            return '';
-        }else{
+
             return $response_arr;
-        }
+
 
     }
 
