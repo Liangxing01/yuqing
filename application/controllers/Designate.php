@@ -816,7 +816,7 @@ class Designate extends MY_controller
     public function get_send_notice(){
         $this->load->model('Common_Model','common');
         $query_data = $this->input->post();
-        $email_info = $this->common->get_send_emails_info($query_data,'email');
+        $email_info = $this->common->get_send_emails_info($query_data,'notice');
         echo json_encode($email_info);
     }
 

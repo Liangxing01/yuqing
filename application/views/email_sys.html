@@ -78,7 +78,7 @@
                            <a href="javascript:void(0)" name="send_msg"><i class="fa fa-envelope-o"></i> 发件箱</a>
                         </li>
                         <li>
-                           <a href="javascript:void(0)" name="dustbin"><i class=" fa fa-bullhorn"></i> 指令下达<span class="label label-info pull-right">30</span></a>
+                           <a href="javascript:void(0)" name="dustbin"><i class=" fa fa-bullhorn"></i> 指令下达<span class="label label-info pull-right notice_num"></span></a>
                         </li>
                      </ul>                  
                   </aside>
@@ -89,7 +89,8 @@
                            <h3>收件箱</h3>
                            <form class="pull-right position" action="#">
                               <div class="input-append">
-                                 <input type="text" placeholder="搜索你的邮件" class="sr-input">
+                                 <input type="text" placeholder="搜索你的邮件" class="sr-input
+                                 receive_searchInput">
                                  <button type="button" class="btn sr-btn"><i class="fa fa-search receive_search"></i></button>
                               </div>
                            </form>
@@ -155,7 +156,7 @@
                            <h3>发件箱</h3>
                            <form class="pull-right position" action="#">
                               <div class="input-append">
-                                 <input type="text" placeholder="搜索你的邮件" class="sr-input">
+                                 <input type="text" placeholder="搜索你的邮件" class="sr-input send_searchInput">
                                  <button type="button" class="btn sr-btn"><i class="fa fa-search send_search"></i></button>
                               </div>
                            </form>
@@ -193,13 +194,13 @@
                            </div>
                            <table class="table table-inbox table-hover send_msg">
                               <tbody>
-                                 <tr>
+                                 <!-- <tr>
                                     <td class="inbox-small-cells"><input type="checkbox" class="mail-checkbox"></td>
                                     <td class="view-message  dont-show">发件人名字</td>
                                     <td class="view-message ">主题主题主题</td>
                                     <td class="view-message  inbox-small-cells"><i class="fa fa-paperclip"></i></td>
                                     <td class="view-message  text-right">2016-12-8&nbsp;15:38</td>
-                                 </tr>
+                                 </tr> -->
                               </tbody>
                            </table>
                         </div>
@@ -213,8 +214,8 @@
                            <h3>指令下达</h3>
                            <form class="pull-right position" action="#">
                               <div class="input-append">
-                                 <input type="text" placeholder="搜索你的邮件" class="sr-input">
-                                 <button type="button" class="btn sr-btn"><i class="fa fa-search send_search"></i></button>
+                                 <input type="text" placeholder="搜索你的邮件" class="sr-input notice_searchInput">
+                                 <button type="button" class="btn sr-btn"><i class="fa fa-search notice_search"></i></button>
                               </div>
                            </form>
                         </div>
@@ -227,70 +228,53 @@
                                        <span class="email_content">全部</span>
                                        <i class="fa fa-angle-down "></i>
                                     </a>
-                                   <ul class="dropdown-menu">
-                                       <li><a href="#"> 指令下达</a></li>
-                                       <li><a href="#"> 指令发送</a></li>
+                                   <ul class="dropdown-menu m-notice-type">
+                                       <li><a href="#">指令下达</a></li>
+                                       <li><a href="#">指令发送</a></li>
                                     </ul>
                                  </div>
                               </div>
                               <div class="btn-group">
-                                 <a class="btn mini " href="javascript:void(0)" onclick="window.refresh();"data-toggle="dropdown" title="刷新">
+                                 <a class="btn mini " href="javascript:void(0)" onclick="window.refresh();" data-toggle="dropdown" title="刷新">
                                     <i class=" fa fa-refresh "></i>
                                  </a>
                               </div>
                               <ul class="unstyled inbox-pagination">
-                                 <li>页数<span class="index_num_send">1</span>/<span class="page_num_send"></span></li>
+                                 <li>页数<span class="m-dustbin-pageIndex">1</span>/<span class="m-dustbin-pageTotal"></span></li>
                                  <li>
-                                    <a href="javascript:get_prev_page('sed')" class="np-btn"><i class="fa fa-angle-left  pagination-left"></i></a>
+                                    <a href="javascript:get_prev_page('notice')" class="np-btn"><i class="fa fa-angle-left  pagination-left"></i></a>
                                  </li>
                                  <li>
-                                    <a href="javascript:get_next_page('sed')" class="np-btn"><i class="fa fa-angle-right pagination-right"></i></a>
+                                    <a href="javascript:get_next_page('notice')" class="np-btn"><i class="fa fa-angle-right pagination-right"></i></a>
                                  </li>
                               </ul>
                            </div>
                            <table class="table table-inbox table-hover dustbin">
                               <tbody>
-                                <tr class="unread">
-                                    <td class="inbox-small-cells">
-                                       <input type="checkbox" class="mail-checkbox">
-                                    </td>
-                                    <td class="inbox-small-cells hidden-phone"><i class="fa fa-circle  inbox-started"></i></td>
-                                    <td class="view-message  dont-show">发件人名字</td>
-                                    <td class="view-message ">主题主题主题</td>
-                                    <td class="view-message  inbox-small-cells"><i class="fa fa-paperclip"></i></td>
-                                    <td class="view-message  text-right">2016-12-8&nbsp;15:38</td>
-                                 </tr>
-                                 <tr class="unread">
-                                    <td class="inbox-small-cells">
-                                       <input type="checkbox" class="mail-checkbox">
-                                    </td>
-                                    <td class="inbox-small-cells hidden-phone "><i class="fa fa-circle  inbox-started"></i></td>
-                                    <td class="view-message  dont-show">发件人名字</td>
-                                    <td class="view-message ">主题主题主题</td>
-                                    <td class="view-message  inbox-small-cells"><i class="fa fa-paperclip"></i></td>
-                                    <td class="view-message  text-right">2016-12-8&nbsp;15:38</td>
-                                 </tr>
+                                
                               </tbody>
                            </table>
                         </div>
                      </aside>
                      <!-- 指令下达 end -->
-
                   </div>
-
-
-
                </div>
             </section>
 			<!-- END WRAPPER  -->
          </section>
 <script language='javascript' src='/js/public.js'></script>
 <script>
-   PAGE_NUM_RE = 15; //每页显示数目
+   const PAGE_NUM_RE = 15; //每页显示数目
+
    $(function(){
-      get_unread_email()//获取未读邮件数目
+
+      get_unread_email();   //获取未读邮件数目
+      get_unread_notice();  //获取未读指令数目
       receive_message(0,'','all')
       is_send();
+
+      //左侧邮件列表导航栏点击函数
+
       $('.msg_nav li a').click(function(){
          $('.main_section aside').hide();
          var id = $(this).attr('name');
@@ -301,8 +285,11 @@
                  receive_message(0,'','all');break;
             case 'send_msg':
                  get_all_send(0,'');break;
+            case 'dustbin':
+                 get_all_notice(0, '', 'rec');
          }
       })
+
       //收件箱搜索
       $('.receive_search').click(function(){
         var key_word =  $(this).parent().siblings('input').val();
@@ -312,6 +299,7 @@
             layer.msg('搜索词不能为空');
          }
       })
+
       //发件箱搜素
       $('.send_search').click(function(){
          var key_word =  $(this).parent().siblings('input').val();
@@ -320,6 +308,16 @@
          }else{
             layer.msg('搜索词不能为空');
          }
+      })
+
+      //指令下达搜索
+      $('.notice_search').click(function(){
+          var key =  $(this).parent().siblings('input').val();
+          if (key){
+              get_all_notice(0, key, 'rec');
+          }else{
+            layer.msg("搜索词不能为空");
+          }
       })
 
       //邮件状态点击事件
@@ -335,6 +333,19 @@
                receive_message(0,'',0);break;
          }
       })
+
+      //指令系统类别筛选
+      $('.m-notice-type').delegate('a' , 'click', function(){
+          var key = $('.notice_searchInput').val();
+          var type = '';
+          if( $(this).html() == "指令发送"){
+              type = 'send';
+          }else{
+              type = 'rec';
+          }
+
+          get_all_notice(0, key, type);
+      })
    })
 
    //判断是否是收件箱返回
@@ -347,6 +358,7 @@
          $('a[name="send_msg"]').parent().addClass('active').siblings('.active').removeClass('active');
       }
    }
+
    //获取未读邮件
    function get_unread_email(){
       $.ajax({
@@ -360,6 +372,21 @@
          }
       })
    }
+
+   //获取未下达指令条数
+   function get_unread_notice(){
+      $.ajax({
+          url: '/common/get_unread_notice_num',
+          type: "get",
+          dataType: "json",
+          success: function(data){
+              if( data.unread_num){
+                $('.notice_num').html(data.unread_num);
+              }
+          }
+      })
+   }
+
    /*
    * 收件箱
    * page：起始条目
@@ -486,8 +513,81 @@
       })
    }
 
+   //指令下达
+   function get_all_notice(page, key, type){
+      var load = layer.load(3);
+      $('.m-dustbin-pageIndex').html(1);
+      $('.m-dustbin-pageTotal').html(1);
+
+      if( key === undefined || key === "" || key === null){
+        key = '';
+      }
+
+      var url = '';
+      if( type == 'rec'){
+        url = '/common/get_rec_notice';
+      }else if( type == 'send'){
+        url = '/designate/get_send_notice';
+      }
+
+      $.ajax({
+          url: url,
+          type: "post",
+          data:{
+            length: PAGE_NUM_RE,
+            start: page,
+            search: key,
+            state: 'all',
+          },
+          dataType: "json",
+          success: function ( data ){
+              if( data.emails.length){
+                $('.dustbin tbody').html("");  //清空指令内容
+                var notice_num = Math.ceil(data.num/PAGE_NUM_RE);
+                $('.m-dustbin-pageTotal').html(notice_num);
+
+                var str = '';
+                for ( var i = 0, len = data.emails.length; i < len; i++){
+                    var obj = data.emails[i];  //获取目标元素
+                    str += '<tr>';
+                    str += '<td class="inbox-small-cells">'
+                    str += '<input type="checkbox" class="mail-checkbox"></td>';
+                    if(obj.state == '1'){
+                       str += '<td class="inbox-small-cells hidden-phone"><i class="fa fa-circle"></i></td>'
+                    }else{
+                       str += '<td class="inbox-small-cells hidden-phone"><i class="fa fa-circle inbox-started"></i></td>'
+                    }
+                    switch (obj.priority_level){
+                       case "1":
+                          str += '<td class="view-message  dont-show">'+obj.sender_name+'<span class="label label-primary pull-right">一般</span></td>';
+                          break;
+                       case "2":
+                          str += '<td class="view-message  dont-show">'+obj.sender_name+'<span class="label label-danger pull-right">高优先级</span></td>';
+                          break;
+                    }
+                    str += '<td class="view-message "><a href="/common/show_notice_detail?id='+obj.id+'">'+obj.title+'</a></td>';
+                    if(obj.has_att){
+                       str += '<td class="view-message  inbox-small-cells"><span class="fa fa-paperclip"></span></td>'
+                    }else{
+                       str += '<td class="view-message  inbox-small-cells"></td>'
+                    }
+                    str += '<td class="view-message  text-right">'+timeToDate(obj.time*1000)+'</td>';
+                    str += '</tr>';
+                }
+                $('.dustbin tbody').append(str);
+
+              }else{
+                $('.dustbin tbody').html('<tr><td style="text-align: center">暂无此类消息</td></tr>');
+              }
+              layer.close(load);
+          }
+      })
+   }
+
+
    //上一页
    function get_prev_page(str){
+
       if(str == 'res'){
          var index = $('.index_num_rec').html();
          if(index == 1){
@@ -495,13 +595,14 @@
             return;
          }else{
             var type = $('.email_content').html();
+            var key = $('.receive_searchInput').val();
             switch(type){
                case '全部':
-                  receive_message((index-2)*PAGE_NUM_RE,'','all');break;
+                  receive_message((index-2)*PAGE_NUM_RE, key,'all');break;
                case '已读':
-                  receive_message((index-2)*PAGE_NUM_RE,'',1);break;
+                  receive_message((index-2)*PAGE_NUM_RE, key,1);break;
                case '未读':
-                  receive_message((index-2)*PAGE_NUM_RE,'',0);break;
+                  receive_message((index-2)*PAGE_NUM_RE, key,0);break;
             }
             $('.index_num_rec').html(index*1-1);
             return;
@@ -510,13 +611,27 @@
 
       if(str == 'sed'){
          var index = $('.index_num_send').html();
+         var key = $('.send_searchInput').val();
          if(index == 1){
             layer.msg('当前为第一页');
             return;
          }else{
-            get_all_send((index-2)*PAGE_NUM_RE,'','all');
+
+            get_all_send((index-2)*PAGE_NUM_RE,key,'all');
             $('.index_num_send').html(index*1-1);
             return;
+         }
+      }
+
+      if(str == 'notice'){
+         var index = $('.m-dustbin-pageIndex').html();
+         if( index == 1){
+            layer.msg("当前为第一页");
+            return;
+         }else{
+            var key = $('.notice_searchInput').val();
+            get_all_notice((index-2)*PAGE_NUM_RE, key, 'rec');
+            $('.m-dustbin-pageIndex').html(index*1 - 1);
          }
       }
    }
@@ -530,13 +645,14 @@
             return;
          }else{
             var type = $('.email_content').html();
+            var key = $('.receive_searchInput').val();
             switch(type){
                case '全部':
-                  receive_message(index*PAGE_NUM_RE,'','all');break;
+                  receive_message(index*PAGE_NUM_RE, key, 'all');break;
                case '已读':
-                  receive_message(index*PAGE_NUM_RE,'',1);break;
+                  receive_message(index*PAGE_NUM_RE, key, 1);break;
                case '未读':
-                  receive_message(index*PAGE_NUM_RE,'',0);break;
+                  receive_message(index*PAGE_NUM_RE, key, 0);break;
             }
             $('.index_num_rec').html(index*1+1);
             return ;
@@ -550,11 +666,24 @@
             layer.msg('当前为最后一页');
             return;
          }else{
-            get_all_send(index*PAGE_NUM_RE,'','all');
+            var key = $('.send_searchInput').val();
+            get_all_send(index*PAGE_NUM_RE, key,'all');
             $('.index_num_send').html(index*1+1);
             return ;
          }
       }
 
+      if(str == 'notice'){
+         var index = $('.m-dustbin-pageIndex').html();
+         var total = $('.m-dustbin-pageTotal').html();
+         if( index == total){
+            layer.msg("当前为最后一页");
+            return;
+         }else{
+            var key = $('.notice_searchInput').val();
+            get_all_notice( index*PAGE_NUM_RE, key, 'rec');
+            $('.m-dustbin-pageIndex').html(index*1 + 1);
+         }
+      }
    }
 </script>
