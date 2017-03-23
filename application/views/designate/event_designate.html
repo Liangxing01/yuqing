@@ -352,6 +352,7 @@
             rules: {
                 'title': 'required',
                 'info_id': 'required',
+                'rank': 'required',
                 'main_processor': 'required',
                 'processor': "required"
             },
@@ -361,6 +362,9 @@
                 },
                 'info_id': {
                     required: '请添加事件信息'
+                },
+                'rank': {
+                    required: '请选择事件等级'
                 },
                 'main_processor': {
                     required: '请指定牵头人(单位)'
@@ -620,40 +624,40 @@
 
         isReastContent();  //判断是否是改派页面
     });
-    
+
     //判断是否是改派页面
-    function isReassignment () {
-        if (window.location.search !== ''){
+    function isReassignment() {
+        if (window.location.search !== '') {
 
             var searchArr = window.location.search.split('&');
             var eid = window.location.search.split('&')[0].slice(5); //获取eid
             var type = window.location.search.split('&')[1].slice(5); //获取类型
 
-            if ( type === "reset"){ //改派页面
+            if (type === "reset") { //改派页面
                 return eid;
             }
         }
     }
-    
+
     //改派页面填充内容
-    function isReastContent () {
+    function isReastContent() {
         var eid = isReassignment();
 
-        if( eid !== '' || eid !== undefined || eid !== null){
+        if (eid !== '' || eid !== undefined || eid !== null) {
             $.ajax({
                 type: 'GET',
                 url: '/designate/get_designate_info?eid=' + eid,
                 dataType: 'json',
-                success:function (data) {
-                    $('#title').val( data.title);
-                    for ( var i = 0 ; i < data.info_list.length; i++){
+                success: function (data) {
+                    $('#title').val(data.title);
+                    for (var i = 0; i < data.info_list.length; i++) {
                         add_event_info(data.info_list[i].id, data.info_list[i].title);
                     }
-                    $('#description').val( data.description);
-                    $('#rank').val( data.rank);
+                    $('#description').val(data.description);
+                    $('#rank').val(data.rank);
                     $("#reply_time").spinner("value", data.reply_time);
 
-                    for ( var j = 0 ; j < data.relate_list.length; j++){
+                    for (var j = 0; j < data.relate_list.length; j++) {
                         add_relate_event(data.relate_list[j].relate_id, data.relate_list[j].title)
                     }
                 }
@@ -764,9 +768,9 @@
         }
 
         var eid = isReassignment() || '';
-        if( eid !== '' && eid !== null && eid !== undefined){
+        if (eid !== '' && eid !== null && eid !== undefined) {
             var reset = 1;
-        } else{
+        } else {
             var reset = 0;
         }
 
@@ -786,7 +790,7 @@
                 'watcher': watcher,
                 'attachment': window.FILES,
                 'reset': reset,
-                'eid' : eid
+                'eid': eid
             },
             success: function (data) {
                 layer.close(layer_index);
@@ -798,7 +802,7 @@
                     layer.msg("操作失败", {anim: 6, time: 1000});
                 }
             }
-        });        
+        });
     }
 
     /**
@@ -1003,6 +1007,12 @@
 
 
 
+
+
+
+
+
+
 </script>
 <!-- The template to display files available for download -->
 <script id="template-download" type="text/x-tmpl">
@@ -1019,6 +1029,12 @@
         </td>
     </tr>
 {% } %}
+
+
+
+
+
+
 
 
 

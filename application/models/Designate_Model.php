@@ -1450,4 +1450,72 @@ class Designate_Model extends CI_Model
         return $result;
     }
 
+
+    /**
+     * 获取通知列表
+     * @param $pInfo
+     * @return array
+     */
+    public function get_notice_list_data($pInfo)
+    {
+        $data['aaData'] = $this->db->select("announce.id, title, user.name AS sender, time")
+            ->join("user", "user.id = announce.sender")
+            ->where("announce.type", "all")
+            ->order_by('announce.time', $pInfo['sort_type'])
+            ->limit($pInfo['length'], $pInfo['start'])
+            ->get("announce")->result_array();
+
+        $total = $this->db->select("id")
+            ->where("type", "all")
+            ->get("announce")->num_rows();
+
+        $data['sEcho'] = $pInfo['sEcho'];
+
+        $data['iTotalDisplayRecords'] = $total;
+
+        $data['iTotalRecords'] = $total;
+
+        return $data;
+    }
+
+
+    /**
+     * 删除通知
+     * @param int $notice_id
+     * @return bool
+     */
+    public function delete_notice($notice_id)
+    {
+        return $this->db->where("id", $notice_id)->delete("announce");
+    }
+
+
+    /**
+     * 查询 通知详情
+     * @param int $notice_id
+     * @return array
+     */
+    public function get_notice_detail($notice_id)
+    {
+        return $this->db->select("id, title, time, content")->where("id", $notice_id)->get("announce")->row_array();
+    }
+
+
+    /**
+     * 发布新通知
+     * @param string $title
+     * @param string $content
+     * @return bool
+     */
+    public function post_notice($title, $content)
+    {
+        $notice_data = array(
+            "title" => $title,
+            "content" => $content,
+            "sender" => $this->session->uid,
+            "type" => "all",
+            "time" => time()
+        );
+        return $this->db->insert("announce", $notice_data);
+    }
 }

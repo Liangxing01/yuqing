@@ -745,13 +745,18 @@ class Common extends MY_Controller
 
     /**
      * 显示 指令详情
+     * 显示 回复框，如果有回复则显示自己的回复内容
      */
     public function show_notice_detail(){
         $this->load->model("Common_Model", "common");
         $eid = $this->input->get('id');
+
         if (!isset($eid) || $eid == null || $eid == "") {
             show_404();
         }
+
+        //查询是否自己已回复
+        $response = $this->common->get_my_response($eid);
 
         $email_info = $this->common->rece_email_detail($eid);
 
@@ -763,6 +768,8 @@ class Common extends MY_Controller
 
         }
 
+        $this->assign("role",'receiver');
+        $this->assign("response_text",$response);
         $this->assign("active_title", "email_sys");
         $this->assign("active_parent", "file_parent");
         $this->all_display("email/notice_detail.html");
@@ -903,12 +910,6 @@ class Common extends MY_Controller
         $length    = $this->input->get('length');
         $call_data = $this->common->get_call_data($page_num,$length);
 
-    }
-
-
-    public function test(){
-        $a = "1481272759";
-        echo (int)$a + 1209600;
     }
 
 

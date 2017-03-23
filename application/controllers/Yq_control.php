@@ -238,14 +238,5 @@ class Yq_control extends MY_Controller {
 
 
 
-    public function test(){
-        $set = "http://werewr.erwer/weraw.er.aewr.awe.re";
-        $re = "/^((http|ftp|https):\/\/)?(.*)/";
-        preg_match($re, $set,$res);
-        var_dump($res[3]);
-    }
-
-
-
 
 }
