@@ -14,15 +14,6 @@ class Yuqing_Model extends CI_Model {
         $this->load->library(array("Mongo_db" => "mongo"));
     }
 
-    public function test1(){
-        $uid = $this->session->userdata('uid');
-        $m = array();
-        array_push($m,$uid);
-        $a = $this->mongo->select(array())
-            ->where_in('yq_block_list',$m)
-            ->find_one('rawdata');
-        var_dump($a);
-    }
 
     /**
      * ------------------------------上报人 功能------------------------------

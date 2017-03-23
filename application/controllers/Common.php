@@ -913,10 +913,4 @@ class Common extends MY_Controller
     }
 
 
-    public function test(){
-        $a = "1481272759";
-        echo (int)$a + 1209600;
-    }
-
-
 }

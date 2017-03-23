@@ -1,0 +1,248 @@
+<link href="/assets/advanced-datatable/media/css/demo_page.css" rel="stylesheet">
+<link href="/assets/advanced-datatable/media/css/demo_table.css" rel="stylesheet">
+
+<!-- DATATABLE CSS -->
+<link rel="stylesheet" href="/assets/data-tables/DT_bootstrap.css">
+
+<!-- Common CSS -->
+<link rel="stylesheet" href="/css/common.css">
+
+<!-- BEGIN MAIN CONTENT -->
+<section id="main-content">
+    <section class="wrapper site-min-height">
+        <!-- BEGIN ROW  -->
+        <div class="row">
+            <div class="col-lg-12">
+                <section class="panel">
+                    <header class="panel-heading">
+                        <span class="label label-primary">通知管理</span>
+                           <span class="tools pull-right">
+                           <a href="javascript:;" title="刷新" class="fa fa-refresh"></a>
+                           </span>
+                    </header>
+                    <div class="panel-body">
+
+                        <div class="row">
+                            <div class="col-md-2">
+                                <button title="发布通知" class="btn btn-info" onclick="post_notice();"><i
+                                        class="fa fa-pencil-square-o" aria-hidden="true"></i> 发布通知
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="adv-table">
+                            <table class="display table table-bordered table-striped" id="notice_table">
+                                <thead>
+                                <tr>
+                                    <th>编号</th>
+                                    <th>标题</th>
+                                    <th>发布时间</th>
+                                    <th>发布人</th>
+                                    <th>操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div style="display: none; padding: 5px" id="notice_detail">
+                        <h4 id="notice_title"></h4>
+                        <p id="notice_content"></p>
+                        <div style="float: right; padding: 0 10px"><span id="notice_post_time"></span></div>
+                    </div>
+                    <div style="display: none; padding: 10px" id="new_notice_form">
+                        <label for="new_notice_title">标题 (20字内)</label>
+                        <input type="text" name="new_notice_title" class="form-control" id="new_notice_title">
+                        <label for="new_notice_content">内容 (50字内)</label>
+                        <textarea name="new_notice_content" id="new_notice_content" class="form-control" cols="30"
+                                  rows="10"></textarea>
+                    </div>
+                </section>
+            </div>
+        </div>
+        <!-- END ROW  -->
+    </section>
+</section>
+<!-- END SECTION -->
+
+<!-- DataTables -->
+<script language="javascript" src="/assets/data-tables/jquery.dataTables.min.js"></script>
+<script src="/assets/data-tables/dataTables.bootstrap.min.js"></script>
+<!-- Public Function -->
+<script language="javascript" src="/js/public.js"></script>
+
+<!-- Page Script -->
+<script language="javascript">
+
+    $('#notice_table').dataTable({
+
+        "searching": false,
+        "bPaginate": true,
+        "bProcessing": false,                //是否显示正在处理提示信息。
+        "bLengthChange": true,
+        "bFilter": true,                     //是否使用内置的过滤功能。
+        "bSort": true,
+        "bInfo": true,
+        "bAutoWidth": false,
+        "bStateSave": true,
+        "iDisplayLength": 10,                //每页显示10条数据
+        "aLengthMenu": [10, 25, 50, 100],
+        "aaSorting": [3, "desc"],          //默认排序 第4列
+
+        "bServerSide": true,
+        "sAjaxSource": "/designate/get_notice_list_data",
+        "sServerMethod": "POST",
+
+        "aoColumns": [
+            {
+                "sTitle": "编号",
+                "mData": "id",
+                'sClass': "text-center",
+                'orderable': false
+            },
+            {
+                "sTitle": "标题",
+                "mData": "title",
+                'sClass': "text-center",
+                'orderable': false
+            },
+            {
+                "sTitle": "发布时间",
+                "mData": "time",
+                'sClass': "text-center",
+                "mRender": function (data) {
+                    return timeToDate(data * 1000);
+                }
+            },
+            {
+                "sTitle": "发布人",
+                "mData": "sender",
+                'sClass': "text-center",
+                'orderable': false
+            },
+            {
+                "sTitle": "操作",
+                "mData": "id",
+                'sClass': "text-center",
+                'orderable': false,
+                "mRender": function (data) {
+                    return "<a title='查看' href='javascript:void(0);' onclick='show_detail(" + data + ")' class='btn btn-info btn-xs'>查看</a>&nbsp;" +
+                            "<a title='改派' href='javascript:void(0);' onclick='delete_notice(" + data + ")' class='btn btn-danger btn-xs'>删除</a>&nbsp;";
+                }
+            }
+        ],
+
+        "oLanguage": {
+            "sLengthMenu": "每页显示 _MENU_ 条记录",
+            "sInfo": "从 _START_ 到 _END_ /共 _TOTAL_ 条数据",
+            "sInfoEmpty": "没有数据",
+            "sInfoFiltered": "(从 _MAX_ 条数据中检索)",
+            "oPaginate": {
+                "sFirst": "首页",
+                "sPrevious": "前一页",
+                "sNext": "后一页",
+                "sLast": "尾页"
+            },
+            "sZeroRecords": "暂无数据",
+            "sSearch": "关键字:"
+        }
+
+    });
+
+
+    //刷新表格
+    jQuery(".panel .tools .fa-refresh").click(function () {
+        $("#notice_table").DataTable().ajax.reload(null, false);
+    });
+
+    //删除通知
+    function delete_notice(nid) {
+        layer.confirm('确认删除?', {title: '提示'}, function (index) {
+            $.ajax({
+                url: "/designate/delete_notice",
+                method: "post",
+                dataType: 'json',
+                data: {"nid": nid},
+                success: function (data) {
+                    if (data == 1) {
+                        layer.msg('删除成功!', {time: 1000});
+                        $("#notice_table").DataTable().ajax.reload(null, false); //刷新表格
+                    } else {
+                        layer.msg('删除失败！', {anim: 6});
+                    }
+                }
+            });
+            layer.close(index);
+        });
+    }
+
+    //查看通知详情
+    function show_detail(nid) {
+        $.ajax({
+            url: "/designate/get_notice_detail",
+            method: "post",
+            dataType: 'json',
+            data: {"nid": nid},
+            success: function (data) {
+                if (data != "null") {
+                    $("#notice_title").html(data.title);
+                    $("#notice_content").html(data.content);
+                    $("#notice_post_time").html(timeToDate(data.time * 1000));
+                    layer.open({
+                        type: 1,
+                        title: "通知详情",
+                        closeBtn: 0,
+                        btn: ['确定'],
+                        shadeClose: true,
+                        content: $('#notice_detail')
+                    });
+                }
+            }
+        });
+    }
+
+    //添加通知
+    function post_notice() {
+        layer.open({
+            type: 1,
+            title: "发布新通知",
+            closeBtn: 0,
+            btn: ['发布', '取消'],
+            shadeClose: true,
+            content: $('#new_notice_form'),
+            yes: function (index) {
+                var title = $("#new_notice_title").val();
+                var content = $("#new_notice_content").val();
+                if (title == "" || content == "") {
+                    layer.msg('标题和内容不能为空', {anim: 6});
+                    return false;
+                }
+                if (title.length > 40) {
+                    layer.msg('标题最长20字', {anim: 6});
+                    return false;
+                }
+                if (content.length > 100) {
+                    layer.msg('内容最多50字', {anim: 6});
+                    return false;
+                }
+                $.ajax({
+                    type: "POST",
+                    data: {"title": title, "content": content},
+                    url: "/designate/post_notice",
+                    success: function (data) {
+                        if (data == "1") {
+                            layer.msg("发布成功", {time: 1000});
+                            $("#notice_table").DataTable().ajax.reload(null, false); //刷新表格
+                            layer.close(index);
+                        } else {
+                            layer.msg('发布失败', {anim: 6});
+                        }
+                    }
+                });
+            }, btn2: function (index) {
+                layer.close(index);
+            }
+        });
+    }
+</script>
