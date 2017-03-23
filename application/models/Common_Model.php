@@ -652,10 +652,12 @@ class Common_Model extends CI_Model
      * @param $receID
      * @param $attID
      * @return bool
+     * @type 是邮件 还是 指令
      * 写入 邮件信息
      */
-    public function insert_email($einfo,$rec,$attID){
+    public function insert_email($einfo,$rec,$attID,$type = 'email'){
         $einfo['sender'] = $this->session->userdata('uid');
+        $einfo['type']   = $type;
         $einfo['time']   = time();
 
         //开始运行事务
@@ -866,16 +868,18 @@ class Common_Model extends CI_Model
     /**
      * 获取未读 邮件 个数
      */
-    public function get_unread_num(){
+    public function get_unread_num($type = 'email'){
         $uid = $this->session->userdata('uid');
         $gid = $this->session->userdata('gid');
         $gid_arr = explode(',',$gid);
-        $num = $this->db->select('id')
+        $num = $this->db->select('email_user.id')
             ->from('email_user')
-            ->where('state',0)
+            ->join('email','email.id = email_user.email_id')
+            ->where('email_user.state',0)
+            ->where('email.type',$type)
             ->group_start()
-            ->where('receiver_id',$uid)
-            ->or_where_in('receiver_gid',$gid_arr)
+            ->where('email_user.receiver_id',$uid)
+            ->or_where_in('email_user.receiver_gid',$gid_arr)
             ->group_end()
             ->get()->num_rows();
         return $num;

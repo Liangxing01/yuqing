@@ -51,16 +51,21 @@
       top: 50%;
       transform: translateY(-50%);
 
-      background-color: #72d0eb;
+      background-color: rgb(6, 181, 181);
 
       width: 200px;
-      height: 400px;
+      height: 300px;
+      padding: 6px;
       color: #fff;
 
       transition: right 0.6s ease-in-out;
       border-radius: 8px 0 0 8px;
+      /*overflow-y: auto;*/
     }
-
+    .m-notification-body{
+      height: 100%;
+      overflow-y: auto;
+    }
     .m-notification-title{
       width: 25px;
 
@@ -69,7 +74,7 @@
       left: -25px;
       top: 50%;
       transform: translateY(-50%);
-      background-color: #e4393c;
+      background-color: rgb(6, 181, 181);
       color: #fff;
       text-align: center;
       font-size: 14px;
@@ -77,11 +82,52 @@
       cursor: pointer;
 
       border-radius: 5px 0 0 5px;
+      
+    }
+
+    .m-notification-list{
+      overflow-y: auto;
+    }
+    .m-notification-list li{
+      background: #72d0eb;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      padding: 0 5px;
     }
     .m-notification-list p{
       display: none;
+      text-indent: 2em;
+      line-height: 22px;
     }
-    
+    .m-notification-time{
+      display: block;
+      text-align: right;
+    }
+
+    .m-notification-listTitle{
+      line-height: 26px;
+      font-size: 14px;
+      padding-left: 8px;
+      margin:0;
+      text-align: center;
+    }
+ 
+    .m-notification-body::-webkit-scrollbar {
+        width:10px;
+        height:10px;
+        background-color: #F5F5F5;  
+    }
+    .m-notification-body::-webkit-scrollbar-track     {
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);  
+	    border-radius: 10px;  
+	    background-color: #F5F5F5;
+    }
+    .m-notification-body::-webkit-scrollbar-thumb{
+        border-radius: 10px;  
+	    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);  
+	    background-color: rgb(6, 181, 181); 
+    }
+
 </style>
       <!-- BEGIN MAIN CONTENT -->
       <link href="/css/tasks.css" rel="stylesheet"><!-- TASK CSS-->
@@ -342,33 +388,24 @@
 		   <!-- END ROW  -->
         </section>
 		<!-- END WRAPPER  -->
+        <section class="m-notification-content">
+              <div class="m-notification-title">
+                  通知列表
+              </div>
+              <div class="m-notification-body">
+                  <ul class="m-notification-list">
+                    
+                  </ul>
+              </div>
+          </section>
       </section>
       <!-- END MAIN CONTENT -->
-      <section class="m-notification-content">
-          <div class="m-notification-title">
-              通知列表 <span class="glyphicon glyphicon-menu-hamburger"></span>
-          </div>
-          <div class="m-notification-body">
-              <ul class="m-notification-list">
-                <li>
-                    <h4 class="m-notification-listTitle">消息标题</h4>
-                    <p class="m-notification-listCont">消息内容</p>
-                </li>
-                <li>
-                    <h4 class="m-notification-listTitle">消息标题</h4>
-                    <p class="m-notification-listCont">消息内容</p>
-                </li>
-                <li>
-                    <h4 class="m-notification-listTitle">消息标题</h4>
-                    <p class="m-notification-listCont">消息内容</p>
-                </li>
-              </ul>
-          </div>
-      </section>
+      
 <script src="/js/count.js"></script>
 <script src="/assets/morris.js-0.4.3/raphael-min.js" ></script><!-- MORRIS  JS -->
 <script>
   get_all_msg();
+  getSiteMessage();
 
   //获取历史记录消息
   function get_all_msg(){
@@ -419,6 +456,31 @@
           "height": "toggle"
       }, 200)
   })
+
+  function getSiteMessage(){
+      $.ajax({
+          url: "/welcome/get_site_message",
+          type: "GET",
+          dataType: "json",
+          success: function(data){
+              if( data.length === 0 ){
+                $('.m-notification-list').html("<li>暂无更多消息</li>")
+              }else{
+                var list = '';
+                for( var i = 0, len = data.length; i < len; i++){
+                  list += '<li>'
+                  list += '<h4 class="m-notification-listTitle">' + data[i].title + '</h4>';
+                  list += '<p class="m-notification-listCont">'+ data[i].content;
+                  list += '<span class="m-notification-time">'+timeToDate(data[i].time*1000)+ '</span>'
+                  list += '</p></li>'
+                }
+
+                $('.m-notification-list').append(list);
+              }
+          }
+      })
+  }
+  
 </script>
 <script>
   function open_meeting() {

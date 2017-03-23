@@ -753,21 +753,6 @@ class Designate extends MY_controller
         echo $this->designate->get_relation_tree();
     }
 
-    // demo Gateway
-    public function test($uid = 1)
-    {
-        $this->load->library("Gateway");
-        Gateway::$registerAddress = $this->config->item("VM_registerAddress");
-        $user_online = Gateway::isUidOnline($uid);
-        if ($user_online == 0) {
-            echo "该用户不在线";
-        }
-        $clients = Gateway::getClientIdByUid($uid);
-        foreach ($clients AS $client) {
-            var_dump(Gateway::getSession($client));
-        }
-    }
-
 
     public function count_user()
     {
@@ -809,6 +794,7 @@ class Designate extends MY_controller
     }
 
 
+    /*----------------------------------通知系统----------------------------------*/
     /**
      * 显示 通知列表
      */
@@ -882,4 +868,53 @@ class Designate extends MY_controller
     {
     }
 
+
+    /**
+     * ------------------------指令系统--------------------
+     */
+
+    /**
+     * 分页显示发出的指令
+     */
+    public function get_send_notice(){
+        $this->load->model('Common_Model','common');
+        $query_data = $this->input->post();
+        $email_info = $this->common->get_send_emails_info($query_data,'email');
+        echo json_encode($email_info);
+    }
+
+    /**
+     * 发布指令
+     */
+    public function publish_notice(){
+        $this->load->model("Common_Model", "common");
+        $email_info = array(
+            'title' => $this->input->post('title'),
+            'body'  => $this->input->post('body'),
+            'priority_level' => $this->input->post('priority_level')
+        );
+
+        $receiveID = array(
+            'uids' => $this->input->post('uids') ? explode(',',$this->input->post('uids')) : array(),
+            'gids' => $this->input->post('gids') ? explode(',',$this->input->post('gids')) : array()
+        );
+
+        $attID = $this->input->post('attID');
+        if($attID != ''){
+            $attID_arr = explode(',',$attID);
+        }else{
+            $attID_arr = array();
+        }
+
+        $res = $this->common->insert_email($email_info,$receiveID,$attID_arr,'notice');
+        if($res){
+            echo json_encode(array(
+                'res' => 1
+            ));
+        }else{
+            echo json_encode(array(
+                'res' => 0
+            ));
+        }
+    }
 }

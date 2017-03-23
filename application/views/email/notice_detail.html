@@ -1,10 +1,151 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<style>
+	.fa{
+		font-weight: 600;
+	}
+	.table-inbox tr td .fa-circle{
+		color: #d5d5d5;
+	}
+	.table-inbox tr td .fa-circle.inbox-started,.table-inbox tr td .fa-circle:hover{
+		color: #ff133a;
+	}
 
-</body>
-</html>
+	.attachment-mail ul li a{
+		border: 1px solid #dddddd;
+		display: block;
+	}
+    .attachment_list li{
+       position: relative;
+    }
+    .attachment_list li .attr_down{
+       position: absolute;
+       left:50%;
+       top:50%;
+       transform: translate(-50%,-50%);
+       -webkit-transform: translate(-50%,-50%);
+       -moz-transform: translate(-50%,-50%);
+       -o-transform: translate(-50%,-50%);
+    }
+    .attachment_list li:hover .file_img{
+       display: block;
+       background: rgba(0,0,0,0.4);
+    }
+    .attachment_list .file_img{
+       display: none;
+       position:absolute;
+       width:100%;
+       height:100%;
+       top:0;
+       left:0;
+    }
+    
+    .col-md-12{ border-top: 1px solid #dddddd;}
+    .heading-inbox h3{text-align: center; color: #444444;}
+    .col-md-2,.col-md-10{ line-height: 45px; color: #797979; font-size: 16px;}
+    .col-md-2{ text-align: right; font-weight: bold;}
+    .col-md-10 p{ line-height: 30px;}
+    .col-md-10 i{ color: #53a4ff; font-style: normal;}
+    .detail_reply{ margin-top: 10px; border-radius: 8px; overflow: hidden;}
+    .detail_reply textarea{ background: #e5e5e5; resize: none;}
+</style>
+	
+<!-- BEGIN MAIN CONTENT -->
+         <section id="main-content">
+		 <!-- BEGIN WRAPPER  -->
+            <section class="wrapper site-min-height">
+               <div class="mail-box">
+                  <aside class="sm-side">
+				     <!-- INBOX HEADER -->
+                     <div class="user-head">
+                        <a href="javascript:;" class="inbox-avatar">
+                        <img src="<{$avatar}>" width="64" height="60" alt="">
+                        </a>
+                        <div class="user-name">
+                           <h5><a href="#"><{$name}></a></h5>
+
+                        </div>
+                     </div>
+					 <!-- INBOX HEADER -->
+					 <!-- INBOX BODY -->
+                     <div class="inbox-body" style="">
+                        <a class="btn btn-compose" data-toggle="modal" href="/common/show_write_email">
+                        <img src="../../img/write_email.png" width="30" />写邮件
+                        </a>
+
+                     </div>
+					 <!-- INBOX HEADER -->
+					 <!-- INBOX NAV -->
+                     <ul class="inbox-nav inbox-divider">
+                        <li>
+                           <a href="/common/show_emails"><i class="fa fa-inbox"></i> 收件箱 <span class="label label-danger pull-right rec_num"></span></a>
+                        </li>
+                        <li>
+                           <a href="/common/show_emails?from=send"><i class="fa fa-envelope-o"></i> 发件箱</a>
+                        </li>
+                        <li class="active">
+                        	<a href=""><i class=" fa fa-trash-o"></i> 指令下达</a>
+                        </li>
+                     </ul>
+                  </aside>
+                  
+                  
+				  <aside class="lg-side">
+                     <div class="inbox-head">
+                        <h3>重庆市互联网办公室通知</h3>
+                        <form class="pull-right position" action="#">
+                           <div class="input-append">
+                              <input type="text" placeholder="搜索你的邮件" class="sr-input">
+                              <button type="button" class="btn sr-btn"><i class="fa fa-search"></i></button>
+                           </div>
+                        </form>
+                     </div>
+                     <div class="inbox-body" style="min-height: 600px;">
+                        <div class="heading-inbox row">
+                        	
+                        	<h3>两会期间网上重大主题宣传总数据统计的通知	</h3>
+                        	
+                        	<div class="col-md-12">
+                        		<div class="col-md-2">收件人：</div>
+                        		<div class="col-md-10">某某某</div>
+                        	</div>
+                        	<div class="col-md-12">
+                        		<div class="col-md-2">内容：</div>
+                        		<div class="col-md-10">
+                        			<P>及肯德基叽叽叽叽军军军军军军军军军叽叽叽叽军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军叽叽叽叽军军军军军军军军军军军军</P>
+                        			<P>及肯德基叽叽叽叽军军军军军军军军军叽叽叽叽军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军叽叽叽叽军军军军军军军军军军军军</P>
+                        		</div>
+                        	</div>
+                        	<div class="col-md-12">
+                        		<div class="col-md-2">下达方式：</div>
+                        		<div class="col-md-10">RTX</div>
+                        	</div>
+                        	<div class="col-md-12">
+                        		<div class="col-md-2">附件：</div>
+                        		<div class="col-md-10"><a href=""></a></div>
+                        	</div>
+                        	<div class="col-md-12">
+                        		<div class="col-md-2">备注：</div>
+                        		<div class="col-md-10"><i>两会期间网上重大主题宣传总结数据统计表（附件）.xlsx</i></div>
+                        	</div>
+                        	<div class="col-md-12">
+                        		<div class="col-md-2">下发时间：</div>
+                        		<div class="col-md-10">2017-4-22&nbsp;&nbsp;22:32</div>
+                        	</div>
+                        	<div class="col-md-12">
+                        		<div class="col-md-2">上级下发人员：</div>
+                        		<div class="col-md-10">网信办值班1</div>
+                        	</div>
+                        	<div class="col-md-12">
+                        		<div class="input-group detail_reply">
+								  <textarea type="text" rows="3" class="form-control" placeholder="回复内容..." aria-describedby="basic-addon2"></textarea>
+								  <span class="input-group-addon btn-info" id="basic-addon2">回复</span>
+								</div>
+                        	</div>
+                        </div>			
+                     </div>
+                  </aside>
+               </div>
+            </section>
+			<!-- END WRAPPER  -->
+         </section>
+<script language="javascript" src="/js/common_email.js"></script>
+
