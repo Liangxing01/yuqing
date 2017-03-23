@@ -1499,4 +1499,23 @@ class Designate_Model extends CI_Model
     {
         return $this->db->select("id, title, time, content")->where("id", $notice_id)->get("announce")->row_array();
     }
+
+
+    /**
+     * 发布新通知
+     * @param string $title
+     * @param string $content
+     * @return bool
+     */
+    public function post_notice($title, $content)
+    {
+        $notice_data = array(
+            "title" => $title,
+            "content" => $content,
+            "sender" => $this->session->uid,
+            "type" => "all",
+            "time" => time()
+        );
+        return $this->db->insert("announce", $notice_data);
+    }
 }

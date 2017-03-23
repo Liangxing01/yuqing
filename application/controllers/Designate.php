@@ -863,9 +863,18 @@ class Designate extends MY_controller
 
     /**
      * 发布通知
+     * POST: title: 标题; content: 通知内容
+     * 1: 成功; 0: 失败
      */
     public function post_notice()
     {
+        $title = $this->input->post("title");
+        $content = $this->input->post("content");
+        if ($content && $title) {
+            echo $this->designate->post_notice($title, $content) ? 1 : 0;
+        } else {
+            echo 0;
+        }
     }
 
 
@@ -876,42 +885,44 @@ class Designate extends MY_controller
     /**
      * 分页显示发出的指令
      */
-    public function get_send_notice(){
-        $this->load->model('Common_Model','common');
+    public function get_send_notice()
+    {
+        $this->load->model('Common_Model', 'common');
         $query_data = $this->input->post();
-        $email_info = $this->common->get_send_emails_info($query_data,'email');
+        $email_info = $this->common->get_send_emails_info($query_data, 'email');
         echo json_encode($email_info);
     }
 
     /**
      * 发布指令
      */
-    public function publish_notice(){
+    public function publish_notice()
+    {
         $this->load->model("Common_Model", "common");
         $email_info = array(
             'title' => $this->input->post('title'),
-            'body'  => $this->input->post('body'),
+            'body' => $this->input->post('body'),
             'priority_level' => $this->input->post('priority_level')
         );
 
         $receiveID = array(
-            'uids' => $this->input->post('uids') ? explode(',',$this->input->post('uids')) : array(),
-            'gids' => $this->input->post('gids') ? explode(',',$this->input->post('gids')) : array()
+            'uids' => $this->input->post('uids') ? explode(',', $this->input->post('uids')) : array(),
+            'gids' => $this->input->post('gids') ? explode(',', $this->input->post('gids')) : array()
         );
 
         $attID = $this->input->post('attID');
-        if($attID != ''){
-            $attID_arr = explode(',',$attID);
-        }else{
+        if ($attID != '') {
+            $attID_arr = explode(',', $attID);
+        } else {
             $attID_arr = array();
         }
 
-        $res = $this->common->insert_email($email_info,$receiveID,$attID_arr,'notice');
-        if($res){
+        $res = $this->common->insert_email($email_info, $receiveID, $attID_arr, 'notice');
+        if ($res) {
             echo json_encode(array(
                 'res' => 1
             ));
-        }else{
+        } else {
             echo json_encode(array(
                 'res' => 0
             ));

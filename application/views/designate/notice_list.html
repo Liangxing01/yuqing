@@ -24,7 +24,8 @@
 
                         <div class="row">
                             <div class="col-md-2">
-                                <button title="清空" class="btn btn-info" id="reset-button"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> 发布通知
+                                <button title="发布通知" class="btn btn-info" onclick="post_notice();"><i
+                                        class="fa fa-pencil-square-o" aria-hidden="true"></i> 发布通知
                                 </button>
                             </div>
                         </div>
@@ -45,10 +46,17 @@
                             </table>
                         </div>
                     </div>
-                    <div style="display: none; padding: 10px" id="notice_detail">
-                        <h1 id="notice_title"></h1>
+                    <div style="display: none; padding: 5px" id="notice_detail">
+                        <h4 id="notice_title"></h4>
                         <p id="notice_content"></p>
-                        <span id="notice_post_time"></span>
+                        <div style="float: right; padding: 0 10px"><span id="notice_post_time"></span></div>
+                    </div>
+                    <div style="display: none; padding: 10px" id="new_notice_form">
+                        <label for="new_notice_title">标题 (20字内)</label>
+                        <input type="text" name="new_notice_title" class="form-control" id="new_notice_title">
+                        <label for="new_notice_content">内容 (50字内)</label>
+                        <textarea name="new_notice_content" id="new_notice_content" class="form-control" cols="30"
+                                  rows="10"></textarea>
                     </div>
                 </section>
             </div>
@@ -180,7 +188,7 @@
                 if (data != "null") {
                     $("#notice_title").html(data.title);
                     $("#notice_content").html(data.content);
-                    $("#notice_post_time").html(data.time);
+                    $("#notice_post_time").html(timeToDate(data.time * 1000));
                     layer.open({
                         type: 1,
                         title: "通知详情",
@@ -194,5 +202,47 @@
         });
     }
 
-    //TODO 添加通知
+    //添加通知
+    function post_notice() {
+        layer.open({
+            type: 1,
+            title: "发布新通知",
+            closeBtn: 0,
+            btn: ['发布', '取消'],
+            shadeClose: true,
+            content: $('#new_notice_form'),
+            yes: function (index) {
+                var title = $("#new_notice_title").val();
+                var content = $("#new_notice_content").val();
+                if (title == "" || content == "") {
+                    layer.msg('标题和内容不能为空', {anim: 6});
+                    return false;
+                }
+                if (title.length > 40) {
+                    layer.msg('标题最长20字', {anim: 6});
+                    return false;
+                }
+                if (content.length > 100) {
+                    layer.msg('内容最多50字', {anim: 6});
+                    return false;
+                }
+                $.ajax({
+                    type: "POST",
+                    data: {"title": title, "content": content},
+                    url: "/designate/post_notice",
+                    success: function (data) {
+                        if (data == "1") {
+                            layer.msg("发布成功", {time: 1000});
+                            $("#notice_table").DataTable().ajax.reload(null, false); //刷新表格
+                            layer.close(index);
+                        } else {
+                            layer.msg('发布失败', {anim: 6});
+                        }
+                    }
+                });
+            }, btn2: function (index) {
+                layer.close(index);
+            }
+        });
+    }
 </script>
