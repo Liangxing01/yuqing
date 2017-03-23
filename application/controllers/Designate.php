@@ -906,7 +906,8 @@ class Designate extends MY_controller
         }
 
 
-        $email_info = $this->common->rece_email_detail($eid);
+        $email_info = $this->common->send_email_detail($eid);
+
 
         if($email_info == false){
             show_404();

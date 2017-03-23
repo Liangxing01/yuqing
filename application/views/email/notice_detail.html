@@ -37,6 +37,8 @@
        top:0;
        left:0;
     }
+
+    .m-notice-sender{ margin-top: 20px }
     
     .col-md-12{ border-top: 1px solid #dddddd;}
     .heading-inbox h3{text-align: center; color: #444444;}
@@ -134,14 +136,40 @@
                         	</div>
                         	<div class="col-md-12">
                         		<div class="col-md-2">上级下发人员：</div>
-                        		<div class="col-md-10"><{$name}></div>
+                        		<div class="col-md-10"><{$info['sender_name']}></div>
                         	</div>
-                        	<div class="col-md-12">
+                        	<div class="col-md-12 m-notice-response">
                         		<div class="input-group detail_reply">
-								  <textarea type="text" rows="3" class="form-control notice_text" placeholder="回复内容..." aria-describedby="basic-addon2"></textarea>
-								  <span class="input-group-addon btn-info" id="basic-addon2">回复</span>
-								</div>
+    							             <textarea type="text" rows="3" class="form-control notice_text" placeholder="回复内容..." aria-describedby="basic-addon2"></textarea>
+    							             <span class="input-group-addon btn-info" id="basic-addon2">回复</span>
+								            </div>
                         	</div>
+                          <div class="col-md-12 m-notice-sender" style="border: 0">
+                              <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                      <td><{$name}></td>
+                                      <td class="m-notice-sender-contet"></td>
+                                      <td class="m-notice-sender-time"></td>
+                                    </tr>
+                                </tbody>
+                              </table>       
+                          </div>
+                          <div class="col-md-12 m-sender-content" style="border: 0">
+                              <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>姓名</th>
+                                        <th>单位</th>
+                                        <th>回复内容</th>
+                                        <th>回复时间</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    
+                                </tbody>
+                              </table>       
+                          </div>
                         </div>			
                      </div>
                   </aside>
@@ -149,9 +177,15 @@
             </section>
 			<!-- END WRAPPER  -->
          </section>
+<script type="text/javascript" src="/js/public.js"></script>
 <script type="text/javascript">
-  get_unread_notice();
-  get_attachment();
+
+$(function(){
+   get_unread_notice();
+   get_attachment();
+   isSendNotice();
+})
+ 
    function get_unread_notice(){
       $.ajax({
           url: "/common/get_unread_notice_num",
@@ -178,20 +212,64 @@
             },
             dataType:'json',
             success:function(data){
-                if( data.length){
-                  var str = '';
-                  for ( var i = 0, len = data.length; i< len; i++){
-                      str += '<p><a href="/common/att_download?fid=' + data[i].id + '&id=' + email_id + '">'+ data[i].file_name+'</a></p>';
-                  }
-
-                  $('.attr_content').append(str);
+              if(data.length){
+                var str = '';
+                for ( var i = 0, len = data.length; i< len; i++){
+                    str += '<p><a href="/common/att_download?fid=' + data[i].id + '&id=' + email_id + '">'+ data[i].file_name+'</a></p>';
                 }
+
+                $('.attr_content').append(str);
+              }
                 
             }
         })
 
     }
 
+    function isSendNotice(){
+        var num = window.location.href.indexOf('?id=');
+        var email_id = window.location.href.substr(num+4);
+        var role = "<{$role}>";
+        if( role == "sender" ){
+          $.ajax({
+            url: '/common/get_response_list?notice_id=' + email_id,
+            type: "get",
+            dataType:'json',
+            success:function(data){
+                $('.m-notice-sender').hide();
+                $('.m-notice-response').hide();
+                if( data.length){
+                   var str = '';
+                   for( var i = 0, len = data.length; i < len; i++){
+                      str += '<tr>';
+                      str += '<td>'+ data[i].username + '</td>';
+                      str += '<td>'+ data[i].group_name + '</td>';
+                      str += '<td>'+ data[i].response_text + '</td>';
+                      str += '<td>'+ timeToDate(data[i].response_time*1000) + '</td>';
+                      str += '</tr>';
+                   }
+                }else{
+                    var str = "<tr><td style='text-align:center' colspan='4'>暂无回复内容</td></tr>";
+                }
+                $('.m-sender-content tbody').append(str);
+            }
+          })
+        }else if( role == "receiver"){
+          $('.m-sender-content').hide();
+          var resText = '<{$response_text}>';   //是否有回复内容
+        
+          if( resText.response_text ){
+              $('.m-notice-response').hide();
+              $('.m-notice-sender-contet').html(resText.response_text);
+              $('.m-notice-sender-time').html(timeToDate(resText.response_time*1000))
+          }else{
+              $('.m-notice-sender').hide();
+          }
+        }
+
+        
+
+    }
 
     $('#basic-addon2').click(function(){
         var num = window.location.href.indexOf('?id=');
@@ -204,23 +282,27 @@
             return;
         }
 
-        $.ajax({
-            url:"/common/response_notice",
-            type:"post",
-            dataType: "json",
-            data:{
-              res_text: res_text,
-              notice_id: email_id
-            },
-            success: function( data ){
-                if(data.res){
-                  layer.msg("回复成功");
-                  $('.notice_text').val("");
-                }else{
-                  layer.msg("回复失败")
-                }
-            }
-        })
+        layer.confirm("你确定要回复么",function(){
+            $.ajax({
+              url:"/common/response_notice",
+              type:"post",
+              dataType: "json",
+              data:{
+                res_text: res_text,
+                notice_id: email_id
+              },
+              success: function( data ){
+                  if(data.res){
+                    layer.msg("回复成功");
+                    window.location.reload();
+                  }else{
+                    layer.msg("回复失败")
+                  }
+              }
+          })
+        });
+
+        
     })
 </script>
 

@@ -565,7 +565,13 @@
                           str += '<td class="view-message  dont-show">'+obj.sender_name+'<span class="label label-danger pull-right">高优先级</span></td>';
                           break;
                     }
-                    str += '<td class="view-message "><a href="/common/show_notice_detail?id='+obj.id+'">'+obj.title+'</a></td>';
+
+                    if(type == 'rec'){
+                      str += '<td class="view-message "><a href="/common/show_notice_detail?id='+obj.id+'">'+obj.title+'</a></td>';
+                    }else{
+                      str += '<td class="view-message "><a href="/designate/show_notice_detail?id='+obj.id+'">'+obj.title+'</a></td>';
+                    }
+                    
                     if(obj.has_att){
                        str += '<td class="view-message  inbox-small-cells"><span class="fa fa-paperclip"></span></td>'
                     }else{

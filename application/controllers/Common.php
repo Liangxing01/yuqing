@@ -454,8 +454,10 @@ class Common extends MY_Controller
         $attIDs = $this->input->post('att_ids');
         $eid = $this->input->post('eid');
         $att_info = $this->common->get_att_by_id($attIDs,$eid);
-
+    
         echo json_encode($att_info);
+        
+        
     }
 
     /**
@@ -769,7 +771,7 @@ class Common extends MY_Controller
         }
 
         $this->assign("role",'receiver');
-        $this->assign("response_text",$response);
+        $this->assign("response_text",json_encode($response));
         $this->assign("active_title", "email_sys");
         $this->assign("active_parent", "file_parent");
         $this->all_display("email/notice_detail.html");
