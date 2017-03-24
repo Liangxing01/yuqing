@@ -31,12 +31,12 @@
 <script type="text/javascript">
     $(function(){
         $.ajax({
-          url: "/common/get_unread_notice_num",
+          url: "/common/get_all_unread_num",
           type: "get",
           dataType: "json",
           success: function(data){
-              if(data.unread_num){
-                $('.g-nav-filesys').html(data.unread_num)
+              if(data.all_unread_num){
+                $('.g-nav-filesys').html(data.all_unread_num)
               }
           }
         })
