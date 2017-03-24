@@ -803,6 +803,17 @@ class Common extends MY_Controller
     }
 
     /**
+     * 接口：获取 邮件 指令 总共未读个数
+     */
+    public function get_all_unread_num(){
+        $this->load->model('Common_Model','common');
+        $num = $this->common->get_all_unread_num();
+        echo json_encode(array(
+            'all_unread_num' => $num
+        ));
+    }
+
+    /**
      * --------------------------涉密文件 模块接口----------------------------
      */
     /**
