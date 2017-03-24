@@ -271,7 +271,7 @@
       get_unread_email();   //获取未读邮件数目
       get_unread_notice();  //获取未读指令数目
       receive_message(0,'','all')
-      is_send();
+      backFromWhere();
 
       //左侧邮件列表导航栏点击函数
 
@@ -349,13 +349,28 @@
    })
 
    //判断是否是收件箱返回
-   function is_send(){
-      var num = window.location.href.indexOf('?from=send');
-      if(num != -1){
-         $('.main_section aside').hide();
-         $('#send_msg').show();
-         get_all_send(0,'');
-         $('a[name="send_msg"]').parent().addClass('active').siblings('.active').removeClass('active');
+   function backFromWhere(){
+      var num = window.location.href.indexOf('?from=') + 6;
+      var where = window.location.href.slice(num);
+
+      switch( where ){
+
+        //从收件箱返回
+        case 'send':
+           $('.main_section aside').hide();
+           $('#send_msg').show();
+           get_all_send(0,'');
+           $('a[name="send_msg"]').parent().addClass('active').siblings('.active').removeClass('active');
+           break;
+
+        //从指令系统返回
+        case 'notice':
+            $('.main_section aside').hide();
+            $("#dustbin").show();
+            get_all_notice(0,'','rec');
+            $('a[name="dustbin"]').parent().addClass('active').siblings('.active').removeClass('active');
+            break;
+
       }
    }
 

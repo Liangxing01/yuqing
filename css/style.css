@@ -6813,3 +6813,5 @@ a.guest-on i {
 .text-center button{
 	margin-right:10px;
 }
+
+.g-nav-filesys{ margin-left: 8px; border-radius: 8px; line-height: 5px; }
