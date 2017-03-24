@@ -56,7 +56,7 @@ class Login extends MY_controller
                 "uid" => $result["uid"],
                 "ip" => get_ip(),
                 "time" => time(),
-                "type" => $login_type == 1 ? 1 : 0
+                "type" => $login_type
             );
             $this->load->model("User_Model", "user");
             $this->user->write_login_log($login_info);
@@ -65,11 +65,13 @@ class Login extends MY_controller
             $return["code"] = 0;
             $return["message"] = "登陆成功";
             if ($login_type == 1) {
-                $return["m_token"] = $result["m_token"];
-                $return['name'] = $result["name"];
-                $return['gname'] = $result["gname"];
-                $return['avatar'] = $result["avatar"];
-                $return['privilege'] = $result["privilege"];
+                $return['data'] = array(
+                    'm_token' => $result["m_token"],
+                    'name' => $result["name"],
+                    'gname' => $result["gname"],
+                    'avatar' => $result["avatar"],
+                    'privilege' => $result["privilege"]
+                );
             }
             $this->output
                 ->set_content_type('application/json')
