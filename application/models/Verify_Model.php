@@ -3,16 +3,36 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Verify_Model extends CI_Model
 {
+    /**
+     * @const int 上报人权限
+     */
+    const REPORTER = 1;
+
+    /**
+     * @const int 指派人权限
+     */
+    const MANAGER = 2;
+
+    /**
+     * @const int 处理人权限
+     */
+    const PROCESSOR = 3;
+
+    /**
+     * @const int 督办人权限
+     */
+    const WATCHER = 4;
+
+    /**
+     * @const int 管理员权限
+     */
+    const ADMIN = 5;
+
+
     public function __construct()
     {
         parent::__construct();
         $this->load->database();
-
-        define("reporter", 1);   //上报人权限
-        define("manager", 2);    //指派人权限
-        define("processor", 3);  //处理人权限
-        define("watcher", 4);    //督办人权限
-        define("admin", 5);      //管理员权限
     }
 
 
@@ -23,7 +43,7 @@ class Verify_Model extends CI_Model
     public function is_manager()
     {
         $privilege = explode(",", $this->session->privilege);
-        if (in_array(manager, $privilege)) {
+        if (in_array(self::MANAGER, $privilege)) {
             return true;
         }
         return false;
@@ -37,7 +57,7 @@ class Verify_Model extends CI_Model
     public function is_processor()
     {
         $privilege = explode(",", $this->session->privilege);
-        if (in_array(processor, $privilege)) {
+        if (in_array(self::PROCESSOR, $privilege)) {
             return true;
         }
         return false;
@@ -45,13 +65,18 @@ class Verify_Model extends CI_Model
 
 
     /**
-     * 验证处理人权限
+     * 验证督办人权限
+     * @param int $uid
      * @return bool
      */
-    public function is_watcher()
+    public function is_watcher($uid = null)
     {
-        $privilege = explode(",", $this->session->privilege);
-        if (in_array(watcher, $privilege)) {
+        if (!is_null($uid)) {
+            $privilege = $this->get_privilege_list($uid);
+        } else {
+            $privilege = explode(",", $this->session->privilege);
+        }
+        if (in_array(self::WATCHER, $privilege)) {
             return true;
         }
         return false;
@@ -69,20 +94,20 @@ class Verify_Model extends CI_Model
         $_p = explode(",", $this->session->userdata('privilege'));
         foreach ($_p as $one) {
             switch ($one) {
-                case manager :
+                case self::MANAGER :
                     return true;
                     break;
-                case processor :
+                case self::PROCESSOR :
                     if ($this->processor_see_event($event_id, $uid)) {
                         return true;
                     }
                     break;
-                case watcher :
+                case self::WATCHER :
                     if ($this->watcher_see_event($event_id, $uid)) {
                         return true;
                     }
                     break;
-                case admin :
+                case self::ADMIN :
                     return true;
                     break;
                 default :
@@ -151,5 +176,22 @@ class Verify_Model extends CI_Model
         return false;
     }
 
+
+    /**
+     * 获得权限数组
+     * @param int $uid
+     * @return array
+     */
+    protected function get_privilege_list($uid)
+    {
+        $privileges = $this->db->select("pid")->where("uid", $uid)->get("user_privilege")->result_array();
+        $ret = array();
+        if (!empty($privileges)) {
+            foreach ($privileges AS $p) {
+                $ret[] = $p["pid"];
+            }
+        }
+        return $ret;
+    }
 
 }

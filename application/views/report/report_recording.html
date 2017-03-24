@@ -3,7 +3,6 @@
 <!-- DATATABLE CSS -->
 <link rel="stylesheet" href="/assets/data-tables/DT_bootstrap.css">
 <!--<link rel="stylesheet" href="/assets/data-tables/dataTables.bootstrap.min.css">-->
-
 <!-- BEGIN MAIN CONTENT -->
 <section id="main-content">
     <section class="wrapper site-min-height">
@@ -12,8 +11,39 @@
             <div class="col-lg-12">
                 <section class="panel">
                     <header class="panel-heading">
-                        <span class="label label-primary">提交记录</span>
+                        <span class="label label-primary">单位记录</span>
+                           <span class="tools pull-right">
+                           <a href="javascript:;" class="fa fa-chevron-up"></a>
+                           <a href="javascript:;" class="fa fa-refresh"></a>
+                           </span>
+                    </header>
+                    <div class="panel-body" style="display: none">
+                        <div class="adv-table">
+                            <table class="display table table-bordered table-striped" id="group_record_table">
+                                <thead>
+                                <tr>
+                                    <th>姓名</th>
+                                    <th>上报数</th>
+                                    <th>采纳数</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+        <!-- END ROW  -->
+        <!-- BEGIN ROW  -->
+        <div class="row">
+            <div class="col-lg-12">
+                <section class="panel">
+                    <header class="panel-heading">
+                        <span class="label label-primary">我的记录</span>
                         <span class="tools pull-right">
+                           <a href="javascript:;" class="fa fa-chevron-down"></a>
                            <a href="javascript:;" class="fa fa-refresh"></a>
                            </span>
                     </header>
@@ -52,6 +82,74 @@
 
 <!-- Page Script -->
 <script>
+
+    $('.panel .tools .fa-chevron-up').click(function () {
+        var el = jQuery(this).parents(".panel").children(".panel-body");
+        if (jQuery(this).hasClass("fa-chevron-down")) {
+            jQuery(this).removeClass("fa-chevron-down").addClass("fa-chevron-up");
+            el.slideUp(200);
+        } else {
+            jQuery(this).removeClass("fa-chevron-up").addClass("fa-chevron-down");
+            el.slideDown(200);
+        }
+    });
+
+    $('#group_record_table').dataTable({
+
+        "searching": false,
+        "bPaginate": true,
+        "bProcessing": false,                //是否显示正在处理提示信息。
+        "bLengthChange": true,
+        "bFilter": true,                     //是否使用内置的过滤功能。
+        "bSort": true,
+        "bInfo": true,
+        "bAutoWidth": false,
+        "bStateSave": true,
+        "iDisplayLength": 10,                //每页显示10条数据
+        "aaSorting": [[1, "desc"]],          //默认排序 第6列
+
+        "bServerSide": true,
+        "sAjaxSource": "/reporter/get_group_record",
+        "sServerMethod": "POST",
+
+        "aoColumns": [
+            {
+                "sTitle": "姓名",
+                "mData": "name",
+                'sClass': "text-center",
+                'orderable': false
+            },
+            {
+                "sTitle": "上报数",
+                "mData": "report_num",
+                'sClass': "text-center",
+                'orderable': true
+            },
+            {
+                "sTitle": "采纳数",
+                "mData": "useful_num",
+                'sClass': "text-center",
+                'orderable': true
+            }
+        ],
+
+        "oLanguage": {
+            "sLengthMenu": "每页显示 _MENU_ 条记录",
+            "sInfo": "从 _START_ 到 _END_ /共 _TOTAL_ 条数据",
+            "sInfoEmpty": "没有数据",
+            "sInfoFiltered": "(从 _MAX_ 条数据中检索)",
+            "oPaginate": {
+                "sFirst": "首页",
+                "sPrevious": "前一页",
+                "sNext": "后一页",
+                "sLast": "尾页"
+            },
+            "sZeroRecords": "暂无数据",
+            "sSearch": "搜索:"
+        }
+
+    });
+
     $('#report_table').dataTable({
 
         "bPaginate": true,
@@ -87,7 +185,16 @@
                 "sTitle": "url",
                 "mData": "url",
                 'sClass': "text-center",
-                'orderable': false
+                'orderable': false,
+                'mRender' : function (data) {
+                    var strLen = '';
+                    if( screen.width > 1366 ){
+                        strLen = 60 ;
+                    }else{
+                        strLen = 40 ;
+                    }
+                    return data.length > strLen ? data.slice(0, strLen) + "..." : data
+                }
             },
             {
                 "sTitle": "来源",
@@ -115,10 +222,19 @@
                 'sClass': "text-center",
                 'orderable': false,
                 "mRender": function (data) {
-                    if(data == "2"){
-                        return "已采纳";
-                    }else {
-                        return "未采纳";
+                    switch (data) {
+                        case "-1":
+                            return "<button class='btn btn-danger btn-xs'>无效信息</button>";
+                            break;
+                        case "0":
+                            return "<button class='btn btn-info btn-xs'>未采纳</button>";
+                            break;
+                        case "1":
+                            return "<button class='btn btn-info btn-xs'>未采纳</button>";
+                            break;
+                        case "2":
+                            return "<button class='btn btn-success btn-xs'>已采纳</button>";
+                            break;
                     }
                 }
             },
@@ -188,4 +304,9 @@
     }
 
 
+    window.onload = function(){
+        $('#report_table tbody tr td:nth-child(3)').each(function(){
+            this.innerHTML = this.innerHTML.slice(0,30) + '...'
+        })
+    }
 </script>

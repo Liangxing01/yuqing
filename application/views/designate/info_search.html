@@ -210,7 +210,12 @@
                 'orderable': false,
                 "mRender": function (data) {
                     switch (data) {
+                        case "-1":
+                            return "<button class='btn btn-danger btn-xs'>无效信息</button>";
+                            break;
                         case "0":
+                            return "<button class='btn btn-info btn-xs'>未查看</button>";
+                            break;
                         case "1":
                             return "<button class='btn btn-warning btn-xs'>未确认</button>";
                             break;

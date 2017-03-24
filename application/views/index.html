@@ -1,4 +1,5 @@
 ﻿<style type="text/css">
+
 	.zhipai{background: url(../../img/zp.png) no-repeat; display: block; width: 119px; height: 34px; text-align: center; line-height: 34px; font-size: 16px; color: white; margin-bottom: 10px;}
 	.chuli{background: url(../../img/cl.png) no-repeat; display: block; width: 119px; height: 34px; text-align: center; line-height: 34px; font-size: 16px; color: white; margin-bottom: 10px;}
 	.tq{ background: #72d0eb; border-top-left-radius: 4px; border-top-right-radius: 4px; text-align: center;}
@@ -42,11 +43,96 @@
       }
     }
 
+    /*通知列表样式设置*/
+    .m-notification-content{
+      position: fixed;
+
+      right: -200px;
+      top: 50%;
+      transform: translateY(-50%);
+
+      background-color: rgb(6, 181, 181);
+
+      width: 200px;
+      height: 300px;
+      padding: 6px;
+      color: #fff;
+
+      transition: right 0.6s ease-in-out;
+      border-radius: 8px 0 0 8px;
+      /*overflow-y: auto;*/
+    }
+    .m-notification-body{
+      height: 100%;
+      overflow-y: auto;
+    }
+    .m-notification-title{
+      width: 25px;
+
+      position: absolute;
+
+      left: -25px;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: rgb(6, 181, 181);
+      color: #fff;
+      text-align: center;
+      font-size: 14px;
+      padding: 5px;
+      cursor: pointer;
+
+      border-radius: 5px 0 0 5px;
+      
+    }
+
+    .m-notification-list{
+      overflow-y: auto;
+    }
+    .m-notification-list li{
+      background: #72d0eb;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      padding: 0 5px;
+    }
+    .m-notification-list p{
+      display: none;
+      text-indent: 2em;
+      line-height: 22px;
+    }
+    .m-notification-time{
+      display: block;
+      text-align: right;
+    }
+
+    .m-notification-listTitle{
+      line-height: 26px;
+      font-size: 14px;
+      padding-left: 8px;
+      margin:0;
+      text-align: center;
+    }
+ 
+    .m-notification-body::-webkit-scrollbar {
+        width:10px;
+        height:10px;
+        background-color: #F5F5F5;  
+    }
+    .m-notification-body::-webkit-scrollbar-track     {
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);  
+	    border-radius: 10px;  
+	    background-color: #F5F5F5;
+    }
+    .m-notification-body::-webkit-scrollbar-thumb{
+        border-radius: 10px;  
+	    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);  
+	    background-color: rgb(6, 181, 181); 
+    }
+
 </style>
       <!-- BEGIN MAIN CONTENT -->
       <link href="/css/tasks.css" rel="stylesheet"><!-- TASK CSS-->
 <script language="javascript" src="/js/public.js"></script>
-      
+
       <section id="main-content">
 	  <!-- BEGIN WRAPPER  -->
         <section class="wrapper site-min-height">
@@ -54,20 +140,22 @@
 		  	<div class="zhipai js-zhipai">指派任务数</div>
           <div class="row state-overview js-zhipai">
             <div class="col-lg-3 col-sm-6">
-              <section class="panel">
-                <div class="symbol">
-                  <i class="fa fa-tags blue">
-                  </i>
-                </div>
-                <div class="value">
-                  <h1 class="count">
-                    0
-                  </h1>
-                  <p>
-                    未查看信息数
-                  </p>
-                </div>
-              </section>
+                <section class="panel">
+                    <div class="symbol">
+                        <i class="fa fa-tags blue">
+                        </i>
+                    </div>
+                    <a href="/designate/info_not_handle">
+                        <div class="value">
+                            <h1 class="count">
+                                0
+                            </h1>
+                            <p>
+                                未查看信息数
+                            </p>
+                        </div>
+                    </a>
+                </section>
             </div>
             <div class="col-lg-3 col-sm-6">
               <section class="panel">
@@ -86,20 +174,22 @@
               </section>
             </div>
             <div class="col-lg-3 col-sm-6">
-              <section class="panel">
-                <div class="symbol">
-                  <i class="fa fa-check-square yellow">
-                  </i>
-                </div>
-                <div class="value">
-                  <h1 class=" count3">
-                    0
-                  </h1>
-                  <p>
-                    未审核事件数
-                  </p>
-                </div>
-              </section>
+                <section class="panel">
+                    <div class="symbol">
+                        <i class="fa fa-check-square yellow">
+                        </i>
+                    </div>
+                    <a href="/designate/event_search">
+                        <div class="value">
+                            <h1 class=" count3">
+                                0
+                            </h1>
+                            <p>
+                                未审核事件数
+                            </p>
+                        </div>
+                    </a>
+                </section>
             </div>
             <div class="col-lg-3 col-sm-6">
               <section class="panel">
@@ -123,36 +213,40 @@
 		   <div class="chuli js-chuli">处理任务数</div>
           <div class="row state-overview js-chuli">
             <div class="col-lg-3 col-sm-6">
-              <section class="panel">
-                <div class="symbol">
-                  <i class="fa fa-tags blue">
-                  </i>
-                </div>
-                <div class="value">
-                  <h1 class="count">
-                    0
-                  </h1>
-                  <p>
-                    未处理事件数
-                  </p>
-                </div>
-              </section>
+                <section class="panel">
+                    <div class="symbol">
+                        <i class="fa fa-tags blue">
+                        </i>
+                    </div>
+                    <a href="/handler/wait_to_handle">
+                        <div class="value">
+                            <h1 class="count">
+                                0
+                            </h1>
+                            <p>
+                                未处理事件数
+                            </p>
+                        </div>
+                    </a>
+                </section>
             </div>
             <div class="col-lg-3 col-sm-6">
-              <section class="panel">
-                <div class="symbol">
-                  <i class="fa fa-wrench red">
-                  </i>
-                </div>
-                <div class="value">
-                  <h1 class=" count2">
-                    0
-                  </h1>
-                  <p>
-                    正在处理事件数
-                  </p>
-                </div>
-              </section>
+                <section class="panel">
+                    <div class="symbol">
+                        <i class="fa fa-wrench red">
+                        </i>
+                    </div>
+                    <a href="/handler/show_doing_list">
+                        <div class="value">
+                            <h1 class=" count2">
+                                0
+                            </h1>
+                            <p>
+                                正在处理事件数
+                            </p>
+                        </div>
+                    </a>
+                </section>
             </div>
             <div class="col-lg-3 col-sm-6">
               <section class="panel">
@@ -258,7 +352,7 @@
                       </a>
                     </h1>
                     <p>
-                      最新5条记录
+                      最新5条记录<span class="glyphicon glyphicon-chevron-right"></span>
                     </p>
                   </div>
                 </div>
@@ -294,13 +388,24 @@
 		   <!-- END ROW  -->
         </section>
 		<!-- END WRAPPER  -->
+        <section class="m-notification-content">
+              <div class="m-notification-title">
+                  通知列表
+              </div>
+              <div class="m-notification-body">
+                  <ul class="m-notification-list">
+                    
+                  </ul>
+              </div>
+          </section>
       </section>
       <!-- END MAIN CONTENT -->
-
+      
 <script src="/js/count.js"></script>
-      <script src="/assets/morris.js-0.4.3/raphael-min.js" ></script><!-- MORRIS  JS -->
+<script src="/assets/morris.js-0.4.3/raphael-min.js" ></script><!-- MORRIS  JS -->
 <script>
   get_all_msg();
+  getSiteMessage();
 
   //获取历史记录消息
   function get_all_msg(){
@@ -335,6 +440,47 @@
       }
     })
   }
+
+  $('.m-notification-title').click(function(){
+      if($(this).hasClass('active')){
+        $(this).removeClass('active');
+        $(".m-notification-content").css("right", "-200px");
+      }else{
+        $(this).addClass('active');
+        $('.m-notification-content').css("right", "0");
+      }
+  })
+
+  $('.m-notification-list').delegate('li', 'click', function(){
+      $(this).find('p').animate({
+          "height": "toggle"
+      }, 200)
+  })
+
+  function getSiteMessage(){
+      $.ajax({
+          url: "/welcome/get_site_message",
+          type: "GET",
+          dataType: "json",
+          success: function(data){
+              if( data.length === 0 ){
+                $('.m-notification-list').html("<li>暂无更多消息</li>")
+              }else{
+                var list = '';
+                for( var i = 0, len = data.length; i < len; i++){
+                  list += '<li>'
+                  list += '<h4 class="m-notification-listTitle">' + data[i].title + '</h4>';
+                  list += '<p class="m-notification-listCont">'+ data[i].content;
+                  list += '<span class="m-notification-time">'+timeToDate(data[i].time*1000)+ '</span>'
+                  list += '</p></li>'
+                }
+
+                $('.m-notification-list').append(list);
+              }
+          }
+      })
+  }
+  
 </script>
 <script>
   function open_meeting() {

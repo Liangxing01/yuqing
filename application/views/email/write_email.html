@@ -58,6 +58,15 @@ textarea{
     position: absolute;
     cursor: pointer;
 }
+
+.lock-icon{ 
+    display: inline-block;
+    width: 35px;
+    height: 35px;
+    background: url(/img/secret.png) no-repeat;
+    background-size: 100%;
+    visibility:hidden;
+  }
 </style>
 	
 <!-- BEGIN MAIN CONTENT -->
@@ -163,10 +172,20 @@ textarea{
                                           
                                        </div>
                                        <div class="form-group" style="border-bottom: none;">
+                                         <div class="col-lg-10">
+                                              <label for="emailType">类别:</label>
+                                              <select id="emailType">
+                                                  <option value="email">邮件</option>
+                                                  <option value="notice">指令</option>
+                                              </select>
+                                         </div>
+                                       </div>
+                                       <div class="form-group" style="border-bottom: none;">
                                           <div class="col-lg-10"> 
                                              <span class="btn btn-md btn-info my_own" >发送</span>
                                           </div>
                                        </div>
+                                       
                                     </form>
                                  </div>
                               </div>
@@ -315,13 +334,27 @@ textarea{
                 return false;
             }
             var att_id = [];
+
+
             $('.cancle-file').each(function(){
-                att_id.push($(this).data('id'));
+                var isSecret = $(this).parent().siblings().find('.secretInput')[0].checked ? 1:0;
+
+                att_id.push($(this).data('id') + '-' + isSecret);
             })
             att_id = att_id.join(',');
 
+            var isEmail = $('#emailType').val();  
+            var url = '';
+
+            // 2017-03-22 指令系统添加
+            if( isEmail === "email"){
+                url = '/common/write_email';
+            }else{
+                url = '/designate/publish_notice';
+            }
+
             $.ajax({
-                url:'/common/write_email',
+                url: url,
                 dataType:'json',
                 data:{
                     title:$('input[name="theme"]').val(),
@@ -354,6 +387,26 @@ textarea{
             }
         }
     }
+
+    function changeRed(obj){
+       if(obj.checked){
+          var part = $(obj).parent().parent();
+          var fileName = part.find('.name span').html();
+          var fileType = fileName.slice(fileName.indexOf('.')+1);
+          
+          if(fileType !== 'pdf'){
+            layer.msg("加密文件请上传pdf格式");
+            obj.checked = false;
+            return;
+          }else{
+            part.find('.lock-icon').css('visibility','visible');
+          }
+        }else{
+          $(obj).parent().parent().find('.lock-icon').css('visibility','hidden');
+        }
+    }
+
+
     $(function(){
         check_receive();
     })
@@ -387,6 +440,7 @@ textarea{
                 </button>
             {% } %}
         </td>
+        <td></td>
     </tr>
 {% } %}
 
@@ -405,13 +459,16 @@ textarea{
         </td>
         <td>
             <p class="name">
-                    <span>{%=file.name%}提交成功！</span>
+                    <span>{%=file.name%}</span>提交成功！
         </td>
         <td>
             <button class="cancle-file" data-id="{%=file.id%}">取消上传</button>
         </td>
         <td>
+            <input type="checkbox" name="encryptionInfo" onclick="changeRed(this)" class="secretInput">
+            <span>涉密</span>
         </td>
+        <td><span class="lock-icon"></span></td>
     </tr>
 {% } %}
 

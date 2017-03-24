@@ -88,6 +88,18 @@
                             </table>
                         </div>
                     </div>
+                    <div style="display: none; padding: 10px" id="edit_rank_form">
+                        <label for="rank">事件等级:</label>
+                        <select class="form-control" id="rank">
+                            <option value="一般">一般</option>
+                            <option value="重要">重要</option>
+                            <option value="紧急">紧急</option>
+                        </select>
+                        <!--<div style="margin-top: 5px">-->
+                        <!--<button class="btn btn-info">确定</button>-->
+                        <!--<button class="btn btn-primary">取消</button>-->
+                        <!--</div>-->
+                    </div>
                 </section>
             </div>
         </div>
@@ -216,16 +228,17 @@
                 "mData": "rank",
                 'sClass': "text-center",
                 'orderable': false,
-                "mRender": function (data) {
+                "mRender": function (data, type, all) {
+                    var id = all.id;
                     switch (data) {
                         case '一般':
-                            return "<button class='btn btn-primary btn-xs'>一般</button>";
+                            return "<button onclick='edit_rank(" + id + ")' class='btn btn-primary btn-xs'>一般</button>";
                             break;
                         case '重要':
-                            return "<button class='btn btn-warning btn-xs'>重要</button>";
+                            return "<button onclick='edit_rank(" + id + ")' class='btn btn-warning btn-xs'>重要</button>";
                             break;
                         case '紧急':
-                            return "<button class='btn btn-danger btn-xs'>紧急</button>";
+                            return "<button onclick='edit_rank(" + id + ")' class='btn btn-danger btn-xs'>紧急</button>";
                             break;
                     }
 
@@ -260,7 +273,8 @@
                 'orderable': false,
                 "mRender": function (data, type, all) {
                     var state = all.state;
-                    var button = "<a target='_blank' title='查看' href='/common/event_detail?eid=" + data + " ' class='btn btn-info btn-xs'>查看</a>&nbsp;";
+                    var button = "<a target='_blank' title='查看' href='/common/event_detail?eid=" + data + "&type=manager ' class='btn btn-info btn-xs'>查看</a>&nbsp;"+
+                            "<a target='_blank' title='改派' href='/designate/event_designate?eid=" + data + "&type=reset ' class='btn btn-warning btn-xs'>改派</a>&nbsp;";
 
                     switch (state) {
                         case "已指派":
@@ -272,7 +286,7 @@
                             break;
                         case "已完成":
                             button += "<a title='回溯' href='/designate/event_tracer?eid=" + data + " ' class='btn btn-info btn-xs'>回溯</a>&nbsp;";
-                            button += "<a title='重启事件' onclick='event_restart("+ data +")' href='javascript:;' class='btn btn-info btn-xs'>重启</a>&nbsp;";
+                            button += "<a title='重启事件' onclick='event_restart(" + data + ")' href='javascript:;' class='btn btn-info btn-xs'>重启</a>&nbsp;";
                             break;
                     }
                     return button;
@@ -305,7 +319,7 @@
 
     //事件重启
     function event_restart(eid) {
-        layer.confirm('确认重启该事件?', {title:'提示'}, function(index){
+        layer.confirm('确认重启该事件?', {title: '提示'}, function (index) {
             $.ajax({
                 url: "/designate/event_restart",
                 method: "post",
@@ -313,7 +327,7 @@
                 data: {"eid": eid},
                 success: function (data) {
                     if (data == 1) {
-                        layer.msg('重启成功!', {time:1000});
+                        layer.msg('重启成功!', {time: 1000});
                         $("#event_search_table").DataTable().ajax.reload(null, false); //刷新表格
                     } else {
                         layer.msg('重启失败！', {anim: 6});
@@ -321,6 +335,37 @@
                 }
             });
             layer.close(index);
+        });
+    }
+
+    // 修改事件 等级
+    function edit_rank(id) {
+        layer.open({
+            type: 1,
+            title: "修改事件等级",
+            closeBtn: 0,
+            btn: ['确定', '取消'],
+            shadeClose: true,
+            content: $('#edit_rank_form'),
+            yes: function (index) {
+                var new_rank = $("#rank").val();
+                $.ajax({
+                    type: "POST",
+                    data: {"event_id": id, "rank": new_rank},
+                    url: "/designate/edit_event_rank",
+                    success: function (data) {
+                        if (data == "1") {
+                            layer.msg("修改成功", {time: 1000});
+                            $("#event_search_table").DataTable().ajax.reload(null, false); //刷新表格
+                            layer.close(index);
+                        } else {
+                            layer.msg('修改失败', {anim: 6});
+                        }
+                    }
+                });
+            }, btn2: function (index) {
+                layer.close(index);
+            }
         });
     }
 </script>

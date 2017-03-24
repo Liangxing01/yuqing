@@ -12,6 +12,7 @@ class Common_Model extends CI_Model
     {
         parent::__construct();
         $this->load->database();
+        $this->load->model("Verify_Model", "verify");
     }
 
     /**
@@ -184,7 +185,7 @@ class Common_Model extends CI_Model
             return false;
         }
         //用户是否可以下载该文件
-        $this->load->model("Verify_Model", "verify");
+
         $e_can = $this->verify->can_see_event($attachment_info["event_id"]);
         if (!$e_can) {
             return false;
@@ -635,15 +636,20 @@ class Common_Model extends CI_Model
         $id_arr = explode(',',$ids);
         $att_info_arr = array();
         foreach ($id_arr as $id){
-            $info = $this->db->select('id,file_name,loc,size,is_exist')
+            $info = $this->db->select('id,file_name,loc,size,is_exist,is_secret')
                 ->from('email_attachment')
                 ->where('id',$id)
                 ->where('eid',$eid)
                 ->get()->row_array();
-
-            array_push($att_info_arr,$info);
+            if(!empty($info)){
+                array_push($att_info_arr,$info);
+            }
+    
         }
-        return $att_info_arr;
+
+         return $att_info_arr;
+        
+        
     }
 
     /**
@@ -651,10 +657,12 @@ class Common_Model extends CI_Model
      * @param $receID
      * @param $attID
      * @return bool
+     * @type 是邮件 还是 指令
      * 写入 邮件信息
      */
-    public function insert_email($einfo,$rec,$attID){
+    public function insert_email($einfo,$rec,$attID,$type = 'email'){
         $einfo['sender'] = $this->session->userdata('uid');
+        $einfo['type']   = $type;
         $einfo['time']   = time();
 
         //开始运行事务
@@ -669,12 +677,18 @@ class Common_Model extends CI_Model
             //插入附件信息表，先通过fid 找到file表的信息，然后插入到 email_attach 表里面
             $att_arr = array();
             foreach ($attID as $att){
+                //以 '-' 分隔出 attid 和 涉密文件标志位
+                $arr    = explode('-',$att);
+                $att_id = $arr[0];
+                $is_secret = $arr[1];
                 $file_info = $this->db->select('old_name as file_name,type,size,upload_time,new_name')
                     ->from('file')
-                    ->where('id',$att)
+                    ->where('id',$att_id)
                     ->get()->row_array();
+                $file_info['is_secret'] = $is_secret;
                 $file_info['eid'] = $eid;
                 $file_info['is_exist'] = 1;
+                $file_info['print_num'] = 0;
                 $file_info['expire_time'] = (int)$file_info['upload_time'] + 1209600;
                 $file_info['loc'] = '/uploads/eUploads/' . $file_info['new_name'];
 
@@ -805,9 +819,10 @@ class Common_Model extends CI_Model
 
         if(!empty($check_send)){
             //查询邮件信息
-            $info = $this->db->select('id,title,body,priority_level,from_unixtime(time) as time')
-                ->from('email')
-                ->where('id',$eid)
+            $info = $this->db->select('e.id,e.title,e.body,e.priority_level,from_unixtime(e.time) as time,user.name as sender_name')
+                ->from('email as e')
+                ->join('user','user.id = e.sender')
+                ->where('e.id',$eid)
                 ->get()->row_array();
 
             $attID = $this->db->select('id')
@@ -859,18 +874,40 @@ class Common_Model extends CI_Model
     /**
      * 获取未读 邮件 个数
      */
-    public function get_unread_num(){
+    public function get_unread_num($type = 'email'){
         $uid = $this->session->userdata('uid');
         $gid = $this->session->userdata('gid');
         $gid_arr = explode(',',$gid);
-        $num = $this->db->select('id')
+        $num = $this->db->select('email_user.id')
             ->from('email_user')
-            ->where('state',0)
+            ->join('email','email.id = email_user.email_id')
+            ->where('email_user.state',0)
+            ->where('email.type',$type)
             ->group_start()
-            ->where('receiver_id',$uid)
-            ->or_where_in('receiver_gid',$gid_arr)
+            ->where('email_user.receiver_id',$uid)
+            ->or_where_in('email_user.receiver_gid',$gid_arr)
             ->group_end()
             ->get()->num_rows();
+        return $num;
+    }
+
+    /**
+     * 获取所有未读 邮件 指令 总数
+     */
+    public function get_all_unread_num(){
+        $uid = $this->session->userdata('uid');
+        $gid = $this->session->userdata('gid');
+        $gid_arr = explode(',',$gid);
+        $num = $this->db->select('email_user.id')
+            ->from('email_user')
+            ->join('email','email.id = email_user.email_id')
+            ->where('email_user.state',0)
+            ->group_start()
+            ->where('email_user.receiver_id',$uid)
+            ->or_where_in('email_user.receiver_gid',$gid_arr)
+            ->group_end()
+            ->get()->num_rows();
+
         return $num;
     }
 
@@ -899,14 +936,16 @@ class Common_Model extends CI_Model
     /**
      * 分页显示 发件箱 列表
      */
-    public function get_send_emails_info($q){
+    public function get_send_emails_info($q,$type){
         $uid = $this->session->userdata('uid');
         $res = array();
-        $res['emails'] = $this->db->select('e.id,ea.eid as has_att,e.title,e.priority_level,e.time')
+        $res['emails'] = $this->db->select('e.id,ea.eid as has_att,user.name as sender_name,e.title,e.priority_level,e.time')
             ->from('email as e')
             ->join('email_attachment as ea','e.id = ea.eid','left')
+            ->join('user','user.id = e.sender')
             ->group_by('e.id')
             ->where('e.sender',$uid)
+            ->where('e.type',$type)   //查询 邮件类型
             ->group_start()
             ->like('e.title',$q['search'])
             ->or_like('e.priority_level',$q['search'])
@@ -919,6 +958,7 @@ class Common_Model extends CI_Model
         $res['num'] = $this->db->select('e.id,e.title,e.priority_level,e.time')
             ->from('email as e')
             ->where('e.sender',$uid)
+            ->where('e.type',$type)   //查询 邮件类型
             ->group_start()
             ->like('e.title',$q['search'])
             ->or_like('e.priority_level',$q['search'])
@@ -932,7 +972,7 @@ class Common_Model extends CI_Model
      * 分页显示 收件箱 列表
      * $q['state'] 已读 未读 状态
      */
-    public function get_rec_emails_info($q){
+    public function get_rec_emails_info($q,$type){
         $uid  = $this->session->userdata('uid');
         $gids = $this->session->userdata('gid');
         $gid_arr = explode(',',$gids);
@@ -952,6 +992,7 @@ class Common_Model extends CI_Model
                 ->like('e.title',$q['search'])
                 ->or_like('u.name',$q['search'])
                 ->group_end()
+                ->where('e.type',$type)   //查询 邮件类型
                 ->limit($q['length'],$q['start'])
                 ->order_by('e.time','DESC')
                 ->get()->result_array();
@@ -969,6 +1010,7 @@ class Common_Model extends CI_Model
                 ->like('e.title',$q['search'])
                 ->or_like('u.name',$q['search'])
                 ->group_end()
+                ->where('e.type',$type)   //查询 邮件类型
                 ->get()->num_rows();
         }else{
             $res['emails'] = $this->db->select('e.id,ea.id as has_att,e.title,u.name as sender_name,e.priority_level,e.time,eu.state')
@@ -978,6 +1020,7 @@ class Common_Model extends CI_Model
                 ->join('email_attachment as ea','e.id = ea.eid','left')
                 ->group_by('e.id')
                 ->where('eu.state',$q['state'])
+                ->where('e.type',$type)   //查询 邮件类型
                 ->group_start()
                 ->where('eu.receiver_id',$uid)
                 ->or_where_in('eu.receiver_gid',$gid_arr)
@@ -996,6 +1039,7 @@ class Common_Model extends CI_Model
                 ->join('email_user as eu','eu.email_id = e.id')
                 ->join('user as u','u.id = e.sender')
                 ->where('eu.state',$q['state'])
+                ->where('e.type',$type)   //查询 邮件类型
                 ->group_start()
                 ->where('eu.receiver_id',$uid)
                 ->or_where_in('eu.receiver_gid',$gid_arr)
@@ -1008,6 +1052,170 @@ class Common_Model extends CI_Model
         }
 
 
+        return $res;
+    }
+
+    /**
+     * @param $res_text
+     * @param $notice_id  指令id
+     * 回复指令
+     */
+    public function response_notice($res_text,$notice_id){
+        $uid = $this->session->userdata('uid');
+        $this->db->where('email_id',$notice_id);
+        $this->db->where('receiver_id',$uid);
+        $res = $this->db->update('email_user',array(
+            'response_text' => $res_text,
+            'state'         => 1,
+            'response_time' => time()
+        ));
+        return $res;
+    }
+
+    /**
+     * @param $notice_id 指令id
+     * @return array
+     * 查看 指令 回复情况
+     */
+    public function response_list($notice_id){
+        $notice_list = $this->db->select('user.name as username,group.name as group_name,email_user.response_time,email_user.response_text')
+            ->from('email_user')
+            ->join('user','email_user.receiver_id = user.id')
+            ->join('user_group','user_group.uid = user.id')
+            ->join('group','group.id = user_group.gid')
+            ->where('user_group.is_exist',1)
+            ->where('email_user.email_id',$notice_id)
+            ->where('email_user.response_text !=','')
+            ->get()->result_array();
+        return $notice_list;
+    }
+
+    /**
+     * @param $eid
+     * @return array 我的回复信息
+     */
+    public function get_my_response($eid){
+        $uid = $this->session->userdata('uid');
+        $response_arr = $this->db->select('response_text,response_time')
+            ->from('email_user')
+            ->where('email_id',$eid)
+            ->where('receiver_id',$uid)
+            ->get()->row_array();
+        
+            return $response_arr;
+
+
+    }
+
+    /**
+     * ------------------------涉密文件 模块---------------------
+     */
+    /**
+     * 记录打印人和时间，打印一次 计数加一
+     * @param $fid 文档id
+     * @return bool
+     */
+    public function record_print($fid){
+        $this->db->trans_begin();
+
+        //打印记录数加1
+        $this->db->set('print_num','print_num + 1',FALSE);
+        $this->db->where('id',$fid);
+        $this->db->update('email_attachment');
+
+        //记录打印人、时间
+        $this->db->insert('print_user',array(
+            'email_attID' => $fid,
+            'uid'         => $this->session->userdata('uid'),
+            'time'        => time()
+        ));
+
+        if($this->db->trans_status() === FALSE){
+            $this->db->trans_rollback();
+            $res = false;
+        }else{
+            $this->db->trans_commit();
+            $res = true;
+        }
+
+        return $res;
+
+    }
+
+    /**
+     * 获取 涉密文件列表
+     * @param $pInfo
+     * @return mixed
+     */
+    public function get_secret_list($pInfo){
+        $data['aaData'] = $this->db->select("ea.id,email.title,ea.file_name,user.name,ea.print_num,email.time,ea.is_exist")
+            ->from('email_attachment as ea')
+            ->join('email','email.id = ea.eid')
+            ->join('user','user.id = email.sender')
+            ->group_start()
+            ->like('ea.file_name',$pInfo['search'])
+            ->group_end()
+            ->where('ea.is_secret',1)
+            ->order_by('email.time',$pInfo['sort_type'])
+            ->limit($pInfo['length'],$pInfo['start'])
+            ->get()->result_array();
+
+        $total = $this->db->select("ea.id,email.title,ea.file_name,user.name,ea.print_num,email.time")
+            ->from('email_attachment as ea')
+            ->join('email','email.id = ea.eid')
+            ->join('user','user.id = email.sender')
+            ->group_start()
+            ->like('ea.file_name',$pInfo['search'])
+            ->group_end()
+            ->where('ea.is_secret',1)
+            ->get()->num_rows();
+
+        $data['sEcho'] = $pInfo['sEcho'];
+
+        $data['iTotalDisplayRecords'] = $total;
+
+        $data['iTotalRecords'] = $total;
+
+        return $data;
+    }
+
+    /**
+     * 获取单文件的 打印记录
+     * @param $fid 文件id
+     */
+    public function get_print_record($fid){
+        $record = $this->db->select('user.name,pu.time')
+            ->from('print_user as pu')
+            ->join('user','user.id = pu.uid')
+            ->where('email_attID',$fid)
+            ->get()->result_array();
+        return $record;
+    }
+
+    /**
+     * 删除 涉密文件
+     * @param $fid 文件id
+     * @return bool
+     */
+    public function del_att_by_id($fid){
+        //检查是否有 指派人权限
+        $check = $this->verify->is_manager();
+        if(!$check){
+            return false;
+        }
+        $result = $this->db->select('loc')
+            ->from('email_attachment')
+            ->where('id',$fid)
+            ->get()->row_array();
+        //删除文件
+        @unlink($_SERVER['DOCUMENT_ROOT'] . $result['loc']);
+
+        //更新 is_exist 字段为0
+        $update = array(
+            'is_exist' => 0
+        );
+        $this->db->where('id',$fid);
+        $res = $this->db->update('email_attachment',$update);
         return $res;
     }
 

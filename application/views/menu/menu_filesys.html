@@ -4,21 +4,41 @@
         <i class="fa fa-file">
         </i>
         <span>
-                  文件功能
-                </span>
-
+            文件/指令 系统
+        </span>
+        <span class="label label-danger g-nav-filesys"></span>
     </a>
     <ul class="sub">
         <li id="email_sys">
             <a href="/common/show_emails">
-                邮件系统
+                邮件/指令 系统
             </a>
         </li>
         <li id="my_pan">
             <a href="/common/show_my_pan">
-                我的云盘
+                我的私人云盘
             </a>
         </li>
-
+        <{if in_array("2",$privilege)}>
+        <li id="secret_file_record">
+            <a href="/common/show_secret_record">
+                涉密文件记录
+            </a>
+        </li>
+        <{/if}>
     </ul>
 </li>
+<script type="text/javascript">
+    $(function(){
+        $.ajax({
+          url: "/common/get_all_unread_num",
+          type: "get",
+          dataType: "json",
+          success: function(data){
+              if(data.all_unread_num){
+                $('.g-nav-filesys').html(data.all_unread_num)
+              }
+          }
+        })
+    })
+</script>

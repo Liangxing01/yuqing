@@ -73,6 +73,9 @@
                         <li>
                            <a href="/common/show_emails?from=send"><i class="fa fa-envelope-o"></i> 发件箱</a>
                         </li>
+                        <li>
+                        	<a href=""><i class=" fa fa-trash-o"></i> 指令下达</a>
+                        </li>
                      </ul>
                   </aside>
                   
@@ -192,11 +195,17 @@
                   attr_list += get_file_type(data[i].file_name,data[i].loc);
                   attr_list += '</a>';
                   attr_list += '<div class="file_img">';
-                  if(data[i].is_exist == 1){
-                     attr_list += '<a href="/common/att_download?fid='+data[i].id+'&eid='+email_id+'" class="btn btn-md btn-info attr_down">下载</a>';
+
+                  if(data[i].is_secret == 1){
+                    attr_list += '<a href="/js/PDFreader/generic/web/viewer.html?file='+data[i].loc+'&'+data[i].id+'"class="btn btn-md btn-danger attr_down" target="_blank">预览(涉密)</a>'
                   }else{
-                     attr_list += '<span class="attr_down" style="color:#fff;font-size: 18px">已过期</span>';
+                    if(data[i].is_exist == 1){
+                       attr_list += '<a href="/common/att_download?fid='+data[i].id+'&eid='+email_id+'" class="btn btn-md btn-info attr_down">下载</a>';
+                    }else{
+                       attr_list += '<span class="attr_down" style="color:#fff;font-size: 18px">已过期</span>';
+                    }
                   }
+                  
                   attr_list += '</div>';
                   attr_list += '<div class="file-name">'+data[i].file_name+'</div>';
                   attr_list += '</li>';
@@ -220,7 +229,7 @@
          return '<img src="../../../img/email_ppt.png">';
       }
       if(name.match(/(\.|\/)(pdf)$/ig)){ //文档类型
-         return '<img src="../../../img/email_pdf.png.png">';
+         return '<img src="../../../img/email_pdf.png">';
       }
       if(name.match(/(\.|\/)(jpg|png|jpeg)$/ig)){
            return '<img src='+loc+' width="130px">';

@@ -87,8 +87,9 @@
                         </div>
                         <div style="height: 30px; clear: both;"></div>
                         <div class="text-center" style="position: absolute; bottom: 10px; width: 80%;margin-left: 10%">
-                        	<button id="submit" class="btn btn-success btn-md col-md-5 col-sm-6" onclick="sub_or_up(this)">添加</button>
-                            <button id="updata" class="btn btn-info btn-md col-md-5 col-sm-6 " onclick="sub_or_up(this)">更新</button>
+                        	<button id="submit" class="btn btn-success btn-md col-md-3 col-sm-3" onclick="sub_or_up(this)">添加</button>
+                            <button id="updata" class="btn btn-info btn-md col-md-3 col-sm-3 " onclick="sub_or_up(this)">更新</button>
+                            <button id="del" class="btn btn-warning btn-md col-md-3 col-sm-3" onclick="del_user(this)">删除</button>
                     	</div>
                     	
                     </section>
@@ -174,7 +175,31 @@
     treeObj = $.fn.zTree.init($("#treePartment"), setting);
 
 
-
+    function del_user(that) {
+        var nodes = treeObj.getCheckedNodes(true);//获取到被选中的集成
+        var uid = window.sessionStorage.getItem('uid');//获取点击用户的uid
+        var rel_id = window.sessionStorage.getItem('user_relationID');
+        layer.confirm('删除后不可恢复，确认删除？',{icon: 3, title:'提示'},function () {
+            $.ajax({
+                url: "/admin/del_user",
+                method: "post",
+                dataType : 'json',
+                data: {
+                    'uid':uid,
+                    'rel_id':rel_id
+                },
+                success: function (data) {
+                    if (data.res == 1){
+                        layer.msg('删除成功!');
+                        treeObj.reAsyncChildNodes(null,"refresh",false);
+                        treeObj2.reAsyncChildNodes(null,"refresh",false);
+                    }else {
+                        layer.msg('删除失败！',{anim:6});
+                    }
+                }
+            });
+        });
+    }
 
     function sub_or_up(that){
         var nodes = treeObj.getCheckedNodes(true);//获取到被选中的集成
@@ -186,10 +211,18 @@
             return false;
         }
         if(!$("#pass").val()){
-            layer.msg('请输入密码');
-            $("#pass").focus();
-            return false;
+            layer.confirm('确定保留原有密码？',{icon: 3, title:'提示'},function () {
+                sub_data(that,nodes,uid);
+            });
+
+        }else{
+            sub_data(that,nodes,uid);
         }
+
+
+    }
+
+    function sub_data(that,nodes,uid) {
         if(!$("#name").val()){
             layer.msg("请输入你的姓名");
             $('#name').focus();
@@ -217,7 +250,7 @@
         });
         pri = pri.substring(0,pri.length - 1);
 
-        var user_is_repeat = false;
+        var user_is_repeat = true;
         //判断用户名是否重复
         $.ajax({
             url: "/admin/check_username",
@@ -233,6 +266,8 @@
                     //用户名重复
                     layer.msg("用户名已存在",{anim:6,time:1500});
                     user_is_repeat = true;
+                }else if(data.res == 1){
+                    user_is_repeat = false;
                 }
             }
         });
@@ -243,9 +278,12 @@
 
         //获取所有单位的id
         var gids = [];
+        var gid_rel_ids = [];
         for(i in nodes){
             gids.push(nodes[i].id);
+            gid_rel_ids.push(nodes[i].tid);
         }
+        var user_relID = window.sessionStorage.getItem('user_relationID');//用户关系树Id
 
         if($(that).attr('id')== 'submit'){
             $.ajax({
@@ -285,6 +323,8 @@
                     "sex" : $("input[name='sex']:checked").val(),
                     "privilege" : pri,
                     'gid':gids,
+                    "gid_rel_id" : gid_rel_ids,
+                    "user_relID" : user_relID,
                     'uid':uid,
                     "job":$("#job").val()
                 },
@@ -299,7 +339,6 @@
                 }
             });
         }
-
     }
 
     /**
@@ -354,6 +393,7 @@
     function zTreeClick(event,treeId,treeNode){
 
         window.sessionStorage.setItem('uid',treeNode.id);
+        window.sessionStorage.setItem('user_relationID',treeNode.tid);
         $.ajax({
             url:'/admin/get_node_info',
             method:'post',

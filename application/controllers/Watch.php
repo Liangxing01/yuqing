@@ -113,7 +113,7 @@ class Watch extends MY_Controller {
         $done_btn = $this->handler_model->check_done_btn($gid,$event_id);
         $this->assign('title',$einfo['title']);
         $this->assign('rank',$einfo['rank']);
-        if($einfo['state'] == "已完成" || $einfo['state'] == '未审核'){
+        if($einfo['state'] == "已完成"){
             $done_state = 1;
         }else{
             $done_state = 0;
@@ -126,6 +126,7 @@ class Watch extends MY_Controller {
         $this->assign('done_state',$done_state);
         $this->assign('eid',$event_id);
         $this->assign('can_show_done_btn',$done_btn);
+        $this->assign('state',$einfo['state']);
 
         //个人信息
         $this->load->model('MY_Model','my_model');

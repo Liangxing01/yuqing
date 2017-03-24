@@ -1,7 +1,8 @@
 <?php
 
 
-class Report_model extends CI_Model {
+class Report_model extends CI_Model
+{
 
     public function __construct()
     {
@@ -17,7 +18,8 @@ class Report_model extends CI_Model {
      */
     public function add_info($arr)
     {
-        //检测url是否重复
+        $time = time();
+        // 检测url是否重复
         $dup = 0;
         if ($arr['url'] !== null) {
             $judge = $this->db->select("*")
@@ -29,20 +31,46 @@ class Report_model extends CI_Model {
                 $dup = 1;
             }
         }
-        //事件信息数据
+        // 开始信息上报事务流程
+        $this->db->trans_begin();
+        // 事件信息数据
         $data = array(
             'title' => $arr['title'],
             'url' => $arr['url'],
             'source' => $arr['source'],
             'description' => $arr['description'],
             'publisher' => $arr['uid'],
-            'time' => time(),
+            'time' => $time,
             'state' => 0,
             'duplicate' => $dup
         );
-        $res = $this->db->insert('yq_info', $data);
-        $info_id = $this->db->insert_id();
-        if ($res) {
+        $this->db->insert('yq_info', $data); // 插入数据
+        $info_id = $this->db->insert_id(); // 信息ID
+        // 信息上报推送消息数据
+        $info_msg = array();
+        $this->load->model("User_Model", "user");
+        $managers = $this->user->get_managers();
+        foreach ($managers AS $manager) {
+            $info_msg[] = array(
+                "title" => $data["title"],
+                "type" => 0,    //上报消息类型
+                "send_uid" => $manager["id"],
+                "send_gid" => null,
+                "time" => $time,
+                "url" => "/designate/info_detail?id=" . $info_id,
+                "m_id" => $info_id,
+                "state" => 0    //消息未读
+            );
+        }
+        if (!empty($info_msg)) {
+            $this->db->insert_batch("business_msg", $info_msg); // 插入数据
+        }
+        // 完成信息上报事务
+        if ($this->db->trans_status() === FALSE) {
+            $this->db->trans_rollback();
+            return false;
+        } else {
+            $this->db->trans_commit();
             //TODO 上报消息 推送
             try {
                 //连接消息服务器
@@ -51,15 +79,11 @@ class Report_model extends CI_Model {
 
                 //业务消息推送
                 //用户 上报信息 推送给在线指派人
-                $managers = $this->db->select("user.id")
-                    ->join("user_privilege", "user_privilege.uid = user.id")
-                    ->where("user_privilege.pid", 2)
-                    ->get("user")->result_array();
                 foreach ($managers AS $manager) {
                     Gateway::sendToUid($manager["id"], json_encode(array(
                         "title" => $data["title"],
                         "time" => $data["time"],
-                        "type" => 0,
+                        "type" => 0, //上报消息类型
                         "url" => "/designate/info_detail?id=" . $info_id
                     )));
                 }
@@ -67,8 +91,6 @@ class Report_model extends CI_Model {
                 log_message("error", $e->getMessage());
             }
             return $info_id;
-        } else {
-            return false;
         }
     }
 
@@ -78,35 +100,36 @@ class Report_model extends CI_Model {
      * @param $info_id
      * @return bool
      */
-    public function insert_att_info($att,$info_id){
+    public function insert_att_info($att, $info_id)
+    {
         $res = false;
-        foreach ($att as $one){
-            if($one['isPic'] == 1){
+        foreach ($att as $one) {
+            if ($one['isPic'] == 1) {
                 $data = array(
                     'info_id' => $info_id,
-                    'name'    => $one['name'],
-                    'url'     => "/uploads/pic/".$one['new_name'],
-                    'type'    => "pic"
+                    'name' => $one['name'],
+                    'url' => "/uploads/pic/" . $one['new_name'],
+                    'type' => "pic"
                 );
-                $res = $this->db->insert('info_attachment',$data);
+                $res = $this->db->insert('info_attachment', $data);
                 //移动文件
-                copy($_SERVER['DOCUMENT_ROOT']."/uploads/temp/".$one['new_name'],$_SERVER['DOCUMENT_ROOT']."/uploads/pic/".$one['new_name']);
-                unlink($_SERVER['DOCUMENT_ROOT']."/uploads/temp/".$one['new_name']);
-                if(!$res){
+                copy($_SERVER['DOCUMENT_ROOT'] . "/uploads/temp/" . $one['new_name'], $_SERVER['DOCUMENT_ROOT'] . "/uploads/pic/" . $one['new_name']);
+                unlink($_SERVER['DOCUMENT_ROOT'] . "/uploads/temp/" . $one['new_name']);
+                if (!$res) {
                     break;
                 }
-            }else{
+            } else {
                 $data = array(
                     'info_id' => $info_id,
-                    'name'    => $one['name'],
-                    'url'     => "/uploads/video/".$one['new_name'],
-                    'type'    => "video"
+                    'name' => $one['name'],
+                    'url' => "/uploads/video/" . $one['new_name'],
+                    'type' => "video"
                 );
-                $res = $this->db->insert('info_attachment',$data);
+                $res = $this->db->insert('info_attachment', $data);
                 //移动文件
-                copy($_SERVER['DOCUMENT_ROOT']."/uploads/temp/".$one['new_name'],$_SERVER['DOCUMENT_ROOT']."/uploads/video/".$one['new_name']);
-                unlink($_SERVER['DOCUMENT_ROOT']."/uploads/temp/".$one['new_name']);
-                if(!$res){
+                copy($_SERVER['DOCUMENT_ROOT'] . "/uploads/temp/" . $one['new_name'], $_SERVER['DOCUMENT_ROOT'] . "/uploads/video/" . $one['new_name']);
+                unlink($_SERVER['DOCUMENT_ROOT'] . "/uploads/temp/" . $one['new_name']);
+                if (!$res) {
                     break;
                 }
             }
@@ -120,11 +143,12 @@ class Report_model extends CI_Model {
      * @param $pInfo
      * @return mixed
      */
-    public function get_all_report($pInfo,$uid){
+    public function get_all_report($pInfo, $uid)
+    {
         $data['aaData'] = $this->db->select("info.id,title,url,source,description,user.name As publisher,time,state")
             ->from('info')
-            ->join('user','user.id = info.publisher','left')
-            ->where(array('user.id'=> (int)$uid))
+            ->join('user', 'user.id = info.publisher', 'left')
+            ->where(array('user.id' => (int)$uid))
             ->order_by("time", $pInfo["sort_type"])
             ->limit($pInfo["length"], $pInfo["start"])
             ->get()->result_array();
@@ -132,14 +156,55 @@ class Report_model extends CI_Model {
         //查询总记录条数
         $total = $this->db->select("id")
             ->from('info')
-            ->where(array('publisher'=> (int)$uid))
+            ->where(array('publisher' => (int)$uid))
             ->get()->num_rows();
 
-        $data['sEcho']                = $pInfo['sEcho'];
+        $data['sEcho'] = $pInfo['sEcho'];
 
         $data['iTotalDisplayRecords'] = $total;
 
-        $data['iTotalRecords']        = $total;
+        $data['iTotalRecords'] = $total;
+
+        return $data;
+    }
+
+
+    /**
+     * 获取单位记录 分页数据
+     * @param array $pInfo 分页查询变量
+     */
+    public function get_group_record($pInfo)
+    {
+        $gid = explode(",", $this->session->gid);
+        $gid = $gid[0];
+        if ($pInfo["sort_th"] == 1) {
+            $order_by = "report_num";
+        } else {
+            $order_by = "useful_num";
+        }
+
+        $data['aaData'] = $this->db->select("user_group.uid, user.name, count(yq_info.id) AS report_num, sum(if(yq_info.duplicate = 0, 1, 0)) AS useful_num")
+            ->from("info")
+            ->join("user_group", "user_group.uid = info.publisher", "left")
+            ->join("user", "user.id = info.publisher", "left")
+            ->where(array("user_group.is_exist" => 1, "user_group.gid" => $gid))
+            ->group_by("user_group.uid")
+            ->limit($pInfo["length"], $pInfo["start"])
+            ->order_by($order_by, $pInfo["sort_type"])
+            ->get()->result_array();
+
+        //查询总记录条数
+        $total = $this->db->select("info.id")
+            ->from("info")
+            ->join("user_group", "user_group.uid = info.publisher", "left")
+            ->where(array("user_group.is_exist" => 1, "user_group.gid" => $gid))
+            ->group_by("user_group.uid")->get()->num_rows();
+
+        $data['sEcho'] = $pInfo['sEcho'];
+
+        $data['iTotalDisplayRecords'] = $total;
+
+        $data['iTotalRecords'] = $total;
 
         return $data;
     }
@@ -170,14 +235,15 @@ class Report_model extends CI_Model {
      * @param $id 记录id
      * @return bool 没有获取到记录
      */
-    public function get_detail_by_id($id){
+    public function get_detail_by_id($id)
+    {
         $data = $this->db->select("info.id,title,url,source,description,user.name As publisher,time")
             ->from("info")
-            ->join("user","user.id = info.publisher","left")
-            ->where("info.id",(int)$id)
+            ->join("user", "user.id = info.publisher", "left")
+            ->where("info.id", (int)$id)
             ->get()->result_array();
 
-        return $data == null?false:$data[0];
+        return $data == null ? false : $data[0];
     }
 
     /**
@@ -187,14 +253,15 @@ class Report_model extends CI_Model {
      * @return int 有无重复，0表示没有重复，反之取出第一条
      */
 
-    public function edit_judge_url($url,$id){
+    public function edit_judge_url($url, $id)
+    {
         $data = $this->db->select("*")
             ->from('info')
-            ->where(array('url'=>$url,
-                'id!='=>$id))
-            ->limit(10,0)
+            ->where(array('url' => $url,
+                'id!=' => $id))
+            ->limit(10, 0)
             ->get()->result_array();
-        return $data == null? 0:$data[0];
+        return $data == null ? 0 : $data[0];
     }
 
     /**
@@ -204,15 +271,16 @@ class Report_model extends CI_Model {
      * @return int 有无重复，0表示没有重复
      */
 
-    public function judge_url($url,$uid){
+    public function judge_url($url, $uid)
+    {
         $data = $this->db->select("*")
             ->from('info')
-            ->where(array('url'=>$url,
-                'publisher'=>$uid))
-            ->limit(10,0)
+            ->where(array('url' => $url,
+                'publisher' => $uid))
+            ->limit(10, 0)
             ->get()->result_array();
 
-        return $data == null?0:1;
+        return $data == null ? 0 : 1;
     }
 
     /**
@@ -221,10 +289,11 @@ class Report_model extends CI_Model {
      * @return mixed 返回记录id和其状态值
      */
 
-    public function get_state($id){
+    public function get_state($id)
+    {
         $data = $this->db->select("id,state")
             ->from('info')
-            ->where('id',(int)$id)
+            ->where('id', (int)$id)
             ->get()->result_array();
 
         return $data;
@@ -235,8 +304,9 @@ class Report_model extends CI_Model {
      * @param $id  记录id
      * @return mixed 影响条数
      */
-    public function del($id){
-        $this->db->delete('info',array('id'=>$id));
+    public function del($id)
+    {
+        $this->db->delete('info', array('id' => $id));
         return $nu = $this->db->affected_rows();
     }
 }

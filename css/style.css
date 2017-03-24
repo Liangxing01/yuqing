@@ -2559,7 +2559,7 @@ ul.inbox-pagination li {
 }
 
 .sender-info img {
-	width: 30px;
+	/*width: 30px;*/
 	height: 30px;
 }
 
@@ -6813,3 +6813,5 @@ a.guest-on i {
 .text-center button{
 	margin-right:10px;
 }
+
+.g-nav-filesys{ margin-left: 8px; border-radius: 8px; line-height: 7px; position: relative;  top: -1px;}

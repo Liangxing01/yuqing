@@ -27,7 +27,7 @@
                 <div class="col-md-8">
                     <div class="compose-btn">
                         <{if $role == 3}>
-                        <a href="/handler/show_tracer?eid=<{$event['id']}>&first=1" class="btn btn-sm btn-info"><i
+                        <a href="/handler/show_tracer?eid=<{$event['id']}>" class="btn btn-sm btn-info"><i
                                 class="fa fa-reply"></i> 工作汇报</a>
                         <{else if $role == 2}>
                         <a href="/designate/event_tracer?eid=<{$event['id']}>" class="btn btn-sm btn-info"><i
@@ -161,6 +161,7 @@
                         '</p>' +
                         '<p class="col-md-4"><strong>来源:</strong><span>' + data.source + '</span></p>' +
                         '<p class="col-md-4"><strong>发布时间:</strong><span>' + timeToDate(data.time * 1000) + '</span></p>' +
+                        '<p class="col-md-4"><strong>涉及领域:</strong><span>'+data.relate_scope+'</span></p>'+
                         '</div>' +
                         '</div>' +
                         '</div>' +

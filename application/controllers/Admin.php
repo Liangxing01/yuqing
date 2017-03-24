@@ -235,6 +235,27 @@ class Admin extends MY_Controller
     }
 
     /**
+     * 删除用户
+     */
+    public function del_user(){
+        $data = $this->input->post();
+        $res = $this->admin_model->del_user($data);
+        if ($res) {
+            echo json_encode(
+                array(
+                    'res' => 1
+                )
+            );
+        } else {
+            echo json_encode(
+                array(
+                    'res' => 0
+                )
+            );
+        }
+    }
+
+    /**
      * 展示单位管理界面
      */
     public function show_group_manage()
@@ -262,6 +283,18 @@ class Admin extends MY_Controller
                 )
             );
         }
+    }
+
+    /**
+     * 移动单位
+     * POST参数 parent_id: 目标节点id, node_id: 当前节点id
+     */
+    public function move_group()
+    {
+        $parent_id = $this->input->get("parent_id");
+        $node_id = $this->input->get("node_id");
+        $this->load->model("Tree_Model", "tree");
+        $this->tree->move_tree_node($parent_id, $node_id);
     }
 
     public function get_node_info()

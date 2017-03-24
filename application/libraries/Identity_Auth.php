@@ -29,7 +29,7 @@ class Identity_Auth
 
         $password = md5($password);
 
-        $user = $this->CI->db->select("id, username, name, password, ip, login_time, avatar")->where(array("username" => $username, "password" => $password))->get("user");
+        $user = $this->CI->db->select("id, username, name, password, ip, login_time, avatar")->where(array("username" => $username, "password" => $password, "is_exist !=" => 0))->get("user");
 
         if ($user->num_rows() > 0) {
             //更新用户认证token
@@ -102,6 +102,7 @@ class Identity_Auth
         $group = $this->CI->db->select("gid, group.name")
             ->join("group", "group.id = user_group.gid", "left")
             ->where("user_group.uid", $uid)
+            ->where("is_exist !=", 0)
             ->get("user_group")->result_array();
 
         $info = array("id" => "", "name" => "");
@@ -182,11 +183,54 @@ class Identity_Auth
         }
     }
 
+    //检测移动端用户登陆
+    public function m_is_authentic()
+    {
+        $this->CI->load->database();
+        $m_token = $this->CI->input->get_request_header("TOKEN", TRUE);
+        if ($this->CI->session->has_userdata("m_token") && $this->CI->session->has_userdata("uid") && $m_token) {
+            // 验证session是否过期
+            return true;
+        } else if ($m_token) {
+            // 验证http头部的m_token值
+            $user = $this->CI->db->select("id, username, name, password, ip, login_time, avatar")->where("m_token", $m_token)->get("user");
+            if ($user->num_rows() > 0) {
+                //用户认证session
+                $privilege = $this->get_privilege($user->row()->id);
+                $group = $this->get_group_info($user->row()->id);
+                $userdata = array(
+                    "uid" => $user->row()->id,
+                    "username" => $user->row()->username,
+                    "name" => $user->row()->name,
+                    "gid" => $group["id"],
+                    "gname" => $group["name"],
+                    "avatar" => $user->row()->avatar,
+                    "privilege" => $privilege ? $privilege : "",
+                    "m_token" => $m_token
+                );
+                $this->CI->session->set_userdata($userdata);
+                return true;
+            } else {
+                header("HTTP/1.1 504 User Expired");
+            }
+        } else {
+            header("HTTP/1.1 504 User Expired");
+        }
+        exit(0);
+    }
+
     //注销用户
     public function destroy()
     {
         session_destroy();
         redirect(base_url("/login"));
+        exit(0);
+    }
+
+    //注销移动端用户
+    public function m_destroy()
+    {
+        session_destroy();
         exit(0);
     }
 

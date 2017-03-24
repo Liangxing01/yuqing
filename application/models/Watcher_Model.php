@@ -63,7 +63,7 @@ class Watcher_Model extends CI_Model {
                 ->join("group C", "C.id = event.group", "left")
                 ->join("event_watch D", "D.event_id = event.id", "left")
                 ->where($where)
-                ->where("D.watcher = 5")
+                ->where("D.watcher = $uid")
                 ->group_start()
                 ->like("event.id", $pInfo["search"])
                 ->or_like("A.name", $pInfo["search"])

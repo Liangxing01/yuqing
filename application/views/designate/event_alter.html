@@ -324,7 +324,7 @@
                 'orderable': false,
                 "mRender": function (data, type, all) {
                     return "<a title='查看' target='_blank' href='/designate/info_detail?id=" + data + " ' class='btn btn-info btn-xs'>查看</a>&nbsp;" +
-                            "<a title='添加' href='javascript:;' onclick='add_event_info(" + all.id + ",\"" + all.title + "\")' class='btn btn-success btn-xs'>添加</a>";
+                            "<a title='添加' href='javascript:;' onclick='add_event_info(" + all.id + ",\"" + encodeURI(all.title) + "\")' class='btn btn-success btn-xs'>添加</a>";
                 }
             }
         ],
@@ -462,7 +462,7 @@
                 'orderable': false,
                 "mRender": function (data, type, all) {
                     return "<a title='查看' target='_blank' href='/common/event_detail?eid=" + data + " ' class='btn btn-info btn-xs'>查看</a>&nbsp;<br>"
-                            + "<a title='添加' href='javascript:;' onclick='add_relate_event(" + all.id + ",\"" + all.title + "\")' class='btn btn-success btn-xs'>添加</a>";
+                            + "<a title='添加' href='javascript:;' onclick='add_relate_event(" + all.id + ",\"" + encodeURI(all.title) + "\")' class='btn btn-success btn-xs'>添加</a>";
                 }
             }
         ],
@@ -586,6 +586,9 @@
 
     //添加事件信息
     function add_event_info(id, title) {
+        var e = new RegExp('_', "g");
+        title = decodeURI(title);
+        title = title.replace(e, ' ');
         var tag = "#" + id + "-" + title;
         if (!$("#info_id").tagExist(tag)) {
             $("#info_id").addTag(tag);
@@ -594,6 +597,9 @@
 
     //添加关联事件
     function add_relate_event(id, title) {
+        var e = new RegExp('_', "g");
+        title = decodeURI(title);
+        title = title.replace(e, ' ');
         var tag = "#" + id + "-" + title;
         var relate_event = $("#check-event").val().split(",");
         if (!$("#relate_event").tagExist(tag) && $.inArray(id.toString(), relate_event) == -1) {
@@ -609,7 +615,7 @@
      */
     function get_info_id() {
         var info_id = $("#info_id").val();
-        if(info_id == ""){
+        if (info_id == "") {
             return "";
         }
         var tag_arr = info_id.split("_");

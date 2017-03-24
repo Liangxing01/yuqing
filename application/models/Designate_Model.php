@@ -22,6 +22,7 @@ class Designate_Model extends CI_Model
             ->from("info")
             ->join("user", "user.id = info.publisher", "left")
             ->where("state !=", 2)
+            ->where("state !=", -1)//不是无效信息和已确认信息
             ->group_start()
             ->like("info.id", $pInfo["search"])
             ->or_like("info.source", $pInfo["search"])
@@ -36,6 +37,7 @@ class Designate_Model extends CI_Model
         $total = $this->db->from("info")
             ->join("user", "user.id = info.publisher", "left")
             ->where("state !=", 2)
+            ->where("state !=", -1)//不是无效信息和已确认信息
             ->group_start()
             ->like("info.id", $pInfo["search"])
             ->or_like("info.source", $pInfo["search"])
@@ -108,7 +110,7 @@ class Designate_Model extends CI_Model
      */
     public function get_info($info_id)
     {
-        $info = $this->db->select("info.id, info.title, info.description, type.name AS type, info.url, info.state, info.source, user.name AS publisher, info.time")
+        $info = $this->db->select("info.id,info.relate_scope, info.title, info.description, type.name AS type, info.url, info.state, info.source, user.name AS publisher, info.time")
             ->from("info")
             ->join("type", "type.id = info.type", "left")
             ->join("user", "user.id = info.publisher", "left")
@@ -138,7 +140,7 @@ class Designate_Model extends CI_Model
         if (!($e_can && $i != 0)) {
             return false;
         } else {
-            $info = $this->db->select("info.id, type.name AS type, info.url, info.source, info.description, user.name AS publisher, info.time")
+            $info = $this->db->select("info.id,info.relate_scope,type.name AS type, info.url, info.source, info.description, user.name AS publisher, info.time")
                 ->join("user", "user.id = info.publisher")
                 ->join("type", "info.type = type.id", "left")
                 ->where("info.id", $info_id)
@@ -176,7 +178,14 @@ class Designate_Model extends CI_Model
      */
     public function info_commit($data)
     {
-        return $this->db->set(array("type" => $data["type"], "duplicate" => $data["duplicate"], "state" => 2, "source" => $data["source"]))
+        //判断信息是否是无效信息
+        if ($data['trash'] == 1) {
+            $state = -1;
+        } else {
+            $state = 2;
+        }
+        return $this->db->set(array("type" => $data["type"], "duplicate" => $data["duplicate"], "relate_scope" => $data['relate_scope'],
+            "state" => $state, "source" => $data["source"]))
             ->where(array("id" => $data["id"]))
             ->update("info");
     }
@@ -738,6 +747,7 @@ class Designate_Model extends CI_Model
                 "send_gid" => null,
                 "time" => $time,
                 "url" => "/common/event_detail?eid=" . $event_id,
+                "m_id" => $event_id,
                 "state" => 0    //消息未读
             );
         }
@@ -749,6 +759,7 @@ class Designate_Model extends CI_Model
                 "send_gid" => $group,
                 "time" => $time,
                 "url" => "/common/event_detail?eid=" . $event_id,
+                "m_id" => $event_id,
                 "state" => 0    //消息未读
             );
         }
@@ -760,6 +771,7 @@ class Designate_Model extends CI_Model
                 "send_gid" => null,
                 "time" => $time,
                 "url" => "/common/event_detail?eid=" . $event_id,
+                "m_id" => $event_id,
                 "state" => 0    //消息未读
             );
         }
@@ -836,6 +848,107 @@ class Designate_Model extends CI_Model
             } catch (Exception $e) {
                 log_message("error", $e->getMessage());
             }
+            return true;
+        }
+    }
+
+    /**
+     * 事件改派 获取已指派信息
+     * @param $eid
+     * @return $info array
+     */
+    public function designate_info($eid)
+    {
+        $einfo = $this->db->select('event.title,event.description,event.rank,event.reply_time,event.main_processor')
+            ->from('event')
+            ->where('event.id', $eid)
+            ->get()->row_array();
+
+
+        $info_arr = $this->db->select('event.id as eid,info.id,info.title')
+            ->from('event')
+            ->join('event_info', 'event_info.event_id = event.id')
+            ->join('info', 'info.id = event_info.info_id')
+            ->where('event.id', $eid)
+            ->get()->result_array();
+
+        //合并 info_arr 形成info_list
+        $einfo['info_list'] = $info_arr;
+
+        //查询相关事件 形成 relate_list
+        $relate_arr = $this->db->select('event_relate.relate_id,event.title')
+            ->from('event_relate')
+            ->join('event', 'event.id = event_relate.relate_id')
+            ->where('event_relate.event_id', $eid)
+            ->get()->result_array();
+        $einfo['relate_list'] = $relate_arr;
+
+        //查询事件 督办人
+        $watcher_arr = $this->db->select('event_watch.watcher')
+            ->from('event_watch')
+            ->where('event_watch.event_id', $eid)
+            ->get()->result_array();
+        $einfo['watcher_list'] = $watcher_arr;
+
+        return $einfo;
+    }
+
+    /**
+     * 事件改派 删除原有 改派的一系列记录
+     * @param eid
+     * @return bool 删除成功 or 失败
+     */
+    public function del_designate($eid)
+    {
+        //一次删除 event_designate,event_att,event_info,event_log,event_watch表的数据
+        $this->db->trans_begin();
+
+        $this->db->where('m_id', $eid);
+        $this->db->delete('yq_business_msg');
+
+        $this->db->where('id', $eid);
+        $this->db->delete('event');
+
+        $this->db->where('event_id', $eid);
+        $this->db->delete('event_alert');
+
+        $this->db->where('event_id', $eid);
+        $this->db->delete('event_designate');
+
+        $this->db->where('event_id', $eid);
+        $this->db->delete('event_info');
+
+        $this->db->where('event_id', $eid);
+        $this->db->delete('event_log');
+
+        $this->db->where('event_id', $eid);
+        $this->db->delete('event_relate');
+
+        $this->db->where('event_id', $eid);
+        $this->db->delete('event_watch');
+
+        //删除 事件绑定的文档
+        $att_arr = $this->db->select('url')
+            ->from('event_attachment')
+            ->where('event_id', $eid)
+            ->get()->result_array();
+
+        //循环删除文件
+        if (!empty($att_arr)) {
+            foreach ($att_arr as $att) {
+                @unlink($_SERVER['DOCUMENT_ROOT'] . $att['url']);
+            }
+        }
+
+        //删除att 表里面的数据
+        $this->db->where('event_id', $eid);
+        $this->db->delete('event_attachment');
+
+        if ($this->db->trans_status() === FALSE) {
+            $this->db->trans_rollback();
+            return false;
+        } else {
+            $this->db->trans_commit();
             return true;
         }
     }
@@ -1007,6 +1120,7 @@ class Designate_Model extends CI_Model
         if (empty($result)) {
             return false;
         } else {
+            $result['start_time'] -= 30 * 24 * 3600;// 最小时间往前1个月
             return $result;
         }
     }
@@ -1108,6 +1222,18 @@ class Designate_Model extends CI_Model
         }
     }
 
+
+    /**
+     * 修改事件等级
+     * @param int $event_id 事件id
+     * @param int $rank 事件等级
+     */
+    public function edit_event_rank($event_id, $rank)
+    {
+        return $this->db->set(array("rank" => $rank))->where("id", $event_id)->update("event");
+    }
+
+
     /**
      * 检查url是否重复
      * @param $url
@@ -1119,11 +1245,36 @@ class Designate_Model extends CI_Model
             ->where('url', $url)
             ->where('id !=' . $id)
             ->get()->num_rows();
+
+        $rep_info = $this->db->select('id')->from('info')
+            ->where('url', $url)
+            ->order_by('time', 'ASC')
+            ->get()->result_array();
         if ($res >= 1) {
-            //重复了
-            return true;
+            if ($rep_info[0]['id'] == $id) {
+                //第一个上报人 不提示重复
+                return array(
+                    'res' => false
+                );
+            } else {
+                //重复的id返回给前端
+                $dup_id = '';
+                foreach ($rep_info as $item) {
+                    if ($item['id'] != $id) {
+                        $dup_id .= $item['id'] . ',';
+                    }
+                }
+                $dup_id = substr($dup_id, 0, -1);
+                return array(
+                    'res' => true,
+                    'dup_id' => $dup_id
+                );
+            }
+
         } else {
-            return false;
+            return array(
+                'res' => false
+            );
         }
     }
 
@@ -1137,48 +1288,49 @@ class Designate_Model extends CI_Model
      * @param $msg
      * @param $start_time 开始点名的时间偏移量
      */
-    public function make_call($gids,$msg,$start_time){
+    public function make_call($gids, $msg, $start_time)
+    {
         //插入数据库操作，涉及到 call call_list call_response 三张表
 
         //开始事务
         $this->db->trans_begin();
         //插入 call表
         $insert_call = array(
-            'uid'        => $this->session->userdata('uid'),
-            'message'    => $msg,
-            'start_time' => time()+$start_time,
-            'time'       => time()
+            'uid' => $this->session->userdata('uid'),
+            'message' => $msg,
+            'start_time' => time() + $start_time,
+            'time' => time()
         );
-        $this->db->insert('call',$insert_call);
+        $this->db->insert('call', $insert_call);
         $call_id = $this->db->insert_id();
 
         //插入 call_list表
         $insert_list = array();
-        $g_arr = explode(',',$gids);
-        foreach ($g_arr as $gid){
-            array_push($insert_list,array(
+        $g_arr = explode(',', $gids);
+        foreach ($g_arr as $gid) {
+            array_push($insert_list, array(
                 'call_id' => $call_id,
-                'gid'     => $gid
+                'gid' => $gid
             ));
         }
-        $this->db->insert_batch('call_list',$insert_list);
+        $this->db->insert_batch('call_list', $insert_list);
 
         //插入 call_response表，默认设置state = 0
         $rep_info = array();
-        foreach ($g_arr as $gid){
+        foreach ($g_arr as $gid) {
             $uid_arr = $this->db->select('uid')->from('user_group')
-                ->where('gid',$gid)
+                ->where('gid', $gid)
                 ->get()->result_array();
-            foreach ($uid_arr as $uid){
-                array_push($rep_info,array(
-                    'call_id'   => $call_id,
-                    'gid'       => $gid,
-                    'uid'       => $uid,
-                    'state'     => 0
+            foreach ($uid_arr as $uid) {
+                array_push($rep_info, array(
+                    'call_id' => $call_id,
+                    'gid' => $gid,
+                    'uid' => $uid,
+                    'state' => 0
                 ));
             }
         }
-        $this->db->insert_batch('call_response',$rep_info);
+        $this->db->insert_batch('call_response', $rep_info);
 
         if ($this->db->trans_status() === FALSE) {
             $this->db->trans_rollback();
@@ -1196,10 +1348,10 @@ class Designate_Model extends CI_Model
                 foreach ($g_arr AS $gid) {
                     Gateway::sendToGroup($gid, json_encode(array(
                         "title" => '点名考勤',
-                        "type"  => 'call_name',
-                        "time"  => time(),
-                        "msg"   => $msg,
-                        "gid"   => $gid,
+                        "type" => 'call_name',
+                        "time" => time(),
+                        "msg" => $msg,
+                        "gid" => $gid,
                         "call_id" => $call_id
                     )));
                 }
@@ -1298,4 +1450,72 @@ class Designate_Model extends CI_Model
         return $result;
     }
 
+
+    /**
+     * 获取通知列表
+     * @param $pInfo
+     * @return array
+     */
+    public function get_notice_list_data($pInfo)
+    {
+        $data['aaData'] = $this->db->select("announce.id, title, user.name AS sender, time")
+            ->join("user", "user.id = announce.sender")
+            ->where("announce.type", "all")
+            ->order_by('announce.time', $pInfo['sort_type'])
+            ->limit($pInfo['length'], $pInfo['start'])
+            ->get("announce")->result_array();
+
+        $total = $this->db->select("id")
+            ->where("type", "all")
+            ->get("announce")->num_rows();
+
+        $data['sEcho'] = $pInfo['sEcho'];
+
+        $data['iTotalDisplayRecords'] = $total;
+
+        $data['iTotalRecords'] = $total;
+
+        return $data;
+    }
+
+
+    /**
+     * 删除通知
+     * @param int $notice_id
+     * @return bool
+     */
+    public function delete_notice($notice_id)
+    {
+        return $this->db->where("id", $notice_id)->delete("announce");
+    }
+
+
+    /**
+     * 查询 通知详情
+     * @param int $notice_id
+     * @return array
+     */
+    public function get_notice_detail($notice_id)
+    {
+        return $this->db->select("id, title, time, content")->where("id", $notice_id)->get("announce")->row_array();
+    }
+
+
+    /**
+     * 发布新通知
+     * @param string $title
+     * @param string $content
+     * @return bool
+     */
+    public function post_notice($title, $content)
+    {
+        $notice_data = array(
+            "title" => $title,
+            "content" => $content,
+            "sender" => $this->session->uid,
+            "type" => "all",
+            "time" => time()
+        );
+        return $this->db->insert("announce", $notice_data);
+    }
 }

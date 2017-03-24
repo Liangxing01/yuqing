@@ -18,6 +18,7 @@ class Common extends MY_Controller
     {
         $option = $this->input->get("option");
         $event_id = $this->input->get("eid");
+        $type = $this->input->get("type");
 
         //更新事件报警状态为0
         if ($option == "cancel_alert") {
@@ -37,20 +38,18 @@ class Common extends MY_Controller
 
         $role = 0;
 
-        //判断是否是指派人
-        if ($this->verify->is_manager()) {
-            $role = 2;
-        }
-
-        //判断是否是督办人
-        if ($this->verify->is_watcher()) {
-            $role = 4;
-        }
-
-        //判断是否是处理人
-        //注意:处理人最后判断
-        if ($this->verify->is_processor()) {
-            $role = 3;
+        switch($type){
+            case "manager":
+                $role = 2;
+                break;
+            case "processor":
+                $role = 3;
+                break;
+            case "watcher":
+                $role = 4;
+                break;
+            default:
+                break;
         }
 
         $this->load->model("Designate_Model", "designate");
@@ -455,8 +454,10 @@ class Common extends MY_Controller
         $attIDs = $this->input->post('att_ids');
         $eid = $this->input->post('eid');
         $att_info = $this->common->get_att_by_id($attIDs,$eid);
-
+    
         echo json_encode($att_info);
+        
+        
     }
 
     /**
@@ -482,6 +483,7 @@ class Common extends MY_Controller
         }else{
             $attID_arr = array();
         }
+
         $res = $this->common->insert_email($email_info,$receiveID,$attID_arr);
         if($res){
             echo json_encode(array(
@@ -686,7 +688,7 @@ class Common extends MY_Controller
     public function get_all_sends(){
         $this->load->model('Common_Model','common');
         $query_data = $this->input->post();
-        $email_info = $this->common->get_send_emails_info($query_data);
+        $email_info = $this->common->get_send_emails_info($query_data,'email');
         echo json_encode($email_info);
     }
 
@@ -696,8 +698,210 @@ class Common extends MY_Controller
     public function get_all_rec(){
         $this->load->model('Common_Model','common');
         $query_data = $this->input->post();
-        $email_info = $this->common->get_rec_emails_info($query_data);
+        $email_info = $this->common->get_rec_emails_info($query_data,'email');
         echo json_encode($email_info);
+    }
+
+    /**
+     * -----------------------指令下达----------------------------------------
+     */
+    /**
+     * 分页显示收到的指令
+     */
+    public function get_rec_notice(){
+        $this->load->model('Common_Model','common');
+        $query_data = $this->input->post();
+        $email_info = $this->common->get_rec_emails_info($query_data,'notice');
+        echo json_encode($email_info);
+    }
+
+
+    /**
+     * 接口：回复指令接口
+     */
+    public function response_notice(){
+        $res_text  = $this->input->post('res_text');
+        $notice_id = $this->input->post('notice_id');
+        $this->load->model('Common_Model','common');
+        $res = $this->common->response_notice($res_text,$notice_id);
+        if($res){
+            echo json_encode(array(
+                'res' => 1
+            ));
+        }else{
+            echo json_encode(array(
+                'res' => 0
+            ));
+        }
+    }
+
+    /**
+     * 接口：获取 指令 回复情况
+     */
+    public function get_response_list(){
+        $this->load->model('Common_Model','common');
+        $notice_id   = $this->input->get('notice_id');
+        $notice_list = $this->common->response_list($notice_id);
+        echo json_encode($notice_list);
+    }
+
+    /**
+     * 显示 指令详情
+     * 显示 回复框，如果有回复则显示自己的回复内容
+     */
+    public function show_notice_detail(){
+        $this->load->model("Common_Model", "common");
+        $eid = $this->input->get('id');
+
+        if (!isset($eid) || $eid == null || $eid == "") {
+            show_404();
+        }
+
+        //查询是否自己已回复
+        $response = $this->common->get_my_response($eid);
+
+        $email_info = $this->common->rece_email_detail($eid);
+
+        if($email_info == false){
+            show_404();
+        }else{
+            $this->assign('info',$email_info['info']);
+            $this->assign('attID', implode(',',$email_info['attID']));
+
+        }
+        if($response['response_text'] == ''){
+            $this->assign("has_res",0);
+        }else{
+            $this->assign("has_res",1);
+        }
+
+        $this->assign("role",'receiver');
+        $this->assign("active_title", "email_sys");
+        $this->assign("active_parent", "file_parent");
+        $this->all_display("email/notice_detail.html");
+    }
+
+    /**
+     * 接口：获取自己的回复
+     */
+    public function get_my_res(){
+        $this->load->model("Common_Model", "common");
+        $eid = $this->input->get('id');
+        $my_res = $this->common->get_my_response($eid);
+        echo json_encode($my_res);
+    }
+
+    /**
+     * 接口：获取 未读指令数
+     */
+    public function get_unread_notice_num(){
+        $this->load->model('Common_Model','common');
+        $num = $this->common->get_unread_num('notice');
+        echo json_encode(array(
+            'unread_num' => $num
+        ));
+    }
+
+    /**
+     * 接口：获取 邮件 指令 总共未读个数
+     */
+    public function get_all_unread_num(){
+        $this->load->model('Common_Model','common');
+        $num = $this->common->get_all_unread_num();
+        echo json_encode(array(
+            'all_unread_num' => $num
+        ));
+    }
+
+    /**
+     * --------------------------涉密文件 模块接口----------------------------
+     */
+    /**
+     * 用户选择打印记录，文档打印次数加1，记录打印用户和时间
+     * GET
+     * @param fid 文件对应id
+     */
+    public function make_print(){
+        $fid = $this->input->get('fid');
+        $this->load->model('Common_Model','common');
+        $res = $this->common->record_print($fid);
+
+        if($res){
+            echo json_encode(array(
+                'res' => 1
+            ));
+        }else{
+            echo json_encode(array(
+                'res' => 0
+            ));
+        }
+    }
+
+    /**
+     * 展示 涉密文件流转记录
+     */
+    public function show_secret_record(){
+        $this->assign("active_title", "secret_file_record");
+        $this->assign("active_parent", "file_parent");
+        $this->all_display("email/secret_record.html");
+    }
+
+    /**
+     * 分页获取 涉密文件 记录
+     */
+    public function get_secret_record(){
+        $this->load->model('Common_Model','common');
+        $pData['sEcho'] = $this->input->post('psEcho', true);           //DataTables 用来生成的信息
+        $pData['start'] = $this->input->post('iDisplayStart', true);    //显示的起始索引
+        $pData['length'] = $this->input->post('iDisplayLength', true);  //每页显示的行数
+        $pData['sort_th'] = $this->input->post('iSortCol_0', true);     //排序的列 默认第三列
+        $pData['sort_type'] = $this->input->post('sSortDir_0', true);   //排序的方向 默认 desc
+        $pData['search'] = $this->input->post('sSearch', true);         //全局搜索关键字 默认为空
+
+        if ($pData['start'] == NULL) {
+            $pData['start'] = 0;
+        }
+        if ($pData['length'] == NULL) {
+            $pData['length'] = 10;
+        }
+        if ($pData["sort_th"] == NULL) {
+            $pData["sort_th"] = 6;
+        }
+        if ($pData['sort_type'] == NULL) {
+            $pData['sort_type'] = "desc";
+        }
+        if ($pData['search'] == NULL) {
+            $pData['search'] = '';
+        }
+
+        $data = $this->common->get_secret_list($pData);
+        echo json_encode($data);
+    }
+
+    /**
+     * 接口：获取某个文件的 具体打印情况
+     * GET fid 文件id
+     */
+    public function get_print_record(){
+        $this->load->model('Common_Model','common');
+        $fid = $this->input->get('fid');
+        $print_record = $this->common->get_print_record($fid);
+        echo json_encode($print_record);
+    }
+
+    /**
+     * 接口：删除 涉密文件
+     * GET fid 文件id
+     */
+    public function del_sec_att(){
+        $this->load->model('Common_Model','common');
+        $fid = $this->input->get('fid');
+        $res = $this->common->del_att_by_id($fid);
+        if($res){
+            echo 1;
+        }else{
+            echo 0;
+        }
     }
 
     /**
@@ -733,12 +937,6 @@ class Common extends MY_Controller
         $length    = $this->input->get('length');
         $call_data = $this->common->get_call_data($page_num,$length);
 
-    }
-
-
-    public function test(){
-        $a = "1481272759";
-        echo (int)$a + 1209600;
     }
 
 

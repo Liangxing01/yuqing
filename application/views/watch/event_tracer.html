@@ -110,7 +110,7 @@
                 <section class="panel">
                     <header class="panel-heading">
                         <div style="float: left; width: 12%;">
-                            <a class="btn btn-info btn-sm" href="/common/event_detail?eid=<{$eid}>"><i class="fa fa-reply"></i>事件详情</a>
+                            <a class="btn btn-info btn-sm" href="/common/event_detail?type=watcher&eid=<{$eid}>"><i class="fa fa-reply"></i>事件详情</a>
                             <span class="label label-primary">事件追踪</span>
                         </div>
 
@@ -149,6 +149,10 @@
         <!-- END ROW  -->
     </section>
 </section>
+
+<!-- Public JS -->
+<script type="text/javascript" src="/js/public.js"></script>
+
 <script type="text/template" id="li_item">
     <li class="item-timeline item-timeline-{id}">
         <div class="buletan_icon" style="{buletan}"></div>
@@ -218,6 +222,18 @@
     </li>
     <li class="item-timeline"></li>
 </script>
+<script type="text/template" id="commnet_audit">
+    <li class="item-timeline highlight text-center">
+        <div class="buletan_icon" style="right:-7px; left: auto"></div>
+        <div class="inner-content">
+            <h2 class="text-info"><i class="fa fa-flag-checkered"></i></h2>
+            <h4>事件流待审核</h4>
+            <p class="text-muted">{daytime}</p>
+        </div>
+        <!-- /.inner-content -->
+    </li>
+    <li class="item-timeline"></li>
+</script>
 <!-- <div id="one1"></div>-->
 <!-- END SECTION -->
 <input type="hidden" name="title" value="<{$title}>">
@@ -225,6 +241,7 @@
 <input type="hidden" name="eid" value="<{$eid}>" id="eid">
 <input type="hidden" name="done_state" value="<{$done_state}>" id="done_state">
 <input type="hidden" name="end_time" value="<{$end_time}>" id="end_time">
+<input type="hidden" name="state" value="<{$state}>" id="state">
 <!--需要得到当前用户名与用户头像地址以及用户类型权限-->
 <input type="hidden" name="username" value="<{$username}>" id="username"/>
 <input type="hidden" name="useracter" value="<{$useracter}>" id="useracter"/>
@@ -240,7 +257,9 @@
     });
 
     function getLocalTime(nS) {
-        return new Date(parseInt(nS) * 1000).toLocaleString().replace(/:\d{1,2}$/,' ');
+//        return new Date(parseInt(nS) * 1000).toLocaleString().replace(/:\d{1,2}$/,' ');
+        //2017-01-09 更换时间显示格式 lx
+        return timeToDate(nS*1000);
     }
     //模板替换工具
     function formatTemplate(dta, tmpl) {
@@ -327,6 +346,19 @@
                     $(".item-timeline-"+value.id+"").height($(".item-timeline-"+value.id+"").height())//解决动态加载文档流问题
                     $(".item-timeline-"+value.id+"-flag").height($(".item-timeline-"+value.id+"").height());
                 });
+                //事件待处理操作
+                if( $("#state").val() == "未审核"){
+                    var comment_finish_tpl=$('script[id="commnet_audit"]').html();
+                    var commnetObj=new Object();
+                    if($("#end_time").val()!=''){
+                        commnetObj.daytime=getLocalTime($("#end_time").val());
+                    }else{
+                        commnetObj.daytime=="";
+                    }
+                    var strhtml=formatTemplate(commnetObj, comment_finish_tpl);//得到当前字符串
+                    $("#comment").prepend(strhtml);
+                }
+
                 //事件完成进行操作
                 if($("#done_state").val()==1){
                     var comment_finish_tpl=$('script[id="commnet_finish"]').html();
