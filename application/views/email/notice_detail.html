@@ -86,7 +86,7 @@
                         <li class="active">
                         	<a href="/common/show_emails?from=notice">
                             <i class=" fa fa-bullhorn"></i>
-                            指令下达
+                            指令系统
                             <span class="label label-danger pull-right notice_num"></span>
                           </a>
                         </li>
@@ -217,7 +217,7 @@
               if(data.length){
                 var str = '';
                 for ( var i = 0, len = data.length; i< len; i++){
-                    str += '<p><a href="/common/att_download?fid=' + data[i].id + '&id=' + email_id + '">'+ data[i].file_name+'</a></p>';
+                    str += '<p><a href="/common/att_download?fid=' + data[i].id + '&eid=' + email_id + '">'+ data[i].file_name+'</a></p>';
                 }
 
                 $('.attr_content').append(str);
@@ -294,7 +294,7 @@
             return;
         }
 
-        layer.confirm("你确定要回复么",function(){
+        layer.confirm("你确定要回复?",function(){
             $.ajax({
               url:"/common/response_notice",
               type:"post",
