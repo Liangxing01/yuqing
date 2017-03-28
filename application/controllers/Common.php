@@ -760,7 +760,7 @@ class Common extends MY_Controller
         //查询是否自己已回复
         $response = $this->common->get_my_response($eid);
 
-        $email_info = $this->common->rece_email_detail($eid);
+        $email_info = $this->common->rece_email_detail($eid,'notice');
 
         if($email_info == false){
             show_404();

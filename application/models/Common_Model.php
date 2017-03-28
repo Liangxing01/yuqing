@@ -751,8 +751,9 @@ class Common_Model extends CI_Model
     /**
      * 查看 收件箱 邮件
      * 参数：eid
+     *      type 邮件还是指令，指令只有 回复才更新 阅读状态
      */
-    public function rece_email_detail($eid){
+    public function rece_email_detail($eid,$type = 'email'){
         //判断邮件是否属于这个人或他的单位
         $uid  = $this->session->userdata('uid');
         $gids = $this->session->userdata('gid');
@@ -790,12 +791,14 @@ class Common_Model extends CI_Model
                 'attID'  => $attIDs
             );
 
-            //更新阅读状态为已读
-            $update_state = array(
-                'state' => 1
-            );
-            $this->db->where('email_id',$eid);
-            $this->db->update('email_user',$update_state);
+            if($type == 'email'){
+                //更新阅读状态为已读
+                $update_state = array(
+                    'state' => 1
+                );
+                $this->db->where('email_id',$eid);
+                $this->db->update('email_user',$update_state);
+            }
 
             return $res;
 
