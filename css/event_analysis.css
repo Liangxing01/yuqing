@@ -1,0 +1,58 @@
+
+/*舆情分析模块css start*/
+.m-time-main{ margin-top: 200px; margin-bottom: 200px;	}
+.u-point{
+	border: 2px solid #fff;
+	padding: 4px;
+	display: inline-block;
+	border-radius: 50%;
+	background-color: #000;
+}
+.m-time-border{
+	border: 1px dotted #333;
+	width: 0;
+	height: 100px;
+	margin: 0 auto;
+}	
+.m-time-start, .m-time-end, .m-time-point{ text-align: center;}
+.m-detail-identification, .m-detail-identification-right{ position: absolute; }
+.m-detail-identification span, .m-detail-identification-right span{
+	display: inline-block;
+	width: 0;
+	height: 0;
+	border: 10px solid transparent;
+}
+.m-detail-identification span{ border-right-color: #000;}
+.m-detail-identification-right span{ border-left-color: #000; margin-left: -20px; }
+.m-time-point{ position: relative; }
+.m-detail-box{ position: absolute; left: 50%; top: 0}
+.m-detail-content{ 
+	width: 200px; 
+	height: 120px; 
+	border: 2px solid #fff;
+	border-radius: 8px;
+	position: absolute;
+	margin-top: -53px;
+	margin-left: 22px;
+	overflow-y: auto;
+}
+.m-detail-content-right{
+	width: 200px; 
+	height: 120px; 
+	border: 2px solid #fff;
+	border-radius: 8px;
+	position: absolute;
+	margin-top: -53px;
+	margin-left: -225px;
+	overflow-y: auto;
+}
+.m-detail-title, .m-detail-title-right{
+	display: inline-block;
+	position: absolute;
+	width: 200px;			
+}
+.m-detail-title{ margin-left: -150px;  }
+.m-detail-title-right{ margin-left: -50px; }
+
+.m-detail-content{}
+/*舆情分析模块css end */
