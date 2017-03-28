@@ -889,8 +889,39 @@ class Designate extends MY_controller
     {
         $this->load->model('Common_Model', 'common');
         $query_data = $this->input->post();
-        $email_info = $this->common->get_send_emails_info($query_data, 'email');
+        $email_info = $this->common->get_send_emails_info($query_data,'notice');
         echo json_encode($email_info);
+    }
+
+    /**
+     * 显示 指令详情
+     * 角色 发送者
+     */
+    public function show_notice_detail(){
+        $this->load->model("Common_Model", "common");
+        $eid = $this->input->get('id');
+
+        if (!isset($eid) || $eid == null || $eid == "") {
+            show_404();
+        }
+
+
+        $email_info = $this->common->send_email_detail($eid);
+
+
+        if($email_info == false){
+            show_404();
+        }else{
+            $this->assign('info',$email_info['info']);
+            $this->assign('attID', implode(',',$email_info['attID']));
+
+        }
+
+        $this->assign("role",'sender');
+        $this->assign("has_res",0);
+        $this->assign("active_title", "email_sys");
+        $this->assign("active_parent", "file_parent");
+        $this->all_display("email/notice_detail.html");
     }
 
     /**

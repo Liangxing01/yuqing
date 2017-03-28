@@ -67,8 +67,8 @@ class API_Common_Model extends CI_Model
         $data['manager'] = array(
             // 未确认信息
             'unconfirmed_info_num' => $this->db->select('id')->from('info')->where(array('state <' => 2, 'state >' => -1))->get()->num_rows(),
-            // 全部信息(已确认 不重复)
-            'all_info_num' => $this->db->select('id')->from('info')->where(array('state' => 2, 'duplicate' => 0))->get()->num_rows(),
+            // 全部事件数
+            'all_info_num' => $this->db->select('id')->from('event')->get()->num_rows(),
             // 未审核
             'unverified_event_num' => $this->db->select('id')->from('event')->where('state', '未审核')->get()->num_rows(),
             // 已完成
@@ -90,7 +90,7 @@ class API_Common_Model extends CI_Model
             'done_num' => $done_num, // 已完成
             'total_num' => $unread_num + $doing_num + $done_num // 总任务
         );
-        // 消息列表 TODO 显示未处理 非垃圾信息
+        // 消息列表
         if ($gid != "") {
             $time = strtotime(date('Y-m-d')); // 查询时间为当天00:00 - 24:00
             $group_id = explode(",", $gid);

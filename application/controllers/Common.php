@@ -454,8 +454,10 @@ class Common extends MY_Controller
         $attIDs = $this->input->post('att_ids');
         $eid = $this->input->post('eid');
         $att_info = $this->common->get_att_by_id($attIDs,$eid);
-
+    
         echo json_encode($att_info);
+        
+        
     }
 
     /**
@@ -745,13 +747,18 @@ class Common extends MY_Controller
 
     /**
      * 显示 指令详情
+     * 显示 回复框，如果有回复则显示自己的回复内容
      */
     public function show_notice_detail(){
         $this->load->model("Common_Model", "common");
         $eid = $this->input->get('id');
+
         if (!isset($eid) || $eid == null || $eid == "") {
             show_404();
         }
+
+        //查询是否自己已回复
+        $response = $this->common->get_my_response($eid);
 
         $email_info = $this->common->rece_email_detail($eid);
 
@@ -762,10 +769,26 @@ class Common extends MY_Controller
             $this->assign('attID', implode(',',$email_info['attID']));
 
         }
+        if($response['response_text'] == ''){
+            $this->assign("has_res",0);
+        }else{
+            $this->assign("has_res",1);
+        }
 
+        $this->assign("role",'receiver');
         $this->assign("active_title", "email_sys");
         $this->assign("active_parent", "file_parent");
         $this->all_display("email/notice_detail.html");
+    }
+
+    /**
+     * 接口：获取自己的回复
+     */
+    public function get_my_res(){
+        $this->load->model("Common_Model", "common");
+        $eid = $this->input->get('id');
+        $my_res = $this->common->get_my_response($eid);
+        echo json_encode($my_res);
     }
 
     /**
@@ -776,6 +799,17 @@ class Common extends MY_Controller
         $num = $this->common->get_unread_num('notice');
         echo json_encode(array(
             'unread_num' => $num
+        ));
+    }
+
+    /**
+     * 接口：获取 邮件 指令 总共未读个数
+     */
+    public function get_all_unread_num(){
+        $this->load->model('Common_Model','common');
+        $num = $this->common->get_all_unread_num();
+        echo json_encode(array(
+            'all_unread_num' => $num
         ));
     }
 

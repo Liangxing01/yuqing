@@ -37,6 +37,8 @@
        top:0;
        left:0;
     }
+
+    .m-notice-sender{ margin-top: 20px }
     
     .col-md-12{ border-top: 1px solid #dddddd;}
     .heading-inbox h3{text-align: center; color: #444444;}
@@ -76,21 +78,25 @@
 					 <!-- INBOX NAV -->
                      <ul class="inbox-nav inbox-divider">
                         <li>
-                           <a href="/common/show_emails"><i class="fa fa-inbox"></i> 收件箱 <span class="label label-danger pull-right rec_num"></span></a>
+                           <a href="/common/show_emails"><i class="fa fa-inbox"></i> 收件箱 </a>
                         </li>
                         <li>
                            <a href="/common/show_emails?from=send"><i class="fa fa-envelope-o"></i> 发件箱</a>
                         </li>
                         <li class="active">
-                        	<a href=""><i class=" fa fa-trash-o"></i> 指令下达</a>
+                        	<a href="/common/show_emails?from=notice">
+                            <i class=" fa fa-bullhorn"></i>
+                            指令系统
+                            <span class="label label-danger pull-right notice_num"></span>
+                          </a>
                         </li>
                      </ul>
                   </aside>
                   
                   
-				  <aside class="lg-side">
+				    <aside class="lg-side">
                      <div class="inbox-head">
-                        <h3>重庆市互联网办公室通知</h3>
+                        <h3><{$info['title']}></h3>
                         <form class="pull-right position" action="#">
                            <div class="input-append">
                               <input type="text" placeholder="搜索你的邮件" class="sr-input">
@@ -101,17 +107,16 @@
                      <div class="inbox-body" style="min-height: 600px;">
                         <div class="heading-inbox row">
                         	
-                        	<h3>两会期间网上重大主题宣传总数据统计的通知	</h3>
+                        	<h3><{$info['title']}>	</h3>
                         	
-                        	<div class="col-md-12">
+                        	<div class="col-md-12 m-receive-user">
                         		<div class="col-md-2">收件人：</div>
-                        		<div class="col-md-10">某某某</div>
+                        		<div class="col-md-10"><{$name}></div>
                         	</div>
                         	<div class="col-md-12">
                         		<div class="col-md-2">内容：</div>
-                        		<div class="col-md-10">
-                        			<P>及肯德基叽叽叽叽军军军军军军军军军叽叽叽叽军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军叽叽叽叽军军军军军军军军军军军军</P>
-                        			<P>及肯德基叽叽叽叽军军军军军军军军军叽叽叽叽军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军军叽叽叽叽军军军军军军军军军军军军</P>
+                        		<div class="col-md-10" style="min-height: 180px; word-wrap: break-word;">
+                        		  <{$info['body']}>
                         		</div>
                         	</div>
                         	<div class="col-md-12">
@@ -120,26 +125,51 @@
                         	</div>
                         	<div class="col-md-12">
                         		<div class="col-md-2">附件：</div>
-                        		<div class="col-md-10"><a href=""></a></div>
+                        		<div class="col-md-10 attr_content">
+                                 
+                            </div>
                         	</div>
-                        	<div class="col-md-12">
-                        		<div class="col-md-2">备注：</div>
-                        		<div class="col-md-10"><i>两会期间网上重大主题宣传总结数据统计表（附件）.xlsx</i></div>
-                        	</div>
+                        	
                         	<div class="col-md-12">
                         		<div class="col-md-2">下发时间：</div>
-                        		<div class="col-md-10">2017-4-22&nbsp;&nbsp;22:32</div>
+                        		<div class="col-md-10"><{$info['time']}></div>
                         	</div>
                         	<div class="col-md-12">
                         		<div class="col-md-2">上级下发人员：</div>
-                        		<div class="col-md-10">网信办值班1</div>
+                        		<div class="col-md-10"><{$info['sender_name']}></div>
                         	</div>
-                        	<div class="col-md-12">
+                        	<div class="col-md-12 m-notice-response">
                         		<div class="input-group detail_reply">
-								  <textarea type="text" rows="3" class="form-control" placeholder="回复内容..." aria-describedby="basic-addon2"></textarea>
-								  <span class="input-group-addon btn-info" id="basic-addon2">回复</span>
-								</div>
+    							             <textarea type="text" rows="3" class="form-control notice_text" placeholder="回复内容..." aria-describedby="basic-addon2"></textarea>
+    							             <span class="input-group-addon btn-info" id="basic-addon2">回复</span>
+								            </div>
                         	</div>
+                          <div class="col-md-12 m-notice-sender" style="border: 0">
+                              <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                      <td><{$name}></td>
+                                      <td class="m-notice-sender-contet"></td>
+                                      <td class="m-notice-sender-time"></td>
+                                    </tr>
+                                </tbody>
+                              </table>       
+                          </div>
+                          <div class="col-md-12 m-sender-content" style="border: 0">
+                              <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>姓名</th>
+                                        <th>单位</th>
+                                        <th>回复内容</th>
+                                        <th>回复时间</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    
+                                </tbody>
+                              </table>       
+                          </div>
                         </div>			
                      </div>
                   </aside>
@@ -147,5 +177,144 @@
             </section>
 			<!-- END WRAPPER  -->
          </section>
-<script language="javascript" src="/js/common_email.js"></script>
+<script type="text/javascript" src="/js/public.js"></script>
+<script type="text/javascript">
+
+    $(function(){
+       get_unread_notice();
+       get_attachment();
+       isSendNotice();
+    })
+  
+    //获取未读下达指令
+   function get_unread_notice(){
+      $.ajax({
+          url: "/common/get_unread_notice_num",
+          type: "get",
+          dataType: "json",
+          success: function(data){
+              if(data.unread_num){
+                $('.notice_num').html(data.unread_num)
+              }
+          }
+      })
+   }
+
+   //获取附件
+   function get_attachment(){
+        var num = window.location.href.indexOf('?id=');
+        var email_id = window.location.href.substr(num+4);   //附件id
+        var att_id = '<{$attID}>';
+        $.ajax({
+            url:'/common/get_att_info',
+            type:'POST',
+            data:{
+                att_ids:att_id,
+                eid:email_id
+            },
+            dataType:'json',
+            success:function(data){
+              if(data.length){
+                var str = '';
+                for ( var i = 0, len = data.length; i< len; i++){
+                    str += '<p><a href="/common/att_download?fid=' + data[i].id + '&eid=' + email_id + '">'+ data[i].file_name+'</a></p>';
+                }
+
+                $('.attr_content').append(str);
+              }
+                
+            }
+        })
+
+    }
+
+    //判断是否是指令分送
+    function isSendNotice(){
+        var num = window.location.href.indexOf('?id=');
+        var email_id = window.location.href.substr(num+4);
+        var role = "<{$role}>";
+        if( role == "sender" ){
+          $('.m-receive-user').hide();
+          $.ajax({
+            url: '/common/get_response_list?notice_id=' + email_id,
+            type: "get",
+            dataType:'json',
+            success:function(data){
+                $('.m-notice-sender').hide();
+                $('.m-notice-response').hide();
+                if( data.length){
+                   var str = '';
+                   for( var i = 0, len = data.length; i < len; i++){
+                      str += '<tr>';
+                      str += '<td>'+ data[i].username + '</td>';
+                      str += '<td>'+ data[i].group_name + '</td>';
+                      str += '<td>'+ data[i].response_text + '</td>';
+                      str += '<td>'+ timeToDate(data[i].response_time*1000) + '</td>';
+                      str += '</tr>';
+                   }
+                }else{
+                    var str = "<tr><td style='text-align:center' colspan='4'>暂无回复内容</td></tr>";
+                }
+                $('.m-sender-content tbody').append(str);
+            }
+          })
+        }else if( role == "receiver"){
+          $('.m-sender-content').hide();
+          var num = window.location.href.indexOf('?id=');
+          var email_id = window.location.href.substr(num+4);
+          var hasRes = <{$has_res}>;
+          if( hasRes ){
+            $.ajax({
+                url: "/common/get_my_res?id="+email_id,
+                type: "get",
+                dataType: 'json',
+                success:function(data){
+                    if(data){
+                      $('.m-notice-response').hide();
+                      $('.m-notice-sender-contet').html(data.response_text);
+                      $('.m-notice-sender-time').html(timeToDate(data.response_time*1000));
+                    }
+                }
+            })
+          }else{
+            $('.m-notice-sender').hide();
+          }
+        }
+    }
+
+    //回复指令按钮功能函数
+    $('#basic-addon2').click(function(){
+        var num = window.location.href.indexOf('?id=');
+        var email_id = window.location.href.substr(num+4);
+        var res_text = $('.notice_text').val();
+
+        if( !res_text ){
+            layer.msg("回复内容不能为空！");
+            $('.notice_text').focus();
+            return;
+        }
+
+        layer.confirm("你确定要回复?",function(){
+            $.ajax({
+              url:"/common/response_notice",
+              type:"post",
+              dataType: "json",
+              data:{
+                res_text: res_text,
+                notice_id: email_id
+              },
+              success: function( data ){
+                  if(data.res){
+                    layer.msg("回复成功");
+                    window.location.reload();
+                  }else{
+                    layer.msg("回复失败")
+                  }
+              }
+          })
+        });
+
+        
+    })
+</script>
 

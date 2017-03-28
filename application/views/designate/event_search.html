@@ -44,9 +44,10 @@
                                 <label for="event_rank">等级:</label>
                                 <select class="form-control" name="type" id="event_rank">
                                     <option value="">&nbsp;</option>
-                                    <option value="一般">一般</option>
-                                    <option value="重要">重要</option>
-                                    <option value="紧急">紧急</option>
+                                    <option value="Ⅳ级网络诉求">Ⅳ级网络诉求</option> 
+                                    <option value="Ⅲ级一般负面">Ⅲ级一般负面</option> 
+                                    <option value="Ⅱ级重大舆情">Ⅱ级重大舆情</option> 
+                                    <option value="Ⅰ级特大舆情">Ⅰ级特大舆情</option> 
                                 </select>
                             </div>
                             <div class="col-md-2">
@@ -91,9 +92,10 @@
                     <div style="display: none; padding: 10px" id="edit_rank_form">
                         <label for="rank">事件等级:</label>
                         <select class="form-control" id="rank">
-                            <option value="一般">一般</option>
-                            <option value="重要">重要</option>
-                            <option value="紧急">紧急</option>
+                            <option value="Ⅳ级网络诉求">Ⅳ级网络诉求</option> 
+                            <option value="Ⅲ级一般负面">Ⅲ级一般负面</option> 
+                            <option value="Ⅱ级重大舆情">Ⅱ级重大舆情</option> 
+                            <option value="Ⅰ级特大舆情">Ⅰ级特大舆情</option> 
                         </select>
                         <!--<div style="margin-top: 5px">-->
                         <!--<button class="btn btn-info">确定</button>-->
@@ -231,14 +233,17 @@
                 "mRender": function (data, type, all) {
                     var id = all.id;
                     switch (data) {
-                        case '一般':
-                            return "<button onclick='edit_rank(" + id + ")' class='btn btn-primary btn-xs'>一般</button>";
+                        case 'Ⅳ级网络诉求':
+                            return "<button onclick='edit_rank(" + id + ")' class='btn btn-primary btn-xs'>Ⅳ级网络诉求</button>";
                             break;
-                        case '重要':
-                            return "<button onclick='edit_rank(" + id + ")' class='btn btn-warning btn-xs'>重要</button>";
+                        case 'Ⅲ级一般负面':
+                            return "<button onclick='edit_rank(" + id + ")' class='btn btn-info btn-xs'>Ⅲ级一般负面</button>";
                             break;
-                        case '紧急':
-                            return "<button onclick='edit_rank(" + id + ")' class='btn btn-danger btn-xs'>紧急</button>";
+                        case 'Ⅱ级重大舆情':
+                            return "<button onclick='edit_rank(" + id + ")' class='btn btn-warning btn-xs'>Ⅱ级重大舆情</button>";
+                            break;
+                        case 'Ⅰ级特大舆情':
+                            return "<button onclick='edit_rank(" + id + ")' class='btn btn-danger btn-xs'>Ⅰ级特大舆情</button>";
                             break;
                     }
 

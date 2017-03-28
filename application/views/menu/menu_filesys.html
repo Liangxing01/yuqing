@@ -4,9 +4,9 @@
         <i class="fa fa-file">
         </i>
         <span>
-                  文件/通知 系统
-                </span>
-
+            文件/指令 系统
+        </span>
+        <span class="label label-danger g-nav-filesys"></span>
     </a>
     <ul class="sub">
         <li id="email_sys">
@@ -26,7 +26,19 @@
             </a>
         </li>
         <{/if}>
-
-
     </ul>
 </li>
+<script type="text/javascript">
+    $(function(){
+        $.ajax({
+          url: "/common/get_all_unread_num",
+          type: "get",
+          dataType: "json",
+          success: function(data){
+              if(data.all_unread_num){
+                $('.g-nav-filesys').html(data.all_unread_num)
+              }
+          }
+        })
+    })
+</script>
