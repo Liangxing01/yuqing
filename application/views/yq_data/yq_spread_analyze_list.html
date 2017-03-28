@@ -1,0 +1,318 @@
+<link href="/assets/advanced-datatable/media/css/demo_page.css" rel="stylesheet">
+<link href="/assets/advanced-datatable/media/css/demo_table.css" rel="stylesheet">
+<!-- DATATABLE CSS -->
+<link rel="stylesheet" href="/assets/data-tables/DT_bootstrap.css">
+
+<!-- Common CSS -->
+<link rel="stylesheet" href="/css/common.css">
+
+<!-- BEGIN MAIN CONTENT -->
+<section id="main-content">
+    <section class="wrapper site-min-height">
+        <!-- BEGIN Table  -->
+        <div class="panel-body" style="display: none" id="info_is_handle_list">
+            <div class="adv-table">
+                <table class="display table table-bordered table-striped" id="info_is_handle_table">
+                    <thead>
+                    <tr>
+                        <th>编号</th>
+                        <th>标题</th>
+                        <th>来源</th>
+                        <th>类别</th>
+                        <th>上报人</th>
+                        <th class="hidden-phone">上报时间</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- END Table  -->
+        <!-- BEGIN ROW  -->
+        <div class="row">
+            <div class="col-lg-12">
+                <section class="panel">
+                    <header class="panel-heading">
+                        <span class="label label-primary">舆情传播分析</span>
+                           <span class="tools pull-right">
+                           <a href="javascript:;" title="刷新" class="fa fa-refresh"></a>
+                           </span>
+                    </header>
+                    <div class="panel-body">
+
+                        <div class="row">
+                            <div class="col-md-2">
+                                <button title="添加任务" class="btn btn-info" onclick="open_info_table();"><i
+                                        class="fa fa-pencil-square-o" aria-hidden="true"></i> 添加任务
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="adv-table">
+                            <table class="display table table-bordered table-striped" id="spread_task_table">
+                                <thead>
+                                <tr>
+                                    <!--<th>编号</th>-->
+                                    <th>标题</th>
+                                    <th>创建时间</th>
+                                    <th>状态</th>
+                                    <th>操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+        <!-- END ROW  -->
+    </section>
+</section>
+<!-- END SECTION -->
+
+<!-- DataTable -->
+<script language="javascript" src="/assets/data-tables/jquery.dataTables.min.js"></script>
+<script src="/assets/data-tables/dataTables.bootstrap.min.js"></script>
+<!-- Public Function -->
+<script language="javascript" src="/js/public.js"></script>
+
+<!-- Page Script -->
+<script language="javascript">
+    $(function () {
+        //DataTable 表格
+        $('#info_is_handle_table').dataTable({
+            "bPaginate": true,
+            "bProcessing": false,                //是否显示正在处理提示信息。
+            "bLengthChange": false,
+            "bFilter": true,                     //是否使用内置的过滤功能。
+            "bSort": true,
+            "bInfo": true,
+            "bAutoWidth": false,
+            "bStateSave": true,
+            "iDisplayLength": 5,                //每页显示5条数据
+            "aaSorting": [[5, "desc"]],          //默认排序 第6列
+
+            "bServerSide": true,
+            "sAjaxSource": "/designate/info_search_data",
+            "sServerMethod": "POST",
+
+            "fnServerParams": function (aoData) { //发送额外参数
+                aoData.push({"name": "state", "value": "已确认"});
+                aoData.push({"name": "duplicate", "value": "不重复"});
+            },
+
+            "aoColumns": [
+                {
+                    "sTitle": "编号",
+                    "mData": "id",
+                    'sClass': "text-center",
+                    'orderable': false
+                },
+                {
+                    "sTitle": "标题",
+                    "mData": "title",
+                    'sClass': "text-center",
+                    'orderable': false
+                },
+                {
+                    "sTitle": "来源",
+                    "mData": "source",
+                    'sClass': "text-center",
+                    'orderable': false
+                },
+                {
+                    "sTitle": "类别",
+                    "mData": "type",
+                    'sClass': "text-center",
+                    'orderable': false
+                },
+                {
+                    "sTitle": "上报人",
+                    "mData": "publisher",
+                    'sClass': "text-center",
+                    'orderable': false
+                },
+                {
+                    "sTitle": "上报时间",
+                    "mData": "time",
+                    'sClass': "text-center",
+                    "mRender": function (data) {
+                        return timeToDate(data * 1000);
+                    }
+                },
+                {
+                    "sTitle": "操作",
+                    "mData": "id",
+                    'sClass': "text-center",
+                    'orderable': false,
+                    "mRender": function (data, type, all) {
+                        return "<a title='查看' target='_blank' href='/designate/info_detail?id=" + data + " ' class='btn btn-info btn-xs'>查看</a>&nbsp;" +
+                                "<a title='创建' href='javascript:;' onclick='add_task(" + all.id + ",\"" + encodeURI(all.title) + "\")' class='btn btn-success btn-xs'>创建</a>";
+                    }
+                }
+            ],
+
+            "oLanguage": {
+                "sLengthMenu": "每页显示 _MENU_ 条记录",
+                "sInfo": "从 _START_ 到 _END_ /共 _TOTAL_ 条数据",
+                "sInfoEmpty": "没有数据",
+                "sInfoFiltered": "(从 _MAX_ 条数据中检索)",
+                "oPaginate": {
+                    "sFirst": "首页",
+                    "sPrevious": "前一页",
+                    "sNext": "后一页",
+                    "sLast": "尾页"
+                },
+                "sZeroRecords": "暂无数据",
+                "sSearch": "搜索:"
+            }
+
+        });
+        $('#spread_task_table').dataTable({
+
+            "searching": false,
+            "bPaginate": true,
+            "bProcessing": false,                //是否显示正在处理提示信息。
+            "bLengthChange": true,
+            "bFilter": true,                     //是否使用内置的过滤功能。
+            "bSort": true,
+            "bInfo": true,
+            "bAutoWidth": false,
+            "bStateSave": true,
+            "iDisplayLength": 10,                //每页显示10条数据
+            "aLengthMenu": [10, 25, 50, 100],
+            "aaSorting": [2, "desc"],          //默认排序 第3列
+
+            "bServerSide": true,
+            "sAjaxSource": "/yuqing/get_analyze_task_list",
+            "sServerMethod": "POST",
+
+            "aoColumns": [
+//                {
+//                    "sTitle": "编号",
+//                    "mData": "id",
+//                    'sClass': "text-center",
+//                    'orderable': false
+//                },
+                {
+                    "sTitle": "标题",
+                    "mData": "title",
+                    'sClass': "text-center",
+                    'orderable': false
+                },
+                {
+                    "sTitle": "创建时间",
+                    "mData": "create_time",
+                    'sClass': "text-center",
+                    "mRender": function (data) {
+                        return timeToDate(data * 1000);
+                    }
+                },
+                {
+                    "sTitle": "状态",
+                    "mData": "state",
+                    'sClass': "text-center",
+                    'orderable': false
+                },
+                {
+                    "sTitle": "操作",
+                    "mData": "_id",
+                    'sClass': "text-center",
+                    'orderable': false,
+                    "mRender": function (data) {
+                        return "<a title='查看' href='javascript:void(0);' onclick='show_detail(\"" + data.$id + "\")' class='btn btn-info btn-xs'>查看</a>&nbsp;" +
+                                "<a title='改派' href='javascript:void(0);' onclick='delete_task(\"" + data.$id + "\")' class='btn btn-danger btn-xs'>删除</a>&nbsp;";
+                    }
+                }
+            ],
+
+            "oLanguage": {
+                "sLengthMenu": "每页显示 _MENU_ 条记录",
+                "sInfo": "从 _START_ 到 _END_ /共 _TOTAL_ 条数据",
+                "sInfoEmpty": "没有数据",
+                "sInfoFiltered": "(从 _MAX_ 条数据中检索)",
+                "oPaginate": {
+                    "sFirst": "首页",
+                    "sPrevious": "前一页",
+                    "sNext": "后一页",
+                    "sLast": "尾页"
+                },
+                "sZeroRecords": "暂无数据",
+                "sSearch": "关键字:"
+            }
+
+        });
+    });
+
+    //刷新表格
+    jQuery(".panel .tools .fa-refresh").click(function () {
+        $("#spread_task_table").DataTable().ajax.reload(null, false);
+    });
+
+    //弹出信息表
+    function open_info_table() {
+        $("#info_is_handle_table").DataTable().ajax.reload(null, false);
+        layer.open({
+            type: 1,
+            title: "已确认信息列表",
+            closeBtn: 1,
+            shadeClose: true,
+            area: "800px",
+            content: $('#info_is_handle_list')
+        });
+    }
+
+    //创建任务
+    function add_task(info_id, title) {
+        var index = layer.load(2);
+        $.ajax({
+            url: "/yuqing/create_spread_task",
+            method: "post",
+            data: {"info_id": info_id},
+            success: function (data) {
+                layer.close(index);
+                if (data == 1) {
+                    layer.msg("创建成功", {time: 1000});
+                    $("#spread_task_table").DataTable().ajax.reload(null, false); //刷新表格
+                } else {
+                    layer.msg('创建失败', {anim: 6});
+                }
+            }
+        });
+    }
+
+    //查看任务详情
+    function show_detail(id) {
+        alert(id);
+    }
+
+    //删除任务
+    function delete_task(id) {
+        layer.confirm('删除后不可恢复', {icon: 3, title: '提示'}, function (index) {
+            var layer_index = layer.load(2);
+            $.ajax({
+                type: "POST",
+                data: {"task_id": id},
+                url: "/yuqing/delete_spread_task",
+                success: function (data) {
+                    layer.close(layer_index);
+                    if (data == "0") {
+                        layer.msg("删除成功", {anim: 0, time: 1000});
+                        $("#spread_task_table").DataTable().ajax.reload(null, false); //刷新表格
+                    } else if (data == "2") {
+                        layer.msg("任务运行中,请稍后再试", {anim: 6});
+                        $("#spread_task_table").DataTable().ajax.reload(null, false); //刷新表格
+                    } else {
+                        layer.msg("删除失败", {anim: 6});
+                    }
+                }
+            });
+            layer.close(index);
+        });
+    }
+
+</script>
