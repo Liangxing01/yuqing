@@ -72,7 +72,7 @@
             </div>
         </div>
         <!-- END ROW  -->
-        <div class="col-lg-12 col-md-6" style="display: none" id="task_result_list">
+        <div class="col-lg-12 col-md-6" style="display: none;max-height: 500px" id="task_result_list">
             <section class="m-time-main">
             </section>
         </div>
@@ -293,7 +293,7 @@
 
     //查看任务详情
     function show_detail(task_id, state) {
-        if(state != "finish"){
+        if (state != "finish") {
             layer.msg('任务运行中,请稍后查看。', {anim: 6, time: 1000});
             return false;
         }
@@ -314,53 +314,56 @@
 
                     data.result.sort(compareTime('pubdate')); //将数据按时间戳排序
 
-                    for( var i = 0; i < len; i++){
+                    for (var i = 0; i < len; i++) {
                         var obj = data.result[i];
-                        
-                        if( i == 0 ){
+
+                        if (i == 0) {
                             var str = '';
                             str += '<div class="m-propagation-content">';
-                            str += '<h4 class="m-propagation-time">'+ newTimeToDate(obj.pubdate*1000)[2] + '</h4>';
-                            str += '<ul class="m-propagation-item count' + count + '">'
+                            str += '<h4 class="m-propagation-time">' + newTimeToDate(obj.pubdate * 1000)[2] + '</h4>';
+                            str += '<ul class="m-propagation-item count' + count + '">';
                             str += '<li>';
-                            str += '<span class="m-propagation-itemPoint"></span>';
-                            str += '<span class="m-propagation-itemTime label label-danger">' + newTimeToDate(obj.pubdate*1000)[0] + '</span>';
+//                            str += '<span class="m-propagation-itemPoint"></span>';
+                            str += '<span class="m-propagation-itemTime label label-danger">' + newTimeToDate(obj.pubdate * 1000)[0] + '</span>';
                             str += '<span class="m-propagation-itemSource label label-info">' + obj.source + '</span>';
-                            str += '<span class="m-propagation-itemTitle">' + obj.title + '</span>';
+                            str += '<span class="m-propagation-itemSource label label-primary">' + obj.author + '</span>';
+                            str += '<span class="m-propagation-itemTitle"><a title="查看详情" target="_blank" href="/yuqing/yq_detail?' + obj.info_id.$id + '">' + obj.title + '</a></span>';
                             str += '</li>';
-                            str +='</ul>';
+                            str += '</ul>';
                             str += '</div>';
                             $('.m-time-main').append(str);
-                        }else{
-                            var odd = data.result[i-1];
-                            if ( newTimeToDate(obj.pubdate*1000)[1] == newTimeToDate(odd.pubdate*1000)[1] ){
+                        } else {
+                            var odd = data.result[i - 1];
+                            if (newTimeToDate(obj.pubdate * 1000)[1] == newTimeToDate(odd.pubdate * 1000)[1]) {
                                 var strItem = '<li>';
-                                    strItem += '<span class="m-propagation-itemPoint"></span>';
-                                    strItem += '<span class="m-propagation-itemTime label label-danger">' + newTimeToDate(obj.pubdate*1000)[0] + '</span>';
-                                    strItem += '<span class="m-propagation-itemSource label label-info">' + obj.source + '</span>';
-                                    strItem += '<span class="m-propagation-itemTitle">' + obj.title + '</span>';
-                                    strItem += '</li>';
-                                $('.m-propagation-item.count'+count).append(strItem);
-                            }else{
+//                                strItem += '<span class="m-propagation-itemPoint"></span>';
+                                strItem += '<span class="m-propagation-itemTime label label-danger">' + newTimeToDate(obj.pubdate * 1000)[0] + '</span>';
+                                strItem += '<span class="m-propagation-itemSource label label-info">' + obj.source + '</span>';
+                                strItem += '<span class="m-propagation-itemSource label label-primary">' + obj.author + '</span>';
+                                strItem += '<span class="m-propagation-itemTitle"><a title="查看详情" target="_blank" href="/yuqing/yq_detail?' + obj.info_id.$id + '">' + obj.title + '</a></span>';
+                                strItem += '</li>';
+                                $('.m-propagation-item.count' + count).append(strItem);
+                            } else {
                                 count++;
                                 var str = '';
-                                    str += '<div class="m-propagation-content">';
-                                    str += '<h4 class="m-propagation-time">'+ newTimeToDate(obj.pubdate*1000)[2] + '</h4>';
-                                    str += '<ul class="m-propagation-item count' + count + '">'
-                                    str += '<li>';
-                                    str += '<span class="m-propagation-itemPoint"></span>';
-                                    str += '<span class="m-propagation-itemTime label label-danger">' + newTimeToDate(obj.pubdate*1000)[0] + '</span>';
-                                    str += '<span class="m-propagation-itemSource label label-info">' + obj.source + '</span>';
-                                    str += '<span class="m-propagation-itemTitle">' + obj.title + '</span>';
-                                    str += '</li>';
-                                    str +='</ul>';
-                                    str += '</div>';
-                                    $('.m-time-main').append(str);
+                                str += '<div class="m-propagation-content">';
+                                str += '<h4 class="m-propagation-time">' + newTimeToDate(obj.pubdate * 1000)[2] + '</h4>';
+                                str += '<ul class="m-propagation-item count' + count + '">';
+                                str += '<li>';
+//                                str += '<span class="m-propagation-itemPoint"></span>';
+                                str += '<span class="m-propagation-itemTime label label-danger">' + newTimeToDate(obj.pubdate * 1000)[0] + '</span>';
+                                str += '<span class="m-propagation-itemSource label label-info">' + obj.source + '</span>';
+                                str += '<span class="m-propagation-itemSource label label-primary">' + obj.author + '</span>';
+                                str += '<span class="m-propagation-itemTitle"><a title="查看详情" target="_blank" href="/yuqing/yq_detail?' + obj.info_id.$id + '">' + obj.title + '</a></span>';
+                                str += '</li>';
+                                str += '</ul>';
+                                str += '</div>';
+                                $('.m-time-main').append(str);
                             }
                         }
                     }
-                    
-
+                } else {
+                    $("#task_result_list section").html("<div style='text-align: center;line-height: 40px'>暂无记录</div>");
                 }
 
                 //打开结果列表
@@ -369,7 +372,6 @@
                     title: "舆情传播分析结果",
                     closeBtn: 1,
                     shadeClose: true,
-                    area: "800px",
                     content: $('#task_result_list')
                 });
             }
@@ -419,11 +421,11 @@
         var hh = now.getHours();         //时
         var ii = now.getMinutes();       //分
         var ss = now.getSeconds();       //秒
-        var clock = '';
-        var clock2 = yy + '-';
-        if (mm < 10) clock += "0";
+        var clock = "";
+        var clock2 = yy + "-";
+        if (mm < 10) clock2 += "0";
         clock2 += mm + "-";
-        if (dd < 10) clock += "0";
+        if (dd < 10) clock2 += "0";
         clock2 += dd + " ";
         if (hh < 10) clock += "0";
         clock += hh + ":";
