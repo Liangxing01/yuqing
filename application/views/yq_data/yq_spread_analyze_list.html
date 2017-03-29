@@ -306,60 +306,60 @@
             dataType: 'json',
             success: function (data) {
                 $("#task_result_list section").html("");
-                var len = data.result.length,
-                        contentNum = 0;
+
+                var len = data.result.length;
+                var count = 0;
 
                 if (len !== 0) {
 
                     data.result.sort(compareTime('pubdate')); //将数据按时间戳排序
 
-                    for (var i = 0; i < len; i++) {
+                    for( var i = 0; i < len; i++){
                         var obj = data.result[i];
-                        var str = '';
-                        str += '<div class="m-time-point">';
-                        str += '<span class="u-point"></span>';
-                        str += '<div class="m-detail-box">';
-                        if (i == 0) {
-                            var classStyle = (contentNum % 2 == 0 ? '' : '-right');
-                            str += '<div class="m-detail-title' + classStyle + '">' + newTimeToDate(obj.pubdate * 1000)[2] + '</div>';
-                            str += '<div class="m-detail-identification' + classStyle + '"><span></span></div>';
-                            str += '<div class="m-detail-content' + classStyle + ' countNum' + contentNum + '">';
-                            str += '<ul><li>';
-                            str += '<h4>' + obj.source + '</h4>';
-                            str += '<p>' + obj.title + '</p>';
-                            str += '<p>' + newTimeToDate(obj.pubdate * 1000)[0] + '</p>';
-                            str += '</li></ul>';
-                            str += '</div></div></div>';
-                            str += '<div class="m-time-border"></div>';
+                        
+                        if( i == 0 ){
+                            var str = '';
+                            str += '<div class="m-propagation-content">';
+                            str += '<h4 class="m-propagation-time">'+ newTimeToDate(obj.pubdate*1000)[2] + '</h4>';
+                            str += '<ul class="m-propagation-item count' + count + '">'
+                            str += '<li>';
+                            str += '<span class="m-propagation-itemPoint"></span>';
+                            str += '<span class="m-propagation-itemTime label label-danger">' + newTimeToDate(obj.pubdate*1000)[0] + '</span>';
+                            str += '<span class="m-propagation-itemSource label label-info">' + obj.source + '</span>';
+                            str += '<span class="m-propagation-itemTitle">' + obj.title + '</span>';
+                            str += '</li>';
+                            str +='</ul>';
+                            str += '</div>';
                             $('.m-time-main').append(str);
-                        } else {
-                            var old = data.result[i - 1];
-                            if (newTimeToDate(obj.pubdate * 1000)[1] == newTimeToDate(old.pubdate * 1000)[1]) {
-                                var strList = '<li>';
-                                strList += '<h4>' + obj.source + '</h4>';
-                                strList += '<p>' + obj.title + '</p>';
-                                strList += '<p>' + newTimeToDate(obj.pubdate * 1000)[0] + '</p>';
-
-                                $('.countNum' + contentNum + ' ul').append(strList);
-                            } else {
-                                contentNum++;
-                                var classStyle = (contentNum % 2 == 0 ? '' : '-right');
-                                str += '<div class="m-detail-title' + classStyle + '">' + newTimeToDate(obj.pubdate * 1000)[2] + '</div>';
-                                str += '<div class="m-detail-identification' + classStyle + '"><span></span></div>';
-                                str += '<div class="m-detail-content' + classStyle + ' countNum' + contentNum + '">';
-                                str += '<ul><li>';
-                                str += '<h4>' + obj.source + '</h4>';
-                                str += '<p>' + obj.title + '</p>';
-                                str += '<p>' + newTimeToDate(obj.pubdate * 1000)[0] + '</p>';
-                                str += '</li></ul>';
-                                str += '</div></div></div>';
-                                str += '<div class="m-time-border"></div>';
-                                $('.m-time-main').append(str);
+                        }else{
+                            var odd = data.result[i-1];
+                            if ( newTimeToDate(obj.pubdate*1000)[1] == newTimeToDate(odd.pubdate*1000)[1] ){
+                                var strItem = '<li>';
+                                    strItem += '<span class="m-propagation-itemPoint"></span>';
+                                    strItem += '<span class="m-propagation-itemTime label label-danger">' + newTimeToDate(obj.pubdate*1000)[0] + '</span>';
+                                    strItem += '<span class="m-propagation-itemSource label label-info">' + obj.source + '</span>';
+                                    strItem += '<span class="m-propagation-itemTitle">' + obj.title + '</span>';
+                                    strItem += '</li>';
+                                $('.m-propagation-item.count'+count).append(strItem);
+                            }else{
+                                count++;
+                                var str = '';
+                                    str += '<div class="m-propagation-content">';
+                                    str += '<h4 class="m-propagation-time">'+ newTimeToDate(obj.pubdate*1000)[2] + '</h4>';
+                                    str += '<ul class="m-propagation-item count' + count + '">'
+                                    str += '<li>';
+                                    str += '<span class="m-propagation-itemPoint"></span>';
+                                    str += '<span class="m-propagation-itemTime label label-danger">' + newTimeToDate(obj.pubdate*1000)[0] + '</span>';
+                                    str += '<span class="m-propagation-itemSource label label-info">' + obj.source + '</span>';
+                                    str += '<span class="m-propagation-itemTitle">' + obj.title + '</span>';
+                                    str += '</li>';
+                                    str +='</ul>';
+                                    str += '</div>';
+                                    $('.m-time-main').append(str);
                             }
                         }
                     }
-
-                    $('.m-time-border').last().remove(); //去掉最后的虚线
+                    
 
                 }
 
@@ -419,13 +419,11 @@
         var hh = now.getHours();         //时
         var ii = now.getMinutes();       //分
         var ss = now.getSeconds();       //秒
-        var clock = yy + "-";
+        var clock = '';
         var clock2 = yy + '-';
         if (mm < 10) clock += "0";
-        clock += mm + "-";
         clock2 += mm + "-";
         if (dd < 10) clock += "0";
-        clock += dd + " ";
         clock2 += dd + " ";
         if (hh < 10) clock += "0";
         clock += hh + ":";
