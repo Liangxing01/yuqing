@@ -414,4 +414,18 @@ class Yuqing extends MY_Controller
         echo $result;
     }
 
+
+    /**
+     * 查询 舆情分析结果
+     * POST: task_id: 任务id
+     */
+    public function get_task_result()
+    {
+        header("Access-Control-Allow-Origin: *");
+        $this->load->model("Analyze_Model", "analyze");
+        $task_id = $this->input->post("task_id");
+        $result = $this->analyze->get_task_result($task_id);
+        echo json_encode($result);
+    }
+
 }

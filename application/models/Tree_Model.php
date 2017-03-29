@@ -524,7 +524,26 @@ class Tree_Model extends CI_Model
         $online_user = array();
         $online_group_id = array();
         foreach ($users AS $user) {
+            //判断用户是否在线
             if (Gateway::isUidOnline($user["id"]) != 0) {
+                //获取所有的ws连接id
+                $clients = Gateway::getClientIdByUid($user["id"]);
+                $user["pc"] = 0;
+                $user["app"] = 0;
+                foreach ($clients AS $client) {
+                    //获取ws连接session
+                    $client_session = Gateway::getSession($client);
+                    // web端在线
+                    if (isset($client_session["p_token"])) {
+                        $user["pc"] = 1;
+                        continue;
+                    }
+                    // 移动端在线
+                    if (isset($client_session["m_token"])) {
+                        $user["app"] = 1;
+                        continue;
+                    }
+                }
                 $online_user[] = $user;
                 $online_group_id[] = $user["group_id"];
             }
@@ -550,6 +569,8 @@ class Tree_Model extends CI_Model
                         "id" => $user["id"],
                         "name" => $user["name"],
                         "isdepartment" => 1,
+                        "pc_online" => $user["pc"], // pc端在线
+                        "app_online" => $user["app"], // 移动端在线
                         "icon" => "/assets/ztree/zTreeStyle/img/admin_online.png"
                     );
                     $group_node["children"][] = $tree_node;

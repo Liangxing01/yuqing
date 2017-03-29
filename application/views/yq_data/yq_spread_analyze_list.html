@@ -2,6 +2,8 @@
 <link href="/assets/advanced-datatable/media/css/demo_table.css" rel="stylesheet">
 <!-- DATATABLE CSS -->
 <link rel="stylesheet" href="/assets/data-tables/DT_bootstrap.css">
+<!-- Yuqing Analyze CSS -->
+<link rel="stylesheet" href="/css/event_analysis.css">
 
 <!-- Common CSS -->
 <link rel="stylesheet" href="/css/common.css">
@@ -70,6 +72,10 @@
             </div>
         </div>
         <!-- END ROW  -->
+        <div class="col-lg-12 col-md-6" style="display: none" id="task_result_list">
+            <section class="m-time-main">
+            </section>
+        </div>
     </section>
 </section>
 <!-- END SECTION -->
@@ -223,8 +229,8 @@
                     "mData": "_id",
                     'sClass': "text-center",
                     'orderable': false,
-                    "mRender": function (data) {
-                        return "<a title='查看' href='javascript:void(0);' onclick='show_detail(\"" + data.$id + "\")' class='btn btn-info btn-xs'>查看</a>&nbsp;" +
+                    "mRender": function (data, type, all) {
+                        return "<a title='查看' href='javascript:void(0);' onclick='show_detail(\"" + data.$id + "\",\"" + all.state + "\")' class='btn btn-info btn-xs'>查看</a>&nbsp;" +
                                 "<a title='改派' href='javascript:void(0);' onclick='delete_task(\"" + data.$id + "\")' class='btn btn-danger btn-xs'>删除</a>&nbsp;";
                     }
                 }
@@ -286,8 +292,88 @@
     }
 
     //查看任务详情
-    function show_detail(id) {
-        alert(id);
+    function show_detail(task_id, state) {
+        if(state != "finish"){
+            layer.msg('任务运行中,请稍后查看。', {anim: 6, time: 1000});
+            return false;
+        }
+        $.ajax({
+            url: '/yuqing/get_task_result',
+            type: 'post',
+            data: {
+                task_id: task_id
+            },
+            dataType: 'json',
+            success: function (data) {
+                $("#task_result_list section").html("");
+                var len = data.result.length,
+                        contentNum = 0;
+
+                if (len !== 0) {
+
+                    data.result.sort(compareTime('pubdate')); //将数据按时间戳排序
+
+                    for (var i = 0; i < len; i++) {
+                        var obj = data.result[i];
+                        var str = '';
+                        str += '<div class="m-time-point">';
+                        str += '<span class="u-point"></span>';
+                        str += '<div class="m-detail-box">';
+                        if (i == 0) {
+                            var classStyle = (contentNum % 2 == 0 ? '' : '-right');
+                            str += '<div class="m-detail-title' + classStyle + '">' + newTimeToDate(obj.pubdate * 1000)[2] + '</div>';
+                            str += '<div class="m-detail-identification' + classStyle + '"><span></span></div>';
+                            str += '<div class="m-detail-content' + classStyle + ' countNum' + contentNum + '">';
+                            str += '<ul><li>';
+                            str += '<h4>' + obj.source + '</h4>';
+                            str += '<p>' + obj.title + '</p>';
+                            str += '<p>' + newTimeToDate(obj.pubdate * 1000)[0] + '</p>';
+                            str += '</li></ul>';
+                            str += '</div></div></div>';
+                            str += '<div class="m-time-border"></div>';
+                            $('.m-time-main').append(str);
+                        } else {
+                            var old = data.result[i - 1];
+                            if (newTimeToDate(obj.pubdate * 1000)[1] == newTimeToDate(old.pubdate * 1000)[1]) {
+                                var strList = '<li>';
+                                strList += '<h4>' + obj.source + '</h4>';
+                                strList += '<p>' + obj.title + '</p>';
+                                strList += '<p>' + newTimeToDate(obj.pubdate * 1000)[0] + '</p>';
+
+                                $('.countNum' + contentNum + ' ul').append(strList);
+                            } else {
+                                contentNum++;
+                                var classStyle = (contentNum % 2 == 0 ? '' : '-right');
+                                str += '<div class="m-detail-title' + classStyle + '">' + newTimeToDate(obj.pubdate * 1000)[2] + '</div>';
+                                str += '<div class="m-detail-identification' + classStyle + '"><span></span></div>';
+                                str += '<div class="m-detail-content' + classStyle + ' countNum' + contentNum + '">';
+                                str += '<ul><li>';
+                                str += '<h4>' + obj.source + '</h4>';
+                                str += '<p>' + obj.title + '</p>';
+                                str += '<p>' + newTimeToDate(obj.pubdate * 1000)[0] + '</p>';
+                                str += '</li></ul>';
+                                str += '</div></div></div>';
+                                str += '<div class="m-time-border"></div>';
+                                $('.m-time-main').append(str);
+                            }
+                        }
+                    }
+
+                    $('.m-time-border').last().remove(); //去掉最后的虚线
+
+                }
+
+                //打开结果列表
+                layer.open({
+                    type: 1,
+                    title: "舆情传播分析结果",
+                    closeBtn: 1,
+                    shadeClose: true,
+                    area: "800px",
+                    content: $('#task_result_list')
+                });
+            }
+        })
     }
 
     //删除任务
@@ -313,6 +399,42 @@
             });
             layer.close(index);
         });
+    }
+
+    //比较时间
+    function compareTime(attr) {
+        return function (a, b) {
+            var val1 = a[attr];
+            var val2 = b[attr];
+            return val1 - val2;
+        }
+    }
+
+    //生成日期
+    function newTimeToDate(time) {
+        var now = new Date(time);
+        var yy = now.getFullYear();      //年
+        var mm = now.getMonth() + 1;     //月
+        var dd = now.getDate();          //日
+        var hh = now.getHours();         //时
+        var ii = now.getMinutes();       //分
+        var ss = now.getSeconds();       //秒
+        var clock = yy + "-";
+        var clock2 = yy + '-';
+        if (mm < 10) clock += "0";
+        clock += mm + "-";
+        clock2 += mm + "-";
+        if (dd < 10) clock += "0";
+        clock += dd + " ";
+        clock2 += dd + " ";
+        if (hh < 10) clock += "0";
+        clock += hh + ":";
+        if (ii < 10) clock += '0';
+        clock += ii + ":";
+        if (ss < 10) clock += '0';
+        clock += ss;
+
+        return [clock, dd, clock2];
     }
 
 </script>

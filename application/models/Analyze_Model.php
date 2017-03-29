@@ -96,6 +96,18 @@ class Analyze_Model extends CI_Model
 
 
     /**
+     * 查询任务结果
+     * @param string $task_id
+     * @return array
+     */
+    public function get_task_result($task_id)
+    {
+        $result = $this->mongo->where(array("_id" => new MongoId($task_id)))->find_one("spread_task");
+        return $result;
+    }
+
+
+    /**
      * 给socket服务端发送任务执行请求
      * @param string $task_id 任务id (MongoDB ObjectId)
      * @return bool
