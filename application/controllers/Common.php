@@ -760,7 +760,7 @@ class Common extends MY_Controller
         //查询是否自己已回复
         $response = $this->common->get_my_response($eid);
 
-        $email_info = $this->common->rece_email_detail($eid);
+        $email_info = $this->common->rece_email_detail($eid,'notice');
 
         if($email_info == false){
             show_404();
@@ -811,6 +811,24 @@ class Common extends MY_Controller
         echo json_encode(array(
             'all_unread_num' => $num
         ));
+    }
+
+    /**
+     * 接口：撤回 自己所发邮件
+     */
+    public function revoke_email(){
+        $this->load->model('Common_Model','common');
+        $eid = $this->input->get('eid');
+        $res = $this->common->revoke_email($eid);
+        if($res){
+            echo json_encode(array(
+                'res' => 1
+            ));
+        }else{
+            echo json_encode(array(
+                'res' => 0
+            ));
+        }
     }
 
     /**
