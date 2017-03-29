@@ -1111,6 +1111,56 @@ class Common_Model extends CI_Model
     }
 
     /**
+     * @param $eid 邮件id
+     * @return bool
+     */
+    public function revoke_email($eid){
+        $uid = $this->session->userdata('uid');
+        //判断 邮件归属权
+        $sender = $this->db->select('sender')
+            ->from('email')
+            ->where('id',$eid)
+            ->get()->row_array();
+        if(empty($sender) || $sender['sender'] != $uid){
+            return false;
+        }
+        //删除 email email_att email_user表数据
+        $this->db->trans_begin();
+
+        $this->db->where('id',$eid);
+        $this->db->delete('email');
+
+        //如果有附件 删除附件
+        $att_arr = $this->db->select('loc')
+            ->from('email_attachment')
+            ->where('eid',$eid)
+            ->get()->result_array();
+        if(!empty($att_arr)){
+            //删除附件
+            foreach ($att_arr as $att){
+                @unlink($_SERVER['DOCUMENT_ROOT'] . $att['loc']);
+                $this->db->where('eid',$eid);
+                $this->db->delete('email_attachment');
+            }
+        }
+
+        //删除email_user表
+        $this->db->where('email_id',$eid);
+        $this->db->delete('email_user');
+
+        if($this->db->trans_status() === FALSE){
+            $this->db->trans_rollback();
+            $res = false;
+        }else{
+            $this->db->trans_commit();
+            $res = true;
+        }
+
+        return $res;
+
+    }
+
+    /**
      * ------------------------涉密文件 模块---------------------
      */
     /**

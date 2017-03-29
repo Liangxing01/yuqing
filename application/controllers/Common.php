@@ -814,6 +814,24 @@ class Common extends MY_Controller
     }
 
     /**
+     * 接口：撤回 自己所发邮件
+     */
+    public function revoke_email(){
+        $this->load->model('Common_Model','common');
+        $eid = $this->input->get('eid');
+        $res = $this->common->revoke_email($eid);
+        if($res){
+            echo json_encode(array(
+                'res' => 1
+            ));
+        }else{
+            echo json_encode(array(
+                'res' => 0
+            ));
+        }
+    }
+
+    /**
      * --------------------------涉密文件 模块接口----------------------------
      */
     /**
