@@ -11,7 +11,7 @@
     <ul class="sub">
         <li id="email_sys">
             <a href="/common/show_emails">
-                邮件/指令 系统
+                邮件/指令 系统  <span class="g-nav-hasNoReadFile"></span>
             </a>
         </li>
         <li id="my_pan">
@@ -36,7 +36,10 @@
           dataType: "json",
           success: function(data){
               if(data.all_unread_num){
-                $('.g-nav-filesys').html(data.all_unread_num)
+                $('.g-nav-filesys').html(data.all_unread_num);
+                $('.g-nav-hasNoReadFile').css("display", "inline-block");
+              }else{
+                $('.g-nav-hasNoReadFile').hide();
               }
           }
         })

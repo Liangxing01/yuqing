@@ -6815,3 +6815,10 @@ a.guest-on i {
 }
 
 .g-nav-filesys{ margin-left: 8px; border-radius: 8px; line-height: 7px; position: relative;  top: -1px;}
+.g-nav-hasNoReadFile{ 
+	display: none;
+    padding: 4px;
+    background: #e4393c;
+    border-radius: 50%;
+    margin-left: 5px; 
+}
