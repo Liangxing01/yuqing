@@ -85,8 +85,17 @@
       
     }
 
-    .m-notification-list{
-      overflow-y: auto;
+    .m-notification-list{ overflow-y: auto; }
+    .m-notification-num{ 
+      display: inline-block; 
+      background: #e4393c; 
+      color: #fff;
+      padding: 0 5px;
+      border-radius: 50%;
+      position: absolute;
+      top: -8px;
+      left: -8px;
+      font-size: 12px;
     }
     .m-notification-list li{
       background: #72d0eb;
@@ -391,6 +400,8 @@
         <section class="m-notification-content">
               <div class="m-notification-title">
                   通知列表
+                  <span class="m-notification-num">
+                  </span>
               </div>
               <div class="m-notification-body">
                   <ul class="m-notification-list">
@@ -467,6 +478,7 @@
                 $('.m-notification-list').html("<li>暂无更多消息</li>")
               }else{
                 var list = '';
+                $('.m-notification-num').html(data.length);
                 for( var i = 0, len = data.length; i < len; i++){
                   list += '<li>'
                   list += '<h4 class="m-notification-listTitle">' + data[i].title + '</h4>';
