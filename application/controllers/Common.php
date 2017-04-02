@@ -594,8 +594,7 @@ class Common extends MY_Controller
         $config = array();
         //先保存在 temp 临时目录
         $config['upload_path'] = './uploads/temp/';
-        //$config['allowed_types'] = 'doc|docx|ppt|pdf|pptx|xlsx|word|rar|zip|jpeg|png|jpg';
-        $config['allowed_types'] = '*';
+        $config['allowed_types'] = 'doc|docx|ppt|pdf|pptx|xlsx|word|rar|zip|jpeg|png|jpg';
         $config['max_size'] = 1000000;//大小限制100M
         $config['max_width'] = 0;
         $config['max_height'] = 0;
@@ -612,7 +611,6 @@ class Common extends MY_Controller
         } else {
             $data = array('upload_data' => $this->upload->data());
             $upload_data = $data['upload_data'];
-            var_dump($data);
             //生成 文件保存 路径
             $upload_data['loc'] = '/uploads/temp/' . $upload_data['file_name'];
             $re = $this->common->insert_file_info($upload_data,0,$config['allowed_types']);
