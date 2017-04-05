@@ -87,7 +87,7 @@ function add_type_list(data) {
     layer.open({
         type: 1,
         title: title,
-        content: '<a target="_blank" href=' + data.url + '>' + data.title + '</>',
+        content: '<a class="msg-title" target="_blank" href=' + data.url + '>' + data.title + '</>',
         style: 'text-align:center',
         area: ['300px', '150px'],
         offset: [height - 160 * (msg_num % 3), width],
@@ -96,10 +96,16 @@ function add_type_list(data) {
         btn: "查看",
         btnAlign: 'c',
         yes: function () {
-            window.open(url, "target=_blank");
+            window.open(data.url, "target=_blank");
         },
         anim: 2,
         time: 30000 * (msg_num % 3)
+    });
+
+    $('.msg-title').parent().eq(1).css({
+        textAlign: "center",
+        fontSize: "16px",
+        marginTop: "5px"
     });
     msg_num++;
 }
