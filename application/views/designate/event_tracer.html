@@ -194,7 +194,7 @@
                     </p>
                 </div>
             </div>
-            <p id="m-imgShow-content">{desc}</p>
+            <p class="m-imgShow-content">{desc}</p>
 
             <div class="footer-timeline">
                 <ul class="timeline-option">
@@ -286,7 +286,7 @@
 
 
     //总结性评论图片查看
-    $('body').delegate('#m-imgShow-content img', 'click', function(){
+    $('body').delegate('.m-imgShow-content img', 'click', function(){
         var str = '<img src="'+ $(this).attr("src") +'" titile=' + $(this).attr("title")+'/>';
         layer.open({
             type: 1,
