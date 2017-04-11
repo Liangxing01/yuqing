@@ -6743,15 +6743,19 @@ a.guest-on i {
 	border: 1px solid #72d0cb;
 }
 .zj_button{
-	height: 80px;
-	width: 10%;
-	line-height: 80px;
+	height: 40px;
+	width: 160px;
+	line-height: 40px;
 	float: right;
-	margin-right: 10%;
+	/*margin-right: 10%;*/
 	background: #72d0eb;
-	font-size: 1.6em;
+	font-size: 18px;
+	border-radius: 8px;
 	color: white;
 	border: none;
+	margin-right: 50%;
+	margin-top: 10px;
+	margin-bottom: 20px;
 	
 }
 
