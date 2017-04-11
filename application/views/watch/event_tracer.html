@@ -250,7 +250,17 @@
 
 <script>
     var eid=document.getElementById('eid').value,
-            history_daytime="";//用来存时间抽上最上面的时间，用来判断总结性评论是新添加，还是在下面插入
+            history_daytime="";//   用来存时间抽上最上面的时间，用来判断总结性评论是新添加，还是在下面插入
+
+    //动态设置总结性评论的图片大小
+    function setImgShowContentWidth(){
+        $('.m-imgShow-content img').each(function(){
+            if($(this).attr('src').match('uploads')){
+                $(this).css("width","20%");
+            }
+        })
+    }
+
 
      //总结性评论图片查看
     $('body').delegate('.m-imgShow-content img', 'click', function(){
@@ -405,6 +415,7 @@
                     $("#sjwc").hide();
                 }
 
+                setImgShowContentWidth(); //动态设置总结性图片宽度
             },
             error:function(){
 
@@ -499,6 +510,8 @@
                     $("#zjk").val('');
                     autoDatch();
                     layer.msg("发表成功！",{time:1500});
+
+                    setImgShowContentWidth(); //动态设置总结性图片宽度
                 }else{
                     alert('评论失败！');
                 }
