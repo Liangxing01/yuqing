@@ -6727,7 +6727,8 @@ a.guest-on i {
 	margin-right: 8%;
 }
 .zj{
-	margin-left:10%;
+	margin-left: 20px;
+	margin-right: 20px;
 	margin-top: 20px;
 	height: 80px;
 	
@@ -6758,7 +6759,9 @@ a.guest-on i {
 	margin-bottom: 20px;
 	
 }
-
+.m-imgShow-content img{
+	width: 20%;
+}
 .input-btn{
 	padding: 5px;
 	border-radius: 4px;
