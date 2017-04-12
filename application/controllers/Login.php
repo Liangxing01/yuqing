@@ -88,7 +88,8 @@ class Login extends MY_controller
     /*安全获取参数,根据需要过滤非法内容*/
     public function Safe_Request($key)
     {
-        $res =$_REQUEST[$key];
+        //$res =$_REQUEST[$key];
+        $res = $this->input->get_post($key);
         if (strlen($res) <1)
         {
             return $res;
@@ -106,13 +107,9 @@ class Login extends MY_controller
      * 知云网 登录
      */
     public function zy_login(){
-        //$user = $this->Safe_Request("username");
-        //$pass = $this->Safe_Request("password");
-        var_dump($_REQUEST);
-        $user = $_REQUEST['username'];
-        $pass = $_REQUEST['password'];
-        //$key = $this->Safe_Request("Key");
-        $key  = $_REQUEST['Key'];
+        $user = $this->Safe_Request("username");
+        $pass = $this->Safe_Request("password");
+        $key = $this->Safe_Request("Key");
 
         if (strlen($user) < 1 || strlen($pass) < 1 || strlen($key)<1 )
         {
@@ -143,8 +140,6 @@ class Login extends MY_controller
             echo urldecode(json_encode($arr));
             exit();
         }
-        var_dump($user);
-        var_dump($pass);
 
         //判断是否移动端登陆 1:移动端
         $login_type =  0;
