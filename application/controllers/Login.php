@@ -81,4 +81,114 @@ class Login extends MY_controller
         }
     }
 
+    /**
+     * -------------------------------知云网 单点登录--------------------------------
+     */
+
+    /*安全获取参数,根据需要过滤非法内容*/
+    public function Safe_Request($key)
+    {
+        $res =$_REQUEST[$key];
+        if (strlen($res) <1)
+        {
+            return $res;
+        }
+
+        $check = preg_match('/select|and|insert|update|delete|\=|\'|\`|\/\*|\*\/|\.\.\/|\.\/|union|into|load_file|outfile/', $res,$match);
+        if ($check)
+        {
+            $res = "";
+        }
+        return $res;
+    }
+
+    /**
+     * 知云网 登录
+     */
+    public function zy_login(){
+        $user = $this->Safe_Request("username");
+        $pass = $this->Safe_Request("password");
+        $key = $this->Safe_Request("Key");
+
+        if (strlen($user) < 1 || strlen($pass) < 1 || strlen($key)<1 )
+        {
+            $arr = array(
+                "statusCode" => "300",
+                "message" => urlencode("登录失败:账号密码不能为空!"),
+                "tabid" => "table, table-fixed",
+                "closeCurrent" => true,
+                "forward" => "",
+                "forwardConfirm" => "",
+                "redirect" => "/",
+            );
+            echo urldecode(json_encode($arr));
+            exit();
+        }
+
+        if($key != "A57C4D71B39F0E12")
+        {
+            $arr = array(
+                "statusCode" => "300",
+                "message" => urlencode("登录失败:授权码校验失败!"),
+                "tabid" => "table, table-fixed",
+                "closeCurrent" => true,
+                "forward" => "",
+                "forwardConfirm" => "",
+                "redirect" => "/",
+            );
+            echo urldecode(json_encode($arr));
+            exit();
+        }
+
+        //判断是否移动端登陆 1:移动端
+        $login_type =  0;
+        $result = $this->identity->user_auth($user, $pass, $login_type);
+
+        if ($result !== false) {
+            $this->load->helper(array("public"));
+            // 记录登陆日志信息
+            $login_info = array(
+                "uid" => $result["uid"],
+                "ip" => get_ip(),
+                "time" => time(),
+                "type" => $login_type == 1 ? 1 : 0
+            );
+            $this->load->model("User_Model", "user");
+            $this->user->write_login_log($login_info);
+
+            /*账号密码验证通过直接跳转到登陆后主页*/
+            Header("Location: /welcome/index");
+
+        } else {
+            $arr = array(
+                "statusCode" => "300",
+                "message" => urlencode("登录失败:账号或密码错误!"),
+                "tabid" => "table, table-fixed",
+                "closeCurrent" => true,
+                "forward" => "",
+                "forwardConfirm" => "",
+                "redirect" => "/",
+            );
+            echo urldecode(json_encode($arr));
+            exit();
+        }
+
+        if (count($result) < 1 )//登录失败
+        {
+            $arr = array(
+                "statusCode" => "300",
+                "message" => urlencode("登录失败:账号或密码错误!"),
+                "tabid" => "table, table-fixed",
+                "closeCurrent" => true,
+                "forward" => "",
+                "forwardConfirm" => "",
+                "redirect" => "/",
+            );
+            echo urldecode(json_encode($arr));
+            exit();
+        }
+
+
+    }
+
 }
