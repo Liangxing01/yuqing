@@ -106,9 +106,12 @@ class Login extends MY_controller
      * 知云网 登录
      */
     public function zy_login(){
-        $user = $this->Safe_Request("username");
-        $pass = $this->Safe_Request("password");
-        $key = $this->Safe_Request("Key");
+        //$user = $this->Safe_Request("username");
+        //$pass = $this->Safe_Request("password");
+        $user = $_REQUEST['username'];
+        $pass = $_REQUEST['password'];
+        //$key = $this->Safe_Request("Key");
+        $key  = $_REQUEST['Key'];
 
         if (strlen($user) < 1 || strlen($pass) < 1 || strlen($key)<1 )
         {
