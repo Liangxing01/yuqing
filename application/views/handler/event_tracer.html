@@ -527,6 +527,10 @@
                         autoDatch();
                         layer.msg("发表成功！",{time:1500});
 
+                        //清空富文本编辑器的内容
+                        var win = document.getElementById('LAY_layedit_1').contentWindow;
+                        win.document.body.innerHTML = '';
+                        
                         setImgShowContentWidth(); //动态设置总结性图片宽度
                     }else{
 		    			alert('评论失败！');
