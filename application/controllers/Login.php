@@ -139,6 +139,8 @@ class Login extends MY_controller
             echo urldecode(json_encode($arr));
             exit();
         }
+        var_dump($user);
+        var_dump($pass);
 
         //判断是否移动端登陆 1:移动端
         $login_type =  0;
