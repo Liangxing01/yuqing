@@ -108,6 +108,7 @@ class Login extends MY_controller
     public function zy_login(){
         //$user = $this->Safe_Request("username");
         //$pass = $this->Safe_Request("password");
+        var_dump($_REQUEST);
         $user = $_REQUEST['username'];
         $pass = $_REQUEST['password'];
         //$key = $this->Safe_Request("Key");
