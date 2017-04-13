@@ -959,4 +959,74 @@ class Designate extends MY_controller
             ));
         }
     }
+
+    function call() {
+        $this->all_display('call/call.html');
+	}
+	
+	function addCall() {
+		$input=$this->input->post(['content','target']);
+		if (!$input) show_404();
+		$input['uid']=$this->session->get_userdata('uid');
+		$content=urlencode($input['content']);
+		$target=json_decode($input['target'],true);
+		if (!$target||count($target)<=0)
+			die('请选择对象');
+		$target=$this->db->where_in('id',$target)->select('id,phone')->order_by('id','asc')
+		->get('user')->result_array();
+		$input['target']=[];
+		$phone=[];
+		foreach ($target as $item) {
+			if (strlen($item['phone'])==11){
+				$item['status']=0;
+				$item['id']=(int)$item['id'];
+				$input['target'][]=$item;
+				$phone[]=$item['phone'];
+			}
+		}
+		if (empty($phone)) die('请确认选择的用户是否完善了手机号码');
+		$input['target']=json_encode($input['target']);
+		$this->db->insert('call_log',$input);
+		$taskId=$this->db->insert_id();
+		$url="http://113.31.89.53:4200/ipcc.html?cmd=40&format=json&taskid=25&calloid=$taskId&remark=$content&telnum=".join('-', $phone);
+		$ch = curl_init($url);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		$output = curl_exec($ch);
+		$output=json_decode(substr($output, 1,-1),true);
+		if (!$output||$output['call'][0]['result']!=200){
+			$this->db->delete('call_log',['id'=>$taskId]);
+			die('呼叫平台出错！');
+		}
+		curl_close($ch);
+		echo 'ok';
+	}
+	
+	function history($id=0) {
+		if($id==0){
+			$page=(int)$this->input->get('page');
+            $count=$this->input->get('count')?:15;
+            $t=$this->input->get(['begin','end']);
+            if ($t['begin']){
+                $this->db->where(['yq_call_log.time >='=>$t['begin'],'yq_call_log.time <'=>$t['end']]);
+            }
+            if ($t=$this->input->get('key')){
+                $this->db->like('content',$t);
+            }
+            $total=$this->db->count_all_results('call_log',false);
+            $data=$this->db->select('yq_call_log.id,content,yq_call_log.time,status,user.name')
+            ->join('user', 'user.id=yq_call_log.uid')->order_by('yq_call_log.id','desc')
+            ->get('',$count,$page*$count)->result_array();
+            echo json_encode(['data'=>$data,'total'=>$total]);
+		}else{
+			if(!is_numeric($id))
+				show_404();
+			$data=$this->db->where('call_log.id',$id)
+			->select('call_log.*,user.name')
+			->join('`user`', '`user`.id=call_log.uid')->get('call_log')->row_array();
+			if($data){
+				$data['target']=json_decode($data['target'],true);
+				echo json_encode($data);
+			}else die('此数据不存在！');
+		}
+	}
 }

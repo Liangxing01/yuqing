@@ -83,4 +83,26 @@ class Login extends MY_controller
         }
     }
 
+    function callBack() {
+		$row=file_get_contents('php://input');
+		log_message('debug',$row);
+		$input=json_decode($row);
+		if (!$input) show_404();
+		if ($input['hangup_cause']='NORMAL_CLEARING'){
+			$target=$this->db->find('call_log', $input['calloid'],'id','target');
+			if (!$target) show_404();
+			$target=json_decode($target['target'],true);
+			foreach ($target as $key => $value) {
+				if ($value['phone']==$input['telnum']){
+					$value['status']=1;
+					$value['time']=time();
+					$target[$key]=$value;
+					break;
+				}
+			}
+			$this->db->where('id',$input['calloid'])
+			->update('call_log',['target'=>json_encode($target)]);
+		}
+	}
+
 }
