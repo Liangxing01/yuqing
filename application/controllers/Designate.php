@@ -375,6 +375,7 @@ class Designate extends MY_controller
         $this->load->model('MY_Model', 'my_model');
         $user_info = $this->my_model->get_user_info($uid);
         $this->assign('username', $user_info[0]['name']);
+        $this->assign('groupname', $user_info[0]['group_name']);
         $this->assign('useracter', $user_info[0]['avatar']);
         $this->assign('usertype', $usertype);
 
