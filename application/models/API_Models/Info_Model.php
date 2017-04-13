@@ -320,11 +320,13 @@ class Info_Model extends CI_Model
         }
         // 检测权限
         // 查询数据
-        $info = $this->db->select("info.id, info.relate_scope, info.title, info.description, type.name AS type, info.url, info.state, info.source, user.name AS publisher, info.time")
+        $info = $this->db->select("info.id, info.relate_scope, info.title, info.description, type.name AS type, info.url, info.state, info.source, user.name AS publisher, group.name AS group, info.time")
             ->from("info")
             ->join("type", "type.id = info.type", "left")
             ->join("user", "user.id = info.publisher", "left")
-            ->where(array("info.id" => $info_id))
+            ->join("user_group", "user_group.uid = info.publisher", "left")
+            ->join("group", "group.id = user_group.gid", "left")
+            ->where(array("info.id" => $info_id, "user_group.is_exist" => 1))
             ->get()->row_array();
         // 附件信息
         $attachments = $this->db->select("id, type, url")

@@ -110,11 +110,13 @@ class Designate_Model extends CI_Model
      */
     public function get_info($info_id)
     {
-        $info = $this->db->select("info.id,info.relate_scope, info.title, info.description, type.name AS type, info.url, info.state, info.source, user.name AS publisher, info.time")
+        $info = $this->db->select("info.id,info.relate_scope, info.title, info.description, type.name AS type, info.url, info.state, info.source, user.name AS publisher, group.name AS group, info.time")
             ->from("info")
             ->join("type", "type.id = info.type", "left")
             ->join("user", "user.id = info.publisher", "left")
-            ->where(array("info.id" => $info_id))
+            ->join("user_group", "user_group.uid = info.publisher", "left")
+            ->join("group", "group.id = user_group.gid", "left")
+            ->where(array("info.id" => $info_id, "user_group.is_exist" => 1))
             ->get()->row_array();
         //附件信息
         $info["attachment"] = $this->db->select("id, name, url, type")
@@ -473,11 +475,15 @@ class Designate_Model extends CI_Model
      */
     public function get_event($event_id)
     {
-        $event = $this->db->select("event.id, event.title, event.description, reply_time, A.name AS manager, B.name AS main_processor, C.name AS main_group, event.rank, event.state, event.start_time, event.end_time")
+        $event = $this->db->select("event.id, event.title, event.description, reply_time, A.name AS manager, E.name AS manager_group, B.name AS main_processor, G.name AS main_processor_group, C.name AS main_group, event.rank, event.state, event.start_time, event.end_time")
             ->from("event")
             ->join("user A", "A.id = event.manager", "left")
             ->join("user B", "B.id = event.main_processor", "left")
             ->join("group C", "C.id = event.group", "left")
+            ->join("user_group D", "D.uid = event.manager", "left")
+            ->join("group E", "D.gid = E.id", "left")
+            ->join("user_group F", "F.uid = event.main_processor", "left")
+            ->join("group G", "F.gid = G.id", "left")
             ->where("event.id", $event_id)
             ->get()->row_array();
 
