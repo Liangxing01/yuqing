@@ -161,7 +161,9 @@
             <div class="heading-timeline" >
                 <img alt="Avatar" class="avatar"  src="{avatar}">
                 <div class="user-timeline-info">
-                    <p> {name} <small id="DataTime_{id}" style="{p_style}">{daytime}</small>
+                    <p> {name}
+                        <span class="m-username-group">({group})</span> 
+                        <small id="DataTime_{id}" style="{p_style}">{daytime}</small>
                     </p>
                 </div>
             </div>
@@ -204,7 +206,12 @@
         <img alt="Avatar" class="avatar" src="{avatar}">
         <div class="reply">
             <p>
-                <strong><a class="label bg-success m-l-xs">{name}</a></strong>
+                <strong>
+                    <a class="label bg-success m-l-xs">
+                        {name}
+                        <span>({group})</span>
+                    </a>
+                </strong>
                 {desc}
             </p>
             <p class="text-muted reply-time">{daytime}</p>
@@ -466,6 +473,7 @@
                    // window.sessionStorage.setItem('p_id',data.id);
                     var li_obj=new Object();
                     li_obj.name=$("#name").val();
+                    li_obj.group = $('#group').val();
                     li_obj.daytime=new Date().toLocaleString().replace(/:\d{1,2}$/,' ');
                     li_obj.desc=zjk;
                     li_obj.commentnum=0;
@@ -565,6 +573,7 @@
                         var commnetObj=new Object();
                         commnetObj.daytime=new Date().toLocaleString().replace(/:\d{1,2}$/,' ');
                         commnetObj.name=$("#name").val();
+                        commnetObj.group = $('#group').val();
                         commnetObj.desc=comment;
                         if($('#useracter').val()){
                             commnetObj.avatar = $('#useracter').val();
