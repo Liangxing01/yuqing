@@ -194,7 +194,7 @@
                     </p>
                 </div>
             </div>
-            <p>{desc}</p>
+            <p class="m-imgShow-content">{desc}</p>
 
             <div class="footer-timeline">
                 <ul class="timeline-option">
@@ -280,9 +280,25 @@
 <script src="/js/public.js"></script>
 <script>
 
-    $(function(){
+    //动态设置总结性评论的图片大小
+    function setImgShowContentWidth(){
+        $('.m-imgShow-content img').each(function(){
+            if($(this).attr('src').match('uploads')){
+                $(this).css("width","20%");
+            }
+        })
+    }
 
-    })
+    //总结性评论图片查看
+    $('body').delegate('.m-imgShow-content img', 'click', function(){
+        var str = '<img src="'+ $(this).attr("src") +'" titile=' + $(this).attr("title")+'/>';
+        layer.open({
+            type: 1,
+            title: false,
+            content: str,
+        })   
+    });
+
 
     layui.use('laydate', function(){
         var laydate = layui.laydate;
@@ -306,10 +322,27 @@
 
     var eid=document.getElementById('eid').value,
             history_daytime="";//用来存时间抽上最上面的时间，用来判断总结性评论是新添加，还是在下面插入
-    $("input[name='zj_buttom']").click(function(){
-        var zjk=document.getElementById('zjk').value;
-        add();
-    });
+    
+
+
+    // 2017-04-11 by lx 将恢复内容变成富文本编辑器
+    layui.use('layedit', function(){
+        var layedit = layui.layedit;
+
+        var index = layedit.build('zjk', {
+            uploadImage: {url: '/common/email_upload_img', type: 'post'},
+            height: 160
+        });
+
+        $("input[name='zj_buttom']").click(function(){
+            $('#zjk').val("");
+            $('#zjk').val(layedit.getContent(index));
+            var zjk=document.getElementById('zjk').value;
+            add();
+        });
+        
+    })
+
 
     function getLocalTime(nS) {
 //        return new Date(parseInt(nS) * 1000).toLocaleString().replace(/:\d{1,2}$/,' ');
@@ -436,6 +469,8 @@
                     $("#sjwc").hide();
                 }
 
+                setImgShowContentWidth(); //动态设置总结性图片宽度
+
             },
             error:function(){
 
@@ -465,10 +500,10 @@
             return false;
         }
         var myDate = new Date(),
-                iyear= myDate.getFullYear(),
-                imonth= myDate.getMonth()+ 1,
-                iday =myDate.getDate(),//得到当前天数
-                li_item_tpl=$('script[id="li_item"]').html();
+            iyear= myDate.getFullYear(),
+            imonth= myDate.getMonth()+ 1,
+            iday =myDate.getDate(),//得到当前天数
+            li_item_tpl=$('script[id="li_item"]').html();
         var cur_daytime=iyear+'-'+imonth+'-'+iday;
         $.ajax({
             url:'/welcome/post_comment',
@@ -529,6 +564,12 @@
                     $("#zjk").val('');
                     autoDatch();
                     layer.msg("发表成功！",{time:1500});
+
+                    //清空富文本编辑器的内容
+                    var win = document.getElementById('LAY_layedit_1').contentWindow;
+                    win.document.body.innerHTML = '';
+
+                    setImgShowContentWidth(); //动态设置总结性图片宽度
                 }else{
                     alert('评论失败！');
                 }
