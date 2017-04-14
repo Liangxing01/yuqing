@@ -572,10 +572,11 @@ class Common_Model extends CI_Model
     }
 
     /**
-     * 邮件 Body 插入图片
+     * 插入图片
+     * @param $belong_email 图片是否属于邮件
      * return 路径
      */
-    public function insert_img($file_data,$allow_mime){
+    public function insert_img($file_data,$allow_mime,$belong_email = 1){
         //判断Mime  转换 文件格式
         $mimes = get_mimes();
         $file_type = '';
@@ -602,7 +603,7 @@ class Common_Model extends CI_Model
             'upload_time' => time(),
             'loc'      => $file_data['loc'],
             'is_exist' => 1,
-            'belong_email' => 1
+            'belong_email' => $belong_email
         );
 
         //开始运行事务
