@@ -24,7 +24,7 @@ class Info extends CI_Controller
     public function commit_info()
     {
         // 接收表单数据
-        $pData['title'] = $this->input->post('title');
+        $pData['title'] = trim($this->input->post('title'));
         $pData['url'] = $this->input->post('url');
         $pData['source'] = $this->input->post('source');
         $pData['description'] = $this->input->post('description');
