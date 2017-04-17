@@ -316,7 +316,7 @@
 
                     for (var i = 0; i < len; i++) {
                         var obj = data.result[i];
-
+                        var author = obj.author ? obj.author : "未知";
                         if (i == 0) {
                             var str = '';
                             str += '<div class="m-propagation-content">';
@@ -326,7 +326,7 @@
 //                            str += '<span class="m-propagation-itemPoint"></span>';
                             str += '<span class="m-propagation-itemTime label label-danger">' + newTimeToDate(obj.pubdate * 1000)[0] + '</span>';
                             str += '<span class="m-propagation-itemSource label label-info">' + obj.source + '</span>';
-                            str += '<span class="m-propagation-itemSource label label-primary">' + obj.author + '</span>';
+                            str += '<span class="m-propagation-itemSource label label-primary">作者: ' + author + '</span>';
                             str += '<span class="m-propagation-itemTitle"><a title="查看详情" target="_blank" href="/yuqing/yq_detail?' + obj.info_id.$id + '">' + obj.title + '</a></span>';
                             str += '</li>';
                             str += '</ul>';
@@ -339,7 +339,7 @@
 //                                strItem += '<span class="m-propagation-itemPoint"></span>';
                                 strItem += '<span class="m-propagation-itemTime label label-danger">' + newTimeToDate(obj.pubdate * 1000)[0] + '</span>';
                                 strItem += '<span class="m-propagation-itemSource label label-info">' + obj.source + '</span>';
-                                strItem += '<span class="m-propagation-itemSource label label-primary">' + obj.author + '</span>';
+                                strItem += '<span class="m-propagation-itemSource label label-primary">作者: ' + author + '</span>';
                                 strItem += '<span class="m-propagation-itemTitle"><a title="查看详情" target="_blank" href="/yuqing/yq_detail?' + obj.info_id.$id + '">' + obj.title + '</a></span>';
                                 strItem += '</li>';
                                 $('.m-propagation-item.count' + count).append(strItem);
@@ -353,7 +353,7 @@
 //                                str += '<span class="m-propagation-itemPoint"></span>';
                                 str += '<span class="m-propagation-itemTime label label-danger">' + newTimeToDate(obj.pubdate * 1000)[0] + '</span>';
                                 str += '<span class="m-propagation-itemSource label label-info">' + obj.source + '</span>';
-                                str += '<span class="m-propagation-itemSource label label-primary">' + obj.author + '</span>';
+                                str += '<span class="m-propagation-itemSource label label-primary">作者: ' + author + '</span>';
                                 str += '<span class="m-propagation-itemTitle"><a title="查看详情" target="_blank" href="/yuqing/yq_detail?' + obj.info_id.$id + '">' + obj.title + '</a></span>';
                                 str += '</li>';
                                 str += '</ul>';
