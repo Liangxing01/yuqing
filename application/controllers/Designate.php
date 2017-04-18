@@ -961,6 +961,8 @@ class Designate extends MY_controller
     }
 
     function call() {
+        $this->assign("active_title", "call");
+        $this->assign("active_parent", "file_parent");
         $this->all_display('call/call.html');
 	}
 	
@@ -1006,23 +1008,23 @@ class Designate extends MY_controller
 			$page=(int)$this->input->get('page');
             $count=$this->input->get('count')?:15;
             $t=$this->input->get(['begin','end']);
-            if ($t['begin']){
-                $this->db->where(['yq_call_log.time >='=>$t['begin'],'yq_call_log.time <'=>$t['end']]);
+            if ($t['begin']!=''){
+                $this->db->where(['yq_call_log.time >='=>date('Y-m-d',$t['begin']),'yq_call_log.time <'=>date('Y-m-d',$t['end'])]);
             }
-            if ($t=$this->input->get('key')){
+            if ($t=$this->input->get('sSearch')){
                 $this->db->like('content',$t);
             }
             $total=$this->db->count_all_results('call_log',false);
             $data=$this->db->select('yq_call_log.id,content,yq_call_log.time,status,user.name')
             ->join('user', 'user.id=yq_call_log.uid')->order_by('yq_call_log.id','desc')
             ->get('',$count,$page*$count)->result_array();
-            echo json_encode(['data'=>$data,'total'=>$total]);
+            echo json_encode(['aaData'=>$data,'iTotalRecords'=>$total,'iTotalDisplayRecords'=>$total]);
 		}else{
 			if(!is_numeric($id))
 				show_404();
 			$data=$this->db->where('call_log.id',$id)
 			->select('call_log.*,user.name')
-			->join('`user`', '`user`.id=call_log.uid')->get('call_log')->row_array();
+			->join('user', 'yq_user.id=yq_call_log.uid')->get('call_log')->row_array();
 			if($data){
 				$data['target']=json_decode($data['target'],true);
 				echo json_encode($data);
