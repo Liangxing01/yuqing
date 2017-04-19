@@ -41,6 +41,14 @@
                                 </button>
                                 <button title="导出网络舆情台账"  class="btn btn-warning" id="yuqing">导出网络舆情台账
                                 </button>
+                                <button title="导出网络舆情数量表"  class="btn btn-warning" id="num">导出网络舆情数量表
+                                </button>
+                                <button title="导出网络舆情首回时间表"  class="btn btn-warning" id="exp_time">导出网络舆情首回时间表
+                                </button>
+                                <button title="导出网络舆情回复办结时间表"  class="btn btn-warning" id="rep_time">导出网络舆情回复办结时间表
+                                </button>
+                                <button title="导出网络舆情热点事件表"  class="btn btn-warning" id="hot">导出网络舆情热点事件表
+                                </button>
                             </div>
 
                         </div>
@@ -73,10 +81,23 @@
 
     $("#type").on('click',function () {
         location.href = "/report_sheet/export_types?start="+dateToTime($("#start").val())+'&end='+dateToTime($("#end").val());
-    })
+    });
 
     $("#yuqing").on('click',function () {
         location.href = "/report_sheet/export_yuqing?start="+dateToTime($("#start").val())+'&end='+dateToTime($("#end").val());
-    })
+    });
+
+    $("#num").on('click',function () {
+        location.href = "/report_sheet/export_num?start="+dateToTime($("#start").val())+'&end='+dateToTime($("#end").val());
+    });
+    $("#exp_time").on('click',function () {
+        location.href = "/report_sheet/export_time?start="+dateToTime($("#start").val())+'&end='+dateToTime($("#end").val());
+    });
+    $("#rep_time").on('click',function () {
+        location.href = "/report_sheet/export_rep_time?start="+dateToTime($("#start").val())+'&end='+dateToTime($("#end").val());
+    });
+    $("#hot").on('click',function () {
+        location.href = "/report_sheet/export_hot?start="+dateToTime($("#start").val())+'&end='+dateToTime($("#end").val());
+    });
 
 </script>

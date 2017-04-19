@@ -422,4 +422,254 @@ and (yq_event.main_processor = yq_event_designate.`processor` or yq_event.group 
         $objWriter = new PHPExcel_Writer_Excel2007($objPHPExcel);
         $objWriter->save('php://output');
     }
+
+    public function export_num($start,$end){
+        $this->load->library('PHPExcel');
+        $objPHPExcel = new PHPExcel();
+
+        /*以下是一些设置 ，什么作者  标题啊之类的*/
+        $objPHPExcel->getProperties()->setCreator("重庆巴南网信办")
+            ->setLastModifiedBy("v6plus")
+            ->setTitle("区委网信办网络舆情台账数量排序情况")
+            ->setSubject("网络台账数量表")
+            ->setDescription("网络台账数量表")
+            ->setKeywords("网络台账数量表")
+            ->setCategory("网络台账数量表");
+
+        //拼接sql语句,判断有选择时间没有
+        if($start>0 && $end>0){
+            $this->db->where("info.time >= $start AND info.time <= $end");
+        }
+
+        $info_arr = $this->db->select("group.name AS 单位")
+            ->select_sum("yq_info.source","舆情总量")
+            ->select_sum("if(yq_info.source = '天涯', 1, 0)","天涯")
+            ->select_sum("if(yq_info.source = '大渝网', 1, 0)","大渝网")
+            ->select_sum("if(yq_info.source = '问政平台', 1, 0)","问政平台")
+            ->select_sum("if(yq_info.source = '看巴南APP', 1, 0)","看巴南APP")
+            ->select_sum("if(yq_info.source = '微博', 1, 0)","微博")
+            ->select_sum("if(yq_info.source = '微信', 1, 0)","微信")
+            ->from('info')
+            ->join('user_group','user_group.uid = info.publisher','left')
+            ->join('group','group.id = user_group.gid','left')
+            ->where('info.state',2)    //已确认信息
+            ->where('info.duplicate',0)//不重复的信息
+            ->order_by('舆情总量','desc')
+            ->group_by('group.id')
+            ->get()->result_array();
+
+        //设置 title
+        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('A1', '序号');
+        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('J1', '备注');
+        $objPHPExcel->getActiveSheet()->getColumnDimension('B')->setAutoSize(true);
+        $i = 66;
+        foreach ($info_arr[0] as $k => $v){
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValue(chr($i).'1', $k);
+            $i++;
+        }
+
+        //填充内容
+        for($i = 0; $i < count($info_arr); $i++){
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValue('A'.($i+2), ($i+1));
+            $a = 66;
+            foreach ($info_arr[$i] as $k => $v){
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue(chr($a).($i+2), $v);
+                $a++;
+            }
+        }
+        $objPHPExcel->getActiveSheet()->setTitle('区委网信办网络台账数量表');
+
+
+        //判断显示文件名
+        if($start>0){
+            $time = date('Ymd',$start).'-'.date('Ymd',$end);
+            header('Content-Disposition: attachment;filename="'.$time.'网络台账数量表'.'.xlsx"');
+        }else{
+            header('Content-Disposition: attachment;filename="'.'区委网信办网络台账数量表'.'.xlsx"');
+        }
+        header('Content-Type: application/vnd.ms-excel');
+        header('Cache-Control: max-age=0');
+        header("Content-Type: application/download");
+        $objWriter = new PHPExcel_Writer_Excel2007($objPHPExcel);
+        $objWriter->save('php://output');
+    }
+
+    public function export_time($start,$end){
+        $this->load->library('PHPExcel');
+        $objPHPExcel = new PHPExcel();
+
+        /*以下是一些设置 ，什么作者  标题啊之类的*/
+        $objPHPExcel->getProperties()->setCreator("重庆巴南网信办")
+            ->setLastModifiedBy("v6plus")
+            ->setTitle("区委网信办网络舆情台账首回时间排序情况")
+            ->setSubject("网络台账首回时间表")
+            ->setDescription("网络台账首回时间表")
+            ->setKeywords("网络台账首回时间表")
+            ->setCategory("网络台账首回时间表");
+
+        //拼接sql语句,判断有选择时间没有
+        if($start>0 && $end>0){
+            $this->db->where("time >= $start AND time <= $end");
+        }
+
+        $info_arr = $this->db->select("name '责任单位',title '标题',url '链接',FROM_UNIXTIME(time) '发布时间',first_reply '首回时间'")
+            ->from('tj_time')
+            ->get()->result_array();
+
+        //设置 title
+        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('A1', '序号');
+        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('G1', '备注');
+        $objPHPExcel->getActiveSheet()->getColumnDimension('B')->setAutoSize(true);
+        $i = 66;
+        foreach ($info_arr[0] as $k => $v){
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValue(chr($i).'1', $k);
+            $i++;
+        }
+
+        //填充内容
+        for($i = 0; $i < count($info_arr); $i++){
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValue('A'.($i+2), ($i+1));
+            $a = 66;
+            foreach ($info_arr[$i] as $k => $v){
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue(chr($a).($i+2), $v);
+                $a++;
+            }
+        }
+        $objPHPExcel->getActiveSheet()->setTitle('区委网信办网络台账首回时间表');
+
+
+        //判断显示文件名
+        if($start>0){
+            $time = date('Ymd',$start).'-'.date('Ymd',$end);
+            header('Content-Disposition: attachment;filename="'.$time.'网络台账首回时间表'.'.xlsx"');
+        }else{
+            header('Content-Disposition: attachment;filename="'.'区委网信办网络台账首回时间表'.'.xlsx"');
+        }
+        header('Content-Type: application/vnd.ms-excel');
+        header('Cache-Control: max-age=0');
+        header("Content-Type: application/download");
+        $objWriter = new PHPExcel_Writer_Excel2007($objPHPExcel);
+        $objWriter->save('php://output');
+    }
+
+    public function export_rep_time($start,$end){
+        $this->load->library('PHPExcel');
+        $objPHPExcel = new PHPExcel();
+
+        /*以下是一些设置 ，什么作者  标题啊之类的*/
+        $objPHPExcel->getProperties()->setCreator("重庆巴南网信办")
+            ->setLastModifiedBy("v6plus")
+            ->setTitle("区委网信办网络舆情台账回复办结时间排序情况")
+            ->setSubject("网络台账回复办结时间表")
+            ->setDescription("网络台账回复办结时间表")
+            ->setKeywords("网络台账回复办结时间表")
+            ->setCategory("网络台账回复办结时间表");
+
+        //拼接sql语句,判断有选择时间没有
+        if($start>0 && $end>0){
+            $this->db->where("time >= $start AND time <= $end");
+        }
+
+        $info_arr = $this->db->select("name '责任单位',title '标题',url '链接',FROM_UNIXTIME(time) '发布时间',start_time '交办时间',end_time '办结回复时间'")
+            ->from('tj_time')
+            ->get()->result_array();
+
+        //设置 title
+        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('A1', '序号');
+        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('H1', '备注');
+        $objPHPExcel->getActiveSheet()->getColumnDimension('B')->setAutoSize(true);
+        $i = 66;
+        foreach ($info_arr[0] as $k => $v){
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValue(chr($i).'1', $k);
+            $i++;
+        }
+
+        //填充内容
+        for($i = 0; $i < count($info_arr); $i++){
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValue('A'.($i+2), ($i+1));
+            $a = 66;
+            foreach ($info_arr[$i] as $k => $v){
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue(chr($a).($i+2), $v);
+                $a++;
+            }
+        }
+        $objPHPExcel->getActiveSheet()->setTitle('区委网信办网络台账回复办结时间表');
+
+
+        //判断显示文件名
+        if($start>0){
+            $time = date('Ymd',$start).'-'.date('Ymd',$end);
+            header('Content-Disposition: attachment;filename="'.$time.'网络台账回复办结时间表'.'.xlsx"');
+        }else{
+            header('Content-Disposition: attachment;filename="'.'区委网信办网络台账回复办结时间表'.'.xlsx"');
+        }
+        header('Content-Type: application/vnd.ms-excel');
+        header('Cache-Control: max-age=0');
+        header("Content-Type: application/download");
+        $objWriter = new PHPExcel_Writer_Excel2007($objPHPExcel);
+        $objWriter->save('php://output');
+    }
+
+    /**
+     * 导出舆情热点事件表
+     */
+    public function export_hot($start,$end){
+        $this->load->library('PHPExcel');
+        $objPHPExcel = new PHPExcel();
+
+        /*以下是一些设置 ，什么作者  标题啊之类的*/
+        $objPHPExcel->getProperties()->setCreator("重庆巴南网信办")
+            ->setLastModifiedBy("v6plus")
+            ->setTitle("区委网信办网络舆情热点事件表")
+            ->setSubject("网络舆情热点事件表")
+            ->setDescription("网络舆情热点事件表")
+            ->setKeywords("网络舆情热点事件表")
+            ->setCategory("网络舆情热点事件表");
+
+        //拼接sql语句,判断有选择时间没有
+        if($start>0 && $end>0){
+            $this->db->where("time >= $start AND time <= $end");
+        }
+
+        $info_arr = $this->db->select("name '责任单位',url '链接',source '发布平台'")
+            ->from('tj_time')
+            ->get()->result_array();
+
+        //设置 title
+        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('A1', '序号');
+        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('E1', '原帖内容');
+        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('F1', '点击量、关注量、发帖数、跟帖数');
+        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('G1', '备注');
+        $objPHPExcel->getActiveSheet()->getColumnDimension('B')->setAutoSize(true);
+        $i = 66;
+        foreach ($info_arr[0] as $k => $v){
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValue(chr($i).'1', $k);
+            $i++;
+        }
+
+        //填充内容
+        for($i = 0; $i < count($info_arr); $i++){
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValue('A'.($i+2), ($i+1));
+            $a = 66;
+            foreach ($info_arr[$i] as $k => $v){
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue(chr($a).($i+2), $v);
+                $a++;
+            }
+        }
+        $objPHPExcel->getActiveSheet()->setTitle('区委网信办网络舆情热点事件表');
+
+
+        //判断显示文件名
+        if(!empty($start)){
+            $time = date('Ymd',$start).'-'.date('Ymd',$end);
+            header('Content-Disposition: attachment;filename="'.$time.'网络舆情热点事件表'.'.xlsx"');
+        }else{
+            header('Content-Disposition: attachment;filename="'.'区委网信办网络舆情热点事件表'.'.xlsx"');
+        }
+        header('Content-Type: application/vnd.ms-excel');
+        header('Cache-Control: max-age=0');
+        header("Content-Type: application/download");
+        $objWriter = new PHPExcel_Writer_Excel2007($objPHPExcel);
+        $objWriter->save('php://output');
+    }
 }
