@@ -179,6 +179,24 @@ class Designate extends MY_controller
 
 
     /**
+     * 呼叫人(单位)树 接口
+     */
+    public function get_caller_tree()
+    {
+        $id = $this->input->post("id");
+        $this->load->model("Tree_Model", "tree");
+
+        if ($id == null || $id == "") {
+            $nodes = $this->tree->get_processor_group_tree();
+        } else {
+            $nodes = $this->tree->get_caller_nodes($id);
+        }
+        $this->output->set_content_type('application/json')
+            ->set_output($nodes);
+    }
+
+
+    /**
      * 事件处理人(单位)树 接口
      */
     public function get_event_processor_tree()
