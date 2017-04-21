@@ -310,18 +310,19 @@
 
 
     var zTreeSetting = {
-        check: {
+        check: {    
             enable: true,
-            chkboxType: {"Y": "", "N": ""}
+            chkboxType: {"Y": "ps", "N": "ps"}
         },
         async: {
             enable: true,
-            url: "/designate/get_caller_tree",
+            url: "/designate/get_processor_tree",
             autoParam: ["id", "name=n", "level=lv"]
             // dataFilter: filter
         },
         callback: {
             onAsyncSuccess: zTreeOnAsyncSuccess,//异步加载完执行
+            onCheck: zTreeOnChecked,    //节点选中时触发
         }
     } 
 
@@ -329,7 +330,14 @@
         //去掉组织结构的选择项
         var rootNode = zTree.getNodeByParam("id", 0, null);//得到组织结构树
         rootNode.nocheck = true;
-        zTree.refresh();//更改属性后，刷新界面
+
+       /* zTree.refresh();//更改属性后，刷新界面*/
+    }
+
+    function zTreeOnChecked( event, treeId, treeNode){
+        if( treeNode.isdepartment == 0){
+            treeNode.chkDisabled = false;
+        }
     }
 
     var zTree  = $.fn.zTree.init($("#z_tree"), zTreeSetting);
@@ -347,15 +355,18 @@
 
     $('.add_btn').click(function(){
         var nodes = zTree.getCheckedNodes(true);
+
         var arr_id = [];
         if(nodes.length === 0){
             layer.msg('请至少选择一位联系人');
         }else{
             for ( var i in nodes){
-                arr_id.push(nodes[i].id);
-                if (!$("#inputEmail1").tagExist(nodes[i].name + '-'+nodes[i].id)) {
-                    $("#inputEmail1").addTag(nodes[i].name + '-' + nodes[i].id);
-                }
+                if(nodes[i].isdepartment == 1){
+                    arr_id.push(nodes[i].id);
+                    if (!$("#inputEmail1").tagExist(nodes[i].name + '-'+nodes[i].id)) {
+                        $("#inputEmail1").addTag(nodes[i].name + '-' + nodes[i].id);
+                    }
+                }    
             }
             $('#receive_uid').val(JSON.stringify(arr_id));
         }
@@ -396,6 +407,7 @@
             dataType: 'json',
             success: function(data){
                 layer.msg("提交成功");
+                var nodes = zTree.checkAllNodes(false);
                 window.location.reload();
             }
         })
