@@ -1,0 +1,415 @@
+<link href="/assets/advanced-datatable/media/css/demo_page.css" rel="stylesheet">
+<link href="/assets/advanced-datatable/media/css/demo_table.css" rel="stylesheet">
+<!-- BOOTSTRAP DATEPICKER PLUGIN CSS -->
+<link rel="stylesheet" type="text/css" href="/assets/bootstrap-datepicker-r/css/bootstrap-datepicker.css">
+<!-- DATATABLE CSS -->
+<link rel="stylesheet" href="/assets/data-tables/DT_bootstrap.css">
+<!-- Jquery Tags Input CSS -->
+<link rel="stylesheet" href="/assets/jquery-tags-input/jquery.tagsinput.min.css">
+<!-- Ztree CSS -->
+<link rel="stylesheet" href="/assets/ztree/zTreeStyle/zTreeStyle.css">
+<!-- Common CSS -->
+<link rel="stylesheet" href="/css/common.css">
+<style type="text/css">
+    .panel-heading{ background: #3DA8F5; color: #fff }
+    .m-add-call{ cursor: pointer; position: absolute; right: 10px;top: 20px;background: #3DA8F5  }
+    .fa-refresh{ color: #fff }
+    .tools .fa-refresh{ color: #fff; background: none }
+    textarea{ margin-top: 10px;width:100%; min-height:120px; }
+    .user_info{ line-height:36px; }
+    .add_btn{ float: right; margin-right: 10px; }
+    .modal-dialog { width: 100%;max-width: 900px; min-height: 600px; }
+    #z_tree{ max-height: 350px; overflow-y: auto; }
+</style>
+
+<!-- BEGIN MAIN CONTENT -->
+<section id="main-content">
+    <section class="wrapper site-min-height">
+        <!-- BEGIN ROW  -->
+        <div class="row">
+            <div class="col-lg-12">
+                <section class="panel">
+                    <header class="panel-heading">
+                        <span>呼叫历史</span>
+                        <span class="tools pull-right">
+                           <a href="javascript:window.location.reload();" class="fa fa-refresh"></a>
+                           </span>
+                    </header>
+                    <div class="panel-body">
+                        <!-- 检索内容选择框 -->
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label>时间范围:</label>
+                                <div class="input-daterange input-group" id="datepicker">
+                                    <input type="text" id="start" class="input-sm form-control" name="start"/>
+                                    <span class="input-group-addon">到</span>
+                                    <input type="text" id="end" class="input-sm form-control" name="end"/>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <span class="label label-success m-add-call" data-toggle="modal" data-target="#add_call">添加呼叫</span>
+                            </div>
+                        </div>
+
+                        <div class="adv-table">
+                            <table class="display table table-bordered table-striped" id="event_search_table">
+                                <thead>
+                                <tr>
+                                    <th>编号</th>
+                                    <th>发起人</th>
+                                    <th>内容</th>
+                                    <th class="hidden-phone">发起时间</th>
+                                    <th>状态</th>
+                                    <th>查看详情</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+        <!-- END ROW  -->
+    </section>
+</section>
+<!-- END SECTION -->
+
+ <!-- call_detail modal start -->
+<div class="modal fade" id="call_detail" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">呼叫详情</h4>
+            </div>
+            <div class="modal-body">
+                <div>                   
+                    <div>发送人：<span id="detail_sender"></span></div>
+                    <div>发送时间：<span id="detail_time"></span></div>
+                    <div id="detail_content" style="padding: 12px; border: 1px solid #ccc">
+                    </div>
+                    <table class="table">
+                        <!--<thead>
+                            <tr>
+                                <th>姓名</th>
+                                <th>号码</th>
+                                <th>接收时间</th>
+                            </tr>
+                        </thead>-->
+                        <tbody id="target_list">
+                        </tbody>
+                    </table>        
+                </div>
+                
+                
+            </div>
+            <div class="modal-footer" style="border: none;">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+ <!-- call_detail modal end -->
+
+<!-- add_call modal start -->
+<div class="modal fade" id="add_call" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">添加呼叫</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-8 col-lg-8 ">
+                        <div class="panel panel-info">
+                            <div class="panel-heading">添加呼叫</div>
+                            <div class="panel-body user_info min-height">
+                                <div class="row">
+                                    <div class="col-md-2 col-lg-2">
+                                        收件人
+                                    </div>
+                                    <div class="col-md-10 col-md-10">
+                                        <input type="text" class="form-control" id="inputEmail1" placeholder="" name="tags">
+                                        <input type="hidden" id="receive_uid" name="user_id"/>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-2 col-lg-2">
+                                        内容
+                                    </div>
+                                    <div class="col-md-10 col-lg-10">
+                                        <textarea name="" id="user_content"></textarea>
+                                    </div>
+                                    <div class="col-md-10 col-lg-10 col-md-offset-2 col-lg-offset-2" style="text-align: center;margin-top:10px;">
+                                            <button class="btn btn-md btn-info" id="submit">提交</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 col-lg-4">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">通讯录 <button class="btn btn-xs btn-danger add_btn">添加</button></div>
+                            <div class="panel-body ztree  min-height"  id="z_tree">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</div>
+<!-- add_call modal end -->
+
+
+<!-- Load Plugin -->
+<!-- BOOTSTRAP DATEPICKER JS  -->
+<script src="/assets/bootstrap-datepicker-r/js/bootstrap-datepicker.js"></script>
+<script charset="utf-8"
+        src="/assets/bootstrap-datepicker-r/locales/bootstrap-datepicker.zh-CN.min.js"></script><!-- BOOTSTRAP DATEPICKER JS  -->
+<script language="javascript" src="/assets/data-tables/jquery.dataTables.min.js"></script>
+<script src="/assets/data-tables/dataTables.bootstrap.min.js"></script>
+<!-- Tags Input -->
+<script src="/assets/jquery-tags-input/jquery.tagsinput.min.js"></script>
+<!-- ztree -->
+<script type="text/javascript" src="/assets/ztree/jquery.ztree.all.min.js"></script>
+<script src="/js/public.js"></script>
+
+<!-- Page Script -->
+<script>
+
+    $('.input-daterange').datepicker({
+        language: "zh-CN"
+    });
+
+    //查询起始时间 监听
+    $("#start").on("changeDate", function (ev) {
+        $("#event_search_table").DataTable().ajax.reload(null, false);
+    });
+
+    //查询截止时间 监听
+    $("#end").on("changeDate", function (ev) {
+        $("#event_search_table").DataTable().ajax.reload(null, false);
+    });
+
+    $('#event_search_table').dataTable({
+
+        "bPaginate": true,
+        "bProcessing": false,                //是否显示正在处理提示信息。
+        "bLengthChange": true,
+        "bFilter": true,                     //是否使用内置的过滤功能。
+        "bSort": true,
+        "bInfo": true,
+        "bAutoWidth": false,
+        "bStateSave": true,
+        "iDisplayLength": 10,                //每页显示10条数据
+        "aaSorting": [[5, "desc"]],          //默认排序 第5列
+
+        "bServerSide": true,
+        "sAjaxSource": "/designate/history",
+        "sServerMethod": "GET",
+
+        "fnServerParams": function (aoData) { //发送额外参数
+            aoData.push({"name": "begin", "value": dateToTime($("#start").val())});
+            aoData.push({"name": "end", "value": dateToTime($("#end").val())});
+        },
+
+        "aoColumns": [
+            {
+                "sTitle": "编号",
+                "mData": "id",
+                'sClass': "text-center",
+                'orderable': false
+            },
+            {
+                "sTitle": "发起人",
+                "mData": "name",
+                'sClass': "text-center",
+                'orderable': false
+            },
+            {
+                "sTitle": "内容",
+                "mData": "content",
+                'sClass': "text-center",
+                'orderable': false,
+            },
+           
+            {
+                "sTitle": "发起时间",
+                "mData": "time",
+                'sClass': "text-center",
+            },
+            {
+                "sTitle": "状态",
+                "mData": "status",
+                'sClass': "text-center",
+                'orderable': false,
+                "mRender": function (data) {
+                    return data == 0 ? "<span class='label label-danger'>未完成</span>" 
+                            : "<span class='label label-success'>已完成</span>"
+                }
+            },
+            {
+                "sTitle": "操作",
+                "mData": "id",
+                'sClass': "text-center",
+                'orderable': false,
+                "mRender": function (data) {
+                   return '<a data-toggle="modal" data-target="#call_detail" data-id="'+ data +'" class="btn btn-info btn-xs call-detail">查看详情</a>'
+                }
+            }
+        ],
+
+        "oLanguage": {
+            "sLengthMenu": "每页显示 _MENU_ 条记录",
+            "sInfo": "从 _START_ 到 _END_ /共 _TOTAL_ 条数据",
+            "sInfoEmpty": "没有数据",
+            "sInfoFiltered": "(从 _MAX_ 条数据中检索)",
+            "oPaginate": {
+                "sFirst": "首页",
+                "sPrevious": "前一页",
+                "sNext": "后一页",
+                "sLast": "尾页"
+            },
+            "sZeroRecords": "暂无数据",
+            "sSearch": "搜索:"
+        }
+
+    });
+    //刷新表格
+    jQuery(".panel .tools .fa-refresh").click(function () {
+        $("#event_search_table").DataTable().ajax.reload(null, false);
+    });
+
+
+
+    // 查看详情按钮
+    $('#event_search_table').delegate('.call-detail', 'click', function(){
+        var id = $(this).data('id');
+        $.ajax({
+            url: '/designate/history/' + id,
+            type: 'get',
+            dataType: 'json',
+            success: function(data){
+                $('#detail_content').html(data.content);
+                $('#detail_sender').html(data.name);
+                $('#detail_time').html(data.time);
+                if(data.target){     
+                }
+            }
+
+        })
+    })
+
+
+
+    var zTreeSetting = {
+        check: {    
+            enable: true,
+            chkboxType: {"Y": "ps", "N": "ps"}
+        },
+        async: {
+            enable: true,
+            url: "/designate/get_caller_tree",
+            autoParam: ["id", "name=n", "level=lv"]
+            // dataFilter: filter
+        },
+        callback: {
+            onAsyncSuccess: zTreeOnAsyncSuccess,//异步加载完执行
+            onCheck: zTreeOnChecked,    //节点选中时触发
+        }
+    } 
+
+    function zTreeOnAsyncSuccess(event, treeId, treeNode, msg) {
+        //去掉组织结构的选择项
+        var rootNode = zTree.getNodeByParam("id", 0, null);//得到组织结构树
+        rootNode.nocheck = true;
+
+       /* zTree.refresh();//更改属性后，刷新界面*/
+    }
+
+    function zTreeOnChecked( event, treeId, treeNode){
+        if( treeNode.isdepartment == 0){
+            treeNode.chkDisabled = false;
+        }
+    }
+
+    var zTree  = $.fn.zTree.init($("#z_tree"), zTreeSetting);
+ 
+
+
+    //tag标签初始化
+    $('#inputEmail1').tagsInput({
+        width: 'auto',
+        defaultText: "",
+        delimiter: "_",
+        interactive: false,
+        onRemoveTag:delete_tags //删除tags标签回调函数
+    });
+
+    $('.add_btn').click(function(){
+        var nodes = zTree.getCheckedNodes(true);
+
+        var arr_id = [];
+        if(nodes.length === 0){
+            layer.msg('请至少选择一位联系人');
+        }else{
+            for ( var i in nodes){
+                if(nodes[i].isdepartment == 1){
+                    arr_id.push(nodes[i].id);
+                    if (!$("#inputEmail1").tagExist(nodes[i].name + '-'+nodes[i].id)) {
+                        $("#inputEmail1").addTag(nodes[i].name + '-' + nodes[i].id);
+                    }
+                }    
+            }
+            $('#receive_uid').val(JSON.stringify(arr_id));
+        }
+
+    });
+
+    function delete_tags(){
+        var total = $('#inputEmail1').val();
+        var str = total.split('_');
+        var new_id_arr = [];
+        for (var i in str){
+            var start = str[i].indexOf('-');
+            var id = str[i].substr(start+1);
+            new_id_arr.push(id);
+        }
+        $('#receive_uid').val(JSON.stringify(new_id_arr));
+    }
+
+    $('#submit').click(function(){
+        if($('#inputEmail1').val() === ''){
+            layer.msg("收件人不能为空");
+            return;
+        }
+
+        if($('#user_content').val() === ''){
+            layer.msg("输入内容不能为空");
+            return;
+        }
+        var arr_id = $('#receive_uid').val();
+        var content = $('#user_content').val();
+        $.ajax({
+            url: '/designate/addcall',
+            type: 'post',
+            data:{
+                "target":arr_id,
+                "content": content
+            },
+            dataType: 'json',
+            success: function(data){
+                layer.msg("提交成功");
+                var nodes = zTree.checkAllNodes(false);
+                window.location.reload();
+            }
+        })
+    })
+</script>

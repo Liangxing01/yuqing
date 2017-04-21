@@ -5,7 +5,11 @@
 
 <!-- Common CSS -->
 <link rel="stylesheet" href="/css/common.css">
-
+<style type="text/css">
+    .yq_execl{ margin: 10px 0; }
+    .yq_execl li a{ font-size: 15px; }
+    .panel-heading{ background: #3DA8F5;color: #fff; }
+</style>
 <!-- BEGIN MAIN CONTENT -->
 <section id="main-content">
     <section class="wrapper site-min-height">
@@ -14,10 +18,10 @@
             <div class="col-lg-12">
                 <section class="panel">
                     <header class="panel-heading">
-                        <span class="label label-primary">导出报表</span>
+                        导出报表
                         <span class="tools pull-right">
                            <a href="javascript:;" class="fa fa-refresh"></a>
-                           </span>
+                        </span>
                     </header>
                     <div class="panel-body">
                         <!-- 检索内容选择框 -->
@@ -31,21 +35,23 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-1 m-t-24">
+                            <div class="col-md-8 m-t-24">
                                 <button title="清空" class="btn btn-info" id="reset-button">清空
                                 </button>
                             </div>
 
-                            <div class="m-t-24">
-                                <button title="导出网络台账类别表"  class="btn btn-warning" id="type">导出网络台账类别表
-                                </button>
-                                <button title="导出网络舆情台账"  class="btn btn-warning" id="yuqing">导出网络舆情台账
-                                </button>
+                            <div class="col-md-12">
+                                <ul class="list-group yq_execl">
+                                    <li class="list-group-item"><a href="javascript:void(0)" id="type" title="导出网络台账类别表">导出网络台账类别表</a></li>
+                                    <li class="list-group-item"><a href="javascript:void(0)" id="num" title="导出网络舆情数量表">导出网络舆情数量表</a></li>
+                                    <li class="list-group-item"><a href="javascript:void(0)" id="exp_time" title="导出网络舆情首回时间表">导出网络舆情首回时间表</a></li>
+                                    <li class="list-group-item"><a href="javascript:void(0)" id="yuqing" title="导出网络舆情台账">导出网络舆情台账</a></li>
+                                    <li class="list-group-item"><a href="javascript:void(0)" id="rep_time" title="导出网络舆情回复办结时间表">导出网络舆情回复办结时间表</a></li>
+                                    <li class="list-group-item"><a href="javascript:void(0)" id="hot" title="导出网络舆情热点事件表">导出网络舆情热点事件表</a></li>
+                                </ul>
                             </div>
-
                         </div>
-
-
+                    </div>
                 </section>
             </div>
         </div>
@@ -73,10 +79,23 @@
 
     $("#type").on('click',function () {
         location.href = "/report_sheet/export_types?start="+dateToTime($("#start").val())+'&end='+dateToTime($("#end").val());
-    })
+    });
 
     $("#yuqing").on('click',function () {
         location.href = "/report_sheet/export_yuqing?start="+dateToTime($("#start").val())+'&end='+dateToTime($("#end").val());
-    })
+    });
+
+    $("#num").on('click',function () {
+        location.href = "/report_sheet/export_num?start="+dateToTime($("#start").val())+'&end='+dateToTime($("#end").val());
+    });
+    $("#exp_time").on('click',function () {
+        location.href = "/report_sheet/export_time?start="+dateToTime($("#start").val())+'&end='+dateToTime($("#end").val());
+    });
+    $("#rep_time").on('click',function () {
+        location.href = "/report_sheet/export_rep_time?start="+dateToTime($("#start").val())+'&end='+dateToTime($("#end").val());
+    });
+    $("#hot").on('click',function () {
+        location.href = "/report_sheet/export_hot?start="+dateToTime($("#start").val())+'&end='+dateToTime($("#end").val());
+    });
 
 </script>

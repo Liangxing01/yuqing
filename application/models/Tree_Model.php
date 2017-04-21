@@ -288,6 +288,34 @@ class Tree_Model extends CI_Model
 
 
     /**
+     * 查询子节点
+     * @param $node_id
+     * @return Json 字符串
+     */
+    public function get_caller_nodes($node_id)
+    {
+        $root = $this->db->select("name, lft, rgt, type, uid")
+            ->where(array("uid" => $node_id, "type !=" => 1))
+            ->get("relation")->row_array();
+
+        $tree_nodes = $this->db->select("relation.name, lft, rgt, type, relation.uid")
+            ->join("user", "user.id = relation.uid")
+            ->where(array("type" => 1, "lft>" => $root["lft"], "rgt<" => $root["rgt"],'user.phone !='=>null))
+            ->get("relation")->result_array();
+
+        $tree = [];
+        foreach ($tree_nodes AS $node) {
+            $tree[] = array(
+                "id" => $node["uid"],
+                "name" => $node["name"],
+                "isdepartment" => $node["type"]
+            );
+        }
+        return json_encode($tree);
+    }
+
+
+    /**
      * 获得 事件已指派 处理人(单位)
      * @param $event_id
      * @return Json字符串
