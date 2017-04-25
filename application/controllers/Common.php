@@ -445,6 +445,64 @@ class Common extends MY_Controller
         }
     }
 
+    /**
+     * 接口：事件流页面上传图片
+     */
+    public function log_upload_img(){
+        $this->load->model("Common_Model","common");
+        $config = array();
+        $config['upload_path'] = './uploads/pic/log_pic';
+        $config['allowed_types'] = 'jpeg|png|jpg';
+        $config['max_size'] = 5000;//大小限制5M
+        $config['max_width'] = 150000;
+        $config['max_height'] = 150000;
+        $config['encrypt_name'] = true;
+
+        $this->load->library('upload', $config);
+
+        if (!$this->upload->do_upload('file')) {
+            $error = $this->upload->display_errors();
+            $res = array(
+                'code' => 2,
+                'msg' => "图片超过5M!",
+                'data' => array(
+                    'src'   =>'',
+                    'title' => ''
+                )
+            );
+            echo json_encode($res);
+        } else {
+            $data = array('upload_data' => $this->upload->data());
+            $upload_data = $data['upload_data'];
+            //生成 文件保存 路径
+            $upload_data['loc'] = '/uploads/pic/log_pic/' . $upload_data['file_name'];
+            $re = $this->common->insert_img($upload_data,$config['allowed_types'],0);
+
+            if($re['res'] == 1){
+                $res = array(
+                    'code' => 0,
+                    'msg'  => $re['msg'],
+                    'data' => array(
+                        'src' => $re['src'],
+                        'title' => ''
+                    )
+                );
+            }else{
+                $res = array(
+                    'code' => 1,
+                    'msg'  => $re['msg'],
+                    'data' => array(
+                        'src' => '',
+                        'title' => ''
+                    )
+                );
+            }
+
+            echo json_encode($res);
+
+        }
+    }
+
 
     /**
      * 接口：通过 附件id 获取 附件信息
@@ -594,7 +652,7 @@ class Common extends MY_Controller
         $config = array();
         //先保存在 temp 临时目录
         $config['upload_path'] = './uploads/temp/';
-        $config['allowed_types'] = 'doc|docx|ppt|pdf|pptx|xlsx|word|rar|zip|jpeg|png|jpg';
+        $config['allowed_types'] = 'doc|docx|ppt|pdf|pptx|xlsx|xls|word|rar|zip|jpeg|png|jpg';
         $config['max_size'] = 1000000;//大小限制100M
         $config['max_width'] = 0;
         $config['max_height'] = 0;
@@ -611,6 +669,7 @@ class Common extends MY_Controller
         } else {
             $data = array('upload_data' => $this->upload->data());
             $upload_data = $data['upload_data'];
+
             //生成 文件保存 路径
             $upload_data['loc'] = '/uploads/temp/' . $upload_data['file_name'];
             $re = $this->common->insert_file_info($upload_data,0,$config['allowed_types']);

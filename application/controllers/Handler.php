@@ -275,6 +275,7 @@ class Handler extends MY_Controller {
 
         $user_info = $this->my_model->get_user_info($uid);
         $this->assign('username',$user_info[0]['username']);
+        $this->assign('groupname', $user_info[0]['group_name']);
         $this->assign('useracter',$user_info[0]['avatar']);
         $this->assign('usertype',$usertype);
 

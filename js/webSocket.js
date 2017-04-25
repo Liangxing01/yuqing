@@ -23,11 +23,11 @@ function get_webSocket_msg() {
     client_socket.onmessage = function (ev) {
         var data = $.parseJSON(ev.data);
         if (data) {
-            if(data.type != "client"){
+            if (data.type != 233) {
                 message.show();
             }
             switch (data.type) {
-                case "client":
+                case 233:
                     bind_client_to_uid(data.client_id);
                     break;
                 case 0:
@@ -36,10 +36,10 @@ function get_webSocket_msg() {
                     add_type_list(data);
                     break;//添加消息信息
                 case 3:
-                    message_info($('#notification_bar2'),data);
+                    message_info($('#notification_bar2'), data);
                     break;//事件首回提醒
                 case 4:
-                    message_info($('#notification_bar1'),data);
+                    message_info($('#notification_bar1'), data);
                     break;//超时提醒
             }
         }
@@ -60,10 +60,10 @@ function get_webSocket_msg() {
 
 var msg_num = 1;    //提醒框的偏移量
 //向消息记录添加消息信息
-function add_type_list(data){
+function add_type_list(data) {
     var title = ''; //提示框的title
     var list = '<tr><td></td>';
-    switch (data.type){
+    switch (data.type) {
         case 0:
             list += '<td><span class="label label-info">信息上报</span></td>';
             title = '信息上报提醒';
@@ -82,31 +82,37 @@ function add_type_list(data){
     $('#msg').prepend(list);
     $('#msg tr:eq(5)').remove();
     reload_num();
-    var width = $(window).width()-300;
-    var height = $(window).height()-10;
+    var width = $(window).width() - 300;
+    var height = $(window).height() - 10;
     layer.open({
-        type:1,
-        title:title,
-        content: '<a target="_blank" href=' + data.url + '>' + data.title + '</>',
-        style:'text-align:center',
-        area:['300px','150px'],
-        offset:[height-160*(msg_num%3),width],
-        shade:0,
+        type: 1,
+        title: title,
+        content: '<a class="msg-title" target="_blank" href=' + data.url + '>' + data.title + '</>',
+        style: 'text-align:center',
+        area: ['300px', '150px'],
+        offset: [height - 160 * (msg_num % 3), width],
+        shade: 0,
         closeBtn: 1,
-        btn:"查看",
-        btnAlign:'c',
-        yes:function(){
-            window.open(url, "target=_blank");
+        btn: "查看",
+        btnAlign: 'c',
+        yes: function () {
+            window.open(data.url, "target=_blank");
         },
-        anim:2,
-        time:30000*(msg_num%3)
-    })
+        anim: 2,
+        time: 30000 * (msg_num % 3)
+    });
+
+    $('.msg-title').parent().eq(1).css({
+        textAlign: "center",
+        fontSize: "16px",
+        marginTop: "5px"
+    });
     msg_num++;
 }
 
 
 //消息提醒
-function message_info(target,data) {
+function message_info(target, data) {
     var val = target.find('.bar_num').html();
     target.find('.bar_num').html(parseInt(val) + 1);
     target.find('.bar_num').show();
@@ -116,25 +122,25 @@ function message_info(target,data) {
     str += '<li>';
     str += '<a href="/common/event_detail?eid="' + data.eid + '" title="' + data.title + '&option=cancel_alert">';
     str += '<p class="alarm_title"' + data.title + '></p>';
-    str += '<span class="small italic">' + timeToDate(data.time*1000) + '</span>';
+    str += '<span class="small italic">' + timeToDate(data.time * 1000) + '</span>';
     str += '</a></li>';
     target.find('.notify-all').before(str);
 
-    if(target.attr('id') === 'notification_bar1'){
+    if (target.attr('id') === 'notification_bar1') {
         var title = ['超时提醒', 'color:#fff;background:red'];
     }
-    if(target.attr('id') === 'notification_bar2'){
+    if (target.attr('id') === 'notification_bar2') {
         var title = ['事件首回提醒', 'color:#fff;background:blue']
     }
     layer.open({
         type: 1,
         title: title,
-        content: '<a  href="/common/event_detail?eid='+data.eid+'&option=cancel_alert">点击查看</a>',
+        content: '<a  href="/common/event_detail?eid=' + data.eid + '&option=cancel_alert">点击查看</a>',
         area: ['200px', '150px'],
         offset: 'rb',
         btnAlign: 'c',
         shade: 0,
-        time: 15000,
+        time: 15000
     });
 }
 
@@ -182,7 +188,7 @@ var message = {   //title闪烁
     timer: null,
     // 显示新消息提示
     show: function () {
-        if(message.timer != null){
+        if (message.timer != null) {
             return;
         }
         var title = message.title.replace("【　　　】", "").replace("【新消息!!】", "");
@@ -195,7 +201,7 @@ var message = {   //title闪烁
             }
             else {
                 document.title = "【　　　】" + title
-            };
+            }
         }, 600);
         //return [message.timer, message.title];
     },
@@ -205,7 +211,6 @@ var message = {   //title闪烁
         document.title = message.title;
     }
 };
-
 
 
 /**

@@ -52,7 +52,7 @@ class Reporter extends MY_controller
     public function reportOrUpdate()
     {
         $data = $this->input->post();
-        $title = $data['title'];
+        $title = trim($data['title']);
         $url = $data['url'];
         $source = $data['source'] == 'other' ? $data['other'] : $data['source'];
         $description = $data['description'];

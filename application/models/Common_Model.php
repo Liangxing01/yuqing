@@ -88,10 +88,12 @@ class Common_Model extends CI_Model
         if (!$check) {
             return false;
         }
-        $data = $this->db->select("l.description,l.pid,l.id,l.time,user.name,l.speaker,user.avatar")
+        $data = $this->db->select("l.description,l.pid,l.id,l.time,user.name,l.speaker, group.name AS group, user.avatar")
             ->from('event_log AS l')
             ->where('l.event_id', $eid)
             ->join('user','l.speaker = user.id')
+            ->join('user_group', 'user_group.uid = l.speaker', 'left')
+            ->join('group', 'group.id = user_group.gid', 'left')
             ->order_by('time', 'DESC')->get()
             ->result_array();
         if (empty($data)) {
@@ -109,6 +111,7 @@ class Common_Model extends CI_Model
                         'time' => $words['time'],
                         'desc' => $words['description'],
                         'name' => $words['name'],
+                        'group' => $words['group'],
                         'avatar' => $words['avatar'],
                         'usertype' => $this->check_is_watcher($eid, $words['speaker']) ? 1 : 0,
                         'comment' => array()
@@ -121,6 +124,7 @@ class Common_Model extends CI_Model
                         'time' => $words['time'],
                         'desc' => $words['description'],
                         'name' => $words['name'],
+                        'group' => $words['group'],
                         'avatar' => $words['avatar'],
                         'pid' => $words['pid']
                     );
@@ -136,6 +140,7 @@ class Common_Model extends CI_Model
                             'id' => $words['id'],
                             'time' => $words['time'],
                             'name' => $words['name'],
+                            'group' => $words['group'],
                             'desc' => $words['desc'],
                             'avatar' => $words['avatar'],
                             'pid' => $words['pid']
@@ -567,10 +572,11 @@ class Common_Model extends CI_Model
     }
 
     /**
-     * 邮件 Body 插入图片
+     * 插入图片
+     * @param $belong_email 图片是否属于邮件
      * return 路径
      */
-    public function insert_img($file_data,$allow_mime){
+    public function insert_img($file_data,$allow_mime,$belong_email = 1){
         //判断Mime  转换 文件格式
         $mimes = get_mimes();
         $file_type = '';
@@ -597,7 +603,7 @@ class Common_Model extends CI_Model
             'upload_time' => time(),
             'loc'      => $file_data['loc'],
             'is_exist' => 1,
-            'belong_email' => 1
+            'belong_email' => $belong_email
         );
 
         //开始运行事务
