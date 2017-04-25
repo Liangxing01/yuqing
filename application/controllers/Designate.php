@@ -980,7 +980,7 @@ class Designate extends MY_controller
 
     function call() {
         $this->assign("active_title", "call");
-        $this->assign("active_parent", "file_parent");
+        $this->assign("active_parent", "meetting_parent");
         $this->all_display('call/call.html');
 	}
 	
