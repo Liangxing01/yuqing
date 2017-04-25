@@ -502,7 +502,24 @@ class Admin_Model extends CI_Model {
         }
     }
 
-
+    public function people2json(&$arr)
+    {
+        $item=current($arr);
+        $res=['name'=>$item['name']];
+        $next=next($arr);
+        if ($next['type']==1){
+            while ($next['type']==1&&$next['rgt']<$item['rgt']) {
+                $res['user'][]=['name'=>$next['name'],'id'=>$next['uid']];
+                $next=next($arr);
+            }
+        }else{
+            while ($next&&($next['type']==0||$next['type']==2)&&$next['rgt']<$item['rgt']) {
+                $res['area'][]=$this->people2json($arr);
+                $next=current($arr);//函数运行后，指针指向后一个节点，直接取当前节点即可。
+            }
+        }
+        return $res;
+    }
 
 
 }

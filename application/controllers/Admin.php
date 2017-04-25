@@ -440,5 +440,11 @@ class Admin extends MY_Controller
         var_dump($res_arr);
     }
 
-
+    public function save_people_json()
+    {
+        $data=$this->db->order_by('lft','asc')->get('relation')->result_array();
+        $res=$this->admin_model->people2json($data);
+        $res=[$res['area'][0],$res['area'][2],$res['area'][3]];
+        file_put_contents(FCPATH.'test.json',json_encode($res));
+    }
 }
