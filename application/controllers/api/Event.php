@@ -101,4 +101,17 @@ class Event extends CI_Controller
             ->set_output(json_encode($result));
     }
 
+
+    /**
+     * 更新事件状态(待处理 -> 处理中)
+     */
+    public function event_state_update()
+    {
+        $event_id = $this->input->post("id");
+        $result = $this->event->event_state_update($event_id);
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($result));
+    }
+
 }

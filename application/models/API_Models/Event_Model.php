@@ -526,6 +526,19 @@ class Event_Model extends CI_Model
 
 
     /**
+     * 事件状态更新
+     * @param int $event_id 事件ID
+     * @return array
+     */
+    public function event_state_update($event_id)
+    {
+        $this->db->where(array('event_id' => $event_id, 'state' => '未处理'))
+            ->update('event_designate', array("state" => "处理中"));
+        return $this->success;
+    }
+
+
+    /**
      * 判断是否是事件负责人
      * @param int $uid
      * @param array $gid
