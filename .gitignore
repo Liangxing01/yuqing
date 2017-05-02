@@ -39,3 +39,4 @@ application/views/upload_success.php
 *.sublime-project
 
 /demo/
+/apk/
