@@ -23,6 +23,38 @@ class MY_Model extends CI_Model
         return $res;
     }
 
+    /**
+     * @param $uid
+     * @return boolean
+     * 检查用户是否为初始密码
+     */
+    public function check_pwd_default(){
+        $uid = $this->session->userdata('uid');
+        $pwd = $this->db->select('password')
+            ->from('user')
+            ->where('id',$uid)
+            ->get()->row_array();
+        if(md5('123456') == $pwd['password']){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public function change_pwd($pass){
+        $update_arr = array(
+            'password' => md5($pass)
+        );
+        $uid = $this->session->userdata('uid');
+        $this->db->where('id',$uid);
+        $res = $this->db->update('user',$update_arr);
+        if($res){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     //获取指派任务数
     public function get_zp_tasks($uid)
     {

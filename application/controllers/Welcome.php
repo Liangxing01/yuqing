@@ -33,6 +33,31 @@ class Welcome extends MY_Controller
         }
     }
 
+    /**
+     * 接口：检查密码是否为 123456 默认密码，如果是强制弹出修改密码
+     */
+    public function is_default_pwd(){
+        $res = $this->my_model->check_pwd_default();
+        if($res){
+            echo 1;
+        }else{
+            echo 0;
+        }
+    }
+
+    /**
+     * 接口：强制修改密码
+     */
+    public function change_pwd(){
+        $new_pass = $this->input->get('new_pass');
+        $res = $this->my_model->change_pwd($new_pass);
+        if($res){
+            echo 1;
+        }else{
+            echo 0;
+        }
+    }
+
 
     /*
      * 主页接口：获取指派工作和处理工作任务数接口
