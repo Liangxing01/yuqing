@@ -220,6 +220,7 @@ class MY_Model extends CI_Model
             ->from('group as g')
             ->join('user_group as ug', 'ug.uid =' . $uid)
             ->where('g.id = ug.gid')
+            ->where('ug.is_exist',1)
             ->get()->result_array();
         $deps = "";
         foreach ($dep_data as $dep) {
