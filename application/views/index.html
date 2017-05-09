@@ -1,18 +1,18 @@
 ﻿<style type="text/css">
 
-	.zhipai{background: url(../../img/zp.png) no-repeat; display: block; width: 119px; height: 34px; text-align: center; line-height: 34px; font-size: 16px; color: white; margin-bottom: 10px;}
-	.chuli{background: url(../../img/cl.png) no-repeat; display: block; width: 119px; height: 34px; text-align: center; line-height: 34px; font-size: 16px; color: white; margin-bottom: 10px;}
-	.tq{ background: #72d0eb; border-top-left-radius: 4px; border-top-right-radius: 4px; text-align: center;}
-	.tq span{ font-size: 1.4em; color: white; line-height: 88px;}
-	.tq span b{ font-size: 3.4em; font-weight: normal;}
-	.tq span sup{ font-size: 2.0em;}
-	.tq p{ font-size: 1.4em;  color: white; margin: 0px;}
-	.tq1{ background: #FFFFFF; border-bottom-left-radius: 4px; border-bottom-right-radius: 4px; text-align: center;}
-	.tq1 span{ font-size: 1.4em; color: #72d0eb; line-height: 88px;}
-	.tq1 span b{ font-size: 3.4em; font-weight: normal;}
-	.tq1 p{ font-size: 1.4em;  color: #72d0eb; margin: 0px;}
-	.xx{ background: url(../../img/index_xx.png) no-repeat -2px -5px;}
-	.xxt{ font-size: 2.0em; color: white;}
+  .zhipai{background: url(../../img/zp.png) no-repeat; display: block; width: 119px; height: 34px; text-align: center; line-height: 34px; font-size: 16px; color: white; margin-bottom: 10px;}
+  .chuli{background: url(../../img/cl.png) no-repeat; display: block; width: 119px; height: 34px; text-align: center; line-height: 34px; font-size: 16px; color: white; margin-bottom: 10px;}
+  .tq{ background: #72d0eb; border-top-left-radius: 4px; border-top-right-radius: 4px; text-align: center;}
+  .tq span{ font-size: 1.4em; color: white; line-height: 88px;}
+  .tq span b{ font-size: 3.4em; font-weight: normal;}
+  .tq span sup{ font-size: 2.0em;}
+  .tq p{ font-size: 1.4em;  color: white; margin: 0px;}
+  .tq1{ background: #FFFFFF; border-bottom-left-radius: 4px; border-bottom-right-radius: 4px; text-align: center;}
+  .tq1 span{ font-size: 1.4em; color: #72d0eb; line-height: 88px;}
+  .tq1 span b{ font-size: 3.4em; font-weight: normal;}
+  .tq1 p{ font-size: 1.4em;  color: #72d0eb; margin: 0px;}
+  .xx{ background: url(../../img/index_xx.png) no-repeat -2px -5px;}
+  .xxt{ font-size: 2.0em; color: white;}
     .demo-lx{text-align:center;text-decoration: blink}
     #msg tr td a{
       width: 300px;
@@ -85,8 +85,17 @@
       
     }
 
-    .m-notification-list{
-      overflow-y: auto;
+    .m-notification-list{ overflow-y: auto; }
+    .m-notification-num{ 
+      display: inline-block; 
+      background: #e4393c; 
+      color: #fff;
+      padding: 0 5px;
+      border-radius: 50%;
+      position: absolute;
+      top: -8px;
+      left: -8px;
+      font-size: 12px;
     }
     .m-notification-list li{
       background: #72d0eb;
@@ -119,25 +128,26 @@
     }
     .m-notification-body::-webkit-scrollbar-track     {
         -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);  
-	    border-radius: 10px;  
-	    background-color: #F5F5F5;
+      border-radius: 10px;  
+      background-color: #F5F5F5;
     }
     .m-notification-body::-webkit-scrollbar-thumb{
         border-radius: 10px;  
-	    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);  
-	    background-color: rgb(6, 181, 181); 
+      -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);  
+      background-color: rgb(6, 181, 181); 
     }
 
 </style>
-      <!-- BEGIN MAIN CONTENT -->
-      <link href="/css/tasks.css" rel="stylesheet"><!-- TASK CSS-->
+<!-- BEGIN MAIN CONTENT -->
+<link href="/css/tasks.css" rel="stylesheet"><!-- TASK CSS-->
+<link rel="stylesheet" type="text/css" href="/css/event_analysis.css"> <!-- 事件分析 -->
 <script language="javascript" src="/js/public.js"></script>
 
       <section id="main-content">
-	  <!-- BEGIN WRAPPER  -->
+    <!-- BEGIN WRAPPER  -->
         <section class="wrapper site-min-height">
-		  <!-- BEGIN ROW  -->
-		  	<div class="zhipai js-zhipai">指派任务数</div>
+      <!-- BEGIN ROW  -->
+        <div class="zhipai js-zhipai">指派任务数</div>
           <div class="row state-overview js-zhipai">
             <div class="col-lg-3 col-sm-6">
                 <section class="panel">
@@ -208,9 +218,9 @@
               </section>
             </div>
           </div>
-		   <!-- END ROW  -->
-		   <!--处理工作数 -->
-		   <div class="chuli js-chuli">处理任务数</div>
+       <!-- END ROW  -->
+       <!--处理工作数 -->
+       <div class="chuli js-chuli">处理任务数</div>
           <div class="row state-overview js-chuli">
             <div class="col-lg-3 col-sm-6">
                 <section class="panel">
@@ -281,8 +291,8 @@
               </section>
             </div>
           </div>
-		   <!--处理工作数-->
-		   <div class="row">
+       <!--处理工作数-->
+       <div class="row">
           <div class="col-md-6">
           <!-- START PANEL -->
           <section class="panel">
@@ -377,20 +387,21 @@
                 </table>
               </section>
             </div>
-
           </div>
-		   <!-- END ROW  -->
-		    <!-- BEGIN ROW  -->
+       <!-- END ROW  -->
+        <!-- BEGIN ROW  -->
 
-		   <!-- END ROW  -->
-		    <!-- BEGIN ROW  -->
+       <!-- END ROW  -->
+        <!-- BEGIN ROW  -->
 
-		   <!-- END ROW  -->
+       <!-- END ROW  -->
         </section>
-		<!-- END WRAPPER  -->
+    <!-- END WRAPPER  -->
         <section class="m-notification-content">
               <div class="m-notification-title">
                   通知列表
+                  <span class="m-notification-num">
+                  </span>
               </div>
               <div class="m-notification-body">
                   <ul class="m-notification-list">
@@ -467,6 +478,7 @@
                 $('.m-notification-list').html("<li>暂无更多消息</li>")
               }else{
                 var list = '';
+                $('.m-notification-num').html(data.length);
                 for( var i = 0, len = data.length; i < len; i++){
                   list += '<li>'
                   list += '<h4 class="m-notification-listTitle">' + data[i].title + '</h4>';

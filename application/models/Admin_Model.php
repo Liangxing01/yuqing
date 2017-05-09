@@ -113,7 +113,7 @@ class Admin_Model extends CI_Model {
             'type'  => $data['type']
 
         );
-        $a = $this->insert_children_node($insert_data);
+        $this->insert_children_node($insert_data);
 
         if($this->db->trans_status() === FALSE){
             $this->db->trans_rollback();
@@ -137,19 +137,18 @@ class Admin_Model extends CI_Model {
         $uid   = $data['uid'];
         $name  = $data['name'];
         $type  = $data['type'];
+        //判断type 如果是1，则是父集合type为0，如果是0则父集合为2
+        if($type == 0){
+            $parent_type = 2;
+        }else if($type == 1){
+            $parent_type = 0;
+        }
         $res   = false;
 
         //找出待插入节点的左右值
         $parent_node_info = $this->db->select('lft,rgt')->from('relation')
             ->where('uid',$parent_id)
-            ->group_start()
-            ->where('type',0)
-<<<<<<< HEAD
-            ->or_where('type',2)
-=======
-            //->or_where('type',2)
-            ->group_end()
->>>>>>> master
+            ->where('type',$parent_type)
             ->get()->row_array();
 
         if(!empty($parent_node_info)){

@@ -90,6 +90,46 @@ class Report_sheet extends MY_Controller {
     }
 
     /**
+     * 导出网络舆情数量表
+     */
+    public function export_num(){
+        $start = (int)$this->input->get('start');
+        $end   = (int)$this->input->get('end');
+        //导出报表
+        $this->sheet->export_num($start,$end);
+    }
+
+    /**
+     * 导出网络舆情首回时间表
+     */
+    public function export_time(){
+        $start = (int)$this->input->get('start');
+        $end   = (int)$this->input->get('end');
+        //导出报表
+        $this->sheet->export_time($start,$end);
+    }
+
+    /**
+     * 导出网络舆情热点事件表
+     */
+    public function export_hot(){
+        $start = (int)$this->input->get('start');
+        $end   = (int)$this->input->get('end');
+        //导出报表
+        $this->sheet->export_hot($start,$end);
+    }
+
+    /**
+     * 导出网络舆情回复办结时间表
+     */
+    public function export_rep_time(){
+        $start = (int)$this->input->get('start');
+        $end   = (int)$this->input->get('end');
+        //导出报表
+        $this->sheet->export_rep_time($start,$end);
+    }
+
+    /**
      * 单一舆情综合情况导出
      */
     public function export_event(){

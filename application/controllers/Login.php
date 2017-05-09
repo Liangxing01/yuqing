@@ -56,7 +56,7 @@ class Login extends MY_controller
                 "uid" => $result["uid"],
                 "ip" => get_ip(),
                 "time" => time(),
-                "type" => $login_type == 1 ? 1 : 0
+                "type" => $login_type
             );
             $this->load->model("User_Model", "user");
             $this->user->write_login_log($login_info);
@@ -65,11 +65,13 @@ class Login extends MY_controller
             $return["code"] = 0;
             $return["message"] = "登陆成功";
             if ($login_type == 1) {
-                $return["m_token"] = $result["m_token"];
-                $return['name'] = $result["name"];
-                $return['gname'] = $result["gname"];
-                $return['avatar'] = $result["avatar"];
-                $return['privilege'] = $result["privilege"];
+                $return['data'] = array(
+                    'm_token' => $result["m_token"],
+                    'name' => $result["name"],
+                    'gname' => $result["gname"],
+                    'avatar' => $result["avatar"],
+                    'privilege' => $result["privilege"]
+                );
             }
             $this->output
                 ->set_content_type('application/json')
@@ -80,5 +82,27 @@ class Login extends MY_controller
                 ->set_output(json_encode($return));
         }
     }
+
+    function callBack() {
+		$row=file_get_contents('php://input');
+		log_message('debug',$row);
+		$input=json_decode($row);
+		if (!$input) show_404();
+		if ($input['hangup_cause']='NORMAL_CLEARING'){
+			$target=$this->db->find('call_log', $input['calloid'],'id','target');
+			if (!$target) show_404();
+			$target=json_decode($target['target'],true);
+			foreach ($target as $key => $value) {
+				if ($value['phone']==$input['telnum']){
+					$value['status']=1;
+					$value['time']=time();
+					$target[$key]=$value;
+					break;
+				}
+			}
+			$this->db->where('id',$input['calloid'])
+			->update('call_log',['target'=>json_encode($target)]);
+		}
+	}
 
 }

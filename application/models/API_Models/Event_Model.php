@@ -73,9 +73,11 @@ class Event_Model extends CI_Model
         switch ($type) {
             case 'f_record':
                 // 返回父评论
-                $data = $this->db->select("event_log.id, event_log.speaker, user.name, event_log.description, event_log.time, user.avatar, (select count(id) from yq_event_log AS log where log.event_id = $event_id AND log.pid = yq_event_log.id) AS comments_num")
+                $data = $this->db->select("event_log.id, event_log.speaker, group.name AS group, user.name, event_log.description, event_log.time, user.avatar, (select count(id) from yq_event_log AS log where log.event_id = $event_id AND log.pid = yq_event_log.id) AS comments_num")
                     ->from("event_log")
                     ->join("user", "event_log.speaker = user.id")
+                    ->join("user_group", "user_group.uid = event_log.speaker", "left")
+                    ->join("group", "group.id = user_group.gid", "left")
                     ->where(array("event_log.event_id" => $event_id, "pid" => null))
                     ->limit($size, $start)
                     ->order_by("time", "desc")
@@ -90,9 +92,11 @@ class Event_Model extends CI_Model
                 break;
             case 'c_record':
                 // 返回子评论
-                $data = $this->db->select("event_log.id, event_log.speaker, user.name, event_log.description, event_log.time, user.avatar")
+                $data = $this->db->select("event_log.id, event_log.speaker, group.name AS group, user.name, event_log.description, event_log.time, user.avatar")
                     ->from("event_log")
                     ->join("user", "event_log.speaker = user.id")
+                    ->join("user_group", "user_group.uid = event_log.speaker", "left")
+                    ->join("group", "group.id = user_group.gid", "left")
                     ->where("pid", $parent_id)
                     ->limit($size, $start)
                     ->order_by("time", "desc")
@@ -157,6 +161,24 @@ class Event_Model extends CI_Model
         $user_data_type = $user_type . "_" . $data_type;
         switch ($user_data_type) {
             case 'manager_all_event':
+                $data = $this->db->select("event.id, event.title, A.name AS manager, B.name AS main_processor, C.name AS main_group, event.rank, event.state, event.start_time")
+                    ->from("event")
+                    ->like("event.title", $keyword)
+                    ->join("user A", "A.id = event.manager", "left")
+                    ->join("user B", "B.id = event.main_processor", "left")
+                    ->join("group C", "C.id = event.group", "left")
+                    ->order_by("start_time", "desc")
+                    ->limit($size, $start)
+                    ->get()->result_array();
+                $total = $this->db->select("event.id")
+                    ->like("event.title", $keyword)
+                    ->from("event")
+                    ->get()->num_rows();
+                $this->success['data'] = $data;
+                $this->success['total'] = $total;
+                return $this->success;
+                break;
+            case 'manager_done_event':
                 $data = $this->db->select("event.id, event.title, A.name AS manager, B.name AS main_processor, C.name AS main_group, event.rank, event.state, event.start_time")
                     ->from("event")
                     ->where("event.state", "已完成")
@@ -336,11 +358,15 @@ class Event_Model extends CI_Model
         }
         // 查询数据
         $data = array();
-        $data["detail"] = $this->db->select("event.id, event.title, event.description, first_reply AS reply_time, A.name AS manager, B.name AS main_processor, C.name AS main_group, event.rank, event.state, event.start_time, event.end_time")
+        $data["detail"] = $this->db->select("event.id, event.title, event.description, first_reply AS reply_time, A.name AS manager, E.name AS manager_group, B.name AS main_processor, G.name AS main_processor_group, C.name AS main_group, event.rank, event.state, event.start_time, event.end_time")
             ->from("event")
             ->join("user A", "A.id = event.manager", "left")
             ->join("user B", "B.id = event.main_processor", "left")
             ->join("group C", "C.id = event.group", "left")
+            ->join("user_group D", "D.uid = event.manager", "left")
+            ->join("group E", "D.gid = E.id", "left")
+            ->join("user_group F", "F.uid = event.main_processor", "left")
+            ->join("group G", "F.gid = G.id", "left")
             ->where("event.id", $event_id)
             ->get()->row_array();
         // 信息列表

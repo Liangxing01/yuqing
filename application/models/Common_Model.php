@@ -88,10 +88,12 @@ class Common_Model extends CI_Model
         if (!$check) {
             return false;
         }
-        $data = $this->db->select("l.description,l.pid,l.id,l.time,user.name,l.speaker,user.avatar")
+        $data = $this->db->select("l.description,l.pid,l.id,l.time,user.name,l.speaker, group.name AS group, user.avatar")
             ->from('event_log AS l')
             ->where('l.event_id', $eid)
             ->join('user','l.speaker = user.id')
+            ->join('user_group', 'user_group.uid = l.speaker', 'left')
+            ->join('group', 'group.id = user_group.gid', 'left')
             ->order_by('time', 'DESC')->get()
             ->result_array();
         if (empty($data)) {
@@ -109,6 +111,7 @@ class Common_Model extends CI_Model
                         'time' => $words['time'],
                         'desc' => $words['description'],
                         'name' => $words['name'],
+                        'group' => $words['group'],
                         'avatar' => $words['avatar'],
                         'usertype' => $this->check_is_watcher($eid, $words['speaker']) ? 1 : 0,
                         'comment' => array()
@@ -121,6 +124,7 @@ class Common_Model extends CI_Model
                         'time' => $words['time'],
                         'desc' => $words['description'],
                         'name' => $words['name'],
+                        'group' => $words['group'],
                         'avatar' => $words['avatar'],
                         'pid' => $words['pid']
                     );
@@ -136,6 +140,7 @@ class Common_Model extends CI_Model
                             'id' => $words['id'],
                             'time' => $words['time'],
                             'name' => $words['name'],
+                            'group' => $words['group'],
                             'desc' => $words['desc'],
                             'avatar' => $words['avatar'],
                             'pid' => $words['pid']
@@ -567,10 +572,11 @@ class Common_Model extends CI_Model
     }
 
     /**
-     * 邮件 Body 插入图片
+     * 插入图片
+     * @param $belong_email 图片是否属于邮件
      * return 路径
      */
-    public function insert_img($file_data,$allow_mime){
+    public function insert_img($file_data,$allow_mime,$belong_email = 1){
         //判断Mime  转换 文件格式
         $mimes = get_mimes();
         $file_type = '';
@@ -597,7 +603,7 @@ class Common_Model extends CI_Model
             'upload_time' => time(),
             'loc'      => $file_data['loc'],
             'is_exist' => 1,
-            'belong_email' => 1
+            'belong_email' => $belong_email
         );
 
         //开始运行事务
@@ -751,8 +757,9 @@ class Common_Model extends CI_Model
     /**
      * 查看 收件箱 邮件
      * 参数：eid
+     *      type 邮件还是指令，指令只有 回复才更新 阅读状态
      */
-    public function rece_email_detail($eid){
+    public function rece_email_detail($eid,$type = 'email'){
         //判断邮件是否属于这个人或他的单位
         $uid  = $this->session->userdata('uid');
         $gids = $this->session->userdata('gid');
@@ -790,12 +797,14 @@ class Common_Model extends CI_Model
                 'attID'  => $attIDs
             );
 
-            //更新阅读状态为已读
-            $update_state = array(
-                'state' => 1
-            );
-            $this->db->where('email_id',$eid);
-            $this->db->update('email_user',$update_state);
+            if($type == 'email'){
+                //更新阅读状态为已读
+                $update_state = array(
+                    'state' => 1
+                );
+                $this->db->where('email_id',$eid);
+                $this->db->update('email_user',$update_state);
+            }
 
             return $res;
 
@@ -1104,6 +1113,56 @@ class Common_Model extends CI_Model
         
             return $response_arr;
 
+
+    }
+
+    /**
+     * @param $eid 邮件id
+     * @return bool
+     */
+    public function revoke_email($eid){
+        $uid = $this->session->userdata('uid');
+        //判断 邮件归属权
+        $sender = $this->db->select('sender')
+            ->from('email')
+            ->where('id',$eid)
+            ->get()->row_array();
+        if(empty($sender) || $sender['sender'] != $uid){
+            return false;
+        }
+        //删除 email email_att email_user表数据
+        $this->db->trans_begin();
+
+        $this->db->where('id',$eid);
+        $this->db->delete('email');
+
+        //如果有附件 删除附件
+        $att_arr = $this->db->select('loc')
+            ->from('email_attachment')
+            ->where('eid',$eid)
+            ->get()->result_array();
+        if(!empty($att_arr)){
+            //删除附件
+            foreach ($att_arr as $att){
+                @unlink($_SERVER['DOCUMENT_ROOT'] . $att['loc']);
+                $this->db->where('eid',$eid);
+                $this->db->delete('email_attachment');
+            }
+        }
+
+        //删除email_user表
+        $this->db->where('email_id',$eid);
+        $this->db->delete('email_user');
+
+        if($this->db->trans_status() === FALSE){
+            $this->db->trans_rollback();
+            $res = false;
+        }else{
+            $this->db->trans_commit();
+            $res = true;
+        }
+
+        return $res;
 
     }
 

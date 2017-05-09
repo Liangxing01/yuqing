@@ -40,6 +40,22 @@
     .send_msg tr td:nth-child(3){
        width:40%;
     }
+
+    .send_withdraw{
+      position: relative;
+      top: 7px;
+      left: 10px;
+      cursor: pointer;
+    }
+    .notice_withdraw{
+      display: none;
+
+      position: relative;
+      top: 7px;
+      left: 10px;
+      cursor: pointer;
+
+    }
 </style>
 	
 <!-- BEGIN MAIN CONTENT -->
@@ -181,6 +197,7 @@
                                  <a class="btn mini " href="javascript:void(0)" onclick="window.refresh();"data-toggle="dropdown" title="刷新">
                                     <i class=" fa fa-refresh "></i>
                                  </a>
+                                 <span class="label label-danger send_withdraw">撤回</span>
                               </div>
                               <ul class="unstyled inbox-pagination">
                                  <li>页数<span class="index_num_send">1</span>/<span class="page_num_send"></span></li>
@@ -238,6 +255,7 @@
                                  <a class="btn mini " href="javascript:void(0)" onclick="window.refresh();" data-toggle="dropdown" title="刷新">
                                     <i class=" fa fa-refresh "></i>
                                  </a>
+                                 <span class="label label-danger notice_withdraw">撤回</span>
                               </div>
                               <ul class="unstyled inbox-pagination">
                                  <li>页数<span class="m-dustbin-pageIndex">1</span>/<span class="m-dustbin-pageTotal"></span></li>
@@ -340,11 +358,66 @@
           var type = '';
           if( $(this).html() == "指令发送"){
               type = 'send';
+              $('.notice_withdraw').show();
           }else{
               type = 'rec';
+              $('.notice_withdraw').hide();
           }
 
           get_all_notice(0, key, type);
+      })
+
+      //发件箱撤回消息
+      $('.send_withdraw').click(function(){
+          if ($('.send_msg .mail-checkbox:checked').length >1){
+              layer.msg("一次性只能撤回一条",{anim:6});
+              return;
+          }
+
+          var id = $('.send_msg .mail-checkbox:checked').data("id");
+
+          layer.confirm("撤回后不可恢复，确定撤回？",function(){
+              $.ajax({
+                  url: '/common/revoke_email?eid=' + id,
+                  type: 'get',
+                  dataType: 'json',
+                  success: function (data){
+                     if( data.res == 1){
+                        layer.msg("撤回成功");
+                        get_all_send(0, '');
+                     }else{
+                        layer.msg("操作失败");
+                     }
+                  }
+              })
+          })
+          
+      })
+
+
+      $('.notice_withdraw').click(function(){
+          if ($('.dustbin .mail-checkbox:checked').length >1){
+              layer.msg("一次性只能撤回一条",{anim:6});
+              return;
+          }
+
+          var id = $('.dustbin .mail-checkbox:checked').data("id");
+
+          layer.confirm("撤回后不可恢复，确定撤回？",function(){
+              $.ajax({
+                  url: '/common/revoke_email?eid=' + id,
+                  type: 'get',
+                  dataType: 'json',
+                  success: function (data){
+                     if( data.res == 1){
+                        layer.msg("撤回成功");
+                        get_all_notice(0, '', 'send');
+                     }else{
+                        layer.msg("操作失败");
+                     }
+                  }
+              })
+          })
       })
    })
 
@@ -500,7 +573,7 @@
                   var obj = data.emails[i];  //获取目标元素
                   str += '<tr>';
                   str += '<td class="inbox-small-cells">'
-                  str += '<input type="checkbox" class="mail-checkbox"></td>';
+                  str += '<input type="checkbox" class="mail-checkbox" data-id="'+ obj.id +'"></td>';
                   switch (obj.priority_level){
                      case "1":
                         str += '<td class="view-message  dont-show"><{$name}><span class="label label-primary pull-right">一般</span></td>';
@@ -541,6 +614,7 @@
       var url = '';
       if( type == 'rec'){
         url = '/common/get_rec_notice';
+        $('.notice_withdraw').hide();
       }else if( type == 'send'){
         url = '/designate/get_send_notice';
       }
@@ -566,7 +640,7 @@
                     var obj = data.emails[i];  //获取目标元素
                     str += '<tr>';
                     str += '<td class="inbox-small-cells">'
-                    str += '<input type="checkbox" class="mail-checkbox"></td>';
+                    str += '<input type="checkbox" class="mail-checkbox" data-id="'+ obj.id +'"></td>';
                     if(obj.state == '1'){
                        str += '<td class="inbox-small-cells hidden-phone"><i class="fa fa-circle"></i></td>'
                     }else{
