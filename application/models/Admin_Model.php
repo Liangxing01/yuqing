@@ -148,7 +148,9 @@ class Admin_Model extends CI_Model {
         //找出待插入节点的左右值
         $parent_node_info = $this->db->select('lft,rgt')->from('relation')
             ->where('uid',$parent_id)
+            ->group_start()
             ->where('type',$parent_type)
+            ->group_end()
             ->get()->row_array();
 
         if(!empty($parent_node_info)){
