@@ -138,7 +138,7 @@
     <div class="text-center">
         2016-2017 &copy;重庆·巴南
         <a href="" target="_blank">
-            网信工作管理平台
+            网信政务管理工作平台
         </a>
         <a href="/" class="go-top">
             <i class="fa fa-angle-up">
