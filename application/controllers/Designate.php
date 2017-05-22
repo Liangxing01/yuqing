@@ -356,6 +356,10 @@ class Designate extends MY_controller
             show_404();
         }
 
+        //查看之后刷新阅读状态为 已读1
+        $this->load->model('Common_Model','common');
+        $this->common->update_read_status($event_id,$uid);
+
         //判断有无督办权限
         $this->load->model("MY_Model", "my_model");
         $duban = $this->my_model->check_duban($uid, $event_id);

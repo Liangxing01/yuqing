@@ -144,6 +144,10 @@ class Welcome extends MY_Controller
         $pid = $this->input->post('pid');
         $comment = $this->input->post('comment');
         $res = $this->handler_model->insert_comment($event_id, $pid, $comment);
+        //更新其他人阅读状态为0，即提醒有新消息
+        $this->load->model('Common_Model','common');
+        $this->common->update_other_unread($event_id,$this->session->uid);
+
         if ($res['res']) {
             $data = array(
                 'res' => 1,

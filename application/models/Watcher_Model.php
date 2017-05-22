@@ -56,12 +56,13 @@ class Watcher_Model extends CI_Model {
         //执行查询语句
 
         if ($where) {
-            $data['aaData'] = $this->db->select("event.id, event.title, A.name AS manager, B.name AS main_processor, C.name AS main_group, event.rank, event.state, event.start_time, event.end_time")
+            $data['aaData'] = $this->db->select("event.id, event.title, A.name AS manager, B.name AS main_processor, C.name AS main_group, event.rank, event.state, event.start_time, event.end_time,mr.read_status")
                 ->from("event")
                 ->join("user A", "A.id = event.manager", "left")
                 ->join("user B", "B.id = event.main_processor", "left")
                 ->join("group C", "C.id = event.group", "left")
                 ->join("event_watch D", "D.event_id = event.id", "left")
+                ->join("event_msg_read as mr","event.id = mr.event_id and mr.uid =".$uid,"left")
                 ->where($where)
                 ->where("D.watcher = $uid")
                 ->group_start()
@@ -83,6 +84,7 @@ class Watcher_Model extends CI_Model {
                 ->join("user B", "B.id = event.main_processor", "left")
                 ->join("group C", "C.id = event.group", "left")
                 ->join("event_watch D", "D.event_id = event.id", "left")
+                ->join("event_msg_read as mr","event.id = mr.event_id and mr.uid =".$uid,"left")
                 ->where($where)
                 ->where("D.watcher = $uid")
                 ->group_start()
@@ -94,12 +96,13 @@ class Watcher_Model extends CI_Model {
                 ->group_end()
                 ->get()->num_rows();
         } else {
-            $data['aaData'] = $this->db->select("event.id, event.title, A.name AS manager, B.name AS main_processor, C.name AS main_group, event.rank, event.state, event.start_time, event.end_time")
+            $data['aaData'] = $this->db->select("event.id, event.title, A.name AS manager, B.name AS main_processor, C.name AS main_group, event.rank, event.state, event.start_time, event.end_time,mr.read_status")
                 ->from("event")
                 ->join("user A", "A.id = event.manager", "left")
                 ->join("user B", "B.id = event.main_processor", "left")
                 ->join("group C", "C.id = event.group", "left")
                 ->join("event_watch D", "D.event_id = event.id", "left")
+                ->join("event_msg_read as mr","event.id = mr.event_id and mr.uid =".$uid,"left")
                 ->where("D.watcher = $uid")
                 ->group_start()
                 ->like("event.id", $pInfo["search"])
@@ -120,6 +123,7 @@ class Watcher_Model extends CI_Model {
                 ->join("user B", "B.id = event.main_processor", "left")
                 ->join("group C", "C.id = event.group", "left")
                 ->join("event_watch D", "D.event_id = event.id", "left")
+                ->join("event_msg_read as mr","event.id = mr.event_id and mr.uid =".$uid,"left")
                 ->where("D.watcher = $uid")
                 ->group_start()
                 ->like("event.id", $pInfo["search"])
