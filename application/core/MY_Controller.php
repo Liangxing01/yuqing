@@ -41,39 +41,39 @@ class MY_Controller extends CI_Controller
                 case 1 :
                     $this->ci_smarty->display('menu/menu_publisher.html');
                     break;
-                case 2 :
-                    $this->ci_smarty->display('menu/menu_manager.html');
-                    break;
-                case 3 :
-                    $this->ci_smarty->display('menu/menu_processor.html');
-                    break;
-                case 4:
-                    $this->ci_smarty->display('menu/menu_watcher.html');
-                    break;
+//                case 2 :
+//                    $this->ci_smarty->display('menu/menu_manager.html');
+//                    break;
+//                case 3 :
+//                    $this->ci_smarty->display('menu/menu_processor.html');
+//                    break;
+//                case 4:
+//                    $this->ci_smarty->display('menu/menu_watcher.html');
+//                    break;
                 case 5 :
                     $this->ci_smarty->display('menu/menu_admin.html');
                     break;
             }
         }
+//
+//        // 6视频会议菜单
+//        if(in_array(2, $privilege) || in_array(3, $privilege) || in_array(4, $privilege)){
+//            $this->ci_smarty->display('menu/v6_meeting.html');
+//        }
 
-        // 6视频会议菜单
-        if(in_array(2, $privilege) || in_array(3, $privilege) || in_array(4, $privilege)){
-            $this->ci_smarty->display('menu/v6_meeting.html');
-        }
-
-        // 点名菜单、报表菜单、通知管理菜单
-        if (in_array(2, $privilege)) {
-            $this->ci_smarty->display("menu/menu_rollcall.html");
-            $this->ci_smarty->display("menu/menu_sheet.html");
-            $this->ci_smarty->display("menu/menu_notice.html");
-        }
+//        // 点名菜单、报表菜单、通知管理菜单
+//        if (in_array(2, $privilege)) {
+//            $this->ci_smarty->display("menu/menu_rollcall.html");
+//            $this->ci_smarty->display("menu/menu_sheet.html");
+//            $this->ci_smarty->display("menu/menu_notice.html");
+//        }
 
         // 舆情管控菜单
-        if ($uid == 85 || $uid == 91) {
-            $this->ci_smarty->display('menu/menu_yuqingctl.html');
-        }
+//        if ($uid == 85 || $uid == 91) {
+//            $this->ci_smarty->display('menu/menu_yuqingctl.html');
+//        }
 
-        $this->ci_smarty->display('menu/menu_filesys.html');
+//        $this->ci_smarty->display('menu/menu_filesys.html');
         $this->ci_smarty->display('menu/menu_common.html');
         $this->ci_smarty->display($html);
         $this->ci_smarty->display('footer.html');

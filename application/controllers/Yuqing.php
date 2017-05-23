@@ -84,7 +84,7 @@ class Yuqing extends MY_Controller
      */
     public function yq_record()
     {
-        $this->assign("active_title", "report_parent");
+        $this->assign("active_title", "record_parent");
         $this->assign("active_parent", "yq_record");
         $this->all_display("yq_data/yq_record.html");
     }

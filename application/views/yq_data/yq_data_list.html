@@ -71,7 +71,8 @@
 										<div>
 											<span class="all_total">0</span>
 											<input type="checkbox" class="all_choose" />全选
-											<span class="label label-danger" data-toggle="modal" data-target="#model_garbage" id="add_garbage">标记为垃圾信息</span>
+											<span class="label label-primary" data-toggle="modal" data-target="#model_yuqing" id="add_yuqing">标记为舆情</span>
+											<span class="label label-danger" data-toggle="modal" data-target="#model_garbage" id="add_garbage">标记为广告</span>
 											<span class="label label-info" data-toggle="modal" data-target="#model_ignore" id="add_ignore">忽略此信息</span>
 
 										</div>
@@ -96,7 +97,7 @@
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-					<h4 class="modal-title">垃圾信息列表</h4>
+					<h4 class="modal-title">广告信息列表</h4>
 				</div>
 				<div class="modal-body">
 					<ul class="list-group">
@@ -125,6 +126,25 @@
 				<div class="modal-footer">
                     <button type="button" class="btn btn-primary" id="ignore_sure" onclick=ignore_this_yq(this,'useless')>确定</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+	<div class="modal fade" id="model_yuqing">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+					<h4 class="modal-title">舆情信息列表</h4>
+				</div>
+				<div class="modal-body">
+					<ul class="list-group">
+
+					</ul>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" id="yuqing_sure" onclick=ignore_this_yq(this,'yuqing')>确定</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
 				</div>
 			</div><!-- /.modal-content -->
 		</div><!-- /.modal-dialog -->

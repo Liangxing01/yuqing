@@ -41,6 +41,7 @@ function ignore_this_yq(that,type){
                 layer.msg(data.msg);
                 $('#model_garbage').modal('hide');
                 $('#model_ignore').modal('hide');
+                $('#model_yuqing').modal('hide');
                 load_who();
             }
         }
@@ -150,7 +151,7 @@ $(function(){
         })
         $('#model_garbage ul').append(list);
         $('#garbage_sure').data('id',arr.join(','));
-    })
+    });
     //忽略消息
     $('#add_ignore').click(function(){
         var len = $('#show_all input[type="checkbox"]:checked').length;
@@ -173,11 +174,34 @@ $(function(){
         $('#model_ignore ul').append(list);
         $('#ignore_sure').data('id',arr.join(','));
     });
+    //添加舆情
+    $('#add_yuqing').click(function(){
+        var len = $('#show_all input[type="checkbox"]:checked').length;
+        if(len>10){
+            layer.msg("所选数据不能超过10条",{anim:6});
+            return false;
+        }
+        if(len == 0){
+            layer.msg("所选信息为空",{anim:6});
+            return false;
+        }
+        var list = '';
+        var arr = []; //id数组
+        $('#model_yuqing ul').html('');
+        $('#show_all input[type="checkbox"]:checked').each(function(i){
+            var title = $(this).parent().find('a').html();
+            arr.push($(this).data("id"));
+            list += '<li class="list-group-item">'+(i+1)+'、'+title+'</li>';
+        })
+        $('#model_yuqing ul').append(list);
+        $('#yuqing_sure').data('id',arr.join(','));
+    });
 
     //操作按钮
     $('#show_all').delegate(".handle",'click',function(){
-        var str = '<input name="type" value="trash" type="radio">标记为垃圾信息';
-            str += '<input name="type" value="useless" type="radio">忽略此信息';
+        var str = '<input name="type" value="trash" type="radio">标记为广告&nbsp;';
+            str += '<input name="type" value="useless" type="radio">忽略此信息&nbsp;';
+            str += '<input name="type" value="yuqing" type="radio">标记为舆情&nbsp;';
         var that = this;
         var layer_1 = layer.confirm(str,{"icon":3},function(){
             ignore_this_yq(that,$('input[type="radio"]:checked').val());
@@ -203,7 +227,7 @@ $(function(){
             timer = null ;
         }
     })
-    
+
     //来源选择框的选择
     $("#source_from").change(function(){
         arr_all[5] = $(this).val();
