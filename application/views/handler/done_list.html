@@ -92,7 +92,7 @@
                 'orderable': false,
                 'mRender':function(data, type, full){
                 	var id = full.id;
-                	data= (data == null ?'': '<img src="/img/N-news.png" width="40" class="m-alert-img"/>');
+                	data= (data == '0' ? '<img src="/img/N-news.png" width="40" class="m-alert-img"/>': '');
                 	setTimeout(function(){
                 		$('.code'+id).parent().append(data);
                 	},100)
