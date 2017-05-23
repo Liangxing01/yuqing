@@ -203,6 +203,12 @@ var message = {   //title闪烁
                 document.title = "【　　　】" + title
             }
         }, 600);
+
+        //声音提醒
+        var au = document.createElement("audio");
+        au.preload="auto";
+        au.src = "/tips.wav";
+        au.play();
         //return [message.timer, message.title];
     },
     // 取消新消息提示
