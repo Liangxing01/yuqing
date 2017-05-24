@@ -41,7 +41,7 @@
             height: 100%;
             /*position: absolute;
             z-index: -1;*/
-            background: url(../../../img/login_bg.png) no-repeat;
+            background: url(../../../img/login_bg.jpg) no-repeat;
             background-size: cover;
             margin-left:auto;
             margin-right:auto;
@@ -58,6 +58,9 @@
             opacity: 0.6;
             position: absolute;
             right: 15%;
+            border:1px solid;
+            border-radius:8px;
+            -moz-border-radius:8px; /* Old Firefox */
         }
 
         .meih {
@@ -136,14 +139,10 @@
 <!-- BEGIN FOOTER -->
 <footer class="site-footer" style="position: absolute; bottom: 0px; width: 100%;">
     <div class="text-center">
-        2016-2017 &copy;重庆·巴南
         <a href="" target="_blank">
-            网信政务管理工作平台
+            舆情数据分类样本收集平台
         </a>
-        <a href="/" class="go-top">
-            <i class="fa fa-angle-up">
-            </i>
-        </a>
+        2017 &copy; 立普威陆
     </div>
 </footer>
 </div>
