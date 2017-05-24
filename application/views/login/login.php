@@ -207,7 +207,7 @@
             },
             success: function (data) {
                 if (data.code == "0") {
-                    forward("/welcome/index");
+                    forward("/yuqing/yq_data");
                 } else {
                     $("#login_error").html(data.message).show();
                 }
