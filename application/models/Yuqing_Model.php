@@ -81,6 +81,19 @@ class Yuqing_Model extends CI_Model
             array_push($yid_mongo, new MongoId($yid));
         }
         $res = false;
+        // 去掉已经筛选过的数据
+        foreach ($yid_mongo as $key => $one) {
+            $data = $this->mongo->aggregate('rawdata', array(
+                '$match' => array(
+                    'yq_commit_user' => array('$exists' => true),
+                    '_id' => $one
+                )
+            ));
+            if(!empty($data['result'])){
+                unset($yid_mongo[$key]);
+            }
+        }
+        // 操作数据
         switch ($type) {
             case 'trash':
                 foreach ($yid_mongo as $one) {
