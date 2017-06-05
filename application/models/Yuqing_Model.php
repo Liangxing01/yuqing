@@ -420,8 +420,7 @@ class Yuqing_Model extends CI_Model {
                     )
                 )),
                 array('$group' => array(
-                    '_id' => null,
-                    'count' => array('$sum' => 1)
+                    '_id' => array('yq_id' => '$yq_id')
                 ))
             ));
         }else{
@@ -459,8 +458,7 @@ class Yuqing_Model extends CI_Model {
                     )
                 )),
                 array('$group' => array(
-                    '_id' => null,
-                    'count' => array('$sum' => 1)
+                    '_id' => array('yq_id' => '$yq_id')
                 ))
             ));
         }
@@ -500,7 +498,7 @@ class Yuqing_Model extends CI_Model {
 
             array_push($res_arr['info'],$yq_info);
         }
-        $res_arr['num'] = $num['result'][0]['count'];
+        $res_arr['num'] = count($num['result']);
 
         return $res_arr;
     }
