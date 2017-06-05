@@ -409,6 +409,21 @@ class Yuqing_Model extends CI_Model {
                     'rep_time' => array('$max' => '$time')
                 ))
             ));
+            // 结果总数
+            $num = $this->mongo->aggregate('rep_info', array(
+                array('$match' => array(
+                    'tag'           => $query['tag'],
+                    'is_cfm'        => 0,
+                    '$or'           => array(
+                        array('title'   => array('$regex' => $query['search'])),
+                        array('content' => array('$regex' => $query['search']))
+                    )
+                )),
+                array('$group' => array(
+                    '_id' => null,
+                    'count' => array('$sum' => 1)
+                ))
+            ));
         }else{
             $rep_yq_list = $this->mongo->aggregate('rep_info',array(
                 array('$sort' => array('time' => $sort)),
@@ -430,6 +445,22 @@ class Yuqing_Model extends CI_Model {
                     'uid' => array('$first' => '$uid'),   //第一个上报人的 uid
                     'tag' => array('$first' => '$tag'),
                     'rep_time' => array('$max' => '$time')
+                ))
+            ));
+            // 结果总数
+            $num = $this->mongo->aggregate('rep_info', array(
+                array('$match' => array(
+                    'tag'           => $query['tag'],
+                    'is_cfm'        => 0,
+                    'media_type'    => $query['media_type'],
+                    '$or'           => array(
+                        array('title'   => array('$regex' => $query['search'])),
+                        array('content' => array('$regex' => $query['search']))
+                    )
+                )),
+                array('$group' => array(
+                    '_id' => null,
+                    'count' => array('$sum' => 1)
                 ))
             ));
         }
@@ -469,7 +500,7 @@ class Yuqing_Model extends CI_Model {
 
             array_push($res_arr['info'],$yq_info);
         }
-        $res_arr['num'] = count($rep_list);
+        $res_arr['num'] = $num['result'][0]['count'];
 
         return $res_arr;
     }
