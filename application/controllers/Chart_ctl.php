@@ -27,6 +27,14 @@ class Chart_ctl extends MY_Controller{
     }
 
     /**
+     * 按月统计上报信息数
+     */
+    public function get_info_counts_by_month(){
+        $count_by_month = $this->chart->get_info_num_by_month();
+        echo json_encode($count_by_month);
+    }
+
+    /**
      * 各类舆情统计饼状图
      */
     public function get_event_rank_counts_by_month(){
