@@ -295,9 +295,9 @@
        
 					<div class="row">						
 							<div class="col-md-12">
-								<section class="panel" style="overflow: hidden;">
+								<section class="panel  zpechart" style="overflow: hidden;">
 									<div class="col-md-3">
-										<div id="taskNumber" style="width: 100%; height: 350px;" ></div>
+										<div id="taskNumber" style="width: 100%; height: 350px; position: absolute; z-index: 1111111;" ></div>
 									</div>
 									<div class="col-md-9">
 										<div id="taskNumber2" style="width: 100%; height: 350px;" ></div>
@@ -429,8 +429,24 @@
 <script src="/js/count.js"></script>
 <script src="/assets/morris.js-0.4.3/raphael-min.js" ></script><!-- MORRIS  JS -->
 <script>
+var now={y:2016,m:11};
+var time=new Date();
+var end={y:time.getFullYear(),m:time.getMonth() + 1};
+var res=[];
+while(now.y!=end.y||now.m!=end.m){
+  res.push(now.m<10?`${now.y}-0${now.m}`:`${now.y}-${now.m}`);
+  now.m++;
+  if (now.m==13){
+    now.m=1;
+    now.y++;
+  }
+}
+res.push(now.m<10?`${now.y}-0${now.m}`:`${now.y}-${now.m}`); 
   get_all_msg();
   getSiteMessage();
+	
+
+
 
   //获取历史记录消息
   function get_all_msg(){
@@ -522,6 +538,9 @@
     });
   }
   
+ 
+  
+  
 function echart(){
 	$.ajax({
 		url: '/chart_ctl/get_event_rank_counts_by_month',
@@ -532,7 +551,7 @@ function echart(){
 			obj.map(function(data){
 				arr.push({'value': data.count, 'name':data.rank});
 			})
-			debugger;
+
 			myChart2.setOption({
 				series:[
 					{data: arr}
@@ -543,50 +562,52 @@ function echart(){
 	
 	
 	$.ajax({
-		url: '/chart_ctl/get_event_counts_by_month',
+		url: '/chart_ctl/get_info_counts_by_month',
 		type: 'post',
 		dataType: 'json',
 		success: function(obj){
-			console.log(obj);
-			var xAxis = [];
+			
 			var arr = [];
-			obj.map(function(data){
-				xAxis.push(data.time);
-				arr.push(data.event_count);
-				
-				myChart.setOption({
-					xAxis:[
-					{	data: xAxis	}
-					],
-					series:[
-						{ name: '上报', data:arr}	
-					]
-				})
+      var o=obj.shift();
+          if (!o) o={time:0};
+			for(var time of res ){
+        if (o.rep_time==time){
+          arr.push(o.info_count);
+          o=obj.shift();
+          if (!o) o={rep_time:0};
+        }else arr.push(0);
+      }
+			
+      
+			myChart.setOption({
+				series:[
+					{ name: '上报', data:arr}	
+				]
 			})
 		}
 	})
 	
 	$.ajax({
-		url: '/chart_ctl/get_info_counts_by_month',
+		url: '/chart_ctl/get_event_counts_by_month',
 		type: 'post',
 		dataType: 'json',
 		success: function(obj){
-			console.log(obj);
-			var xAxis = [];
 			var arr = [];
-			obj.map(function(data){
-				xAxis.push(data.rep_time);
-				arr.push(data.info_count);
-				
-				myChart.setOption({
-					xAxis:[
-					{	data: xAxis	}
-					],
-					series:[
-						{ name: '指派', data:arr}	
-					]
-				})
-			})
+      var o=obj.shift();
+          if (!o) o={time:0};
+      for(var time of res ){
+        if (o.time==time){
+          arr.push(o.event_count);
+          o=obj.shift();
+          if (!o) o={time:0};
+        }else arr.push(0);
+      }
+
+			myChart.setOption({
+        series:[
+          { name: '指派', data:arr} 
+        ]
+      })
 		}
 	})
 	
@@ -599,7 +620,7 @@ echart();
 	var option2	= { 
     tooltip : {
         trigger: 'item',
-        formatter: "{a} <br/>{b} : {c} ({d}%)"
+        formatter: "{a} <br/>{b} <br/> {c} ({d}%)"
     },
     color:['#f59a3d ', '#ffd778 ','#83cae0 ','#13b5b1'] ,
     calculable : true,
@@ -608,9 +629,19 @@ echart();
         {
             name:'访问来源',
             type:'pie',
-            radius : '55%',
-            center: ['50%', '50%'],
+            radius : '50%',
+            center: ['55%', '50%'],
+            itemStyle:{ 
+            	normal: { 
+            		label: { 
+            			show: true, 
+            			formatter: function(params){
+            				return params.name.slice(0,2)+ "(" + params.percent + '%)';
+            			}
+            		},
+           	},
             data:[]
+        	}
         }
     ] 
 	}
@@ -641,7 +672,7 @@ myChart2.setOption(option2);
 
                     }
                 },
-	            data :[]
+	            data :res
 	        }
 	    ],
 	    yAxis : [
@@ -664,7 +695,7 @@ myChart2.setOption(option2);
 	        }
 	    ],
 	    series : [
-	        {
+	     {
 	            name:'上报',
 	            type:'bar',
 	            label: {
@@ -684,7 +715,7 @@ myChart2.setOption(option2);
 					    },
 	            data:[]
 	        },
-	        {
+	    		{
 	            name:'指派',
 	            type:'bar',
 	            label: {
@@ -703,14 +734,23 @@ myChart2.setOption(option2);
 			            }
 			        },
 	            data:[]
-	        },
-	       
-	        
+	      },
 	    ]
 	};
 	myChart.setOption(option1);
 	
-	window.onresize = [myChart2.resize, myChart.resize];
+	 $.getJSON('/welcome/get_all_tasks_num','',function(data){
+			if (typeof data.zp!='undefined'){
+			$('.zpechart').show();
+
+			}else {
+				$('.zpechart').hide();
+			}
+	  })
+	
+	
+	/*window.onresize = myChart2.resize;
+	window.onresize = myChart.resize;*/
 
 
 </script>
