@@ -295,7 +295,7 @@
        
 					<div class="row">						
 							<div class="col-md-12">
-								<section class="panel" style="overflow: hidden;">
+								<section class="panel  zpechart" style="overflow: hidden;">
 									<div class="col-md-3">
 										<div id="taskNumber" style="width: 100%; height: 350px;" ></div>
 									</div>
@@ -522,6 +522,9 @@
     });
   }
   
+ 
+  
+  
 function echart(){
 	$.ajax({
 		url: '/chart_ctl/get_event_rank_counts_by_month',
@@ -532,7 +535,7 @@ function echart(){
 			obj.map(function(data){
 				arr.push({'value': data.count, 'name':data.rank});
 			})
-			debugger;
+
 			myChart2.setOption({
 				series:[
 					{data: arr}
@@ -547,7 +550,6 @@ function echart(){
 		type: 'post',
 		dataType: 'json',
 		success: function(obj){
-			console.log(obj);
 			var xAxis = [];
 			var arr = [];
 			obj.map(function(data){
@@ -571,7 +573,6 @@ function echart(){
 		type: 'post',
 		dataType: 'json',
 		success: function(obj){
-			console.log(obj);
 			var xAxis = [];
 			var arr = [];
 			obj.map(function(data){
@@ -609,7 +610,7 @@ echart();
             name:'访问来源',
             type:'pie',
             radius : '55%',
-            center: ['50%', '50%'],
+            center: ['55%', '50%'],
             data:[]
         }
     ] 
@@ -710,7 +711,18 @@ myChart2.setOption(option2);
 	};
 	myChart.setOption(option1);
 	
-	window.onresize = [myChart2.resize, myChart.resize];
+	 $.getJSON('/welcome/get_all_tasks_num','',function(data){
+			if (typeof data.zp!='undefined'){
+			$('.zpechart').show();
+
+			}else {
+				$('.zpechart').hide();
+			}
+	  })
+	
+	
+	/*window.onresize = myChart2.resize;
+	window.onresize = myChart.resize;*/
 
 
 </script>
