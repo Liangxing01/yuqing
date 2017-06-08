@@ -632,7 +632,8 @@ echart();
             		label: { 
             			show: true, 
             			formatter: function(params){
-            				return params.name[0];
+            				debugger;
+            				return params.name.slice(0,2)+ "(" + params.percent + '%)';
             			}
             		},
            	},
