@@ -562,34 +562,12 @@ function echart(){
 	
 	
 	$.ajax({
-		url: '/chart_ctl/get_event_counts_by_month',
-		type: 'post',
-		dataType: 'json',
-		success: function(obj){
-      var arr = [];
-      var o=obj.shift();
-          if (!o) o={time:0};
-      for(var time of res ){
-        if (o.time==time){
-          arr.push(o.event_count);
-          o=obj.shift();
-          if (!o) o={time:0};
-        }else arr.push(0);
-      }
-			myChart.setOption({
-				series:[
-					{ name: '上报', data:arr}	
-				]
-			})
-		}
-	})
-	
-	$.ajax({
 		url: '/chart_ctl/get_info_counts_by_month',
 		type: 'post',
 		dataType: 'json',
 		success: function(obj){
-      var arr = [];
+			
+			var arr = [];
       var o=obj.shift();
           if (!o) o={time:0};
 			for(var time of res ){
@@ -599,6 +577,32 @@ function echart(){
           if (!o) o={rep_time:0};
         }else arr.push(0);
       }
+			
+      
+			myChart.setOption({
+				series:[
+					{ name: '上报', data:arr}	
+				]
+			})
+		}
+	})
+	
+	$.ajax({
+		url: '/chart_ctl/get_event_counts_by_month',
+		type: 'post',
+		dataType: 'json',
+		success: function(obj){
+			var arr = [];
+      var o=obj.shift();
+          if (!o) o={time:0};
+      for(var time of res ){
+        if (o.time==time){
+          arr.push(o.event_count);
+          o=obj.shift();
+          if (!o) o={time:0};
+        }else arr.push(0);
+      }
+
 			myChart.setOption({
         series:[
           { name: '指派', data:arr} 
@@ -632,7 +636,6 @@ echart();
             		label: { 
             			show: true, 
             			formatter: function(params){
-            				debugger;
             				return params.name.slice(0,2)+ "(" + params.percent + '%)';
             			}
             		},
