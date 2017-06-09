@@ -162,7 +162,7 @@
     var table = $('#event_search_table').dataTable({
 
         "bPaginate": true,
-        "bProcessing": false,                //是否显示正在处理提示信息。
+        "bProcessing": true,                //是否显示正在处理提示信息。
         "bLengthChange": true,
         "bFilter": true,                     //是否使用内置的过滤功能。
         "bSort": true,
@@ -342,7 +342,8 @@
                 "sLast": "尾页"
             },
             "sZeroRecords": "暂无数据",
-            "sSearch": "关键字:"
+            "sSearch": "关键字:",
+            "sProcessing": "<img src='/img/loading.gif'/>"
         }
 
     });
