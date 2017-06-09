@@ -19,6 +19,9 @@ class Welcome extends MY_Controller
     public function index()
     {
         $this->load->helper(array("public"));
+        //获取用户权限
+        $user_role = $this->identity->get_user_role($this->session->uid);
+        $this->assign('user_role',$user_role);
         $this->assign("active_title", "home_page");
         $this->assign("active_parent", "home_parent");
         /*$weather = $this->my_model->weather();

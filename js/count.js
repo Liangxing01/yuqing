@@ -18,6 +18,7 @@ function countUp(count,$display) {
         }
     }, int_speed);
 }
+
 $.getJSON('/welcome/get_all_tasks_num','',function(data){
     if (typeof data.zp!='undefined'){
         countUp(data.zp.unread_info_num,$('.js-zhipai .count'));

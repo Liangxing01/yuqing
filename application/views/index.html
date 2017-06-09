@@ -147,6 +147,7 @@
     <!-- BEGIN WRAPPER  -->
         <section class="wrapper site-min-height">
       <!-- BEGIN ROW  -->
+        <{if $user_role == 'zhipai' }>
         <div class="zhipai js-zhipai">指派任务数</div>
           <div class="row state-overview js-zhipai">
             <div class="col-lg-3 col-sm-6">
@@ -218,8 +219,10 @@
               </section>
             </div>
           </div>
+       <{/if}>
        <!-- END ROW  -->
        <!--处理工作数 -->
+       <{if $user_role == 'handler' || $user_role == 'zhipai'}>
        <div class="chuli js-chuli">处理任务数</div>
           <div class="row state-overview js-chuli">
             <div class="col-lg-3 col-sm-6">
@@ -291,8 +294,9 @@
               </section>
             </div>
           </div>
+       <{/if}>
        <!--处理工作数-->
-       
+       <{if $user_role == 'zhipai' || $user_role == 'watcher'}>
 					<div class="row">						
 							<div class="col-md-12">
 								<section class="panel  zpechart" style="overflow: hidden;">
@@ -305,6 +309,7 @@
 								</section>
 							</div>
 					</div>
+        <{/if}>
        
        <div class="row">
           <div class="col-md-6">
@@ -739,14 +744,14 @@ myChart2.setOption(option2);
 	};
 	myChart.setOption(option1);
 	
-	 $.getJSON('/welcome/get_all_tasks_num','',function(data){
+	 /*$.getJSON('/welcome/get_all_tasks_num','',function(data){
 			if (typeof data.zp!='undefined'){
 			$('.zpechart').show();
 
 			}else {
 				$('.zpechart').hide();
 			}
-	  })
+	  })*/
 	
 	
 	/*window.onresize = myChart2.resize;
