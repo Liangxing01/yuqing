@@ -618,6 +618,14 @@ echart();
 
 	var myChart2 = echarts.init(document.getElementById('taskNumber'));
 	var option2	= { 
+    title:{
+      text: '舆情等级占比图',
+      x: 'center',
+      textStyle:{
+        fontSize: 14,
+      },
+      padding: [20,0,0,0]
+    },
     tooltip : {
         trigger: 'item',
         formatter: "{a} <br/>{b} <br/> {c} ({d}%)"
@@ -636,7 +644,7 @@ echart();
             		label: { 
             			show: true, 
             			formatter: function(params){
-            				return params.name.slice(0,2)+ "(" + params.percent + '%)';
+            				return params.name.slice(0,2)/*+ "(" + params.percent + '%)'*/;
             			}
             		},
            	},
