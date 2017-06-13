@@ -430,7 +430,7 @@
           </section>
       </section>
       <!-- END MAIN CONTENT -->
-      
+    
 <script src="/js/count.js"></script>
 <script src="/assets/morris.js-0.4.3/raphael-min.js" ></script><!-- MORRIS  JS -->
 <script>
@@ -438,6 +438,7 @@ var now={y:2016,m:11};
 var time=new Date();
 var end={y:time.getFullYear(),m:time.getMonth() + 1};
 var res=[];
+var isFirst = null;
 while(now.y!=end.y||now.m!=end.m){
   res.push(now.m<10?`${now.y}-0${now.m}`:`${now.y}-${now.m}`);
   now.m++;
@@ -449,9 +450,62 @@ while(now.y!=end.y||now.m!=end.m){
 res.push(now.m<10?`${now.y}-0${now.m}`:`${now.y}-${now.m}`); 
   get_all_msg();
   getSiteMessage();
-	
+	isFirstLoad();
 
+ $(function(){
+    debugger;
+    if(isFirst){
+      var str = `<div>
+                    <label>新密码：</label>
+                    <input type="password" />
+                  </div>
+                  <div>
+                    <label>重复密码：</label>
+                    <input type="password" />
+                  </div>`
+      layer.open({
+        type: '1',
+        content: str,
+      })
+    }
+ })
 
+  function isFirstLoad(){
+    $.ajax({
+      url: '/welcome/is_default_pwd',
+      type: 'post',
+      dataType: 'json',
+      success: function(obj){
+        if(obj){
+          var str = `<div>
+                    <label>新密码：</label>
+                    <input type="password"  class="m-index-newPwd"/>
+                  </div>
+                  <div>
+                    <label>重复密码：</label>
+                    <input type="password" class="m-index-rePwd"/>
+                  </div>
+                  `;
+          layer.open({
+            type: '0',
+            content: str,
+            btn: '确定',
+            yes: function(index, layero){
+              var newPwd = $('')
+              $.ajax({
+                url: '/welcome/change_pwd?new_pass=' + newPwd,
+                type: 'get',
+                dataType: 'json',
+                success: function(data){
+                  
+                }
+              })
+            }
+          });
+        }
+      }
+    })
+  }
 
   //获取历史记录消息
   function get_all_msg(){
@@ -751,19 +805,4 @@ myChart2.setOption(option2);
 	    ]
 	};
 	myChart.setOption(option1);
-	
-	 /*$.getJSON('/welcome/get_all_tasks_num','',function(data){
-			if (typeof data.zp!='undefined'){
-			$('.zpechart').show();
-
-			}else {
-				$('.zpechart').hide();
-			}
-	  })*/
-	
-	
-	/*window.onresize = myChart2.resize;
-	window.onresize = myChart.resize;*/
-
-
 </script>
