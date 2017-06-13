@@ -498,7 +498,7 @@ res.push(now.m<10?`${now.y}-0${now.m}`:`${now.y}-${now.m}`);
         $('.m-pwd-low').css('display', 'inline-block');
         var containLetters = RegExp(/[a-zA-Z]+/).test(val);
         var containerOtherChars=RegExp(/[!@#$%^&*(),.'{}]+/).test(val);
-        if(containLetters){
+        if(containLetters || containerOtherChars){
           $('.m-pwd-middle').css('display', 'inline-block');
         }else{
           $('.m-pwd-middle').hide();
