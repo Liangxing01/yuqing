@@ -477,7 +477,7 @@ var end={y:time.getFullYear(),m:time.getMonth() + 1};
 var res=[];
 var isFirst = null;
 
-const ISLOAD = false;
+var isAllowLoad = false;
 
 while(now.y!=end.y||now.m!=end.m){
   res.push(now.m<10?`${now.y}-0${now.m}`:`${now.y}-${now.m}`);
@@ -500,8 +500,10 @@ res.push(now.m<10?`${now.y}-0${now.m}`:`${now.y}-${now.m}`);
         var containerOtherChars=RegExp(/[!@#$%^&*(),.'{}]+/).test(val);
         if(containLetters || containerOtherChars){
           $('.m-pwd-middle').css('display', 'inline-block');
+          isAllowLoad = true;
         }else{
           $('.m-pwd-middle').hide();
+          isAllowLoad = false;
         }
 
         if(containLetters && containerOtherChars){
@@ -513,6 +515,7 @@ res.push(now.m<10?`${now.y}-0${now.m}`:`${now.y}-${now.m}`);
         $('.m-pwd-low').hide();
         $('.m-pwd-middle').hide();
         $('.m-pwd-high').hide();
+        isAllowLoad = false;
       }
   })
   function isFirstLoad(){
@@ -555,14 +558,19 @@ res.push(now.m<10?`${now.y}-0${now.m}`:`${now.y}-${now.m}`);
                 return false;
               }
 
-              $.ajax({
-                url: '/welcome/change_pwd?new_pass=' + newPwd,
-                type: 'get',
-                dataType: 'json',
-                success: function(data){
-                  layer.msg("修改成功！");
-                }
-              })
+              if(isAllowLoad){
+                $.ajax({
+                  url: '/welcome/change_pwd?new_pass=' + newPwd,
+                  type: 'get',
+                  dataType: 'json',
+                  success: function(data){
+                    layer.msg("修改成功！");
+                  }
+                })
+              }else{
+                alert("密码强度太弱，请重新输入!");
+                return
+              }
             }
           });
         }
