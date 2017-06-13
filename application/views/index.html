@@ -137,6 +137,41 @@
       background-color: rgb(6, 181, 181); 
     }
 
+    .m-index-item{ margin-bottom: 20px; }
+    .m-index-item label{ 
+      display: inline-block; 
+      width: 100px; 
+      text-align: right;
+    }
+    .m-index-item input{
+      display: inline-block;
+      width: 240px;
+      border: 1px solid #ddd;
+      border-radius: 3px;
+      line-height: 22px;
+      padding: 5px 8px;
+    }
+
+    .m-pwd-content{ 
+      padding-left: 105px;
+      width: 100%; 
+      box-sizing: border-box; 
+
+      position: absolute;
+      margin-top: -22px;
+    }
+    .m-pwd-content span{
+      display: none;
+      width: 60px;
+      height: 14px;
+      line-height: 14px;
+      color: #fff;
+      text-align: center;
+      font-size: 8px;
+    }
+    .m-pwd-low{ background: #ccc;}
+    .m-pwd-middle{ background: green;}
+    .m-pwd-high{ background:#e4393c; }
 </style>
 <!-- BEGIN MAIN CONTENT -->
 <link href="/css/tasks.css" rel="stylesheet"><!-- TASK CSS-->
@@ -430,15 +465,20 @@
           </section>
       </section>
       <!-- END MAIN CONTENT -->
-    
+
+
 <script src="/js/count.js"></script>
 <script src="/assets/morris.js-0.4.3/raphael-min.js" ></script><!-- MORRIS  JS -->
 <script>
+
 var now={y:2016,m:11};
 var time=new Date();
 var end={y:time.getFullYear(),m:time.getMonth() + 1};
 var res=[];
 var isFirst = null;
+
+const ISLOAD = false;
+
 while(now.y!=end.y||now.m!=end.m){
   res.push(now.m<10?`${now.y}-0${now.m}`:`${now.y}-${now.m}`);
   now.m++;
@@ -451,25 +491,30 @@ res.push(now.m<10?`${now.y}-0${now.m}`:`${now.y}-${now.m}`);
   get_all_msg();
   getSiteMessage();
 	isFirstLoad();
+  $('body').delegate('.m-index-newPwd', 'input', function(){
+      var val = $(this).val();
+      console.log(val);
+      if(val.length > 5){
+        $('.m-pwd-low').css('display', 'inline-block');
+        var containLetters = RegExp(/[a-zA-Z]+/).test(val);
+        var containerOtherChars=RegExp(/[!@#$%^&*(),.'{}]+/).test(val);
+        if(containLetters){
+          $('.m-pwd-middle').css('display', 'inline-block');
+        }else{
+          $('.m-pwd-middle').hide();
+        }
 
- $(function(){
-    debugger;
-    if(isFirst){
-      var str = `<div>
-                    <label>新密码：</label>
-                    <input type="password" />
-                  </div>
-                  <div>
-                    <label>重复密码：</label>
-                    <input type="password" />
-                  </div>`
-      layer.open({
-        type: '1',
-        content: str,
-      })
-    }
- })
-
+        if(containLetters && containerOtherChars){
+          $('.m-pwd-high').css('display', 'inline-block');
+        }else{
+          $('.m-pwd-high').hide();
+        }
+      }else{
+        $('.m-pwd-low').hide();
+        $('.m-pwd-middle').hide();
+        $('.m-pwd-high').hide();
+      }
+  })
   function isFirstLoad(){
     $.ajax({
       url: '/welcome/is_default_pwd',
@@ -477,27 +522,45 @@ res.push(now.m<10?`${now.y}-0${now.m}`:`${now.y}-${now.m}`);
       dataType: 'json',
       success: function(obj){
         if(obj){
-          var str = `<div>
-                    <label>新密码：</label>
-                    <input type="password"  class="m-index-newPwd"/>
-                  </div>
-                  <div>
-                    <label>重复密码：</label>
-                    <input type="password" class="m-index-rePwd"/>
-                  </div>
-                  `;
-          layer.open({
+          var str = `<div class="m-index-item">
+                      <label>新密码：</label>
+                      <input type="password" class="m-index-newPwd" placeholder="请输入你的新密码"/>
+                    </div>
+                    <div class="m-pwd-content">
+                      <span class="m-pwd-low">弱</span>
+                      <span class="m-pwd-middle">中</span>
+                      <span class="m-pwd-high">强</span>
+                    </div>
+                    <div class="m-index-item">
+                      <label>重复密码：</label>
+                      <input type="password" class="m-index-rePwd" placeholder="请确认你的密码"/>
+                    </div>`;
+        var layer2 = layer.open({
             type: '0',
+            title: '修改密码',
+            closeBtn: 0,
             content: str,
+            area: ['420px','270px'],
             btn: '确定',
-            yes: function(index, layero){
-              var newPwd = $('')
+            yes: function(){
+              var newPwd = $('.m-index-newPwd').val();
+              var rePwd = $('.m-index-rePwd').val();
+              if (newPwd == '' || rePwd == '') {
+                alert("密码不能为空！");
+                return false;
+              }
+
+              if (newPwd != rePwd) {
+                alert('两次密码不一致，请重新输入！');
+                return false;
+              }
+
               $.ajax({
                 url: '/welcome/change_pwd?new_pass=' + newPwd,
                 type: 'get',
                 dataType: 'json',
                 success: function(data){
-                  
+                  layer.msg("修改成功！");
                 }
               })
             }
@@ -506,7 +569,6 @@ res.push(now.m<10?`${now.y}-0${now.m}`:`${now.y}-${now.m}`);
       }
     })
   }
-
   //获取历史记录消息
   function get_all_msg(){
     $.ajax({
