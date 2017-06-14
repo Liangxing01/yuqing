@@ -564,7 +564,12 @@ res.push(now.m<10?`${now.y}-0${now.m}`:`${now.y}-${now.m}`);
                   type: 'get',
                   dataType: 'json',
                   success: function(data){
-                    layer.msg("修改成功！");
+                      if(data == 1){
+                          layer.msg("修改成功！");
+                      }else{
+                          layer.msg("修改失败！");
+                      }
+
                   }
                 })
               }else{
