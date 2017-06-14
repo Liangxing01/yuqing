@@ -540,7 +540,7 @@ res.push(now.m<10?`${now.y}-0${now.m}`:`${now.y}-${now.m}`);
                     </div>`;
         var layer2 = layer.open({
             type: '0',
-            title: '修改密码',
+            title: '请修改初始密码',
             closeBtn: 0,
             content: str,
             area: ['420px','270px'],
@@ -569,7 +569,7 @@ res.push(now.m<10?`${now.y}-0${now.m}`:`${now.y}-${now.m}`);
                 })
               }else{
                 alert("密码强度太弱，请重新输入!");
-                return
+                return;
               }
             }
           });
