@@ -312,6 +312,41 @@ class Event_Model extends CI_Model
                 $this->success['total'] = $total;
                 return $this->success;
                 break;
+            case "processor_all":
+                // 处理中事件
+                $data = $this->db->select("event_designate.event_id, event.title, event.rank, event.start_time, event.end_time, user.name, event_designate.state")
+                    ->from("event_designate")
+                    ->join('event', 'event.id = event_designate.event_id', 'left')
+                    ->join('user', 'user.id = event_designate.manager', 'left')
+                    ->group_start()
+                    ->where(array("event_designate.state" => "未处理"))
+                    ->or_where(array("event_designate.state" => "处理中"))
+                    ->group_end()
+                    ->like("event.title", $keyword)
+                    ->group_start()
+                    ->where('event_designate.processor', $uid)
+                    ->or_where_in('event_designate.group', $gid)
+                    ->group_end()
+                    ->limit($size, $start)
+                    ->order_by('event_designate.time', "desc")
+                    ->get()->result_array();
+                $total = $this->db->select("event_designate.event_id")
+                    ->from("event_designate")
+                    ->join('event', 'event.id = event_designate.event_id', 'left')
+                    ->group_start()
+                    ->where(array("event_designate.state" => "未处理"))
+                    ->or_where(array("event_designate.state" => "处理中"))
+                    ->group_end()
+                    ->like("event.title", $keyword)
+                    ->group_start()
+                    ->where('event_designate.processor', $uid)
+                    ->or_where_in('event_designate.group', $gid)
+                    ->group_end()
+                    ->get()->num_rows();
+                $this->success['data'] = $data;
+                $this->success['total'] = $total;
+                return $this->success;
+                break;
             case "watcher_all":
                 $data = $this->db->select("event.id, event.title, A.name AS manager, B.name AS main_processor, C.name AS main_group, event.rank, event.state, event.start_time")
                     ->from("event")
