@@ -19,6 +19,9 @@ class Welcome extends MY_Controller
     public function index()
     {
         $this->load->helper(array("public"));
+        //获取用户权限
+        $user_role = $this->identity->get_user_role($this->session->uid);
+        $this->assign('user_role',$user_role);
         $this->assign("active_title", "home_page");
         $this->assign("active_parent", "home_parent");
         /*$weather = $this->my_model->weather();
@@ -144,6 +147,10 @@ class Welcome extends MY_Controller
         $pid = $this->input->post('pid');
         $comment = $this->input->post('comment');
         $res = $this->handler_model->insert_comment($event_id, $pid, $comment);
+        //更新其他人阅读状态为0，即提醒有新消息
+        $this->load->model('Common_Model','common');
+        $this->common->update_other_unread($event_id,$this->session->uid);
+
         if ($res['res']) {
             $data = array(
                 'res' => 1,

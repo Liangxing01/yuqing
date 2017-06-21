@@ -8,7 +8,18 @@
 <!-- Common CSS -->
 <link rel="stylesheet" href="/css/common.css">
 
-
+<style>
+	.m-alert-title{display: none;}
+	.m-alert-img{position: absolute; margin-left: -65px;  animation: scal 0.3s infinite alternate;}
+	@keyframes scal{
+		from{
+			transform: scale(1.0,1.0)
+		}
+		to{
+			transform: scale(1.2,1.2)
+		}
+	}
+</style>
 <!-- BEGIN MAIN CONTENT -->
 <section id="main-content">
     <section class="wrapper site-min-height">
@@ -70,6 +81,7 @@
                             <table class="display table table-bordered table-striped" id="event_search_table">
                                 <thead>
                                 <tr>
+                                	<th>消息状态</th>
                                     <th>编号</th>
                                     <th>标题</th>
                                     <th>首派人</th>
@@ -161,11 +173,29 @@
         },
 
         "aoColumns": [
+        	{
+                "sTitle": "消息状态",
+                "mData": "read_status",
+                'sClass': "text-right m-alert-title",
+                'orderable': false,
+                'mRender':function(data, type, full){
+                	var id = full.id;
+                	data= ((data == '0') ?'<img src="/img/N-news.png" width="40" class="m-alert-img"/>' :'' );
+                	setTimeout(function(){
+                		$('.code'+id).parent().append(data);
+                	},100)
+                	return data;
+                }
+            },
             {
                 "sTitle": "编号",
                 "mData": "id",
                 'sClass': "text-center",
-                'orderable': false
+                'orderable': false,
+                'mRender':function(data){
+                	data = "<span class=code" + data+">" + data + '</span>';
+                	return data;
+                }
             },
             {
                 "sTitle": "标题",

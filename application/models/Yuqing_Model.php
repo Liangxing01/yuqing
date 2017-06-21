@@ -380,17 +380,14 @@ class Yuqing_Model extends CI_Model {
     public function get_rep_yqData($query,$page_num){
         $offset = ((int)$page_num - 1) * $query['length'];  //数据 偏移量
         if($query['sort'] == 'DESC'){
-            $sort = 1;
-        }else{
             $sort = -1;
+        }else{
+            $sort = 1;
         }
 
         //先查询 rep_info 集合，分类找出已经上报的 舆情id
         if($query['media_type'] == '全部'){
             $rep_yq_list = $this->mongo->aggregate('rep_info',array(
-                array('$sort' => array('time' => $sort)),
-                array('$limit' => (int)$query['length']),
-                array('$skip' => $offset),
                 array('$project' => array('_id'=>1,'yq_id'=>1,'content'=>1,'uid'=>1,'tag'=>1,'time'=>1,'is_cfm'=>1,'title'=>1)),
                 array('$match' => array(
                     'tag'           => $query['tag'],
@@ -399,21 +396,34 @@ class Yuqing_Model extends CI_Model {
                         array('title'   => array('$regex' => $query['search'])),
                         array('content' => array('$regex' => $query['search']))
                     )
-
                 )),
                 array('$group' => array(
                     '_id' => array('yq_id' => '$yq_id'),  //舆情id
                     'id'  => array('$first' => '$_id'),   //上报id
                     'uid' => array('$first' => '$uid'),   //第一个上报人的 uid
                     'tag' => array('$first' => '$tag'),
-                    'rep_time' => array('$max' => '$time')
+                    'rep_time' => array('$min' => '$time')
+                )),
+                array('$sort' => array('rep_time' => $sort)),
+                array('$skip' => $offset),
+                array('$limit' => (int)$query['length'])
+            ));
+            // 结果总数
+            $num = $this->mongo->aggregate('rep_info', array(
+                array('$match' => array(
+                    'tag'           => $query['tag'],
+                    'is_cfm'        => 0,
+                    '$or'           => array(
+                        array('title'   => array('$regex' => $query['search'])),
+                        array('content' => array('$regex' => $query['search']))
+                    )
+                )),
+                array('$group' => array(
+                    '_id' => array('yq_id' => '$yq_id')
                 ))
             ));
         }else{
             $rep_yq_list = $this->mongo->aggregate('rep_info',array(
-                array('$sort' => array('time' => $sort)),
-                array('$limit' => (int)$query['length']),
-                array('$skip' => $offset),
                 array('$project' => array('_id'=>1,'yq_id'=>1,'content'=>1,'uid'=>1,'tag'=>1,'time'=>1,'is_cfm'=>1,'title'=>1)),
                 array('$match' => array(
                     'tag'           => $query['tag'],
@@ -429,7 +439,25 @@ class Yuqing_Model extends CI_Model {
                     'id'  => array('$first' => '$_id'),   //上报id
                     'uid' => array('$first' => '$uid'),   //第一个上报人的 uid
                     'tag' => array('$first' => '$tag'),
-                    'rep_time' => array('$max' => '$time')
+                    'rep_time' => array('$min' => '$time')
+                )),
+                array('$sort' => array('rep_time' => $sort)),
+                array('$skip' => $offset),
+                array('$limit' => (int)$query['length'])
+            ));
+            // 结果总数
+            $num = $this->mongo->aggregate('rep_info', array(
+                array('$match' => array(
+                    'tag'           => $query['tag'],
+                    'is_cfm'        => 0,
+                    'media_type'    => $query['media_type'],
+                    '$or'           => array(
+                        array('title'   => array('$regex' => $query['search'])),
+                        array('content' => array('$regex' => $query['search']))
+                    )
+                )),
+                array('$group' => array(
+                    '_id' => array('yq_id' => '$yq_id')
                 ))
             ));
         }
@@ -469,7 +497,7 @@ class Yuqing_Model extends CI_Model {
 
             array_push($res_arr['info'],$yq_info);
         }
-        $res_arr['num'] = count($rep_list);
+        $res_arr['num'] = count($num['result']);
 
         return $res_arr;
     }

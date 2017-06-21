@@ -289,6 +289,7 @@
 		var val = $('#where_from select').val();
 
 		var layer3 = layer.confirm('确定将此舆情标记为：<span style="color:red">'+val+'</span>&nbsp;等级',function(){
+			var layer2 = layer.load();
 			var arr2 = window.location.search.slice(1).split(',');
 			$.ajax({
 				url:server_url+"/yuqing/cfm_yq?yid="+arr2[0]+'&rep_id='+arr2[1]+'&tag='+val,
@@ -297,6 +298,7 @@
 				success:function(data){
 					layer.msg(data.msg);
 					layer.close(layer3);
+					window.location.reload();
 				}
 			});
 		})

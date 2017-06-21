@@ -55,11 +55,37 @@ class Common_Model extends CI_Model
     //权限:判断处理人是否能查看
     public function check_processor_see($eid, $uid)
     {
-        $res = $this->db->select('id')->from('event_designate')
+        $flag = false;
+        //优先判断是否为单位事件
+        $group_arr = $this->db->select('group')->from('event_designate')
             ->where('event_id', $eid)
-            ->where('processor', $uid)
+            ->where('group is NOT NULL')
             ->get()->result_array();
-        if (!empty($res)) {
+        if($group_arr){
+            //循环判断这个人id在不在这些单位中
+            foreach ($group_arr as $group){
+                $is_in = $this->db->select('id')->from('user_group')
+                    ->where('gid',$group['group'])
+                    ->where('uid',$uid)
+                    ->where('is_exist',1)
+                    ->get()->row_array();
+                if(!empty($is_in)){
+                    $flag = true;
+                    break;
+                }
+            }
+        }else{
+            //个人用户
+            $res = $this->db->select('id')->from('event_designate')
+                ->where('event_id', $eid)
+                ->where('processor', $uid)
+                ->get()->result_array();
+            if(!empty($res)){
+                $flag = true;
+            }
+        }
+
+        if ($flag) {
             return true;
         } else {
             return false;
@@ -1315,6 +1341,34 @@ class Common_Model extends CI_Model
             ->group_by('cl.call_id')
             ->join('call as c','c.id = cl.call_id');
 
+    }
+
+    /**
+     * 刷新阅读状态为已读
+     * @param $uid 自己的uid
+     * @param $event_id 事件id
+     */
+    public function update_read_status($event_id,$uid){
+        $update = array(
+            'read_status' => 1
+        );
+        $this->db->where('event_id',$event_id);
+        $this->db->where('uid',$uid);
+        $this->db->update('event_msg_read',$update);
+    }
+
+    /**
+     * 发表评论后更新其他所有人的阅读状态为0
+     * @param $me 排除自己
+     * @param $event_id 事件id
+     */
+    public function update_other_unread($event_id,$me){
+        $update = array(
+            'read_status' => 0
+        );
+        $this->db->where('event_id',$event_id);
+        $this->db->where('uid !=',$me);
+        $this->db->update('event_msg_read',$update);
     }
 
 

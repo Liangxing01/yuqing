@@ -210,6 +210,8 @@ class Designate_Model extends CI_Model
      */
     public function event_search_pagination($pInfo)
     {
+        $uid = $this->session->uid;
+
         //查询条件构造
         $condition = array();
 
@@ -252,11 +254,12 @@ class Designate_Model extends CI_Model
         //执行查询语句
 
         if ($where) {
-            $data['aaData'] = $this->db->select("event.id, event.title, A.name AS manager, B.name AS main_processor, C.name AS main_group, event.rank, event.state, event.start_time, event.end_time")
+            $data['aaData'] = $this->db->select("event.id, event.title, A.name AS manager, B.name AS main_processor, C.name AS main_group, event.rank, event.state, event.start_time, event.end_time,mr.read_status")
                 ->from("event")
                 ->join("user A", "A.id = event.manager", "left")
                 ->join("user B", "B.id = event.main_processor", "left")
                 ->join("group C", "C.id = event.group", "left")
+                ->join("event_msg_read as mr","event.id = mr.event_id and mr.uid =".$uid,"left")
                 ->where($where)
                 ->group_start()
                 ->like("event.id", $pInfo["search"])
@@ -276,6 +279,7 @@ class Designate_Model extends CI_Model
                 ->join("user A", "A.id = event.manager", "left")
                 ->join("user B", "B.id = event.main_processor", "left")
                 ->join("group C", "C.id = event.group", "left")
+                ->join("event_msg_read as mr","event.id = mr.event_id and mr.uid =".$uid,"left")
                 ->where($where)
                 ->group_start()
                 ->like("event.id", $pInfo["search"])
@@ -286,11 +290,12 @@ class Designate_Model extends CI_Model
                 ->group_end()
                 ->get()->num_rows();
         } else {
-            $data['aaData'] = $this->db->select("event.id, event.title, A.name AS manager, B.name AS main_processor, C.name AS main_group, event.rank, event.state, event.start_time, event.end_time")
+            $data['aaData'] = $this->db->select("event.id, event.title, A.name AS manager, B.name AS main_processor, C.name AS main_group, event.rank, event.state, event.start_time, event.end_time,mr.read_status")
                 ->from("event")
                 ->join("user A", "A.id = event.manager", "left")
                 ->join("user B", "B.id = event.main_processor", "left")
                 ->join("group C", "C.id = event.group", "left")
+                ->join("event_msg_read as mr","event.id = mr.event_id and mr.uid =".$uid,"left")
                 ->group_start()
                 ->like("event.id", $pInfo["search"])
                 ->or_like("A.name", $pInfo["search"])
@@ -310,6 +315,7 @@ class Designate_Model extends CI_Model
                 ->join("user A", "A.id = event.manager", "left")
                 ->join("user B", "B.id = event.main_processor", "left")
                 ->join("group C", "C.id = event.group", "left")
+                ->join("event_msg_read as mr","event.id = mr.event_id and mr.uid =".$uid,"left")
                 ->group_start()
                 ->like("event.id", $pInfo["search"])
                 ->or_like("A.name", $pInfo["search"])
@@ -569,6 +575,27 @@ class Designate_Model extends CI_Model
         return $tree_json;
     }
 
+    /**
+     * event_user二维数组去重
+     */
+    function array_unique_fb($array2D){
+        foreach ($array2D as $v){
+            $v = join(",",$v); //降维,也可以用implode,将一维数组转换为用逗号连接的字符串
+            $temp[] = $v;
+        }
+        $temp = array_unique($temp);    //去掉重复的字符串,也就是重复的一维数组
+        foreach ($temp as $k => $v){
+            $arr = explode(",",$v);
+            $temp[$k] = array(
+                'event_id'    => $arr[0],
+                'uid'         => $arr[1],
+                'read_status' => $arr[2]
+            );
+
+        }
+        return $temp;
+    }
+
 
     /**
      * 事件指派 插入指派数据
@@ -616,6 +643,7 @@ class Designate_Model extends CI_Model
             $main_processor = null;
             $main_group = $main[1];
         }
+
 
 
         //事件表数据
@@ -699,6 +727,53 @@ class Designate_Model extends CI_Model
             }
         }
 
+        //获取所有与事件相关的人的uid，组成event_msg_read元素
+        //获取处理人
+        $event_user = array();
+        foreach ($processors['user'] as $user){
+            array_push($event_user,array(
+                'event_id'    => $event_id,
+                'uid'         => $user,
+                'read_status' => 0
+            ));
+        }
+        if(!empty($processors['group'])){
+            foreach ($processors['group'] as $group){
+                //查询组内所有人id
+                $uid_arr = $this->db->select('uid')
+                    ->from('user_group')
+                    ->where('gid',$group)
+                    ->where('is_exist',1)
+                    ->get()->result_array();
+                foreach ($uid_arr as $uid){
+                    array_push($event_user,array(
+                        'event_id'    => $event_id,
+                        'uid'         => $uid['uid'],
+                        'read_status' => 0
+                    ));
+                }
+            }
+        }
+
+        //获取督办人
+        if (!empty($watchers)) {
+            foreach ($watchers AS $watcher) {
+                array_push($event_user,array(
+                    'event_id'    => $event_id,
+                    'uid'         => $watcher,
+                    'read_status' => 0
+                ));
+            }
+        }
+
+        //获取指派人
+        array_push($event_user,array(
+            'event_id'    => $event_id,
+            'uid'         => $manager,
+            'read_status' => 0
+        ));
+
+        $event_user = $this->array_unique_fb($event_user);
 
         //事件参考文件表数据
         $event_attachment = array();
@@ -814,6 +889,12 @@ class Designate_Model extends CI_Model
         if (!empty($event_alert)) {
             $this->db->insert_batch("event_alert", $event_alert);
         }
+
+        //事件消息阅读表
+        if (!empty($event_user)) {
+            $this->db->insert_batch("event_msg_read", $event_user);
+        }
+
         // TODO 事件消息
         if (!empty($event_msg)) {
             $this->db->insert_batch("business_msg", $event_msg);
@@ -933,6 +1014,10 @@ class Designate_Model extends CI_Model
         $this->db->where('event_id', $eid);
         $this->db->delete('event_watch');
 
+        //删除事件消息阅读表
+        $this->db->where('event_id',$eid);
+        $this->db->delete('event_msg_read');
+
         //删除 事件绑定的文档
         $att_arr = $this->db->select('url')
             ->from('event_attachment')
@@ -1041,6 +1126,68 @@ class Designate_Model extends CI_Model
             }
         }
 
+        //获取所有与事件相关的人的uid，组成event_msg_read元素
+        //获取处理人
+        $event_user = array();
+        foreach ($processors['user'] as $user){
+            array_push($event_user,array(
+                'event_id'    => $event_id,
+                'uid'         => $user,
+                'read_status' => 0
+            ));
+        }
+        if(!empty($processors['group'])){
+            foreach ($processors['group'] as $group){
+                //查询组内所有人id
+                $uid_arr = $this->db->select('uid')
+                    ->from('user_group')
+                    ->where('gid',$group)
+                    ->where('is_exist',1)
+                    ->get()->result_array();
+                foreach ($uid_arr as $uid){
+                    array_push($event_user,array(
+                        'event_id'    => $event_id,
+                        'uid'         => $uid['uid'],
+                        'read_status' => 0
+                    ));
+                }
+            }
+        }
+
+        //获取督办人
+        if (!empty($watchers)) {
+            foreach ($watchers AS $watcher) {
+                array_push($event_user,array(
+                    'event_id'    => $event_id,
+                    'uid'         => $watcher,
+                    'read_status' => 0
+                ));
+            }
+        }
+
+        //检查自己是否已经在 消息表中 没有则增加指派人
+        $msg_user = $this->db->select('uid')
+            ->from('event_msg_read')
+            ->where('event_id',$event_id)
+            ->get()->result_array();
+        $is_in = false;
+        foreach ($msg_user as $uid){
+            if($uid['uid'] == $manager){
+                $is_in = true;
+                break;
+            }
+        }
+        if(!$is_in){
+            //获取指派人
+            array_push($event_user,array(
+                'event_id'    => $event_id,
+                'uid'         => $manager,
+                'read_status' => 0
+            ));
+        }
+
+        $event_user = $this->array_unique_fb($event_user);
+
 
         //事件信息表数据
         $event_info = array();
@@ -1082,6 +1229,11 @@ class Designate_Model extends CI_Model
         //事件督办
         if (!empty($event_watch)) {
             $this->db->insert_batch("event_watch", $event_watch);
+        }
+
+        //事件消息阅读表
+        if (!empty($event_user)){
+            $this->db->insert_batch("event_msg_read", $event_user);
         }
 
         // 事件指派事务提交

@@ -267,7 +267,7 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
         }
         $where = substr($where, 0, strlen($where) - 4);
         if($where){
-            $data['aaData'] = $this->db->select('a.id,a.event_id,b.title,u.name as zpname,a.time,a.state,b.rank')
+            $data['aaData'] = $this->db->select('a.id,a.event_id,b.title,u.name as zpname,a.time,a.state,b.rank,mr.read_status')
                 ->from('event_designate as a')
                 ->group_start()
                 ->where('a.processor',$processorID)
@@ -277,6 +277,7 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
                 ->where($where)
                 ->join('event as b','a.event_id = b.id','left')
                 ->join('user as u','a.manager = u.id','left')
+                ->join("event_msg_read as mr","a.event_id = mr.event_id and mr.uid =".$processorID,"left")
                 ->group_start()
                 ->like('b.title',$pInfo['search'])
                 ->group_end()
@@ -294,12 +295,13 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
                 ->where($where)
                 ->join('event as b','a.event_id = b.id','left')
                 ->join('user as u','a.manager = u.id','left')
+                ->join("event_msg_read as mr","a.event_id = mr.event_id and mr.uid =".$processorID,"left")
                 ->group_start()
                 ->like('b.title',$pInfo['search'])
                 ->group_end()
                 ->get()->num_rows();
         }else{
-            $data['aaData'] = $this->db->select('a.id,a.event_id,b.title,u.name as zpname,a.time,a.state,b.rank')
+            $data['aaData'] = $this->db->select('a.id,a.event_id,b.title,u.name as zpname,a.time,a.state,b.rank,mr.read_status')
                 ->from('event_designate as a')
                 ->group_start()
                 ->where('a.processor',$processorID)
@@ -308,6 +310,7 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
                 ->where('a.state','处理中')
                 ->join('event as b','a.event_id = b.id','left')
                 ->join('user as u','a.manager = u.id','left')
+                ->join("event_msg_read as mr","a.event_id = mr.event_id and mr.uid =".$processorID,"left")
                 ->group_start()
                 ->like('b.title',$pInfo['search'])
                 ->group_end()
@@ -324,6 +327,7 @@ WHERE i.title LIKE '%".$pInfo['search']."%'".$where;*/
                 ->where('a.state','处理中')
                 ->join('event as b','a.event_id = b.id','left')
                 ->join('user as u','a.manager = u.id','left')
+                ->join("event_msg_read as mr","a.event_id = mr.event_id and mr.uid =".$processorID,"left")
                 ->group_start()
                 ->like('b.title',$pInfo['search'])
                 ->group_end()

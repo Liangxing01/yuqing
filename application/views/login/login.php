@@ -138,7 +138,7 @@
     <div class="text-center">
         2016-2017 &copy;泸州·纳溪
         <a href="" target="_blank">
-            IPv6纪委行权大数据应用系统
+            政务协同治理工作平台
         </a>
         <a href="/" class="go-top">
             <i class="fa fa-angle-up">

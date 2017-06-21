@@ -44,7 +44,7 @@ function add_content_all(data){
             str += '<td>【'+(obj.source?obj.source:'')+'】</td>';
             str += '<td><span class="label label-danger">'+obj.yq_tag+'</span></td>';
             str += '<td>首报人:<span class="label label-primary">'+obj.first_name+'</span></td>';
-            str += '<td>'+timeToDate(obj.yq_pubdate*1000)+'</td>';
+            str += '<td>'+timeToDate(obj.rep_time*1000)+'</td>';
 
             str += '<tr><td colspan="6"><span class="color_red">[摘要]</span>'+obj.summary+'</td></tr>';
             str += '<tr><td colspan="6">舆情等级：'+obj.tag+'</td></tr>';
@@ -85,7 +85,7 @@ function add_content_title(data){
             str += '<td>【'+(obj.source?obj.source:'')+'】</td>';
             str += '<td><span class="label label-danger">'+obj.yq_tag+'</span></td>';
             str += '<td>首报人:<span class="label label-primary">'+obj.first_name+'</span></td>';
-            str += '<td>'+timeToDate(obj.yq_pubdate*1000)+'</td>';
+            str += '<td>'+timeToDate(obj.rep_time*1000)+'</td>';
             str += '</tr>'
         }
         $('#show_all table').append(str);

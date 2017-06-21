@@ -84,6 +84,7 @@
         submitHandler: function () {
             var layer_index = layer.load(2);
             commit_yuqing_control(layer_index);
+
         }
     });
     $().ready(function () {
@@ -107,22 +108,32 @@
         var control_url = $("#control_url").val();
         var redirect_url = $("#redirect_url").val();
         var domain_reg = /^(http|https):\/{2}(.+?)\/.*$/.exec(control_url);
-        var domain = domain_reg[2];
-
-        $.ajax({
-            url: "/yq_control/control_url?control_url=" + control_url + "&redirect_url=" + redirect_url + "&domain=" + domain + "&alias=" + alias,
-            method: "get",
-            dataType: 'json',
-            success: function (data) {
-                layer.close(layer_index);
-                if (data.res == "1") {
-                    layer.msg(data.msg, {time: 1000});
-                    $("#yuqing_control_table").DataTable().ajax.reload(null, false); //刷新表格
-                } else {
-                    layer.msg(data.msg, {anim: 6, time: 1000});
+        var domain = '';
+        if(domain_reg){
+            domain = domain_reg[2];
+        }
+        if(domain){
+            $.ajax({
+                url: "/yq_control/control_url?control_url=" + control_url + "&redirect_url=" + redirect_url + "&domain=" + domain + "&alias=" + alias,
+                method: "get",
+                dataType: 'json',
+                success: function (data) {
+                    layer.close(layer_index);
+                    if (data.res == "1") {
+                        layer.msg(data.msg, {time: 1000});
+                        $("#yuqing_control_table").DataTable().ajax.reload(null, false); //刷新表格
+                    } else {
+                        layer.msg(data.msg, {anim: 6, time: 1000});
+                    }
                 }
-            }
-        });
+            });
+        }else{
+            layer.msg('url格式不正确', {anim: 6, time: 1000});
+            layer.close(layer_index);
+            return false;
+        }
+
+
     }
 
 
