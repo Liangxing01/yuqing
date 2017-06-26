@@ -149,7 +149,8 @@ class Admin_Model extends CI_Model {
         $parent_node_info = $this->db->select('lft,rgt')->from('relation')
             ->where('uid',$parent_id)
             ->group_start()
-            ->where('type',$parent_type)
+            //->where('type',$parent_type)
+            ->where('type',0)
             ->group_end()
             ->get()->row_array();
 
@@ -200,7 +201,6 @@ class Admin_Model extends CI_Model {
             ->join('user_group as ug','ug.uid = '.$uid)
             ->where(array('u.id' => $uid, "ug.is_exist" => 1))
             ->get()->result_array();
-
         //获取组id
         $gids = array();
         foreach ($res as $one){
