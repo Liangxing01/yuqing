@@ -89,12 +89,12 @@ class Event extends CI_Controller
 
     /**
      * 事件日志
+     * POST参数 eid: 事件ID
      */
     public function get_event_log()
     {
-        $this->load->model('Common_Model', 'common_model');
         $event_id = $this->input->post('eid');
-        $data = $this->common_model->get_all_logs_by_id($event_id);
+        $data = $this->event->get_all_logs_by_id($event_id);
         $this->output
             ->set_content_type('application/json')
             ->set_output(json_encode($data));

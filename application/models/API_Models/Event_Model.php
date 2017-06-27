@@ -574,6 +574,19 @@ class Event_Model extends CI_Model
 
 
     /**
+     * 查询事件 回复日志
+     * @param $event_id
+     * @return array
+     */
+    public function get_all_logs_by_id($event_id){
+        $this->load->model('Common_Model', 'common_model');
+        $data = $this->common_model->get_all_logs_by_id($event_id);
+        $this->success['data'] = $data === false ? array() : $data;
+        return $this->success;
+    }
+
+
+    /**
      * 判断是否是事件负责人
      * @param int $uid
      * @param array $gid
