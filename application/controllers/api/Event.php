@@ -88,6 +88,20 @@ class Event extends CI_Controller
 
 
     /**
+     * 事件日志
+     */
+    public function get_event_log()
+    {
+        $this->load->model('Common_Model', 'common_model');
+        $event_id = $this->input->post('eid');
+        $data = $this->common_model->get_all_logs_by_id($event_id);
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($data));
+    }
+
+
+    /**
      * 事件审核
      * POST参数 id: 事件ID, option: [verify_success=审核通过, verify_failed=审核不通过, commit=提交审核]
      */
