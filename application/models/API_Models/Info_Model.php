@@ -233,7 +233,7 @@ class Info_Model extends CI_Model
             ->group_by("info.id")
             ->like("info.title", $keyword)
             ->get()->num_rows();
-        $this->success["data"] = $this->db->select("info.id, title, info.url, time, info_attachment.url AS pic")
+        $this->success["data"] = $this->db->select("info.id, title, info.source, time, info_attachment.url AS pic")
             ->from('info')
             ->join("user", "user.id = info.publisher", "left")
             ->join("info_attachment", "info_attachment.info_id = info.id AND info_attachment.type = 'pic'", "left")
