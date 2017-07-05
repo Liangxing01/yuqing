@@ -10,13 +10,12 @@
     <!-- END META -->
 
     <!-- BEGIN SHORTCUT ICON -->
-    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link rel="shortcut icon" href="<{$theme_cfg['logo_ico']}>">
     <!-- END SHORTCUT ICON -->
     <title>
-        泸州·纳溪政务协同治理工作平台
+        <{$theme_cfg['area_first']}>·<{$theme_cfg['area_sec']}><{$theme_cfg['title']}>
     </title>
     <!-- BEGIN STYLESHEET-->
-    <link rel="shortcut icon" href=" /img/logo.ico" />
     <link href="/css/bootstrap.min.css" rel="stylesheet"><!-- BOOTSTRAP CSS -->
     <link href="/css/bootstrap-reset.css" rel="stylesheet"><!-- BOOTSTRAP CSS -->
     <link href="/assets/font-awesome/css/font-awesome.css" rel="stylesheet"><!-- FONT AWESOME ICON CSS -->
@@ -38,7 +37,7 @@
     <!-- END STYLESHEET-->
     <style type="text/css">
     	.dropdown-menu.extended li a span{ margin-right: 5px; margin-left: 5px;}
-    	.fa-bars:before{ content: url(../../img/logo.png);}
+    	.fa-bars:before{ content: url("<{$theme_cfg['logo_url']}>");}
     	.sidebar-toggle-box{ padding-right: 10px; margin-top: 12px;}
     	.mc{ font-family: '黑体'; font-size: 16px; font-weight: 300; color: white; margin-top: 10px;}
         .alarm_title{
@@ -65,9 +64,9 @@
         </div>
         <!-- SIDEBAR TOGGLE BUTTON  END-->
         <a href="/" class="logo">
-            政务协同治理工作平台
+            <{$theme_cfg['title']}>
           <span>
-            泸州·纳溪
+            <{$theme_cfg['area_first']}>·<{$theme_cfg['area_sec']}>
           </span>
         </a>
         <!-- START HEADER  NAV -->

@@ -2,6 +2,8 @@
 
 application/config/database.php
 application/config/mongo_db.php
+application/config/theme_cfg.php
+theme/*
 uploads/*
 ci_session/*
 template_c/*
