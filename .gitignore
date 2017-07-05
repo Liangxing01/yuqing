@@ -3,6 +3,7 @@
 application/config/database.php
 application/config/mongo_db.php
 application/config/theme_cfg.php
+index.php
 theme/*
 uploads/*
 ci_session/*
