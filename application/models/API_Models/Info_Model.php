@@ -225,11 +225,21 @@ class Info_Model extends CI_Model
         $uid = $this->session->uid;
         $keyword = is_null($keyword) ? "" : $keyword;
         // 返回上报记录
-        $this->success["total"] = $this->db->join("user", "user.id = info.publisher", "left")
+        $this->success["total"] = $this->db->select("count('info.id')")
+            ->from('info')
+            ->join("user", "user.id = info.publisher", "left")
+            ->join("info_attachment", "info_attachment.info_id = info.id AND info_attachment.type = 'pic'", "left")
             ->where(array("user.id" => $uid))
+            ->group_by("info.id")
             ->like("info.title", $keyword)
-            ->count_all_results("info", false);
-        $this->success["data"] = $this->db->select("info.id, title, url, time")
+            ->get()->num_rows();
+        $this->success["data"] = $this->db->select("info.id, title, info.source, time, info_attachment.url AS pic")
+            ->from('info')
+            ->join("user", "user.id = info.publisher", "left")
+            ->join("info_attachment", "info_attachment.info_id = info.id AND info_attachment.type = 'pic'", "left")
+            ->where(array("user.id" => $uid))
+            ->group_by("info.id")
+            ->like("info.title", $keyword)
             ->limit($size, $start)
             ->order_by("time", "desc")
             ->get()->result_array();
