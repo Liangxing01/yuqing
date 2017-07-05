@@ -15,12 +15,18 @@ class Login extends MY_controller
      */
     public function index()
     {
+        //加载 主题配置文件
+        $this->config->load('theme_cfg');
+        $theme_cfg = $this->config->item('theme');
+        $this->assign("theme_cfg",$theme_cfg);
+
         $this->load->helper(array("public"));
         $is_mobile = isMobile();
         if ($is_mobile) {
             $this->load->view("login/mobile_login");
         } else {
-            $this->load->view("login/login");
+            //$this->load->view("login/login");
+            $this->display("login/login.html");
         }
 
     }

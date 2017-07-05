@@ -137,16 +137,52 @@
       background-color: rgb(6, 181, 181); 
     }
 
+    .m-index-item{ margin-bottom: 20px; }
+    .m-index-item label{ 
+      display: inline-block; 
+      width: 100px; 
+      text-align: right;
+    }
+    .m-index-item input{
+      display: inline-block;
+      width: 240px;
+      border: 1px solid #ddd;
+      border-radius: 3px;
+      line-height: 22px;
+      padding: 5px 8px;
+    }
+
+    .m-pwd-content{ 
+      padding-left: 105px;
+      width: 100%; 
+      box-sizing: border-box; 
+
+      position: absolute;
+      margin-top: -22px;
+    }
+    .m-pwd-content span{
+      display: none;
+      width: 60px;
+      height: 14px;
+      line-height: 14px;
+      color: #fff;
+      text-align: center;
+      font-size: 8px;
+    }
+    .m-pwd-low{ background: #ccc;}
+    .m-pwd-middle{ background: green;}
+    .m-pwd-high{ background:#e4393c; }
 </style>
 <!-- BEGIN MAIN CONTENT -->
 <link href="/css/tasks.css" rel="stylesheet"><!-- TASK CSS-->
 <link rel="stylesheet" type="text/css" href="/css/event_analysis.css"> <!-- 事件分析 -->
 <script language="javascript" src="/js/public.js"></script>
-
+<script language="javascript" src="/js/echarts.min.js"></script>
       <section id="main-content">
     <!-- BEGIN WRAPPER  -->
         <section class="wrapper site-min-height">
       <!-- BEGIN ROW  -->
+        <{if $user_role == 'zhipai' }>
         <div class="zhipai js-zhipai">指派任务数</div>
           <div class="row state-overview js-zhipai">
             <div class="col-lg-3 col-sm-6">
@@ -218,8 +254,10 @@
               </section>
             </div>
           </div>
+       <{/if}>
        <!-- END ROW  -->
        <!--处理工作数 -->
+       <{if $user_role == 'handler' || $user_role == 'zhipai'}>
        <div class="chuli js-chuli">处理任务数</div>
           <div class="row state-overview js-chuli">
             <div class="col-lg-3 col-sm-6">
@@ -291,7 +329,23 @@
               </section>
             </div>
           </div>
+       <{/if}>
        <!--处理工作数-->
+       <{if $user_role == 'zhipai' || $user_role == 'watcher'}>
+					<div class="row">						
+							<div class="col-md-12">
+								<section class="panel  zpechart" style="overflow: hidden;">
+									<div class="col-md-3">
+										<div id="taskNumber" style="width: 100%; height: 350px; position: absolute; z-index: 1111111;" ></div>
+									</div>
+									<div class="col-md-9">
+										<div id="taskNumber2" style="width: 100%; height: 350px;" ></div>
+									</div>
+								</section>
+							</div>
+					</div>
+        <{/if}>
+       
        <div class="row">
           <div class="col-md-6">
           <!-- START PANEL -->
@@ -411,13 +465,123 @@
           </section>
       </section>
       <!-- END MAIN CONTENT -->
-      
+
+
 <script src="/js/count.js"></script>
 <script src="/assets/morris.js-0.4.3/raphael-min.js" ></script><!-- MORRIS  JS -->
 <script>
+
+var now={y:2016,m:11};
+var time=new Date();
+var end={y:time.getFullYear(),m:time.getMonth() + 1};
+var res=[];
+var isFirst = null;
+
+var isAllowLoad = false;
+
+while(now.y!=end.y||now.m!=end.m){
+  res.push(now.m<10?`${now.y}-0${now.m}`:`${now.y}-${now.m}`);
+  now.m++;
+  if (now.m==13){
+    now.m=1;
+    now.y++;
+  }
+}
+res.push(now.m<10?`${now.y}-0${now.m}`:`${now.y}-${now.m}`); 
   get_all_msg();
   getSiteMessage();
+	isFirstLoad();
+  $('body').delegate('.m-index-newPwd', 'input', function(){
+      var val = $(this).val();
+      console.log(val);
+      if(val.length > 5){
+        $('.m-pwd-low').css('display', 'inline-block');
+        var containLetters = RegExp(/[a-zA-Z]+/).test(val);
+        var containerOtherChars=RegExp(/[!@#$%^&*(),.'{}]+/).test(val);
+        if(containLetters || containerOtherChars){
+          $('.m-pwd-middle').css('display', 'inline-block');
+          isAllowLoad = true;
+        }else{
+          $('.m-pwd-middle').hide();
+          isAllowLoad = false;
+        }
 
+        if(containLetters && containerOtherChars){
+          $('.m-pwd-high').css('display', 'inline-block');
+        }else{
+          $('.m-pwd-high').hide();
+        }
+      }else{
+        $('.m-pwd-low').hide();
+        $('.m-pwd-middle').hide();
+        $('.m-pwd-high').hide();
+        isAllowLoad = false;
+      }
+  })
+  function isFirstLoad(){
+    $.ajax({
+      url: '/welcome/is_default_pwd',
+      type: 'post',
+      dataType: 'json',
+      success: function(obj){
+        if(obj){
+          var str = `<div class="m-index-item">
+                      <label>新密码：</label>
+                      <input type="password" class="m-index-newPwd" placeholder="请输入你的新密码"/>
+                    </div>
+                    <div class="m-pwd-content">
+                      <span class="m-pwd-low">弱</span>
+                      <span class="m-pwd-middle">中</span>
+                      <span class="m-pwd-high">强</span>
+                    </div>
+                    <div class="m-index-item">
+                      <label>重复密码：</label>
+                      <input type="password" class="m-index-rePwd" placeholder="请确认你的密码"/>
+                    </div>`;
+        var layer2 = layer.open({
+            type: '0',
+            title: '请修改初始密码',
+            closeBtn: 0,
+            content: str,
+            area: ['420px','270px'],
+            btn: '确定',
+            yes: function(){
+              var newPwd = $('.m-index-newPwd').val();
+              var rePwd = $('.m-index-rePwd').val();
+              if (newPwd == '' || rePwd == '') {
+                alert("密码不能为空！");
+                return false;
+              }
+
+              if (newPwd != rePwd) {
+                alert('两次密码不一致，请重新输入！');
+                return false;
+              }
+
+              if(isAllowLoad){
+                $.ajax({
+                  url: '/welcome/change_pwd?new_pass=' + newPwd,
+                  type: 'get',
+                  dataType: 'json',
+                  success: function(data){
+                      if(data == 1){
+                          layer.msg("修改成功！");
+                      }else{
+                          layer.msg("修改失败！");
+                      }
+
+                  }
+                })
+              }else{
+                alert("密码强度太弱，请重新输入!");
+                return;
+              }
+            }
+          });
+        }
+      }
+    })
+  }
   //获取历史记录消息
   function get_all_msg(){
     $.ajax({
@@ -493,8 +657,7 @@
       })
   }
   
-</script>
-<script>
+
   function open_meeting() {
     $.ajax({
       url:'/welcome/open_meeting',
@@ -508,4 +671,213 @@
       }
     });
   }
+  
+ 
+  
+  
+function echart(){
+	$.ajax({
+		url: '/chart_ctl/get_event_rank_counts_by_month',
+		type: 'post',
+		dataType: 'json',
+		success: function(obj){
+			var arr = [];
+			obj.map(function(data){
+				arr.push({'value': data.count, 'name':data.rank});
+			})
+
+			myChart2.setOption({
+				series:[
+					{data: arr}
+				]
+			})
+		}
+	})
+	
+	
+	$.ajax({
+		url: '/chart_ctl/get_info_counts_by_month',
+		type: 'post',
+		dataType: 'json',
+		success: function(obj){
+			
+			var arr = [];
+      var o=obj.shift();
+          if (!o) o={time:0};
+			for(var time of res ){
+        if (o.rep_time==time){
+          arr.push(o.info_count);
+          o=obj.shift();
+          if (!o) o={rep_time:0};
+        }else arr.push(0);
+      }
+			
+      
+			myChart.setOption({
+				series:[
+					{ name: '上报', data:arr}	
+				]
+			})
+		}
+	})
+	
+	$.ajax({
+		url: '/chart_ctl/get_event_counts_by_month',
+		type: 'post',
+		dataType: 'json',
+		success: function(obj){
+			var arr = [];
+      var o=obj.shift();
+          if (!o) o={time:0};
+      for(var time of res ){
+        if (o.time==time){
+          arr.push(o.event_count);
+          o=obj.shift();
+          if (!o) o={time:0};
+        }else arr.push(0);
+      }
+
+			myChart.setOption({
+        series:[
+          { name: '指派', data:arr} 
+        ]
+      })
+		}
+	})
+	
+}
+echart();
+
+
+
+	var myChart2 = echarts.init(document.getElementById('taskNumber'));
+	var option2	= { 
+    title:{
+      text: '舆情等级占比图',
+      x: 'center',
+      textStyle:{
+        fontSize: 14,
+      },
+      padding: [20,0,0,0]
+    },
+    tooltip : {
+        trigger: 'item',
+        formatter: "{a} <br/>{b} <br/> {c} ({d}%)"
+    },
+    color:['#f59a3d ', '#ffd778 ','#83cae0 ','#13b5b1'] ,
+    calculable : true,
+
+    series : [
+        {
+            name:'访问来源',
+            type:'pie',
+            radius : '50%',
+            center: ['55%', '50%'],
+            itemStyle:{ 
+            	normal: { 
+            		label: { 
+            			show: true, 
+            			formatter: function(params){
+            				return params.name.slice(0,2)/*+ "(" + params.percent + '%)'*/;
+            			}
+            		},
+           	},
+            data:[]
+        	}
+        }
+    ] 
+	}
+myChart2.setOption(option2);
+  var myChart = echarts.init(document.getElementById('taskNumber2'));
+	var option1 = {
+	    tooltip : {
+	        trigger: 'axis'
+	    },
+	    calculable : true,
+	    legend: {
+	        data:['上报','指派']
+	    },
+	    xAxis : [
+	        {
+	            type : 'category',
+	            splitLine : {show : false},
+	            axisLine: {
+                    lineStyle: {
+                        type: 'solid',
+                        color: '#72d0eb',//左边线的颜色
+                        width:'2'//坐标线的宽度
+                    }
+                },
+                axisLabel: {
+                    textStyle: {
+                        color: '#72d0eb',//坐标值得具体的颜色
+
+                    }
+                },
+	            data :res
+	        }
+	    ],
+	    yAxis : [
+	        {
+	            type : 'value',
+	            position: 'right',
+	            axisLine: {
+                    lineStyle: {
+                        type: 'solid',
+                        color: '#72d0eb',//左边线的颜色
+                        width:'2'//坐标线的宽度
+                    }
+                },
+                axisLabel: {
+                    textStyle: {
+                        color: '#72d0eb',//坐标值得具体的颜色
+
+                    }
+                },
+	        }
+	    ],
+	    series : [
+	     {
+	            name:'上报',
+	            type:'bar',
+	            label: {
+			            normal: {
+			                show: true,
+			                position: 'top'
+			            }
+			        },
+			         itemStyle: {
+			            normal: {
+			                barBorderRadius: 10,
+			                color:'#45a0c9'
+			            },
+			            emphasis: {
+			                barBorderRadius: 10
+			            }
+					    },
+	            data:[]
+	        },
+	    		{
+	            name:'指派',
+	            type:'bar',
+	            label: {
+			            normal: {
+			                show: true,
+			                position: 'top'
+			            }
+			        },
+			         itemStyle: {
+			            normal: {
+			                barBorderRadius: 10,
+			                color: '#00c6c4'
+			            },
+			            emphasis: {
+			                barBorderRadius: 10
+			            }
+			        },
+	            data:[]
+	      },
+	    ]
+	};
+	myChart.setOption(option1);
 </script>

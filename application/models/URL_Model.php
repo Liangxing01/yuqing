@@ -37,7 +37,7 @@ class URL_Model extends CI_Model {
         ssh2_exec($connection, $run_code);
 
 
-        //公司管控
+        /*//公司管控
         $com_host = "2001:250:221:9:7::1";
         $com_port = 2222;
         $com_username = "root";
@@ -50,7 +50,7 @@ class URL_Model extends CI_Model {
             $str .= $code . " \n";
         }
         $run_code = substr($str,0,-1);
-        ssh2_exec($com_connection, $run_code);
+        ssh2_exec($com_connection, $run_code);*/
 
     }
 

@@ -43,6 +43,7 @@
                             <div class="col-md-12">
                                 <ul class="list-group yq_execl">
                                     <li class="list-group-item"><a href="javascript:void(0)" id="type" title="导出网络台账类别表">导出网络台账类别表</a></li>
+                                    <li class="list-group-item"><a href="javascript:void(0)" id="rep_info" title="导出上报信息表">导出上报信息表</a></li>
                                     <li class="list-group-item"><a href="javascript:void(0)" id="num" title="导出网络舆情数量表">导出网络舆情数量表</a></li>
                                     <li class="list-group-item"><a href="javascript:void(0)" id="exp_time" title="导出网络舆情首回时间表">导出网络舆情首回时间表</a></li>
                                     <li class="list-group-item"><a href="javascript:void(0)" id="yuqing" title="导出网络舆情台账">导出网络舆情台账</a></li>
@@ -79,6 +80,10 @@
 
     $("#type").on('click',function () {
         location.href = "/report_sheet/export_types?start="+dateToTime($("#start").val())+'&end='+dateToTime($("#end").val());
+    });
+
+    $("#rep_info").on('click',function () {
+        location.href = "/report_sheet/export_rep_info?start="+dateToTime($("#start").val())+'&end='+dateToTime($("#end").val());
     });
 
     $("#yuqing").on('click',function () {

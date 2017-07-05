@@ -113,6 +113,81 @@ class Sheet_Model extends CI_Model {
     /**
      * @param $start
      * @param $end
+     * 导出上报信息
+     */
+    public function export_repinfo($start,$end){
+        $this->load->library('PHPExcel');
+        $objPHPExcel = new PHPExcel();
+
+        /*以下是一些设置 ，什么作者  标题啊之类的*/
+        $objPHPExcel->getProperties()->setCreator("重庆巴南网信办")
+            ->setLastModifiedBy("v6plus")
+            ->setTitle("区委网信办上报信息表")
+            ->setSubject("上报信息表")
+            ->setDescription("上报信息表")
+            ->setKeywords("上报信息表")
+            ->setCategory("上报信息表");
+
+        //拼接sql语句,判断有选择时间没有
+        if(empty($start) || empty($end)){
+            $where = "1=1";
+        }else{
+            $where = "info.time >= $start AND info.time <= $end";
+        }
+
+        $info_arr = $this->db->select("yq_info.id '序号',yq_info.title '标题',yq_type.name '类型',yq_info.relate_scope '涉及领域',yq_info.url '链接',yq_info.source '来源',
+            yq_info.description '信息描述',yq_user.name '上报人',yq_group.name '单位',FROM_UNIXTIME(yq_info.time) '上报时间',(CASE WHEN yq_info.duplicate = '0' THEN '有效' WHEN yq_info.duplicate = '1' THEN '重复' WHEN yq_info.duplicate = '-1' THEN '无效' END) '状态'")
+            ->from('info')
+            ->join('type','type.id = info.type')
+            ->join('user','user.id = info.publisher')
+            ->join('user_group as ug','ug.uid = user.id')
+            ->join('group','group.id = ug.gid')
+            ->where($where)
+            ->order_by('info.time','DESC')
+            ->get()->result_array();
+        if(empty($info_arr)){
+            echo '暂无数据';
+            exit();
+        }
+
+        //设置 title
+        $objPHPExcel->getActiveSheet()->getColumnDimension('D')->setAutoSize(true);
+        $objPHPExcel->getActiveSheet()->getColumnDimension('E')->setAutoSize(true);
+        $objPHPExcel->getActiveSheet()->getColumnDimension('G')->setAutoSize(true);
+        $i = 65;
+        foreach ($info_arr[0] as $k => $v){
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValue(chr($i).'1', $k);
+            $i++;
+        }
+
+        //填充内容
+        for($i = 0; $i < count($info_arr); $i++){
+            $a = 65;
+            foreach ($info_arr[$i] as $k => $v){
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue(chr($a).($i+2), $v);
+                $a++;
+            }
+        }
+        $objPHPExcel->getActiveSheet()->setTitle('区委网信办上报信息表');
+
+
+        //判断显示文件名
+        if(!empty($start)){
+            $time = date('Ymd',$start).'-'.date('Ymd',$end);
+            header('Content-Disposition: attachment;filename="'.$time.'上报信息表'.'.xlsx"');
+        }else{
+            header('Content-Disposition: attachment;filename="'.'区委网信办上报信息表'.'.xlsx"');
+        }
+        header('Content-Type: application/vnd.ms-excel');
+        header('Cache-Control: max-age=0');
+        header("Content-Type: application/download");
+        $objWriter = new PHPExcel_Writer_Excel2007($objPHPExcel);
+        $objWriter->save('php://output');
+    }
+
+    /**
+     * @param $start
+     * @param $end
      * 导出舆情台账
      */
     public function export_yuqing($start,$end){
@@ -454,7 +529,7 @@ and (yq_event.main_processor = yq_event_designate.`processor` or yq_event.group 
             ->join('group','group.id = user_group.gid','left')
             ->where('info.state',2)    //已确认信息
             ->where('info.duplicate',0)//不重复的信息
-            ->order_by('舆情总量','desc')
+            ->order_by("'舆情总量'",'desc')
             ->group_by('group.id')
             ->get()->result_array();
 

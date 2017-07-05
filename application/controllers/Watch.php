@@ -107,6 +107,10 @@ class Watch extends MY_Controller {
             $usertype = 0;
         }
 
+        //查看之后刷新阅读状态为 已读1
+        $this->load->model('Common_Model','common');
+        $this->common->update_read_status($event_id,$uid);
+
         $this->assign("active_title","watch_list");
         $this->assign("active_parent","watch_parent");
         $einfo = $this->handler_model->get_title_by_eid($event_id);

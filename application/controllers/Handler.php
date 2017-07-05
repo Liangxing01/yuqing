@@ -246,6 +246,10 @@ class Handler extends MY_Controller {
         }else{
             $usertype = 0;
         }
+        //查看之后刷新阅读状态为 已读1
+        $this->load->model('Common_Model','common');
+        $this->common->update_read_status($event_id,$uid);
+
         //更新事件状态为处理中
         $this->handler_model->update_doing_state($event_id);
 

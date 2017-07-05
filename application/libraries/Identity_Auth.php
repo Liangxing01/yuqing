@@ -90,6 +90,26 @@ class Identity_Auth
         }
     }
 
+    /**
+     * @param $uid
+     * @return string
+     * 获取用户角色定位，指派人 督办人 都是指派角色，剩余 处理人
+     */
+    public function get_user_role($uid){
+        $user_pri = $this->get_privilege($uid);
+        $user_role = '';
+        if(strpos($user_pri,'3') !== false){
+            $user_role = 'handler';
+        }
+        if(strpos($user_pri,'4') !== false){
+            $user_role = 'watcher';
+        }
+        if(strpos($user_pri,'2') !== false){
+            $user_role = 'zhipai';
+        }
+        return $user_role;
+    }
+
 
     /**
      * 获取用户 组织信息

@@ -74,6 +74,22 @@ class Report_sheet extends MY_Controller {
     }
 
     /**
+     * 导出上报舆情信息表
+     */
+    public function export_rep_info(){
+        $start = $this->input->get('start');
+        $end   = $this->input->get('end');
+        if(!empty($start) || !empty($end)){
+            if(!is_numeric($start) || !is_numeric($end)){
+                echo 'error';
+                return;
+            }
+        }
+        //导出报表
+        $this->sheet->export_repinfo((int)$start,(int)$end);
+    }
+
+    /**
      * 导出网络舆情台账
      */
     public function export_yuqing(){
