@@ -9,7 +9,7 @@
     <!-- END META -->
 
     <!-- BEGIN SHORTCUT ICON -->
-    <link rel="shortcut icon" href="img/favicon.ico">
+    <link rel="shortcut icon" href="<{$theme_cfg['logo_ico']}>">
     <!-- END SHORTCUT ICON -->
     <title>
         登录
@@ -41,7 +41,8 @@
             height: 100%;
             /*position: absolute;
             z-index: -1;*/
-            background: url(../../../img/login_bg.png) no-repeat;
+            /*background: url(../../../img/login_bg.png) no-repeat;*/
+            background: url("<{$theme_cfg['login_bg_url']}>") no-repeat;
             background-size: cover;
             margin-left:auto;
             margin-right:auto;
@@ -136,9 +137,9 @@
 <!-- BEGIN FOOTER -->
 <footer class="site-footer" style="position: absolute; bottom: 0px; width: 100%;">
     <div class="text-center">
-        2016-2017 &copy;重庆·巴南
+        2016-2017 &copy;<{$theme_cfg['area_first']}>·<{$theme_cfg['area_sec']}>
         <a href="" target="_blank">
-            网信政务管理工作平台
+            <{$theme_cfg['title']}>
         </a>
         <a href="/" class="go-top">
             <i class="fa fa-angle-up">

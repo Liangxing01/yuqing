@@ -20,6 +20,11 @@ class MY_Controller extends CI_Controller
     //共用显示header,sidebar,footer
     public function all_display($html)
     {
+        //加载 主题配置文件
+        $this->config->load('theme_cfg');
+        $theme_cfg = $this->config->item('theme');
+        $this->assign("theme_cfg",$theme_cfg);
+
         $this->load->model('MY_Model','my_model');
         $privilege = explode(",", $this->session->privilege);
         $uid = $this->session->uid;
