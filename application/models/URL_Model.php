@@ -20,8 +20,12 @@ class URL_Model extends CI_Model {
      * 4601 管控 命令执行
      */
     public function run4601($codes){
+        //加载 主题配置文件
+        $this->config->load('theme_cfg');
+        $theme_cfg = $this->config->item('theme');
+
         //政府管控
-        $host = "2001:250:221::6";
+        $host = $theme_cfg['4601_ip'];
         $port = 2222;
         $username = "root";
         $password = "axzb@4601";
@@ -55,12 +59,34 @@ class URL_Model extends CI_Model {
     }
 
     /**
+     * 检查用户是否有ipv6
+     */
+    private function checkIsIPv6(){
+        //检查用户是否有ipv6地址
+        $this->load->helper(array("public"));
+        $userIP = get_ip();
+        $checkIPv6 = validateIPv6($userIP);
+        if(!$checkIPv6){
+            echo json_encode(
+                array(
+                    'res' => 0,
+                    'msg' => "没有IPV6网络"
+                )
+            );
+            exit();
+        }
+
+    }
+
+    /**
      * @param $domain
      * @param $ctl_url
      * @param $redi_url
      * 管控url
      */
     public function ctl_url($domain,$ctl_url,$redi_url,$alias){
+        $this->checkIsIPv6();
+
         $re = "/^((http|ftp|https):\/\/)?(.*)/";
         preg_match($re, $ctl_url,$res);
         $ctl_url = $res[3];
@@ -157,6 +183,7 @@ class URL_Model extends CI_Model {
      * 删除规则
      */
     public function del_url($rid){
+        $this->checkIsIPv6();
         //获取域名 组名
         $data= $this->get_domain_name($rid);
         $url   = $data['ctl_url'];
@@ -232,6 +259,8 @@ class URL_Model extends CI_Model {
      * dns管控，默认 定向到 重大
      */
     public function ctl_dns($ctl_domain,$alias){
+        $this->checkIsIPv6();
+
         $ip = "202.202.2.42"; //重大ip
         $ctl_code = array();
         $gname = $ctl_domain."_dns";
@@ -276,6 +305,8 @@ class URL_Model extends CI_Model {
      * DNS 删除
      */
     public function del_dns($rule_id){
+        $this->checkIsIPv6();
+
         //删除dns 规则 和 域名组
         $gname = $this->db->select('cd.group_name')
             ->from('ctl_domains as cd')
@@ -334,6 +365,8 @@ class URL_Model extends CI_Model {
      * --------------------IP管控-------------------------
      */
     public function ctl_ip($ip,$alias){
+        $this->checkIsIPv6();
+
         $ctl_code = array();
         $gname = $ip."_ip";
         //检查有该 域名组没有
@@ -376,6 +409,8 @@ class URL_Model extends CI_Model {
      * 删除 IP 管控
      */
     public function del_ip($rule_id){
+        $this->checkIsIPv6();
+
         $this->db->where('id',$rule_id);
         $res = $this->db->delete('ctl_domains');
 
