@@ -23,6 +23,23 @@ function sroll_ajax(type){
             layer.close(layer2);
         }
     });
+
+    $.ajax({
+        type: 'POST',
+        url: server_url + '/yuqing/get_yqData_num',
+        data: {
+            query: arr,
+            page_num: page_num
+        },
+        dataType: 'json',
+        success: function(data){
+            page_total = Math.ceil(data.num/page_length);
+            $(".all_total").html('总数据量：<span class="red">'+(data.num?data.num:0)+'</span>条');
+        },
+        error: function(){
+            layer.msg("服务器无法连接")
+        }
+    })
 }
 
 //忽略消息
@@ -49,12 +66,10 @@ function ignore_this_yq(that,type){
 
 //请求主体内容
 function add_content_all(data){
-    page_total = Math.ceil(data.num/page_length);
     if(data.info.length !== 0){
         if(page_num === 1){
             $('#show_all').html('');//清空盒子内容
         }
-        $(".all_total").html('总数据量：<span class="red">'+(data.num?data.num:0)+'</span>条');
         var str = '',i=0,len=data.info.length;
         for(; i<len;i++){
             var obj = data.info[i];
@@ -82,7 +97,6 @@ function add_content_all(data){
         $('#show_all').append(str);
         layer.closeAll()
     }else{
-        $(".all_total").html('总数据量：<span class="red">'+(data.num?data.num:0)+'</span>条')
         $('#show_all').html("<p style='text-align:center;line-height: 36px'>暂无该数据</p>");
         layer.closeAll()
     }
@@ -90,7 +104,6 @@ function add_content_all(data){
 
 //只看标题
 function add_content_title(data){
-    page_total = Math.ceil(data.num/page_length);
     if(data.info.length !== 0){
         if(page_num === 1){
             $('#show_all').html('<table class="table table-responsive"></table>');//清空盒子内容
@@ -113,7 +126,6 @@ function add_content_title(data){
         $('#show_all table').append(str);
         layer.closeAll()
     }else{
-        $(".all_total").html('总数据量：<span class="red">'+(data.num?data.num:0)+'</span>条')
         $('#show_all').html("<p style='text-align:center;line-height: 36px'>暂无该数据</p>");
         layer.closeAll()
     }
