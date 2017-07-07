@@ -23,23 +23,24 @@ function sroll_ajax(type){
             layer.close(layer2);
         }
     });
-
-    $.ajax({
-        type: 'POST',
-        url: server_url + '/yuqing/get_yqData_num',
-        data: {
-            query: arr,
-            page_num: page_num
-        },
-        dataType: 'json',
-        success: function(data){
-            page_total = Math.ceil(data.num/page_length);
-            $(".all_total").html('总数据量：<span class="red">'+(data.num?data.num:0)+'</span>条');
-        },
-        error: function(){
-            layer.msg("服务器无法连接")
-        }
-    })
+    if(page_num == 1){
+        $.ajax({
+            type: 'POST',
+            url: server_url + '/yuqing/get_yqData_num',
+            data: {
+                query: arr,
+                page_num: page_num
+            },
+            dataType: 'json',
+            success: function(data){
+                page_total = Math.ceil(data.num/page_length);
+                $(".all_total").html('总数据量：<span class="red">'+(data.num?data.num:0)+'</span>条');
+            },
+            error: function(){
+                layer.msg("服务器无法连接")
+            }
+        })
+    }
 }
 
 //忽略消息
