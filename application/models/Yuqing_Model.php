@@ -61,7 +61,7 @@ class Yuqing_Model extends CI_Model {
             ->order_by(array('yq_pubdate' => $query['sort']))
             ->get($col_name);
 
-        $yq_data['num'] = $this->mongo->select(array('_id'),array('content'))//排除 content字段
+        /*$yq_data['num'] = $this->mongo->select(array('_id'),array('content'))//排除 content字段
             ->where($query_where)
             ->where('yq_tag_lock',0)                    //未被确认的舆情
             ->where_lte('yq_rep_num',10)                //上报人小于10个
@@ -69,7 +69,7 @@ class Yuqing_Model extends CI_Model {
             ->where_not_in('yq_trash_list',$block_list) // 排除 自己认为 垃圾的舆情
             ->where_not_in('yq_reporter_list',$block_list) // 不显示已经上报的舆情
             ->where_lte('yq_trash_num',5)                     //垃圾标记数 不超过5个的显示
-            ->count('rawdata');
+            ->count('rawdata');*/
 
 
         return $yq_data;
