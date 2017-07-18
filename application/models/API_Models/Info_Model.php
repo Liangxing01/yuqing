@@ -97,16 +97,19 @@ class Info_Model extends CI_Model
         // 视频附件信息
         if ($pData['video_info']) {
             $video_info = json_decode($pData['video_info'], true);
-            $video_file = array(
-                'info_id' => $info_id,
-                'name' => $video_info['client_name'],
-                'url' => "/uploads/video/" . $video_info['file_name'],
-                'type' => "video"
-            );
-            $this->db->insert('info_attachment', $video_file);
-            // 移动文件
-            @copy($_SERVER['DOCUMENT_ROOT'] . "/uploads/temp/" . $video_info['file_name'], $_SERVER['DOCUMENT_ROOT'] . "/uploads/video/" . $video_info['file_name']);
-            @unlink($_SERVER['DOCUMENT_ROOT'] . "/uploads/temp/" . $video_info['file_name']);
+            $video_file = array();
+            foreach ($video_info AS $item) {
+                $video_file[] = array(
+                    'info_id' => $info_id,
+                    'name' => $item['client_name'],
+                    'url' => "/uploads/video/" . $item['file_name'],
+                    'type' => "video"
+                );
+                // 移动文件
+                @copy($_SERVER['DOCUMENT_ROOT'] . "/uploads/temp/" . $item['file_name'], $_SERVER['DOCUMENT_ROOT'] . "/uploads/video/" . $item['file_name']);
+                @unlink($_SERVER['DOCUMENT_ROOT'] . "/uploads/temp/" . $item['file_name']);
+            }
+            $this->db->insert_batch('info_attachment', $video_file);
         }
         // 检测并上传图片
         if (!empty($_FILES)) {
