@@ -405,12 +405,12 @@ class Event_Model extends CI_Model
             ->where("event.id", $event_id)
             ->get()->row_array();
         // 信息列表
-        $data["info_list"] = $this->db->select("info.id, info.title")
+        $data["info_list"] = $this->db->select("info.id, info.title, info.time")
             ->from("info")
             ->where("info.id IN (SELECT `info_id` FROM `yq_event_info` WHERE `event_id` = $event_id)")
             ->get()->result_array();
         // 关联事件
-        $data["relate_event"] = $this->db->select("event.id, event.title")
+        $data["relate_event"] = $this->db->select("event.id, event.title, event.start_time")
             ->from("event")
             ->where("event.id IN (SELECT `relate_id` FROM `yq_event_relate` WHERE `event_id` = $event_id)")
             ->get()->result_array();
