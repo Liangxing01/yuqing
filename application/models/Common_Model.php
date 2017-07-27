@@ -117,7 +117,7 @@ class Common_Model extends CI_Model
         $data = $this->db->select("l.description,l.pid,l.id,l.time,user.name,l.speaker, group.name AS group, user.avatar")
             ->from('event_log AS l')
             ->where('l.event_id', $eid)
-            ->join('user','l.speaker = user.id')
+            ->join('user', 'l.speaker = user.id')
             ->join('user_group', 'user_group.uid = l.speaker', 'left')
             ->join('group', 'group.id = user_group.gid', 'left')
             ->order_by('time', 'DESC')->get()
@@ -147,6 +147,7 @@ class Common_Model extends CI_Model
                     //评论加入评论数组
                     $com = array(
                         'id' => $words['id'],
+                        'speaker' => $words['speaker'],
                         'time' => $words['time'],
                         'desc' => $words['description'],
                         'name' => $words['name'],
@@ -164,12 +165,14 @@ class Common_Model extends CI_Model
                         //var_dump($sum);
                         $info = array(
                             'id' => $words['id'],
+                            'speaker' => $words['speaker'],
                             'time' => $words['time'],
                             'name' => $words['name'],
                             'group' => $words['group'],
                             'desc' => $words['desc'],
                             'avatar' => $words['avatar'],
-                            'pid' => $words['pid']
+                            'pid' => $words['pid'],
+                            'usertype' => $this->check_is_watcher($eid, $words['speaker']) ? 1 : 0
                         );
                         array_push($summary_array[$k]['comment'], $info);
 

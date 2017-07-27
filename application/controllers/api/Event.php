@@ -25,12 +25,12 @@ class Event extends CI_Controller
      */
     public function response_timeline()
     {
-        $page_num = (int)$this->input->post("page_num");
-        $size = (int)$this->input->post("size");
-        $type = $this->input->post("type"); // 请求结果类型
+//        $page_num = (int)$this->input->post("page_num");
+//        $size = (int)$this->input->post("size");
+//        $type = $this->input->post("type"); // 请求结果类型
         $event_id = $this->input->post("id"); // 事件ID
         $parent_id = $this->input->post("pid"); // 父评论ID
-        $result = $this->event->get_response_timeline_data($page_num, $size, $type, $event_id, $parent_id);
+        $result = $this->event->get_response_timeline_data($event_id, $parent_id);
         $this->output
             ->set_content_type('application/json')
             ->set_output(json_encode($result));

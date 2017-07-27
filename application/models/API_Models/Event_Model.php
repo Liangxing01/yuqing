@@ -51,62 +51,67 @@ class Event_Model extends CI_Model
      * @param int $parent_id
      * @return array
      */
-    public function get_response_timeline_data($page_num, $size, $type, $event_id, $parent_id)
+    public function get_response_timeline_data($event_id, $parent_id)
     {
         // 检查权限
         if (!$this->can_see_event($event_id)) {
             return $this->privilege_error;
         }
         // 检查参数
-        if (is_int($page_num) && is_int($size)) {
-            $start = ($page_num - 1) * $size;
-        } else {
-            return $this->param_error;
-        }
+//        if (is_int($page_num) && is_int($size)) {
+//            $start = ($page_num - 1) * $size;
+//        } else {
+//            return $this->param_error;
+//        }
         if (is_null($event_id)) {
             return $this->param_error;
         }
-        if ($type == "c_record" && is_null($parent_id)) {
-            return $this->param_error;
+        if (is_null($parent_id)) {
+            $type = 'f_record';
+//            return $this->param_error;
+        } else {
+            $type = 'c_record';
         }
         // 查询数据
         switch ($type) {
             case 'f_record':
                 // 返回父评论
-                $data = $this->db->select("event_log.id, event_log.speaker, group.name AS group, user.name, event_log.description, event_log.time, user.avatar, (select count(id) from yq_event_log AS log where log.event_id = $event_id AND log.pid = yq_event_log.id) AS comments_num")
-                    ->from("event_log")
-                    ->join("user", "event_log.speaker = user.id")
-                    ->join("user_group", "user_group.uid = event_log.speaker", "left")
-                    ->join("group", "group.id = user_group.gid", "left")
-                    ->where(array("event_log.event_id" => $event_id, "pid" => null))
-                    ->limit($size, $start)
-                    ->order_by("time", "desc")
-                    ->get()->result_array();
-                $total = $this->db->where(array("event_log.event_id" => $event_id, "pid" => null))->get("event_log")->num_rows(); // 总条数
-                foreach ($data AS $key => $val) {
-                    $data[$key]['usertype'] = $this->verify->is_watcher($val['speaker']) ? 1 : 0;
-                }
-                $this->success['data'] = $data;
-                $this->success['total'] = $total;
+//                $data = $this->db->select("event_log.id, event_log.speaker, group.name AS group, user.name, event_log.description, event_log.time, user.avatar, (select count(id) from yq_event_log AS log where log.event_id = $event_id AND log.pid = yq_event_log.id) AS comments_num")
+//                    ->from("event_log")
+//                    ->join("user", "event_log.speaker = user.id")
+//                    ->join("user_group", "user_group.uid = event_log.speaker", "left")
+//                    ->join("group", "group.id = user_group.gid", "left")
+//                    ->where(array("event_log.event_id" => $event_id, "pid" => null))
+//                    ->limit($size, $start)
+//                    ->order_by("time", "desc")
+//                    ->get()->result_array();
+//                $total = $this->db->where(array("event_log.event_id" => $event_id, "pid" => null))->get("event_log")->num_rows(); // 总条数
+//                foreach ($data AS $key => $val) {
+//                    $data[$key]['usertype'] = $this->verify->is_watcher($val['speaker']) ? 1 : 0;
+//                }
+                $this->load->model('Common_Model', 'common_model');
+                $data = $this->common_model->get_all_logs_by_id($event_id);
+                $this->success['data'] = $data === false ? array() : $data;
+//                $this->success['total'] = $total;
                 return $this->success;
                 break;
             case 'c_record':
                 // 返回子评论
-                $data = $this->db->select("event_log.id, event_log.speaker, group.name AS group, user.name, event_log.description, event_log.time, user.avatar")
+                $data = $this->db->select("event_log.id, group.name AS group, user.name, event_log.description AS desc, event_log.time, user.avatar, event_log.pid, event_log.speaker")
                     ->from("event_log")
                     ->join("user", "event_log.speaker = user.id")
                     ->join("user_group", "user_group.uid = event_log.speaker", "left")
                     ->join("group", "group.id = user_group.gid", "left")
                     ->where("pid", $parent_id)
-                    ->limit($size, $start)
+//                    ->limit($size, $start)
                     ->order_by("time", "desc")
                     ->get()->result_array();
                 foreach ($data AS $key => $val) {
                     $data[$key]['usertype'] = $this->verify->is_watcher($val['speaker']) ? 1 : 0;
                 }
-                $total = $this->db->where("pid", $parent_id)->get("event_log")->num_rows(); // 总条数
+//                $total = $this->db->where("pid", $parent_id)->get("event_log")->num_rows(); // 总条数
                 $this->success['data'] = $data;
-                $this->success['total'] = $total;
+//                $this->success['total'] = $total;
                 return $this->success;
                 break;
             default:
