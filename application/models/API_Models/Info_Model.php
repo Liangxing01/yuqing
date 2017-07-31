@@ -285,6 +285,7 @@ class Info_Model extends CI_Model
                     ->join("info_attachment", "info_attachment.info_id = info.id AND info_attachment.type = 'pic'", "left")
                     ->order_by("time", "desc")
                     ->limit($size, $start)
+                    ->group_by("info.id")
                     ->get()->result_array();
                 $total = $this->db->select("info.id")
                     ->from("info")
@@ -307,6 +308,7 @@ class Info_Model extends CI_Model
                     ->like("info.title", $keyword)
                     ->order_by("time", "desc")
                     ->limit($size, $start)
+                    ->group_by("info.id")
                     ->get()->result_array();
                 $total = $this->db->select("info.id")
                     ->from("info")
