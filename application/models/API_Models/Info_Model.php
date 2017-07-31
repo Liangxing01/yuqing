@@ -275,12 +275,14 @@ class Info_Model extends CI_Model
         switch ($data_type) {
             case "all_message" :
                 // 所有数据
-                $data = $this->db->select("info.id, info.title, source, type.name AS type, user.name AS publisher, time, duplicate, state")
+                $data = $this->db->select("info.id, info.title, info.source, user.name AS publisher, group.name AS group_name, time, info_attachment.url AS pic")
                     ->from("info")
                     ->where(array('state' => 2, 'duplicate' => 0))
                     ->like("info.title", $keyword)
                     ->join("user", "user.id = info.publisher", "left")
-                    ->join("type", "type.id = info.type", "left")
+                    ->join("user_group", 'user_group.uid = info.publisher', 'left')
+                    ->join("group", "group.id = user_group.gid", 'left')
+                    ->join("info_attachment", "info_attachment.info_id = info.id AND info_attachment.type = 'pic'", "left")
                     ->order_by("time", "desc")
                     ->limit($size, $start)
                     ->get()->result_array();
@@ -295,10 +297,12 @@ class Info_Model extends CI_Model
                 break;
             case "undo_message":
                 // 未确认数据
-                $data = $this->db->select("info.id, info.title, source, type.name AS type, user.name AS publisher, time, duplicate, state")
+                $data = $this->db->select("info.id, info.title, info.source, user.name AS publisher, group.name AS group_name, time, info_attachment.url AS pic")
                     ->from("info")
                     ->join("user", "user.id = info.publisher", "left")
-                    ->join("type", "type.id = info.type", "left")
+                    ->join("user_group", 'user_group.uid = info.publisher', 'left')
+                    ->join("group", "group.id = user_group.gid", 'left')
+                    ->join("info_attachment", "info_attachment.info_id = info.id AND info_attachment.type = 'pic'", "left")
                     ->where(array("info.state >=" => 0, "info.state <" => 2))
                     ->like("info.title", $keyword)
                     ->order_by("time", "desc")
