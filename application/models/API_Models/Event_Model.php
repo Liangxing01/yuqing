@@ -437,9 +437,10 @@ class Event_Model extends CI_Model
     /**
      * 获取事件详情
      * @param int $event_id 事件ID
+     * @param string $user_type 用户类型 manager|processor|watcher
      * @return array
      */
-    public function get_event_detail_data($event_id)
+    public function get_event_detail_data($event_id, $user_type)
     {
         // 检查权限
         if (!$this->can_see_event($event_id)) {
@@ -462,6 +463,20 @@ class Event_Model extends CI_Model
             ->join("group G", "F.gid = G.id", "left")
             ->where("event.id", $event_id)
             ->get()->row_array();
+        if ($data['detail']['state'] == '未审核') {
+            switch ($user_type) {
+                case 'manager':
+                    break;
+                case 'processor':
+                    $data['detail']['state'] = '审核中';
+                    break;
+                case 'watcher':
+                    $data['detail']['state'] = '审核中';
+                    break;
+                default:
+                    break;
+            }
+        }
         // 信息列表
         $data["info_list"] = $this->db->select("info.id, info.title, info.time")
             ->from("info")

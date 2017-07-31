@@ -75,12 +75,13 @@ class Event extends CI_Controller
 
     /**
      * 事件详情
-     * POST参数 id: 事件ID
+     * POST参数 id: 事件ID user_type: 用户类型 manager|processor|watcher
      */
     public function get_event_detail()
     {
         $event_id = $this->input->post("id");
-        $result = $this->event->get_event_detail_data($event_id);
+        $user_type = $this->input->post("user_type");
+        $result = $this->event->get_event_detail_data($event_id, $user_type);
         $this->output
             ->set_content_type('application/json')
             ->set_output(json_encode($result));
