@@ -294,6 +294,41 @@ class Event_Model extends CI_Model
                 $this->success['total'] = $total;
                 return $this->success;
                 break;
+            case "processor_verify":
+                // 审核中列表
+                $data = $this->db->select("d.event_id, e.title, e.rank, e.start_time, e.end_time, u.name AS manager, mg.name AS manager_group, m.name AS main_processor, pg.name AS main_processor_group, g.name AS main_group, '审核中' AS state")
+                    ->from("event_designate AS d")
+                    ->join('event AS e', 'e.id = d.event_id', 'left')
+                    ->join('user AS u', 'u.id = d.manager', 'left')
+                    ->join('user AS m', 'm.id = e.main_processor', 'left')
+                    ->join('group AS g', 'g.id = e.group', 'left')
+                    ->join('user_group AS m_ug', 'm_ug.uid = d.manager', 'left')
+                    ->join('group AS mg', 'mg.id = m_ug.gid', 'left')
+                    ->join('user_group AS p_ug', 'p_ug.uid = e.main_processor', 'left')
+                    ->join('group AS pg', 'pg.id = p_ug.gid', 'left')
+                    ->where(array("e.state" => "未审核"))
+                    ->like("e.title", $keyword)
+                    ->group_start()
+                    ->where('d.processor', $uid)
+                    ->or_where_in('d.group', $gid)
+                    ->group_end()
+                    ->limit($size, $start)
+                    ->order_by('d.time', "desc")
+                    ->get()->result_array();
+                $total = $this->db->select("event_designate.event_id")
+                    ->from("event_designate")
+                    ->join('event', 'event.id = event_designate.event_id', 'left')
+                    ->where(array("event.state" => "未审核"))
+                    ->like("event.title", $keyword)
+                    ->group_start()
+                    ->where('event_designate.processor', $uid)
+                    ->or_where_in('event_designate.group', $gid)
+                    ->group_end()
+                    ->get()->num_rows();
+                $this->success['data'] = $data;
+                $this->success['total'] = $total;
+                return $this->success;
+                break;
             case "processor_done":
                 // 已完成列表
                 $data = $this->db->select("event_designate.event_id, event.title, event.rank, event.start_time, event.end_time, user.name, event.state")
@@ -601,7 +636,8 @@ class Event_Model extends CI_Model
      * @param $event_id
      * @return array
      */
-    public function get_all_logs_by_id($event_id){
+    public function get_all_logs_by_id($event_id)
+    {
         $this->load->model('Common_Model', 'common_model');
         $data = $this->common_model->get_all_logs_by_id($event_id);
         $this->success['data'] = $data === false ? array() : $data;
