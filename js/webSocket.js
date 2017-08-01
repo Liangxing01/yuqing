@@ -14,48 +14,51 @@ function reload_num() {
     })
 }
 function get_webSocket_msg() {
-    var client_socket = new WebSocket('ws://luzhou.v6plus.com:4000');
+    try {
+        var client_socket = new WebSocket('ws://' + window.location.host + ':4000');
+        client_socket.onopen = function () {
+            console.log("服务器已连接");
+        };
 
-    client_socket.onopen = function () {
-        console.log("服务器已连接");
-    };
-
-    client_socket.onmessage = function (ev) {
-        var data = $.parseJSON(ev.data);
-        if (data) {
-            if (data.type != 233) {
-                message.show();
+        client_socket.onmessage = function (ev) {
+            var data = $.parseJSON(ev.data);
+            if (data) {
+                if (data.type != 233) {
+                    message.show();
+                }
+                switch (data.type) {
+                    case 233:
+                        bind_client_to_uid(data.client_id);
+                        break;
+                    case 0:
+                    case 1:
+                    case 2:
+                        add_type_list(data);
+                        break;//添加消息信息
+                    case 3:
+                        message_info($('#notification_bar2'), data);
+                        break;//事件首回提醒
+                    case 4:
+                        message_info($('#notification_bar1'), data);
+                        break;//超时提醒
+                }
             }
-            switch (data.type) {
-                case 233:
-                    bind_client_to_uid(data.client_id);
-                    break;
-                case 0:
-                case 1:
-                case 2:
-                    add_type_list(data);
-                    break;//添加消息信息
-                case 3:
-                    message_info($('#notification_bar2'), data);
-                    break;//事件首回提醒
-                case 4:
-                    message_info($('#notification_bar1'), data);
-                    break;//超时提醒
-            }
-        }
-    };
+        };
 
-    client_socket.onclose = function () {
-        console.log("服务器已关闭");
-        //断线重连
-        setTimeout(function () {
-            get_webSocket_msg();
-        }, 30000);
-    };
-    //发送心跳包
-    setInterval(function () {
-        heart_beat(client_socket);
-    }, 45000);
+        client_socket.onclose = function () {
+            console.log("服务器已关闭");
+            //断线重连
+            setTimeout(function () {
+                get_webSocket_msg();
+            }, 30000);
+        };
+        //发送心跳包
+        setInterval(function () {
+            heart_beat(client_socket);
+        }, 45000);
+    } catch (err) {
+        console.log(err);
+    }
 }
 
 var msg_num = 1;    //提醒框的偏移量

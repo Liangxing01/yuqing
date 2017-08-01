@@ -49,6 +49,8 @@ class Yuqing_Model extends CI_Model {
         $yq_data['info'] = $this->mongo->select(array(),array('content','yq_block_list','yq_trash_list','yq_reporter_list',
             'yq_rep_num'))//排除 content字段
             ->where($query_where)
+            ->offset($offset)
+            //->where_lt('_id',new MongoId('59224e1e823a6b0f466bd582'))
             ->where('yq_tag_lock',0)                    //未被确认的舆情
             ->where_lte('yq_rep_num',10)                //上报人小于10个
             ->where_not_in('yq_block_list',$block_list) // 排除 自己已经 忽略的无关舆情
@@ -56,9 +58,45 @@ class Yuqing_Model extends CI_Model {
             ->where_not_in('yq_reporter_list',$block_list) // 不显示已经上报的舆情
             ->where_lte('yq_trash_num',5)                     //垃圾标记数 不超过5个的显示
             ->limit($query['length'])
-            ->offset($offset)
             ->order_by(array('yq_pubdate' => $query['sort']))
             ->get($col_name);
+
+        /*$yq_data['num'] = $this->mongo->select(array('_id'),array('content'))//排除 content字段
+            ->where($query_where)
+            ->where('yq_tag_lock',0)                    //未被确认的舆情
+            ->where_lte('yq_rep_num',10)                //上报人小于10个
+            ->where_not_in('yq_block_list',$block_list) // 排除 自己已经 忽略的舆情
+            ->where_not_in('yq_trash_list',$block_list) // 排除 自己认为 垃圾的舆情
+            ->where_not_in('yq_reporter_list',$block_list) // 不显示已经上报的舆情
+            ->where_lte('yq_trash_num',5)                     //垃圾标记数 不超过5个的显示
+            ->count('rawdata');*/
+
+
+        return $yq_data;
+    }
+
+    /**
+     * 统计总数
+     */
+    public function get_raw_yqData_num($query,$page_num,$col_name){
+        $uid = $this->session->userdata('uid');
+        $block_list = array();
+        array_push($block_list,$uid);
+
+        //拼接查询条件
+        $query_where = array();
+        if($query['yq_tag'] != '全部'){
+            $query_where['yq_tag'] = $query['yq_tag'];
+        }
+        if(!empty($query['search'])){
+            $query_where['$or'] = array(
+                array('title'   => array('$regex' => $query['search'])),
+                array('content' => array('$regex' => $query['search']))
+            );
+        }
+        if($query['media_type'] != '全部'){
+            $query_where['yq_media_type'] = $query['media_type'];
+        }
 
         $yq_data['num'] = $this->mongo->select(array('_id'),array('content'))//排除 content字段
             ->where($query_where)
@@ -68,7 +106,7 @@ class Yuqing_Model extends CI_Model {
             ->where_not_in('yq_trash_list',$block_list) // 排除 自己认为 垃圾的舆情
             ->where_not_in('yq_reporter_list',$block_list) // 不显示已经上报的舆情
             ->where_lte('yq_trash_num',5)                     //垃圾标记数 不超过5个的显示
-            ->count('rawdata');
+            ->count($col_name);
 
         return $yq_data;
     }

@@ -42,6 +42,9 @@
             url: "/designate/get_online_tree",
             autoParam: ["id", "name=n", "level=lv"]
             // dataFilter: filter
+        },
+        callback:{
+            onAsyncSuccess: addUserIcon
         }
     };
 
@@ -66,4 +69,28 @@
     }
     onlineTree = $.fn.zTree.init($("#online_tree"), setting);
 
+
+    function addUserIcon(event, treeId, treeNode, msg){
+        var nodes = onlineTree.getNodes();
+        nodes[0].children.map(function(data){
+            if(data.children.length>1){
+                data.children.map(function(child){
+                    if(child.app_online == 1){
+                        child.name += ' app'
+                    }
+                    if(child.pc_online == 1){
+                        child.name += ' pc'
+                    }
+                })
+            }else{
+                if(data.children[0].app_online == 1){
+                    data.children[0].name += ' app'
+                }
+                if(data.children[0].pc_online == 1){
+                    data.children[0].name += ' pc'
+                }
+            }
+        })
+        onlineTree.refresh();
+    }
 </script>
