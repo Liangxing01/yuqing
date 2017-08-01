@@ -42,6 +42,9 @@
             url: "/designate/get_online_tree",
             autoParam: ["id", "name=n", "level=lv"]
             // dataFilter: filter
+        },
+        callback:{
+            onAsyncSuccess: addUserIcon
         }
     };
 
@@ -66,4 +69,8 @@
     }
     onlineTree = $.fn.zTree.init($("#online_tree"), setting);
 
+
+    function addUserIcon(event, treeId, treeNode, msg){
+        console.log(treeNode);
+    }
 </script>
