@@ -166,13 +166,17 @@ class Event_Model extends CI_Model
         $user_data_type = $user_type . "_" . $data_type;
         switch ($user_data_type) {
             case 'manager_all_event':
-                $data = $this->db->select("event.id, event.title, A.name AS manager, B.name AS main_processor, C.name AS main_group, event.rank, event.state, event.start_time")
-                    ->from("event")
-                    ->like("event.title", $keyword)
-                    ->join("user A", "A.id = event.manager", "left")
-                    ->join("user B", "B.id = event.main_processor", "left")
-                    ->join("group C", "C.id = event.group", "left")
-                    ->order_by("start_time", "desc")
+                $data = $this->db->select("e.id AS event_id, e.title, e.rank, e.start_time, e.end_time, u.name AS manager, mg.name AS manager_group, m.name AS main_processor, pg.name AS main_processor_group, g.name AS main_group, e.state")
+                    ->from("event AS e")
+                    ->like("e.title", $keyword)
+                    ->join('user AS u', 'u.id = e.manager', 'left')
+                    ->join('user AS m', 'm.id = e.main_processor', 'left')
+                    ->join('group AS g', 'g.id = e.group', 'left')
+                    ->join('user_group AS m_ug', 'm_ug.uid = e.manager', 'left')
+                    ->join('group AS mg', 'mg.id = m_ug.gid', 'left')
+                    ->join('user_group AS p_ug', 'p_ug.uid = e.main_processor', 'left')
+                    ->join('group AS pg', 'pg.id = p_ug.gid', 'left')
+                    ->order_by("e.start_time", "desc")
                     ->limit($size, $start)
                     ->get()->result_array();
                 $total = $this->db->select("event.id")
@@ -184,14 +188,18 @@ class Event_Model extends CI_Model
                 return $this->success;
                 break;
             case 'manager_done_event':
-                $data = $this->db->select("event.id, event.title, A.name AS manager, B.name AS main_processor, C.name AS main_group, event.rank, event.state, event.start_time")
-                    ->from("event")
-                    ->where("event.state", "已完成")
-                    ->like("event.title", $keyword)
-                    ->join("user A", "A.id = event.manager", "left")
-                    ->join("user B", "B.id = event.main_processor", "left")
-                    ->join("group C", "C.id = event.group", "left")
-                    ->order_by("start_time", "desc")
+                $data = $this->db->select("e.id AS event_id, e.title, e.rank, e.start_time, e.end_time, u.name AS manager, mg.name AS manager_group, m.name AS main_processor, pg.name AS main_processor_group, g.name AS main_group, e.state")
+                    ->from("event AS e")
+                    ->where("e.state", "已完成")
+                    ->like("e.title", $keyword)
+                    ->join('user AS u', 'u.id = e.manager', 'left')
+                    ->join('user AS m', 'm.id = e.main_processor', 'left')
+                    ->join('group AS g', 'g.id = e.group', 'left')
+                    ->join('user_group AS m_ug', 'm_ug.uid = e.manager', 'left')
+                    ->join('group AS mg', 'mg.id = m_ug.gid', 'left')
+                    ->join('user_group AS p_ug', 'p_ug.uid = e.main_processor', 'left')
+                    ->join('group AS pg', 'pg.id = p_ug.gid', 'left')
+                    ->order_by("e.start_time", "desc")
                     ->limit($size, $start)
                     ->get()->result_array();
                 $total = $this->db->select("event.id")
@@ -205,14 +213,18 @@ class Event_Model extends CI_Model
                 break;
             case "manager_undo_event":
                 // 未审核事件列表
-                $data = $this->db->select("event.id, event.title, A.name AS manager, B.name AS main_processor, C.name AS main_group, event.rank, event.state, event.start_time")
-                    ->from("event")
-                    ->join("user A", "A.id = event.manager", "left")
-                    ->join("user B", "B.id = event.main_processor", "left")
-                    ->join("group C", "C.id = event.group", "left")
-                    ->where("event.state", "未审核")
-                    ->like("event.title", $keyword)
-                    ->order_by("start_time", "desc")
+                $data = $this->db->select("e.id AS event_id, e.title, e.rank, e.start_time, e.end_time, u.name AS manager, mg.name AS manager_group, m.name AS main_processor, pg.name AS main_processor_group, g.name AS main_group, e.state")
+                    ->from("event AS e")
+                    ->join('user AS u', 'u.id = e.manager', 'left')
+                    ->join('user AS m', 'm.id = e.main_processor', 'left')
+                    ->join('group AS g', 'g.id = e.group', 'left')
+                    ->join('user_group AS m_ug', 'm_ug.uid = e.manager', 'left')
+                    ->join('group AS mg', 'mg.id = m_ug.gid', 'left')
+                    ->join('user_group AS p_ug', 'p_ug.uid = e.main_processor', 'left')
+                    ->join('group AS pg', 'pg.id = p_ug.gid', 'left')
+                    ->where("e.state", "未审核")
+                    ->like("e.title", $keyword)
+                    ->order_by("e.start_time", "desc")
                     ->limit($size, $start)
                     ->get()->result_array();
                 $total = $this->db->select("event.id")
