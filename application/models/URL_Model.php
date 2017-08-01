@@ -23,7 +23,7 @@ class URL_Model extends CI_Model {
      */
     public function run4601($codes){
         //加载 主题配置文件
-        $this->config->load('theme_cfg');
+        /*$this->config->load('theme_cfg');
         $theme_cfg = $this->config->item('theme');
 
         //政府管控
@@ -40,7 +40,7 @@ class URL_Model extends CI_Model {
         }
         $run_code = substr($str,0,-1);
         //var_dump($run_code);
-        ssh2_exec($connection, $run_code);
+        ssh2_exec($connection, $run_code);*/
 
 
         /*//公司管控
