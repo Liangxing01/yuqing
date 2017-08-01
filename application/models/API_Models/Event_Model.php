@@ -187,10 +187,10 @@ class Event_Model extends CI_Model
                 $this->success['total'] = $total;
                 return $this->success;
                 break;
-            case 'manager_done_event':
+            case 'manager_doing_event':
                 $data = $this->db->select("e.id AS event_id, e.title, e.rank, e.start_time, e.end_time, u.name AS manager, mg.name AS manager_group, m.name AS main_processor, pg.name AS main_processor_group, g.name AS main_group, e.state")
                     ->from("event AS e")
-                    ->where("e.state", "已完成")
+                    ->where("e.state", "已指派")
                     ->like("e.title", $keyword)
                     ->join('user AS u', 'u.id = e.manager', 'left')
                     ->join('user AS m', 'm.id = e.main_processor', 'left')
@@ -203,7 +203,7 @@ class Event_Model extends CI_Model
                     ->limit($size, $start)
                     ->get()->result_array();
                 $total = $this->db->select("event.id")
-                    ->where("event.state", "已完成")
+                    ->where("event.state", "已指派")
                     ->like("event.title", $keyword)
                     ->from("event")
                     ->get()->num_rows();
@@ -211,7 +211,7 @@ class Event_Model extends CI_Model
                 $this->success['total'] = $total;
                 return $this->success;
                 break;
-            case "manager_undo_event":
+            case "manager_verify_event":
                 // 未审核事件列表
                 $data = $this->db->select("e.id AS event_id, e.title, e.rank, e.start_time, e.end_time, u.name AS manager, mg.name AS manager_group, m.name AS main_processor, pg.name AS main_processor_group, g.name AS main_group, e.state")
                     ->from("event AS e")
