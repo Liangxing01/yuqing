@@ -356,6 +356,16 @@ class URL_Model extends CI_Model {
                 "remote"    => 1
             );
             $this->sendMqttMsg($topic,$mqttMsg);
+
+            $mqttMsg = array(
+                "enable"    => -1,
+                "action"    => 1,
+                "domain"    => $ctl_domain,
+                "ip"        => $ip,
+                "family"    => 6,
+                "remote"    => 1
+            );
+            $this->sendMqttMsg($topic,$mqttMsg);
         }
 
         if($dns_id){
@@ -402,6 +412,16 @@ class URL_Model extends CI_Model {
             "domain"    => $gname['value'],
             "ip"        => $ip,
             "family"    => 4,
+            "remote"    => 1
+        );
+        $this->sendMqttMsg($topic,$mqttMsg);
+
+        $mqttMsg = array(
+            "enable"    => -1,
+            "action"    => 0,
+            "domain"    => $gname['value'],
+            "ip"        => $ip,
+            "family"    => 6,
             "remote"    => 1
         );
         $this->sendMqttMsg($topic,$mqttMsg);
