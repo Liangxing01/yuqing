@@ -320,6 +320,7 @@ class URL_Model extends CI_Model {
         $this->checkIsIPv6();
 
         $ip = "202.202.2.42"; //重大ip
+        $ipv6 = "2001:da8:c800:1005::3";
         $ctl_code = array();
         $gname = $ctl_domain."_dns";
         //检查有该 域名组没有
@@ -361,7 +362,7 @@ class URL_Model extends CI_Model {
                 "enable"    => -1,
                 "action"    => 1,
                 "domain"    => $ctl_domain,
-                "ip"        => $ip,
+                "ip"        => $ipv6,
                 "family"    => 6,
                 "remote"    => 1
             );
@@ -387,6 +388,7 @@ class URL_Model extends CI_Model {
     public function del_dns($rule_id){
         $this->checkIsIPv6();
         $ip = "202.202.2.42"; //重大ip
+        $ipv6 = "2001:da8:c800:1005::3";
         //删除dns 规则 和 域名组
         $gname = $this->db->select('cd.group_name,cd.value')
             ->from('ctl_domains as cd')
@@ -420,7 +422,7 @@ class URL_Model extends CI_Model {
             "enable"    => -1,
             "action"    => 0,
             "domain"    => $gname['value'],
-            "ip"        => $ip,
+            "ip"        => $ipv6,
             "family"    => 6,
             "remote"    => 1
         );
