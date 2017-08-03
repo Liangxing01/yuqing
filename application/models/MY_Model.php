@@ -373,7 +373,7 @@ class MY_Model extends CI_Model
         $this->load->library("Gateway");
         Gateway::$registerAddress = $this->config->item("VM_registerAddress");
 
-        $users = $this->db->select("id,name")->get("user")->result_array();
+        $users = $this->db->select("id,name,avatar")->get("user")->result_array();
         $userList = array();
         foreach ($users as $user){
             //判断用户是否在线
