@@ -330,6 +330,43 @@ class Welcome extends MY_Controller
 
 
     /**
+     * ----------------layerIM即时聊天--------------------------
+     */
+    public function getBoardInfo(){
+        //查询用户信息
+        $userInfo = $this->my_model->getIMUserInfo();
+        $resArr = array(
+            "code"  => 0,
+            "msg"   => "",
+            "data"  => array(
+                "mine"  => array(
+                    "username"  =>  $userInfo['name'],
+                    "id"        =>  $userInfo['id'],
+                    "status"    =>  "online",
+                    "sign"      =>  "网信平台加密即时无痕聊天",
+                    "avatar"    =>  $userInfo['avatar']
+                ),
+                "group" => array(
+                    array(
+                        "groupname" =>  "巴南网信工作组",
+                        "id"        =>  "10000",
+                        "avatar"    =>  ""
+                    )
+                )
+            )
+        );
+        echo json_encode($resArr);
+    }
+
+    /**
+     * 获取 在线群成员 信息
+     */
+    public function getOnlineGroupMembers(){
+        $members = $this->my_model->getGroupMembers();
+        echo json_encode($members);
+    }
+
+    /**
      * 用户登出 接口
      */
     public function logout()
