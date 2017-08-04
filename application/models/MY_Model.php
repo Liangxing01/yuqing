@@ -364,7 +364,14 @@ class MY_Model extends CI_Model
      */
     public function getIMUserInfo(){
         $uid = $this->session->uid;
-        $userInfo = $this->db->select('id,name,avatar')->from('user')->where('id',$uid)->get()->row_array();
+        $userInfo = $this->db->select('user.id,user.name,user.avatar,group.name as gname')
+            ->from('user')
+            ->join('user_group as ug','ug.uid = user.id')
+            ->join('group','group.id = ug.gid')
+            ->where('user.id',$uid)
+            ->where('ug.is_exist',1)
+            ->get()->row_array();
+        $userInfo['name'] = $userInfo['name'].'('.$userInfo['gname'].')';
         return $userInfo;
     }
 
