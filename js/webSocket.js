@@ -1,6 +1,9 @@
 /**
  * Created by LX on 2016/11/30.
  */
+
+
+ var _layim = null;
 $(function () {
     //get_all_msg();
     get_webSocket_msg();
@@ -41,6 +44,10 @@ function get_webSocket_msg() {
                     case 4:
                         message_info($('#notification_bar1'), data);
                         break;//超时提醒
+                    case 'im':
+                         _layim.getgetMessage();
+                         break;
+
                 }
             }
         };
@@ -65,6 +72,7 @@ var msg_num = 1;    //提醒框的偏移量
 
 function layim(target){
     layui.use('layim', function(layim){
+      _layim = layim;
       //先来个客服模式压压精
       layim.config({
         brief: false, //是否简约模式（如果true则不显示主面板）
@@ -74,13 +82,14 @@ function layim(target){
         }
       })
 
-
-      var sendMsg = {
-        type: 'im',
-        uid: 106,
-        msg: 'sgsgaga'
-      }
-      target.send(JSON.stringify(sendMsg));
+      layim.on('sendMessage', function(res){
+        var msg = res.mine;
+        var sendMsg = {
+            type: 'im',
+            msg: msg
+          }
+        target.send(JSON.stringify(sendMsg));
+      })
 
     });
 }
