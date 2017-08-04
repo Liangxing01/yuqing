@@ -28,7 +28,7 @@ function get_webSocket_msg() {
                 }
                 switch (data.type) {
                     case 233:
-                        bind_client_to_uid(data.client_id);
+                        bind_client_to_uid(data.client_id,client_socket);
                         break;
                     case 0:
                     case 1:
@@ -63,7 +63,7 @@ function get_webSocket_msg() {
 
 var msg_num = 1;    //提醒框的偏移量
 
-function layim(){
+function layim(target){
     layui.use('layim', function(layim){
       //先来个客服模式压压精
       layim.config({
@@ -77,10 +77,10 @@ function layim(){
 
       var sendMsg = {
         type: 'im',
-        uid: 100,
+        uid: 106,
         msg: 'sgsgaga'
       }
-      client_socket.send(JSON.stringify(sendMsg));
+      target.send(JSON.stringify(sendMsg));
 
     });
 }
@@ -190,7 +190,7 @@ function getCookie(name) {
  * 绑定 VMessage client_id 到用户id
  * @var int client_id
  */
-function bind_client_to_uid(client_id) {
+function bind_client_to_uid(client_id,target) {
     $.ajax({
         url: "/welcome/bind_uid",
         method: "post",
@@ -199,7 +199,7 @@ function bind_client_to_uid(client_id) {
             "client_id": client_id
         },
         success: function (data) {
-            layim();
+            layim(target);
         }
     });
 }
