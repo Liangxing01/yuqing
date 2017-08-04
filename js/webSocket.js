@@ -18,7 +18,7 @@ function reload_num() {
 }
 function get_webSocket_msg() {
     try {
-        var client_socket = new WebSocket('ws://'+window.location.host+':4000');
+        var client_socket = new WebSocket('ws://'+window.location.hostname+':4000');
         client_socket.onopen = function () {
             console.log("服务器已连接");
         };
