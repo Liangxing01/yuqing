@@ -350,7 +350,7 @@ class Welcome extends MY_Controller
                     array(
                         "groupname" =>  "巴南网信工作组",
                         "id"        =>  "10000",
-                        "avatar"    =>  ""
+                        "avatar"    =>  "/img/logo.png"
                     )
                 )
             )

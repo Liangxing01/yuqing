@@ -45,7 +45,7 @@ function get_webSocket_msg() {
                         message_info($('#notification_bar1'), data);
                         break;//超时提醒
                     case 'im':
-                         _layim.getgetMessage();
+                         _layim.getMessage(data.im_msg);
                          break;
 
                 }
@@ -70,7 +70,7 @@ function get_webSocket_msg() {
 
 var msg_num = 1;    //提醒框的偏移量
 
-function layim(target){
+function layim_init(target){
     layui.use('layim', function(layim){
       _layim = layim;
       //先来个客服模式压压精
@@ -78,12 +78,17 @@ function layim(target){
         brief: false, //是否简约模式（如果true则不显示主面板）
         init:{
           url: '/welcome/getBoardInfo',
-          type: 'get',
-        }
-      })
+          type: 'get'
+        },
+          title : "网信v6即时聊天",
+          members:{
+              url: '/welcome/getOnlineGroupMembers',
+              type: 'get'
+          }
+      });
 
       layim.on('sendMessage', function(res){
-        var msg = res.mine;
+        var msg = res;
         var sendMsg = {
             type: 'im',
             msg: msg
@@ -208,7 +213,7 @@ function bind_client_to_uid(client_id,target) {
             "client_id": client_id
         },
         success: function (data) {
-            layim(target);
+            layim_init(target);
         }
     });
 }
