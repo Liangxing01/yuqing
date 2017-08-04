@@ -160,9 +160,9 @@ a cite{font-style: normal; *cursor:pointer;}
 .layui-input:focus, .layui-textarea:focus{border-color: #C9C9C9 !important;}
 .layui-textarea{position: relative; min-height: 100px; height: auto; line-height: 20px; padding: 6px 10px; resize: vertical;}
 .layui-select{padding: 0 10px;}
-.layui-form select, 
+/*.layui-form select,
 .layui-form input[type=checkbox],
-.layui-form input[type=radio]{display: none;}
+.layui-form input[type=radio]{display: none;}*/
 
 .layui-form-item{margin-bottom: 15px; clear: both; *zoom: 1;}
 .layui-form-item:after{content:'\20'; clear: both; *zoom: 1; display: block; height:0;}
