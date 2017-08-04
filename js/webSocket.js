@@ -15,7 +15,7 @@ function reload_num() {
 }
 function get_webSocket_msg() {
     try {
-        var client_socket = new WebSocket('ws://' + window.location.host + ':4000');
+        var client_socket = new WebSocket('ws://192.168.0.192:4000');
         client_socket.onopen = function () {
             console.log("服务器已连接");
         };
@@ -62,6 +62,29 @@ function get_webSocket_msg() {
 }
 
 var msg_num = 1;    //提醒框的偏移量
+
+function layim(){
+    layui.use('layim', function(layim){
+      //先来个客服模式压压精
+      layim.config({
+        brief: false, //是否简约模式（如果true则不显示主面板）
+        init:{
+          url: '/welcome/getBoardInfo',
+          type: 'get',
+        }
+      })
+
+
+      var sendMsg = {
+        type: 'im',
+        uid: 100,
+        msg: 'sgsgaga'
+      }
+      client_socket.send(JSON.stringify(sendMsg));
+
+    });
+}
+
 //向消息记录添加消息信息
 function add_type_list(data) {
     var title = ''; //提示框的title
@@ -176,7 +199,7 @@ function bind_client_to_uid(client_id) {
             "client_id": client_id
         },
         success: function (data) {
-            console.log(data);
+            layim();
         }
     });
 }
