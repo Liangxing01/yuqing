@@ -84,7 +84,8 @@ function layim_init(target){
           members:{
               url: '/welcome/getOnlineGroupMembers',
               type: 'get'
-          }
+          },
+          copyright : true
       });
 
       layim.on('sendMessage', function(res){
