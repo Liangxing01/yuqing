@@ -34,8 +34,7 @@ class URL_Model extends CI_Model {
                 $port = $one['port'];
                 $username = $one['username'];
                 $password = $one['pwd'];
-                var_dump($host);
-                /*$connection = ssh2_connect($host, $port);
+                $connection = ssh2_connect($host, $port);
                 ssh2_auth_password($connection, $username, $password);
 
                 $str = "";
@@ -43,7 +42,8 @@ class URL_Model extends CI_Model {
                     $str .= $code . " \n";
                 }
                 $run_code = substr($str,0,-1);
-                ssh2_exec($connection, $run_code);*/
+                ssh2_exec($connection, $run_code);
+                ssh2_exec($connection,'exit');
                 $num++;
                 if($num == 5){
                     break;
