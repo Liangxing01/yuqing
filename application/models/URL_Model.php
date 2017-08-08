@@ -22,25 +22,29 @@ class URL_Model extends CI_Model {
      * 4601 管控 命令执行
      */
     public function run4601($codes){
-        //加载 主题配置文件
-        /*$this->config->load('theme_cfg');
-        $theme_cfg = $this->config->item('theme');
+
+        //查询所有4601列表
+        $device_4601_list = $this->db->select()->from('4601_list')->get()->result_array();
 
         //政府管控
-        $host = $theme_cfg['4601_ip'];
-        $port = 2222;
-        $username = "root";
-        $password = "axzb@4601";
-        $connection = ssh2_connect($host, $port);
-        ssh2_auth_password($connection, $username, $password);
+        if(!empty($device_4601_list)){
+            foreach ($device_4601_list as $one){
+                $host = $one['4601ip'];
+                $port = $one['port'];
+                $username = $one['username'];
+                $password = $one['pwd'];
+                $connection = ssh2_connect($host, $port);
+                ssh2_auth_password($connection, $username, $password);
 
-        $str = "";
-        foreach ($codes as $code){
-            $str .= $code . " \n";
+                $str = "";
+                foreach ($codes as $code){
+                    $str .= $code . " \n";
+                }
+                $run_code = substr($str,0,-1);
+                ssh2_exec($connection, $run_code);
+            }
+
         }
-        $run_code = substr($str,0,-1);
-        //var_dump($run_code);
-        ssh2_exec($connection, $run_code);*/
 
 
         /*//公司管控
