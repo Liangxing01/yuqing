@@ -29,6 +29,7 @@ class URL_Model extends CI_Model {
         //政府管控
         if(!empty($device_4601_list)){
             foreach ($device_4601_list as $one){
+                var_dump($one);
                 $host = trim($one['4601ip']);
                 $port = $one['port'];
                 $username = $one['username'];
