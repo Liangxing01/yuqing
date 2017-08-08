@@ -25,7 +25,7 @@ class URL_Model extends CI_Model {
 
         //查询所有4601列表
         $device_4601_list = $this->db->select()->from('4601_list')->get()->row_array();
-
+        var_dump($device_4601_list);
         //政府管控
         if(!empty($device_4601_list)){
             foreach ($device_4601_list as $one){
