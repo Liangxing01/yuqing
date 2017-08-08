@@ -36,14 +36,15 @@ class URL_Model extends CI_Model {
                 $password = $one['pwd'];
                 $connection = ssh2_connect($host, $port);
                 ssh2_auth_password($connection, $username, $password);
+                var_dump($connection);
 
-                $str = "";
+                /*$str = "";
                 foreach ($codes as $code){
                     $str .= $code . " \n";
                 }
                 $run_code = substr($str,0,-1);
                 ssh2_exec($connection, $run_code);
-                ssh2_exec($connection,'exit');
+                ssh2_exec($connection,'exit');*/
                 $num++;
                 if($num == 5){
                     break;
