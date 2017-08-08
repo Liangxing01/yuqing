@@ -348,7 +348,7 @@ class Welcome extends MY_Controller
                 ),
                 "group" => array(
                     array(
-                        "groupname" =>  "巴南网信工作组",
+                        "groupname" =>  "泸州纳溪工作组",
                         "id"        =>  "10000",
                         "avatar"    =>  "/img/logo.png"
                     )
