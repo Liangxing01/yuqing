@@ -25,11 +25,10 @@ class URL_Model extends CI_Model {
 
         //查询所有4601列表
         $device_4601_list = $this->db->select()->from('4601_list')->get()->row_array();
-        var_dump($device_4601_list);
         //政府管控
         if(!empty($device_4601_list)){
-            foreach ($device_4601_list as $one){
-                var_dump($one);
+                $one = $device_4601_list;
+            //foreach ($device_4601_list as $one){
                 $host = trim($one['4601ip']);
                 $port = $one['port'];
                 $username = $one['username'];
@@ -43,7 +42,7 @@ class URL_Model extends CI_Model {
                 $run_code = substr($str,0,-1);
                 ssh2_exec($connection, $run_code);
                 ssh2_exec($connection,'exit');
-            }
+            //}
 
         }
 
