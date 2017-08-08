@@ -27,7 +27,8 @@ class URL_Model extends CI_Model {
 
         //政府管控
         if(!empty($device_4601_list)){
-            foreach ($device_4601_list as $one){
+            //foreach ($device_4601_list as $one){
+                $one = $device_4601_list[0];
                 $host = $one['4601ip'];
                 $port = $one['port'];
                 $username = $one['username'];
@@ -41,7 +42,7 @@ class URL_Model extends CI_Model {
                 }
                 $run_code = substr($str,0,-1);
                 ssh2_exec($connection, $run_code);
-            }
+            //}
 
         }
 
