@@ -43,7 +43,10 @@ class URL_Model extends CI_Model {
                 }
                 $run_code = substr($str,0,-1);
                 ssh2_exec($connection, $run_code);
-                echo $num++;
+                $num++;
+                if($num == 5){
+                    break;
+                }
             }
 
         }
