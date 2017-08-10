@@ -367,4 +367,16 @@ class Info_Model extends CI_Model
         return $this->success;
     }
 
+
+    /**
+     * 获得 信息类型 涉及领域
+     * @return array
+     */
+    public function get_info_type()
+    {
+        $data = $this->db->select('id, name')->get('yq_type')->result_array();
+        $this->success['data'] = $data;
+        return $this->success;
+    }
+
 }

@@ -104,6 +104,18 @@ class Info extends CI_Controller
 
 
     /**
+     * 获取 信息类型 涉及领域
+     */
+    public function get_info_type()
+    {
+        $result = $this->info->get_info_type();
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($result));
+    }
+
+
+    /**
      * 信息检索 分页数据接口
      * POST参数:pageNum 页码, size 条数
      * @return string Json
