@@ -116,6 +116,25 @@ class Info extends CI_Controller
 
 
     /**
+     * 确认信息
+     * POST参数: id 信息id; type 类型id; duplicate 是否重复; relate_scope 涉及领域; trash 是否垃圾信息 1=是; source 来源
+     */
+    public function verify_info()
+    {
+        $id = $this->input->post('id');
+        $type = $this->input->post('type');
+        $duplicate = $this->input->post('duplicate');
+        $relate_scope = $this->input->post('relate_scope');
+        $trash = $this->input->post('trash');
+        $source = $this->input->post('source');
+        $result = $this->info->verify_info($id, $type, $duplicate, $relate_scope, $trash, $source, $source);
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($result));
+    }
+
+
+    /**
      * 信息检索 分页数据接口
      * POST参数:pageNum 页码, size 条数
      * @return string Json

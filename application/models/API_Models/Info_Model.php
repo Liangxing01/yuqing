@@ -379,4 +379,39 @@ class Info_Model extends CI_Model
         return $this->success;
     }
 
+
+    /**
+     * 确认上报信息
+     * @param $id
+     * @param $type
+     * @param $duplicate
+     * @param $relate_scope
+     * @param $trash
+     * @param $source
+     * @return array
+     */
+    public function verify_info($id, $type, $duplicate, $relate_scope, $trash, $source)
+    {
+        // 参数验证
+        if ($id === NULL || $type === NULL || $duplicate === NULL || $trash === NULL) {
+            return $this->param_error;
+        }
+        //判断信息是否是无效信息
+        if ($trash == 1) {
+            $state = -1;
+        } else {
+            $state = 2;
+        }
+        $result = $this->db->set(array("type" => $type, "duplicate" => $duplicate, "relate_scope" => $relate_scope,
+            "state" => $state, "source" => $source))
+            ->where(array("id" => $id))
+            ->update("info");
+        if ($result) {
+            // 确认成功
+            return $this->success;
+        } else {
+            return $this->param_error;
+        }
+    }
+
 }
