@@ -66,11 +66,11 @@ class Admin_Model extends CI_Model {
         }
 
         //插入组织结构
-        foreach ($data['gid'] as $gid){
+        foreach ($data['gid_rel_id'] as $rid){
             $insert_data = array(
                 'uid'   => $uid,
                 'name'  => $data['name'],
-                'parent_id' => $gid,
+                'parent_id' => $rid,
                 'type'  => 1
 
             );
@@ -109,7 +109,7 @@ class Admin_Model extends CI_Model {
         $insert_data = array(
             'uid'   => $uid,
             'name'  => $data['groupname'],
-            'parent_id' => $data['gid'],
+            'parent_id' => $data['relation_id'],
             'type'  => $data['type']
 
         );
@@ -137,21 +137,21 @@ class Admin_Model extends CI_Model {
         $uid   = $data['uid'];
         $name  = $data['name'];
         $type  = $data['type'];
-        //判断type 如果是1，则是父集合type为0，如果是0则父集合为2
+        /*//判断type 如果是1，则是父集合type为0，如果是0则父集合为2
+        $parent_type = 0;
         if($type == 0){
             $parent_type = 2;
-        }else if($type == 1){
+        }else if($type == 1 || $type == 2){
             $parent_type = 0;
-        }
+        }*/
         $res   = false;
 
         //找出待插入节点的左右值
         $parent_node_info = $this->db->select('lft,rgt')->from('relation')
-            ->where('uid',$parent_id)
-            ->group_start()
+            ->where('id',$parent_id)
+            //->group_start()
             //->where('type',$parent_type)
-            ->where('type',0)
-            ->group_end()
+            //->group_end()
             ->get()->row_array();
 
         if(!empty($parent_node_info)){
@@ -333,11 +333,11 @@ class Admin_Model extends CI_Model {
         $this->db->delete('relation',array('uid'=>$data['uid'],'type' => 1));
 
         //插入组织结构
-        foreach ($data['gid'] as $gid){
+        foreach ($data['gid_rel_id'] as $rid){
             $insert_data = array(
                 'uid'   => $data['uid'],
                 'name'  => $data['name'],
-                'parent_id' => $gid,
+                'parent_id' => $rid,
                 'type'  => 1
 
             );
