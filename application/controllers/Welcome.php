@@ -333,6 +333,8 @@ class Welcome extends MY_Controller
      * ----------------layerIM即时聊天--------------------------
      */
     public function getBoardInfo(){
+        $this->config->load('theme_cfg');
+        $theme_cfg = $this->config->item('theme');
         //查询用户信息
         $userInfo = $this->my_model->getIMUserInfo();
         $resArr = array(
@@ -348,7 +350,7 @@ class Welcome extends MY_Controller
                 ),
                 "group" => array(
                     array(
-                        "groupname" =>  "泸州纳溪工作组",
+                        "groupname" =>  $theme_cfg['im_group'],
                         "id"        =>  "10000",
                         "avatar"    =>  "/img/logo.png"
                     )
