@@ -27,6 +27,37 @@ class Api_common extends CI_Controller
 
 
     /**
+     * 修改个人信息
+     * POST: name: 姓名, sex: 性别, avatar: 头像文件
+     */
+    public function update_info()
+    {
+        $name = $this->input->post('name');
+        $sex = $this->input->post('sex');
+        $avatar = $this->input->post('avatar');
+        $result = $this->common->update_info($name, $sex, $avatar);
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($result));
+    }
+
+
+    /**
+     * 修改密码
+     * POST: old_pass: 旧密码, new_pass: 新密码
+     */
+    public function update_password()
+    {
+        $old = $this->input->post('old_pass');
+        $new = $this->input->post('new_pass');
+        $result = $this->common->update_password($old, $new);
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($result));
+    }
+
+
+    /**
      * 用户登出 接口
      */
     public function logout()
