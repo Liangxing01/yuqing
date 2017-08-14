@@ -137,7 +137,7 @@ class Event_Model extends CI_Model
         // 检查权限
         switch ($user_type) {
             case "manager":
-                if (!($this->verify->is_manager($uid) || $this->verify->is_watcher($uid))) {
+                if (!($this->verify->is_manager($uid))) {
                     return $this->privilege_error;
                 }
                 break;
@@ -417,23 +417,47 @@ class Event_Model extends CI_Model
                 $this->success['total'] = $total;
                 return $this->success;
                 break;
-            case "watcher_all":
-                $data = $this->db->select("event.id, event.title, A.name AS manager, B.name AS main_processor, C.name AS main_group, event.rank, event.state, event.start_time")
-                    ->from("event")
-                    ->join("user A", "A.id = event.manager", "left")
-                    ->join("user B", "B.id = event.main_processor", "left")
-                    ->join("group C", "C.id = event.group", "left")
-                    ->join("event_watch D", "D.event_id = event.id", "left")
-                    ->where("D.watcher", $uid)
-                    ->like("event.title", $keyword)
-                    ->order_by("event.start_time", "desc")
+            case "watcher_important":
+                $data = $this->db->select("e.id AS event_id, e.title, e.rank, e.start_time, e.end_time, u.name AS manager, mg.name AS manager_group, m.name AS main_processor, pg.name AS main_processor_group, g.name AS main_group, e.state")
+                    ->from("event AS e")
+                    ->like("e.title", $keyword)
+                    ->join('user AS u', 'u.id = e.manager', 'left')
+                    ->join('user AS m', 'm.id = e.main_processor', 'left')
+                    ->join('group AS g', 'g.id = e.group', 'left')
+                    ->join('user_group AS m_ug', 'm_ug.uid = e.manager', 'left')
+                    ->join('group AS mg', 'mg.id = m_ug.gid', 'left')
+                    ->join('user_group AS p_ug', 'p_ug.uid = e.main_processor', 'left')
+                    ->join('group AS pg', 'pg.id = p_ug.gid', 'left')
+                    ->where('e.rank', 'Ⅰ级特大舆情')
+                    ->order_by("e.start_time", "desc")
                     ->limit($size, $start)
                     ->get()->result_array();
                 $total = $this->db->select("event.id")
-                    ->from("event")
-                    ->join("event_watch D", "D.event_id = event.id", "left")
-                    ->where("D.watcher", $uid)
                     ->like("event.title", $keyword)
+                    ->where('event.rank', 'Ⅰ级特大舆情')
+                    ->from("event")
+                    ->get()->num_rows();
+                $this->success['data'] = $data;
+                $this->success['total'] = $total;
+                return $this->success;
+                break;
+            case "watcher_all":
+                $data = $this->db->select("e.id AS event_id, e.title, e.rank, e.start_time, e.end_time, u.name AS manager, mg.name AS manager_group, m.name AS main_processor, pg.name AS main_processor_group, g.name AS main_group, e.state")
+                    ->from("event AS e")
+                    ->like("e.title", $keyword)
+                    ->join('user AS u', 'u.id = e.manager', 'left')
+                    ->join('user AS m', 'm.id = e.main_processor', 'left')
+                    ->join('group AS g', 'g.id = e.group', 'left')
+                    ->join('user_group AS m_ug', 'm_ug.uid = e.manager', 'left')
+                    ->join('group AS mg', 'mg.id = m_ug.gid', 'left')
+                    ->join('user_group AS p_ug', 'p_ug.uid = e.main_processor', 'left')
+                    ->join('group AS pg', 'pg.id = p_ug.gid', 'left')
+                    ->order_by("e.start_time", "desc")
+                    ->limit($size, $start)
+                    ->get()->result_array();
+                $total = $this->db->select("event.id")
+                    ->like("event.title", $keyword)
+                    ->from("event")
                     ->get()->num_rows();
                 $this->success['data'] = $data;
                 $this->success['total'] = $total;
