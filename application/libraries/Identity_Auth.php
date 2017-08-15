@@ -29,7 +29,7 @@ class Identity_Auth
 
         $password = md5($password);
 
-        $user = $this->CI->db->select("id, username, name, password, ip, login_time, avatar")->where(array("username" => $username, "password" => $password, "is_exist !=" => 0))->get("user");
+        $user = $this->CI->db->select("id, username, name, job, password, ip, login_time, avatar")->where(array("username" => $username, "password" => $password, "is_exist !=" => 0))->get("user");
 
         if ($user->num_rows() > 0) {
             //更新用户认证token
@@ -47,6 +47,7 @@ class Identity_Auth
                 "uid" => $user->row()->id,
                 "username" => $user->row()->username,
                 "name" => $user->row()->name,
+                "job" => $user->row()->job,
                 "gid" => $group["id"],
                 "gname" => $group["name"],
                 "avatar" => $user->row()->avatar,

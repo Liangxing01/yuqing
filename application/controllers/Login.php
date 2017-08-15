@@ -75,6 +75,7 @@ class Login extends MY_controller
                     'm_token' => $result["m_token"],
                     'name' => $result["name"],
                     'gname' => $result["gname"],
+                    'job' => $result["job"],
                     'avatar' => $result["avatar"],
                     'privilege' => $result["privilege"]
                 );
