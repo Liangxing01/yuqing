@@ -34,8 +34,8 @@ class Api_common extends CI_Controller
     {
         $name = $this->input->post('name');
         $sex = $this->input->post('sex');
-        $avatar = $this->input->post('avatar');
-        $result = $this->common->update_info($name, $sex, $avatar);
+        $is_avatar = $this->input->post('is_avatar');
+        $result = $this->common->update_info($name, $sex, $is_avatar);
         $this->output
             ->set_content_type('application/json')
             ->set_output(json_encode($result));

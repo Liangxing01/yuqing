@@ -117,12 +117,12 @@ class API_Common_Model extends CI_Model
      * 修改个人信息
      * @param string $name
      * @param int $sex
-     * @param int $avatar
+     * @param int $is_avatar
      * @return array
      */
-    public function update_info($name, $sex, $avatar)
+    public function update_info($name, $sex, $is_avatar)
     {
-        switch ($avatar) {
+        switch ($is_avatar) {
             case 1 :
                 // 修改头像
                 $config['upload_path'] = './uploads/avatar/';
