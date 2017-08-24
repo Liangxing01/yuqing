@@ -319,6 +319,38 @@ class Info_Model extends CI_Model
                 $this->success['total'] = $total;
                 return $this->success;
                 break;
+            case "done_message":
+                // 已处理信息，不重复，有效，可指派
+                $data = $this->db->select("info.id, info.title, source, type.name AS type, user.name AS publisher, time")
+                    ->from("info")
+                    ->join("user", "user.id = info.publisher", "left")
+                    ->join("type", "type.id = info.type", "left")
+                    ->where("info.duplicate = 0 AND state = 2 AND info.id NOT IN (SELECT info_id FROM yq_event_info)")
+                    ->group_start()
+                    ->like("info.source", $keyword)
+                    ->or_like("type.name", $keyword)
+                    ->or_like("user.name", $keyword)
+                    ->or_like("info.title", $keyword)
+                    ->group_end()
+                    ->order_by("time", 'desc')
+                    ->limit($size, $start)
+                    ->get()->result_array();
+                $total = $this->db->from("info")
+                    ->join("user", "user.id = info.publisher", "left")
+                    ->join("type", "type.id = info.type", "left")
+                    ->where("info.duplicate = 0 AND state = 2 AND info.id NOT IN (SELECT info_id FROM yq_event_info)")
+                    ->group_start()
+                    ->like("info.id", $keyword)
+                    ->or_like("info.source", $keyword)
+                    ->or_like("type.name", $keyword)
+                    ->or_like("user.name", $keyword)
+                    ->or_like("info.title", $keyword)
+                    ->group_end()
+                    ->get()->num_rows();
+                $this->success['data'] = $data;
+                $this->success['total'] = $total;
+                return $this->success;
+                break;
             default:
                 return $this->param_error;
                 break;
