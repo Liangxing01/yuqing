@@ -697,6 +697,34 @@ class Event_Model extends CI_Model
 
 
     /**
+     * 处理人（部门）列表
+     * @return array
+     */
+    public function get_processor_list()
+    {
+        $processor_group_id = $this->get_processor_group_id();
+        $processor_id = $this->get_processor_id();
+
+        $group_tree_nodes = $this->db->select("name, lft, rgt, type, uid")->from('relation')
+            ->group_start()
+            ->where_in("uid", $processor_group_id)
+            ->where("type", 0)
+            ->group_end()
+            ->or_group_start()
+            ->where_in("uid", $processor_id)
+            ->where("type", 1)
+            ->group_end()
+            ->or_where("name", "组织关系")
+            ->or_where("type", 2)
+            ->order_by("lft", "asc")
+            ->get()->result_array();
+
+        // 预排序树节点转json
+        return $this->people2json($group_tree_nodes);
+    }
+
+
+    /**
      * 判断是否是事件负责人
      * @param int $uid
      * @param array $gid
@@ -751,5 +779,63 @@ class Event_Model extends CI_Model
     protected function can_see_event($event_id)
     {
         return $this->verify->can_see_event($event_id) || $this->verify->is_watcher();
+    }
+
+
+    /**
+     * 获得 处理人单位id
+     * @return array
+     */
+    protected function get_processor_group_id()
+    {
+        $processor_group = $this->db->select("yq_group.id AS id")
+            ->join("user_group", "user_group.gid = group.id")
+            ->join("user", "user_group.uid = user.id")
+            ->join("user_privilege", "user.id = user_privilege.uid", "left")
+            ->where(array("user_privilege.pid" => 3, "user_group.is_exist" => 1))
+            ->group_by("group.id")
+            ->get("group")->result_array();
+        $group_id = array_column($processor_group, 'id');
+
+        return $group_id;
+    }
+
+
+    /**
+     * 获得 处理人用户id
+     * @return array
+     */
+    protected function get_processor_id()
+    {
+        $processor = $this->db->select("user.id")
+            ->join("user_privilege", "user.id = user_privilege.uid", "left")
+            ->where(array("user_privilege.pid" => 3, "is_exist" => 1))
+            ->get("user")->result_array();
+        $processor_id = array_column($processor, 'id');
+
+        return $processor_id;
+    }
+
+
+    /**
+     * 预排序树转json
+     * @param $arr
+     * @return array
+     */
+    protected function people2json(&$arr)
+    {
+        $item = current($arr);
+        $res = ['name' => $item['name']];
+        $next = next($arr);
+        while ($next && $next['rgt'] < $item['rgt']) {
+            if ($next['type'] == 1) {
+                $res['user'][] = ['name' => $next['name'], 'id' => $next['uid']];
+                $next = next($arr);
+            } else {
+                $res['area'][] = $this->people2json($arr);
+                $next = current($arr);//函数运行后，指针指向后一个节点，直接取当前节点即可。
+            }
+        }
+        return $res;
     }
 }

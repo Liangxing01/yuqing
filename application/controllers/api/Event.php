@@ -129,4 +129,16 @@ class Event extends CI_Controller
             ->set_output(json_encode($result));
     }
 
+
+    /**
+     * 获取处理人(部门)列表
+     */
+    public function get_processor_list()
+    {
+        $result = $this->event->get_processor_list();
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($result));
+    }
+
 }
