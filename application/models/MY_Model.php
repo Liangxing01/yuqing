@@ -359,4 +359,48 @@ class MY_Model extends CI_Model
             ->get("announce")->result_array();
     }
 
+    /**
+     * -------------------------layerIM--------------------
+     */
+    public function getIMUserInfo(){
+        $uid = $this->session->uid;
+        $userInfo = $this->db->select('user.id,user.name,user.avatar,group.name as gname')
+            ->from('user')
+            ->join('user_group as ug','ug.uid = user.id')
+            ->join('group','group.id = ug.gid')
+            ->where('user.id',$uid)
+            ->where('ug.is_exist',1)
+            ->get()->row_array();
+        $userInfo['name'] = $userInfo['name'].'('.$userInfo['gname'].')';
+        return $userInfo;
+    }
+
+    public function getGroupMembers(){
+        //连接消息服务器
+        $this->load->library("Gateway");
+        Gateway::$registerAddress = $this->config->item("VM_registerAddress");
+
+        $users = $this->db->select("id,name,avatar")->get("user")->result_array();
+        $userList = array();
+        foreach ($users as $user){
+            //判断用户是否在线
+            if (Gateway::isUidOnline($user["id"]) != 0) {
+                array_push($userList,array(
+                    "username"  =>  $user['name'],
+                    "id"        =>  $user['id'],
+                    "avatar"    =>  $user['avatar'],
+                    "sign"      =>  ""
+                ));
+            }
+        }
+        $res = array(
+            'code'  =>  0,
+            'msg'   =>  '',
+            'data'  =>  array(
+                'list'  =>  $userList
+            )
+        );
+        return $res;
+    }
+
 }

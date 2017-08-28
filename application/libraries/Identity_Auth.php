@@ -162,6 +162,9 @@ class Identity_Auth
             }
             //更新client认证token
             Gateway::setSession($client_id, array("p_token" => $this->CI->session->p_token, "uid" => $this->CI->session->uid));
+            echo json_encode(array(
+                'code'  =>  0
+            ));
         } catch (Exception $e) {
             log_message("error", $e->getMessage());
         }

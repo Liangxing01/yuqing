@@ -144,6 +144,17 @@ class Yuqing extends MY_Controller
 
     }
 
+    /**
+     * 接口：获取原始舆情数据 统计总数
+     */
+    public function get_yqData_num(){
+        $query = $this->input->post('query');
+        $page_num = $this->input->post('page_num');
+        $col_name = 'rawdata'; //集合名称
+        $yq_data = $this->yq->get_raw_yqData_num($query, $page_num, $col_name);
+        echo json_encode($yq_data);
+    }
+
 
     /**
      * 接口：忽略掉此条舆情，不显示给 该用户看

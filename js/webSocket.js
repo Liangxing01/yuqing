@@ -1,6 +1,9 @@
 /**
  * Created by LX on 2016/11/30.
  */
+
+
+ var _layim = null;
 $(function () {
     //get_all_msg();
     get_webSocket_msg();
@@ -15,7 +18,7 @@ function reload_num() {
 }
 function get_webSocket_msg() {
     try {
-        var client_socket = new WebSocket('ws://' + window.location.host + ':4000');
+        var client_socket = new WebSocket('ws://'+window.location.hostname+':4000');
         client_socket.onopen = function () {
             console.log("服务器已连接");
         };
@@ -28,7 +31,7 @@ function get_webSocket_msg() {
                 }
                 switch (data.type) {
                     case 233:
-                        bind_client_to_uid(data.client_id);
+                        bind_client_to_uid(data.client_id,client_socket);
                         break;
                     case 0:
                     case 1:
@@ -41,6 +44,10 @@ function get_webSocket_msg() {
                     case 4:
                         message_info($('#notification_bar1'), data);
                         break;//超时提醒
+                    case 'im':
+                         _layim.getMessage(data.im_msg);
+                         break;
+
                 }
             }
         };
@@ -62,6 +69,37 @@ function get_webSocket_msg() {
 }
 
 var msg_num = 1;    //提醒框的偏移量
+
+function layim_init(target){
+    layui.use('layim', function(layim){
+      _layim = layim;
+      //先来个客服模式压压精
+      layim.config({
+        brief: false, //是否简约模式（如果true则不显示主面板）
+        init:{
+          url: '/welcome/getBoardInfo',
+          type: 'get'
+        },
+          title : "网信v6即时聊天",
+          members:{
+              url: '/welcome/getOnlineGroupMembers',
+              type: 'get'
+          },
+          copyright : true
+      });
+
+      layim.on('sendMessage', function(res){
+        var msg = res;
+        var sendMsg = {
+            type: 'im',
+            msg: msg
+          }
+        target.send(JSON.stringify(sendMsg));
+      })
+
+    });
+}
+
 //向消息记录添加消息信息
 function add_type_list(data) {
     var title = ''; //提示框的title
@@ -167,7 +205,7 @@ function getCookie(name) {
  * 绑定 VMessage client_id 到用户id
  * @var int client_id
  */
-function bind_client_to_uid(client_id) {
+function bind_client_to_uid(client_id,target) {
     $.ajax({
         url: "/welcome/bind_uid",
         method: "post",
@@ -176,7 +214,7 @@ function bind_client_to_uid(client_id) {
             "client_id": client_id
         },
         success: function (data) {
-            console.log(data);
+            layim_init(target);
         }
     });
 }

@@ -14,7 +14,6 @@ class Yq_control extends MY_Controller {
         $this->identity->is_authentic();
     }
 
-
     /**
      * 舆情管控 链接管控 视图载入
      */

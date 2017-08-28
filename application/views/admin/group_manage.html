@@ -169,6 +169,7 @@
                 "groupname": $("#groupname").val(),
                 "type" : $("#type option:selected").val(),
                 'gid':nodes[0].id,
+                'relation_id':nodes[0].tid
             },
             success: function (data) {
                 if (data.res == 1){
