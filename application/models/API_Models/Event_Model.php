@@ -725,6 +725,82 @@ class Event_Model extends CI_Model
 
 
     /**
+     * 督办人（部门）列表
+     * @return array
+     */
+    public function get_watcher_list()
+    {
+        $watcher_group = $this->get_watcher_group();
+
+        $watchers = $this->db->select("user.id, user.name, user_group.gid AS group_id")
+            ->join("user_privilege", "user.id = user_privilege.uid", "left")
+            ->join("user_group", "user_group.uid = user.id", "left")
+            ->where(array("user_privilege.pid" => 4, "user_group.is_exist" => 1, "user.is_exist" => 1))
+            ->get("user")->result_array();
+
+        $tree = array(
+            "id" => 0,
+            "name" => "督办人",
+            "open" => true,
+            "children" => array()
+        );
+
+        foreach ($watcher_group AS $group) {
+            $group_node = array(
+                "id" => $group["id"],
+                "name" => $group["name"],
+                "open" => false,
+                "children" => array()
+            );
+            foreach ($watchers AS $processor) {
+                if ($group["id"] == $processor["group_id"]) {
+                    $tree_node = array(
+                        "id" => $processor["id"],
+                        "name" => $processor["name"]
+                    );
+                    $group_node["children"][] = $tree_node;
+                }
+            }
+            $tree["children"][] = $group_node;
+        }
+        return $tree;
+    }
+
+
+    /**
+     * 事件 参考文件上传
+     * POST: file 文件
+     * @return array
+     */
+    public function upload_attachment()
+    {
+        $config['upload_path'] = './uploads/temp/';
+        $config['allowed_types'] = 'doc|docx|ppt|pdf|pptx|zip|rar|xlsx|word';
+        $config['max_size'] = 0;
+        $config['encrypt_name'] = true;
+
+        $this->load->library('upload', $config);
+
+        //处理上传文件
+        if (!$this->upload->do_upload('file')) {
+            $error = $this->upload->display_errors('', '');
+            $this->param_error['message'] = $error;
+            return $this->param_error;
+        } else {
+            $file_data = $this->upload->data();
+            $this->success['message'] = 'upload success';
+            $this->success['data'] = array(
+                'name' => $file_data['client_name'],
+                'url' => '/uploads/document/' . $file_data['file_name'],
+                'new_name' => $file_data['file_name'],
+                'type' => "document"
+            );
+            return $this->success;
+        }
+    }
+
+
+    /**
      * 判断是否是事件负责人
      * @param int $uid
      * @param array $gid
@@ -814,6 +890,23 @@ class Event_Model extends CI_Model
         $processor_id = array_column($processor, 'id');
 
         return $processor_id;
+    }
+
+
+    /**
+     * 获得 督办人部门
+     * @return mixed
+     */
+    protected function get_watcher_group()
+    {
+        $watcher_group = $this->db->select("yq_group.id AS id, yq_group.name AS name")
+            ->join("user_group", "user_group.gid = group.id")
+            ->join("user", "user_group.uid = user.id")
+            ->join("user_privilege", "user.id = user_privilege.uid", "left")
+            ->where(array("user_privilege.pid" => 4, "user_group.is_exist" => 1))
+            ->group_by("group.id")
+            ->get("group")->result_array();
+        return $watcher_group;
     }
 
 

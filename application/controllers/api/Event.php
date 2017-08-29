@@ -141,4 +141,28 @@ class Event extends CI_Controller
             ->set_output(json_encode($result));
     }
 
+
+    /**
+     * 获取处理人(部门)列表
+     */
+    public function get_watcher_list()
+    {
+        $result = $this->event->get_watcher_list();
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($result));
+    }
+
+
+    /**
+     * 事件 参考文件上传
+     */
+    public function upload_attachment()
+    {
+        $result = $this->event->upload_attachment();
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($result));
+    }
+
 }
