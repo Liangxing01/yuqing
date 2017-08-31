@@ -926,7 +926,7 @@ class Event_Model extends CI_Model
         $next = next($arr);
         while ($next && $next['rgt'] < $item['rgt']) {
             if ($next['type'] == 1) {
-                $res['user'][] = ['name' => $next['name'], 'uid' => $next['uid']];
+                $res['user'][] = ['name' => $next['name'], 'uid' => $next['uid'], 'gid' => $res['gid']];
                 $next = next($arr);
             } else {
                 if ($res['name'] == '组织关系') {
