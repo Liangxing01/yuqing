@@ -720,7 +720,9 @@ class Event_Model extends CI_Model
             ->get()->result_array();
 
         // 预排序树节点转json
-        return $this->people2json($group_tree_nodes);
+        $this->success['data'] = $this->people2json($group_tree_nodes);
+
+        return $this->success;
     }
 
 
@@ -739,31 +741,30 @@ class Event_Model extends CI_Model
             ->get("user")->result_array();
 
         $tree = array(
-            "id" => 0,
             "name" => "督办人",
-            "open" => true,
-            "children" => array()
+            "group" => array()
         );
 
         foreach ($watcher_group AS $group) {
             $group_node = array(
-                "id" => $group["id"],
+                "gid" => $group["id"],
                 "name" => $group["name"],
-                "open" => false,
-                "children" => array()
+                "user" => array()
             );
             foreach ($watchers AS $processor) {
                 if ($group["id"] == $processor["group_id"]) {
                     $tree_node = array(
-                        "id" => $processor["id"],
+                        "uid" => $processor["id"],
                         "name" => $processor["name"]
                     );
-                    $group_node["children"][] = $tree_node;
+                    $group_node["user"][] = $tree_node;
                 }
             }
-            $tree["children"][] = $group_node;
+            $tree["group"][] = $group_node;
         }
-        return $tree;
+
+        $this->success['data'] = $tree;
+        return $this->success;
     }
 
 
@@ -919,13 +920,20 @@ class Event_Model extends CI_Model
     {
         $item = current($arr);
         $res = ['name' => $item['name']];
+        if ($item['type'] == 0 && $item['uid'] != NULL) {
+            $res['gid'] = $item['uid'];
+        }
         $next = next($arr);
         while ($next && $next['rgt'] < $item['rgt']) {
             if ($next['type'] == 1) {
-                $res['user'][] = ['name' => $next['name'], 'id' => $next['uid']];
+                $res['user'][] = ['name' => $next['name'], 'uid' => $next['uid']];
                 $next = next($arr);
             } else {
-                $res['area'][] = $this->people2json($arr);
+                if ($res['name'] == '组织关系') {
+                    $res['area'][] = $this->people2json($arr);
+                } else {
+                    $res['group'][] = $this->people2json($arr);
+                }
                 $next = current($arr);//函数运行后，指针指向后一个节点，直接取当前节点即可。
             }
         }
